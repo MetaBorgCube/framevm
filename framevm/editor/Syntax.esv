@@ -5,6 +5,36 @@ imports
   libspoofax/color/default
   completion/colorer/framevm-cc-esv
 
+colorer
+  black     = 0 0 0
+  red       = 63 0 0
+  green     = 0 80 0
+  blue      = 0 90 100
+  dark_blue = 0 50 90
+  
+  red_bold     = 63 0 100 bold
+  purple_bold  = 153 51 153 bold
+  green_italic = 0 80 0 italic
+  green_bold = 0 80 0 bold
+  black_bold = 0 0 0 bold
+  
+  operator   : black
+  keyword    : red_bold
+  identifier : black
+  string     : dark_blue
+  number     : blue
+  layout     : green_italic
+  
+  PseudoCode: green_italic
+  PsdInstr: green_bold
+  PsdType: green_bold
+  PsdExp: green_italic
+  
+  MAIN: red_bold
+  LABEL: black_bold
+  Instr: purple_bold
+  BOOL: green_italic
+  
 language
 
   table         : target/metaborg/sdf.tbl

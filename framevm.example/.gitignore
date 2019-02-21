@@ -8,3 +8,7 @@
 
 /.polyglot.metaborg.yaml
 
+*.aterm
+*.value
+*.out
+

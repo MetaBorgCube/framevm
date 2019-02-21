@@ -2,8 +2,13 @@ module Common
 
 lexical syntax
 
-  ID             = [a-zA-Z] [a-zA-Z0-9]* 
+  ID             = [a-zA-Z] [a-zA-Z0-9]*
+  LABEL          = [A-Z] [A-Z0-9]* 
+  MAIN			 = "MAIN"
   INT            = "-"? [0-9]+ 
+  BOOL			 = "true"
+  BOOL			 = "false"
+  
   STRING         = "\"" StringChar* "\"" 
   StringChar     = ~[\"\n] 
   StringChar     = "\\\"" 
@@ -19,6 +24,18 @@ lexical syntax
   NewLineEOF     = EOF 
   EOF            =  
 
+  LABEL = 	"MAIN" 		{reject}
+  ID = 		"addi" 		{reject}
+  ID = 		"jump" 		{reject}
+  ID = 		"jumpz" 	{reject}
+  ID = 		"dup"	 	{reject}
+  ID = 		"new"	 	{reject}
+  ID = 		"pushi"	 	{reject}
+  ID = 		"MAIN"	 	{reject}
+  ID = 		"true"	 	{reject}
+  ID = 		"false"	 	{reject}
+  
+  
 lexical restrictions
 
   // Ensure greedy matching for lexicals

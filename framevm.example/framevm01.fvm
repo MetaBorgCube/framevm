@@ -1,0 +1,90 @@
+{
+  var x := 10  // path of x = [0]
+  var y := 11  // path of y = [1]
+}
+
+TEST1:
+	new 		// Is this needed?
+//	mkcurrent	// Same here
+	iconst 10
+	set [0] 
+	iconst 11
+	set [1]
+
+
+
+{ 
+  rec Point = {
+  	x : Int // [0] 
+  	y : Int // [1]
+  }
+  var p : Point // [0]
+  p.x := 10  // [0]
+  p.y := p.x + 1
+}
+
+TEST2:
+	new
+	set [0]
+	iconst 10
+	set [0, 0]   // set p.x
+	iconst 1
+	get [0, 0]   // p.x
+	addi
+	set [0, 1]   // set p.y
+
+{
+	if x:
+		x := y
+	else:
+		x := 10
+	print(x)
+
+}
+TEST3:
+	get [0]
+	jumpz THEN ELSE
+
+THEN:
+	get [1]
+	set [0]
+	jump CONT
+  
+ELSE:
+	iconst 10
+	set [0]
+	jump CONT
+ 
+CONT:
+	get [0]
+	print
+	
+{  
+	func (i, j) = { 
+  		return i + j
+	}
+	x := 10
+	y := inc()
+	print(y)
+}
+
+INC :
+  	get [0] // i
+  	get [1] // j
+  	addi
+  	return
+
+TEST4:
+	new 			// create new call frame
+	dup 			// duplicate it
+	iconst 10		//
+	set [0] 		// value of x in current frame
+	setr [0] 		// i := x // assign to formal parameter i in call frame
+	dup 			// duplicate ref to call frame
+	iconst 2 		// 
+	setr [1] 		// j := 2 // assign to formal parameter j in call frame
+	call INC CONT	// create operand stack with frame ref on top of stack and run INC
+					// Returns to CONT
+CONT:
+	get [1] // y
+	print

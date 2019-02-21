@@ -1,0 +1,37 @@
+{
+	rec A = {
+		i: int
+		j: bool
+	}
+	new A a
+	a.i := 1 + 1
+	a.j := true
+	print(1)
+	if a.j:
+		print(10)
+	else:
+		print(11)
+}
+
+MAIN:
+	new			// Create new scope/frame
+	set [0]		// Store in 'a'
+
+	iconst 1
+	iconst 1
+	addi		// 1 + 1
+	set [0, 0]	// a.i = 2
+	
+	iconst 1		// true
+	set [0, 1]	// a.j = true
+	
+	get [0, 1]
+	jumpz THEN ELSE	// if a.j
+	
+THEN:
+	iconst 10
+	print		// print(10)
+
+ELSE:
+	iconst 11
+	print		// print(11)

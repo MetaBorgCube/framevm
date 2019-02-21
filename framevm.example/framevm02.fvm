@@ -1,0 +1,35 @@
+{
+	rec A ={
+		i: int
+	}
+	var a := 1 + 2
+	new A b
+	
+	b.i := a + 3
+	print(b.i)
+}
+
+MAIN:
+  jump START
+  
+START :
+  iconst 1
+  iconst 2
+  addi			// 1 + 2
+  set [0]		// store in a
+  jump MORE
+  
+MORE:
+  new			// new A
+  set [1]		// store rec in b
+  get [0]		
+  iconst 3
+  addi 			// a + 3
+  set [1, 0]	// store in b.i
+  jump FOO
+  
+FOO:
+  get [1, 0]
+  print			// print b.i
+  // Out = 6
+  

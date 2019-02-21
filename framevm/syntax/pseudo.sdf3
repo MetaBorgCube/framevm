@@ -1,0 +1,47 @@
+module pseudo
+
+imports Common
+
+context-free start-symbols PsdBody
+
+sorts Psdbody context-free syntax
+  
+  PsdBody.Empty = 
+  PsdBody.Seq = instr:PsdInstr+ 				{ layout (align-list instr) }
+  
+  
+sorts PsdInstr context-free syntax
+
+  PsdInstr.Exp = PsdExp
+  PsdInstr.If = "if" PsdExp ":" body:PsdBody								{ layout (indent "if" body) }
+  PsdInstr.IfElse = "if" PsdExp ":" then:PsdBody "else:" else:PsdBody		{ layout (indent "if" then && align "if" "else:" && indent "else:" else) }
+  PsdInstr.Assign = <<PsdRef> := <PsdExp>>
+  PsdInstr.Assign = <var <PsdRef> := <PsdExp>>
+  PsdInstr.New = <new <ID> <ID>>
+  PsdInstr.Return = <return <PsdExp>>
+  
+  PsdInstr.FuncDef = name:ID "(" PsdArgList ")" "=" "{" fields:PsdInstr* "}" 				{ layout (indent name fields && align name "}" && align-list fields) }
+  
+  PsdInstr.FieldDef = <var <ID> : <PsdType>> 
+  PsdInstr.RecDef = "rec" ID "=" "{" fields:PsdRecField* "}" 				{ layout (indent "rec" fields && align "rec" "}" && align-list fields) }
+  
+  PsdRef.Var = <<ID>>
+  PsdRef.Comp = <<ID> . <PsdRef>>
+  
+  PsdRecField.Field = ID ":" PsdType
+  PsdRecField.Field = ID ":" PsdType ","
+  PsdType = ID
+  
+  PsdArgList.List = {ID ","}+
+  PsdArgList.Empty = <>
+    
+  
+sorts PsdExp context-free syntax
+
+  PsdExp.Add  = PsdExp "+" PsdExp
+  PsdExp.Int  = <<INT>>
+  PsdExp.ID   = <<PsdRef>>
+  PsdExp.Bool = BOOL
+  PsdExp.FunApp = <<ID>(<{PsdExp ","}*>)>
+  
+  

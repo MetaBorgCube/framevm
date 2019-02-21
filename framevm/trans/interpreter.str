@@ -18,7 +18,7 @@ rules
         ; <eval-instrs> (instrs, "s", []) => ([], f, [v | stack])
    
   store-block =
-    ?Block(label, instrs) 
+    ?Routine(Label(label), Seq(instrs)) 
     ; rules( Block : label -> instrs )
     
   eval-instrs = 

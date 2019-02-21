@@ -1,0 +1,3 @@
+MAIN:
+	iconst 12
+	print

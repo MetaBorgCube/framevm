@@ -1,32 +1,45 @@
 module framevm
 
-imports Common
+imports Common pseudo
 
 context-free start-symbols Program
 
 sorts Program context-free syntax
+  Program.Empty = <>
+  Program.Program = body:Block*	{ layout (align-list body) }
   
-  Program.Program = <<Block*>>
+  Label.Label = LABEL
+  Label.Label = MAIN
   
 sorts Block context-free syntax
 
-  Block.Block = <
-    <ID>:
-      <Instr*>
-  >
+  Block.Routine = lbl:Label ":" body:Body 			{ layout (indent lbl body) }
+  Block.PseudoCode = "{" body:PsdBody "}" 			{ layout (indent "{" body && align "{" "}") }
+  
+  Body.Empty = 
+  Body.Seq = instr:Instr+ 							{ layout (align-list instr) }
   
 sorts Instr context-free syntax
   
-  Instr.IAdd   = <iadd>
-  Instr.IConst = <iconst <INT>>
+  Instr.IAdd 	 = <addi>					// Consumes two values from stack and adds them, result is stored on stack
+  Instr.IConst 	 = <iconst <INT>>			// Push int value to stack
   
-  Instr.New  = <new>
-  Instr.Get  = <get <Path>>
-  Instr.Set  = <set <Path>>
+  Instr.New      = <new>					// Create new frame and push pointer on stack
+  Instr.Set      = <set <Path>>				// Set value on the stack at path location
+  Instr.SetR     = <setr <Path>>			// Set value on the stack at path location starting in frame on stack
+  Instr.Get      = <get <Path>>				// Store value at path in the stack
+  Instr.GetR     = <getr <Path>>			// Store value at path from frame on stack on stack
+  
+  Instr.JumpZ    = <jumpz <Label> <Label>>	// Jump to first label if stack zero, else jump to other label
+  Instr.Jump     = <jump <Label>>			// Unconditional jump to LABEL
+  Instr.Call     = <call <Label> <Label>>			// Call routine LABEL, using frame on the stack
+  
+  Instr.Dup      = <dup>					// duplicates the value on the stack
+  Instr.Print    = <print>					// Prints value on the stack
+  Instr.Return   = <return>					// Takes return address from opstack and copies top of stack to caller stack 
   
   Path.Path  = <[<{INT ","}+>]>
 
-  Instr.Jump = <jump <ID>>
   
 /* 
 
