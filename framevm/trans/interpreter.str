@@ -1,0 +1,83 @@
+module interpreter
+
+imports signatures/framevm-sig
+
+signature
+  sorts V
+  constructors
+    FrameV : String -> V
+    IntV : Int -> V
+    
+rules 
+
+  eval : 
+    Program(blocks) -> v
+    where <map(store-block)> blocks 
+        ; debug(!"code stored: ")
+        ; instrs := <Block> "Main"
+        ; <eval-instrs> (instrs, "s", []) => ([], f, [v | stack])
+   
+  store-block =
+    ?Block(label, instrs) 
+    ; rules( Block : label -> instrs )
+    
+  eval-instrs = 
+    repeat(debug(!"state: "); eval) // this should not be defined recursively!
+    
+rules // arithmetic 
+
+  eval :
+    ([IConst(i) | instrs], f, stack) -> 
+    (             instrs,  f, [IntV(i) | stack])
+
+  eval :
+    ([IAdd() | instrs], f, [IntV(i), IntV(j)  | stack]) -> 
+    (          instrs,  f, [IntV(<addS>(i, j)) | stack])
+    
+rules // control 
+
+  eval : 
+    ([Jump(label) | instrs], f, stack) -> 
+    (               instrs', f, stack) 
+    where
+      <Block> label => instrs'
+      
+rules // frame instructions
+
+  eval :
+    ([New() | instrs], f, stack) -> 
+    (         instrs,  f, [FrameV(f') | stack])
+    where 
+      f' := <new>
+    
+  eval :
+    ([Get(Path(p)) | instrs], f, stack) -> 
+    (          instrs,  f, [v | stack])
+    where 
+      <frame-get> (p, FrameV(f)) => v
+        
+  eval :
+    ([Set(Path(p)) | instrs], f, [v | stack]) -> 
+    (          instrs,  f,      stack)
+    where 
+      <debug(!"frame-set: "); frame-set; debug(!"  done")> (p, f, v) => ()
+    
+rules // frame API
+
+  frame-get : 
+    ([], v) -> v
+    
+  frame-get :
+    ([d | p], FrameV(f)) -> v'
+    where <Slot> (f, d) => v
+        ; <frame-get> (p, v) => v'
+        
+  frame-set :
+    ([d], f, v) -> ()
+    where rules( Slot : (f, d) -> v )
+    
+  frame-set :
+    ([d | p@[_|_]], f, v) -> ()
+    where <Slot> (f, d) => FrameV(f')
+        ; <frame-set> (p, f', v) => ()
+          

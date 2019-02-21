@@ -1,12 +1,11 @@
 module static-semantics
 
 signature
-  sorts Start
+  sorts Program
   constructors
-    Empty : Start
 
 rules
 
-  programOK : Start
+  programOK : Program
 
-  programOK(Empty()).
+  programOK(_).

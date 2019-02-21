@@ -1,11 +1,10 @@
 module framevm
 
-imports
-  
-  completion/completion
-  pp
-  outline
-  analysis
+imports completion/completion
+imports pp
+imports outline
+imports analysis
+imports interpreter
 
 rules // Debugging
   
@@ -14,3 +13,10 @@ rules // Debugging
     with
       filename := <guarantee-extension(|"aterm")> path
     ; result   := node
+
+  run-program:
+    (node, _, _, path, project-path) -> (filename, result)
+    with
+      filename := <guarantee-extension(|"value")> path
+    ; result   := <eval>node
+    

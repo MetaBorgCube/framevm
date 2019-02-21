@@ -8,7 +8,7 @@ imports
 language
 
   table         : target/metaborg/sdf.tbl
-  start symbols : Start
+  start symbols : Program
 
   line comment  : "//"
   block comment : "/*" * "*/"
@@ -20,6 +20,10 @@ menus
     
     action: "Format"          = editor-format (source)
     action: "Show parsed AST" = debug-show-aterm (source)
+  
+  menu: "Run" (openeditor)
+    
+    action: "Run"          = run-program (source)
 
 views
   

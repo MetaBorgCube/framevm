@@ -2,22 +2,31 @@ module framevm
 
 imports Common
 
-context-free start-symbols Start
+context-free start-symbols Program
 
-context-free syntax
+sorts Program context-free syntax
   
-  Start.Program = <<Instr*>>
+  Program.Program = <<Block*>>
   
-  
-  Instr.Add = <add>
-  
-  Instr.Int = <<INT>>
-  
-  Instr.New = <<ScopeId>>
+sorts Block context-free syntax
 
+  Block.Block = <
+    <ID>:
+      <Instr*>
+  >
   
+sorts Instr context-free syntax
   
-  ScopeId = INT
+  Instr.IAdd   = <iadd>
+  Instr.IConst = <iconst <INT>>
+  
+  Instr.New  = <new>
+  Instr.Get  = <get <Path>>
+  Instr.Set  = <set <Path>>
+  
+  Path.Path  = <[<{INT ","}+>]>
+
+  Instr.Jump = <jump <ID>>
   
 /* 
 
