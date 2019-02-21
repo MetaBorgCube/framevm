@@ -1,0 +1,10 @@
+---
+id: org.example:framevm.example:0.1.0-SNAPSHOT
+name: framevm
+dependencies:
+  compile:
+  - org.example:framevm:0.1.0-SNAPSHOT
+debug:
+  typesmart: false
+build:
+  useBuildSystemSpec: true

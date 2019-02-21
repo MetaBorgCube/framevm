@@ -1,0 +1,62 @@
+module framevm
+
+imports Common
+
+context-free start-symbols Start
+
+context-free syntax
+  
+  Start.Program = <<Instr*>>
+  
+  
+  Instr.Add = <add>
+  
+  Instr.Int = <<INT>>
+  
+  Instr.New = <<ScopeId>>
+
+  
+  
+  ScopeId = INT
+  
+/* 
+
+Values 
+
+CodeV
+- jump
+- return 
+- ...
+
+IntV
+- add
+- pushi
+- jumpz
+
+BoolV
+- true, false
+- and 
+- or
+
+FrameRefV
+- new
+- set
+- get 
+
+closure =
+
+Frame with code pointer + reference pointer
+
+*/
+  
+/*
+
+initialization of frame slots / soundness 
+
+distinction between frame links and reference edges to frames 
+
+well-formedness properties of instructions?
+
+e.g. clean operand stack
+
+*/
