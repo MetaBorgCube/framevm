@@ -14,7 +14,7 @@ rules
     Program(blocks) -> v
     where <map(store-block)> blocks 
         ; debug(!"code stored: ")
-        ; instrs := <Block> "Main"
+        ; instrs := <Block> "MAIN"
         ; <eval-instrs> (instrs, "s", []) => ([], f, [v | stack])
    
   store-block =
