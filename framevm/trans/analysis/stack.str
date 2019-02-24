@@ -28,7 +28,7 @@ rules // Debugging
   stack-update: (GetR(path), (size, err)) -> (size, err)
   
   stack-update: (Set(path), (size, err)) -> (<dec> size, err)
-  stack-update: (SetR(path), (size, err)) -> (size, err)
+  stack-update: (SetR(path), (size, err)) -> (<dec><dec>size, err)
   
   
   stack-update: (JumpZ(lbl1, lbl2), (size, err)) -> (<dec> size, err)
