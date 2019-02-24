@@ -5,9 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.spoofax.interpreter.terms.IStrategoTerm;
-import org.spoofax.terms.StrategoList;
-import org.spoofax.terms.StrategoString;
-
 import framevm.strategies.util.OperandStack;
 import framevm.strategies.util.Routine;
 import framevm.strategies.util.Slot;

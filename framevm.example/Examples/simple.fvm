@@ -6,7 +6,7 @@
 	new A a
 	a.i := 1 + 1
 	a.j := true
-	print(1)
+	
 	if a.j:
 		print(10)
 	else:

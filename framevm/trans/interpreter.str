@@ -66,8 +66,8 @@ rules // control
 	  	(env2, IntV(val)) := <stack-pop> env1;
 	  	trgt := <jump-eval> (val, then, else)
 
-	jump-eval: ("0", _, else) -> <debug>else
-	jump-eval: ("1", then, _) -> <debug>then
+	jump-eval: ("0", _, else) -> else
+	jump-eval: ("1", then, _) -> then
 
 rules // frame instructions
 
@@ -102,7 +102,7 @@ rules // frame instructions
   	  	(frame, slot) := <resolve> (p, frame_init, env1)
 
   	resolve: ([h], FrameRef(frame_id), env) -> (frame_id, h) 	
-  	resolve: ([h|t], FrameRef(frame_id), env) -> <resolve> <debug>(t, <debug><frame-get><debug> (env, frame_id, h), env)
+  	resolve: ([h|t], FrameRef(frame_id), env) -> <resolve> (t, <frame-get> (env, frame_id, h), env)
   	
 rules	// Other
 	eval: (Print(), env1) -> env3
