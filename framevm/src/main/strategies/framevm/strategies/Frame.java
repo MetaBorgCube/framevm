@@ -39,30 +39,21 @@ public class Frame {
 		}
 	}
 	
-	public void setExecutable(Routine routine, Routine returnAddr) {
-		this.operandStack = new OperandStack(routine, returnAddr);
+	public void setExecutable(Routine routine, Routine returnAddr, Frame returnFrame) {
+		this.operandStack = new OperandStack(routine, returnAddr, returnFrame);
 	}
 
 	public OperandStack getOperandStack() {
 		return operandStack;
 	}
 	
-	public Slot resolve(StrategoList path, boolean create) {
-		Frame current = this;
-		Slot res = null;
-		
-		for (IStrategoTerm term : path) {
-			int idx = Integer.valueOf(((StrategoString) term).stringValue());
-			res = current.getSlot(idx, create);
-
-			if (res.isFramePointer) {
-				//TODO
-//				current = res.getFrame();
-			}
+	public Slot getSlot(String lbl) {
+		if ("r".equals(lbl)) {
+			return this.operandStack.getReturnValue();
 		}
-		return res;
+		return null;
 	}
-	
+
 	public Slot getSlot(int id, boolean create) {
 		if (id < slots.size()) {
 			return slots.get(id);

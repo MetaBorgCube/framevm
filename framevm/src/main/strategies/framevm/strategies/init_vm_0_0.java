@@ -10,9 +10,9 @@ public class init_vm_0_0 extends FVMStrategy {
 	
 	 @Override
 	  public IStrategoTerm invoke(Context context, IStrategoTerm current) {
-		 currentFrame = new Frame(newFrameID());
+		 currentFrame = getFrame(newFrame());
 		 
-		 context.getIOAgent().printError("FrameVM initialized");
+		 context.getIOAgent().printError("FrameVM initialized" + currentFrame.id + currentFrame.getOperandStack());
 		 return new StrategoTuple(new IStrategoTerm[]{}, null, IStrategoTerm.IMMUTABLE);
 	  }
 }

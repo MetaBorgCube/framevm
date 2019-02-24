@@ -14,7 +14,7 @@ public class frame_new_0_0 extends FVMStrategy {
 	 @Override
 	 // env -> (env', frame_id)
 	 public IStrategoTerm invoke(Context context, IStrategoTerm current) {
-		 String frameId = newFrameID();
+		 String frameId = newFrame();
 		 ITermFactory factory = context.getFactory();
 		 return new StrategoTuple(new IStrategoTerm[] {current, factory.makeString(frameId)}, null, IStrategoTerm.IMMUTABLE);
 	 }

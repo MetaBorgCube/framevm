@@ -19,7 +19,7 @@ public class start_vm_0_0 extends FVMStrategy {
 			 return null;
 		 }
 
-		 currentFrame.setExecutable(routine, null);
+		 currentFrame.setExecutable(routine, null, null);
 		 
 		 context.getIOAgent().printError("FrameVM started: " + routine.getName());
 		 return current;

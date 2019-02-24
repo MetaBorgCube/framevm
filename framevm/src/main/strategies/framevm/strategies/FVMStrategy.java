@@ -26,7 +26,7 @@ public class FVMStrategy extends Strategy {
 		return heap.get(id);
 	}
 	
-	protected String newFrameID() {
+	protected String newFrame() {
 		String id = "frame_" + count++;
 		heap.put(id, new Frame(id));
 		return id;

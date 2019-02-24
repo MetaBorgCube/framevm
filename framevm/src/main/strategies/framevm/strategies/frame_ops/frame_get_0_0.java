@@ -7,7 +7,7 @@ import org.spoofax.terms.StrategoTuple;
 import org.strategoxt.lang.Context;
 
 import framevm.strategies.FVMStrategy;
-import framevm.strategies.util.Slot;
+import framevm.strategies.Frame;
 
 public class frame_get_0_0 extends FVMStrategy {
 	public static frame_get_0_0 instance = new frame_get_0_0();
@@ -17,9 +17,14 @@ public class frame_get_0_0 extends FVMStrategy {
 	 public IStrategoTerm invoke(Context context, IStrategoTerm current) {
 		 StrategoTuple tuple = (StrategoTuple) current;
 		 StrategoString frame_id = (StrategoString) tuple.get(1);
-		 int slotId = Integer.valueOf(((StrategoString) tuple.get(2)).stringValue());
+		 String slotId = ((StrategoString) tuple.get(2)).stringValue();
 		 
-		 Slot slot = getFrame(frame_id.stringValue()).getSlot(slotId, false);
-		 return slot.value;
+		 Frame frame = getFrame(frame_id.stringValue());
+		 try {
+			int idx = Integer.valueOf(slotId);
+			return frame.getSlot(idx, false).value;
+		} catch (NumberFormatException ex) {
+			return frame.getSlot(slotId).value;
+		}
 	 }
 }

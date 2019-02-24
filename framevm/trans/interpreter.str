@@ -25,6 +25,8 @@ rules
 	
 	external vm-print(|)		// (env, val) -> env'
 	external vm-jump(|)			// (env, lbl) -> env'
+	external vm-call(|)			// (env, (frame_id, lbl, lbl)) -> env'
+	external vm-return(|)		// (env, value) -> env'
 
   	eval : Program(blocks) -> out
       where 
@@ -34,11 +36,11 @@ rules
     	env4 := <execute> env3;
     	out  := <stop-vm> env4
     	
-  store-block: (Routine(Label(lbl), Seq(body)), env) -> <store-routine> (env, (lbl, body))
-  store-block: (PseudoCode(_), env) -> env
+  	store-block: (Routine(Label(lbl), Seq(body)), env) -> <store-routine> (env, (lbl, body))
+  	store-block: (PseudoCode(_), env) -> env
     
-  execute = 
-    repeat(next-instr; debug(!"execute: "); eval) // this should not be defined recursively!
+  	execute = 
+    	repeat(next-instr; debug(!"execute: "); eval) // this should not be defined recursively!
     
 rules // arithmetic 
 	eval: (IConst(i), env) -> <stack-push> (env, IntV(i))
@@ -51,8 +53,21 @@ rules // arithmetic
 
 
 rules // control 
-	eval : (Jump(Label(lbl)), env) -> <vm-jump> (env, lbl)
+	eval: (Call(Label(routine), Label(returnAddr)), env1) -> <vm-call> (env2, (frame_id, routine, returnAddr))
+	  where
+	  	(env2, FrameRef(frame_id)) := <stack-pop> env1
+	  	
+	eval: (Return(), env) -> <vm-return> <stack-pop> env
+	
+	eval: (Jump(Label(lbl)), env) -> <vm-jump> (env, lbl)
+	
+	eval: (JumpZ(Label(then), Label(else)), env1) -> <vm-jump> (env2, trgt)
+	  where
+	  	(env2, IntV(val)) := <stack-pop> env1;
+	  	trgt := <jump-eval> (val, then, else)
 
+	jump-eval: ("0", _, else) -> <debug>else
+	jump-eval: ("1", then, _) -> <debug>then
 
 rules // frame instructions
 
@@ -87,7 +102,7 @@ rules // frame instructions
   	  	(frame, slot) := <resolve> (p, frame_init, env1)
 
   	resolve: ([h], FrameRef(frame_id), env) -> (frame_id, h) 	
-  	resolve: ([h|t], FrameRef(frame_id), env) -> <resolve> (<frame-get> (env, frame_id, h), t, env)
+  	resolve: ([h|t], FrameRef(frame_id), env) -> <resolve> <debug>(t, <debug><frame-get><debug> (env, frame_id, h), env)
   	
 rules	// Other
 	eval: (Print(), env1) -> env3

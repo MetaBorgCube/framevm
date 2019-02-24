@@ -19,6 +19,9 @@ public class InteropRegisterer extends JavaInteropRegisterer {
         		stop_vm_0_0.instance,
         		vm_print_0_0.instance,
         		vm_jump_0_0.instance,
+        		
+        		vm_call_0_0.instance,
+        		vm_return_0_0.instance,
 
         		stack_push_0_0.instance,
         		stack_pop_0_0.instance,
