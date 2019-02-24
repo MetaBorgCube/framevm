@@ -35,6 +35,7 @@ rules
     	out  := <stop-vm> env4
     	
   store-block: (Routine(Label(lbl), Seq(body)), env) -> <store-routine> (env, (lbl, body))
+  store-block: (PseudoCode(_), env) -> env
     
   execute = 
     repeat(next-instr; debug(!"execute: "); eval) // this should not be defined recursively!
