@@ -1,0 +1,27 @@
+module arithmetic
+
+imports 
+	signatures/framevm-sig
+	interpreter/common
+
+rules
+	eval: (IConst(i), env1) -> env2
+	  where
+	  	env2 := <stack-push(|env1)> IntV(i)
+	
+	eval: (IAdd(), env) -> env3
+	  where
+	  	(env1, IntV(e1)) := <stack-pop(|env)>;
+	  	(env2, IntV(e2)) := <stack-pop(|env1)>;
+	  	env3 := <stack-push(|env2)> IntV(<addS>(e1, e2))
+	  	
+  	eval: (IEq(), env) -> env3
+	  where
+	  	(env1, IntV(e1)) := <stack-pop(|env)>;
+	  	(env2, IntV(e2)) := <stack-pop(|env1)>;
+	  	env3 := <stack-push(|env2)> <eval-eq> (e1, e2)
+
+	eval-eq: (e1, e2) -> IntV("1")
+	  where
+	  	_ := <equal> (e1, e2)
+	eval-eq: _ -> IntV("0")	

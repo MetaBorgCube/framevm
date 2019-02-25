@@ -1,0 +1,11 @@
+module common
+
+imports 
+	signatures/framevm-sig
+	interpreter/external
+
+signature
+  sorts V
+  constructors
+    FrameRef : String -> V
+    IntV : Int -> V

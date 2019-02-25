@@ -1,0 +1,24 @@
+module other
+
+imports 
+	signatures/framevm-sig
+	interpreter/common
+
+rules	// Other instructions
+	eval: (Print(), env1) -> env3
+	  where
+	  	(env2, out) := <stack-pop(|env1)>;
+	  	env3 := <vm-print(|env2)> <debug> <val-to-string> out
+
+	eval: (instr, env) -> env
+	  where
+	  	_ := <debug> ("Instruction not implemented", instr);
+	  	_ := <fail>
+	
+	
+rules	// Util
+	val-to-string: IntV(v) -> v
+	val-to-string: FrameRef(v) -> v
+	
+	
+	

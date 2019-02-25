@@ -1,0 +1,28 @@
+module external
+
+imports signatures/framevm-sig
+
+rules 
+	external init-vm(|)				// -> env
+	external start-vm(|env)			// env| -> env'
+	external stop-vm(|env)			// env| -> string
+	external store-routine(|env)	// env| (lbl, [instr]) -> env' 
+	external next-instr(|)			// env -> (instr, env')
+	
+	external stack-push(|env)		// env| val -> env'
+	external stack-pop(|env)		// env| -> (env', val)
+	
+	external frame-get-slot(|env)	// env| (frame_id, slot) -> val
+	external frame-get-link(|env)	// env| (frame_id, link) -> frame_id
+	external frame-set(|env)		// env| (frame_id, slot, val) -> env'
+	external frame-new(|env)		// env| -> (env', frame_id)
+	external frame-this(|env)		// env| -> frame_id
+	external frame-link(|env)		// env| (frame_id, frame_id, lbl) -> env'
+	
+	external vm-print(|env)			// env| val -> env'
+	external vm-jump(|env)			// env| lbl -> env'
+	external vm-call(|env)			// env| (frame_id, lbl, lbl) -> env'
+	external vm-return(|env)		// env| value -> env'
+	
+	
+	

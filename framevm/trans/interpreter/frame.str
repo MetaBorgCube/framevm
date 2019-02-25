@@ -1,0 +1,63 @@
+module frame
+
+imports 
+	signatures/framevm-sig
+	interpreter/common
+
+rules
+	eval: (Dup(), env) -> env4
+	  where
+	  	(env2, val) := <stack-pop(|env)>;
+	  	env3 := <stack-push(|env2)> val;
+	  	env4 := <stack-push(|env3)> val
+	  	
+  	eval: (New(), env1) -> env3
+  	  where
+  	  	(env2, frame_id) := <frame-new(|env1)>;
+  	  	env3 := <stack-push(|env2)> FrameRef(frame_id)
+  	
+  	eval: (Get(Path(p)), env1) -> env2
+  	  where
+  	  	(frame_id, slot) := <resolve> (p, FrameRef(<frame-this(|env1)>), env1);
+  	  	env2 := <stack-push(|env1)> <frame-get> (env1, frame_id, slot)
+
+  	eval: (Set(Path(p)), env1) -> env3
+  	  where
+  	  	(frame, Slot(slot)) := <resolve> (p, FrameRef(<frame-this(|env1)>), env1);
+  	  	(env2, value) := <stack-pop(|env1)>;
+  	  	env3 := <frame-set(|env2)> (frame, slot, value)
+  	  	
+  	eval: (GetR(Path(p)), env1) -> env3
+  	  where
+  	  	(env2, frame) := <stack-pop(|env1)>;
+  	  	(frame_id, slot):= <resolve> (p, frame, env2);
+  	  	env3 := <stack-push(|env2)> <frame-get> (env2, frame_id, slot)
+
+  	eval: (SetR(Path(p)), env1) -> env4
+  	  where
+  	  	(env2, value) := <stack-pop(|env1)>;
+  	  	(env3, frame_init) := <stack-pop(|env2)>;
+  	  	(frame, Slot(slot)) := <resolve> (p, frame_init, env1);
+  	  	env4 := <frame-set(|env3)> (frame, slot, value)
+
+	eval: (LinkR(lbl), env1) -> env3
+	  where
+	  	frame_to_id := <frame-this(|env1)>;
+	  	(env2, FrameRef(frame_from_id)) := <stack-pop(|env1)>;
+	  	env3 := <frame-link(|env2)> (frame_from_id, frame_to_id, lbl)
+	  	
+	eval: (Link(Path(path), lbl), env1) -> env3
+	  where
+	  	frame_to_id := <frame-this(|env1)>;
+	  	(frame_id, _) := <resolve> (path, FrameRef(<frame-this(|env1)>), env1);
+	  	(env2, FrameRef(frame_from_id)) := <stack-pop(|env1)>;
+	  	env3 := <frame-link(|env2)> (frame_from_id, frame_to_id, lbl)
+	
+	
+	frame-get: (env, frame_id, Link(link_id)) -> <frame-get> (env, frame_id, link_id)
+	frame-get: (env, frame_id, Slot(slot_id)) -> <frame-get-slot(|env)> (frame_id, slot_id)
+	frame-get: (env, frame_id, "r") -> <frame-get-slot(|env)> (frame_id, "r")
+	frame-get: (env, frame_id, link_id) -> <frame-get-link(|env)> (frame_id, link_id)
+	
+  	resolve: ([slot_id], FrameRef(frame_id), env) -> (frame_id, slot_id) 
+  	resolve: ([h|t], FrameRef(frame_id), env) -> <resolve> (t, <frame-get> (env, frame_id, h), env)

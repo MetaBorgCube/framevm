@@ -1,0 +1,28 @@
+module control
+
+imports 
+	signatures/framevm-sig
+	interpreter/common
+	
+rules
+	eval: (Call(Label(routine), Label(returnAddr)), env1) -> env3
+	  where
+	  	(env2, FrameRef(frame_id)) := <stack-pop(|env1)>;
+	  	env3 := <vm-call(|env2)> (frame_id, routine, returnAddr)
+	  	
+	eval: (Return(), env1) -> <vm-return(|env2)> val
+	  where
+	  	(env2, val) := <stack-pop(|env1)>
+	
+	eval: (Jump(Label(lbl)), env1) -> env2
+	  where
+	  	env2 := <vm-jump(|env1)> lbl
+	
+	eval: (JumpZ(Label(then), Label(else)), env1) -> env3
+	  where
+	  	(env2, IntV(val)) := <stack-pop(|env1)>;
+	  	trgt := <jump-eval> (val, then, else);
+	  	env3 := <vm-jump(|env2)> trgt
+
+	jump-eval: ("1", _, else) -> else
+	jump-eval: ("0", then, _) -> then
