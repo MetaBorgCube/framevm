@@ -9,55 +9,57 @@ signature
     IntV : Int -> V
     
 rules 
-	external init-vm(|)			// env
-	external start-vm(|)		// env -> env'
-	external stop-vm(|)			// env -> string
-	external store-routine(|)	// (env, (lbl, [instr])) -> env' 
-	external next-instr(|)		// env -> (instr, env')
+	external init-vm(|)				// -> env
+	external start-vm(|env)			// env| -> env'
+	external stop-vm(|env)			// env| -> string
+	external store-routine(|env)	// env| (lbl, [instr]) -> env' 
+	external next-instr(|)			// env -> (instr, env')
 	
-	external stack-push(|)		// (env, val) -> env'
-	external stack-pop(|)		// (env) -> (env', val)
+	external stack-push(|env)		// env| val -> env'
+	external stack-pop(|env)		// env| -> (env', val)
 	
-	external frame-get-slot(|)	// (env, frame_id, slot) -> val
-	external frame-get-link(|)	// (env, frame_id, link) -> frame_id
-	external frame-set(|)		// (env, (frame_id, slot, val)) -> env'
-	external frame-new(|)		// env -> (env', frame_id)
-	external frame-this(|)		// env -> frame_id
-	external frame-link(|)		// (env, (frame_id, frame_id, lbl)) -> env'
+	external frame-get-slot(|env)	// env| (frame_id, slot) -> val
+	external frame-get-link(|env)	// env| (frame_id, link) -> frame_id
+	external frame-set(|env)		// env| (frame_id, slot, val) -> env'
+	external frame-new(|env)		// env| -> (env', frame_id)
+	external frame-this(|env)		// env| -> frame_id
+	external frame-link(|env)		// env| (frame_id, frame_id, lbl) -> env'
 	
-	external vm-print(|)		// (env, val) -> env'
-	external vm-jump(|)			// (env, lbl) -> env'
-	external vm-call(|)			// (env, (frame_id, lbl, lbl)) -> env'
-	external vm-return(|)		// (env, value) -> env'
+	external vm-print(|env)			// env| val -> env'
+	external vm-jump(|env)			// env| lbl -> env'
+	external vm-call(|env)			// env| (frame_id, lbl, lbl) -> env'
+	external vm-return(|env)		// env| value -> env'
 
   	eval : Program(blocks) -> out
       where 
     	env1 := <init-vm>;
       	env2 := <foldl(store-block)> (blocks, env1);
-      	env3 := <start-vm> env2;
+      	env3 := <start-vm(|env2)> ;
     	env4 := <execute> env3;
-    	out  := <stop-vm> env4
+    	out  := <stop-vm(|env4)>
     	
-  	store-block: (Routine(Label(lbl), Seq(body)), env) -> <store-routine> (env, (lbl, body))
+  	store-block: (Routine(Label(lbl), Seq(body)), env) -> <store-routine(|env)> (lbl, body)
   	store-block: (PseudoCode(_), env) -> env
     
   	execute = 
     	repeat(next-instr; debug(!"execute: "); eval) // this should not be defined recursively!
     
 rules // arithmetic 
-	eval: (IConst(i), env) -> <stack-push> (env, IntV(i))
+	eval: (IConst(i), env1) -> env2
+	  where
+	  	env2 := <stack-push(|env1)> IntV(i)
 	
 	eval: (IAdd(), env) -> env3
 	  where
-	  	(env1, IntV(e1)) := <stack-pop> env;
-	  	(env2, IntV(e2)) := <stack-pop> env1;
-	  	env3 := <stack-push> (env2, IntV(<addS>(e1, e2)))
+	  	(env1, IntV(e1)) := <stack-pop(|env)>;
+	  	(env2, IntV(e2)) := <stack-pop(|env1)>;
+	  	env3 := <stack-push(|env2)> IntV(<addS>(e1, e2))
 	  	
   	eval: (IEq(), env) -> env3
 	  where
-	  	(env1, IntV(e1)) := <stack-pop> env;
-	  	(env2, IntV(e2)) := <stack-pop> env1;
-	  	env3 := <stack-push> (env2, <eval-eq> (e1, e2))
+	  	(env1, IntV(e1)) := <stack-pop(|env)>;
+	  	(env2, IntV(e2)) := <stack-pop(|env1)>;
+	  	env3 := <stack-push(|env2)> <eval-eq> (e1, e2)
 
 	eval-eq: (e1, e2) -> IntV("1")
 	  where
@@ -65,18 +67,24 @@ rules // arithmetic
 	eval-eq: _ -> IntV("0")
 
 rules // control 
-	eval: (Call(Label(routine), Label(returnAddr)), env1) -> <vm-call> (env2, (frame_id, routine, returnAddr))
+	eval: (Call(Label(routine), Label(returnAddr)), env1) -> env3
 	  where
-	  	(env2, FrameRef(frame_id)) := <stack-pop> env1
+	  	(env2, FrameRef(frame_id)) := <stack-pop(|env1)>;
+	  	env3 := <vm-call(|env2)> (frame_id, routine, returnAddr)
 	  	
-	eval: (Return(), env) -> <vm-return> <stack-pop> env
-	
-	eval: (Jump(Label(lbl)), env) -> <vm-jump> (env, lbl)
-	
-	eval: (JumpZ(Label(then), Label(else)), env1) -> <vm-jump> (env2, trgt)
+	eval: (Return(), env1) -> <vm-return(|env2)> val
 	  where
-	  	(env2, IntV(val)) := <stack-pop> env1;
-	  	trgt := <jump-eval> (val, then, else)
+	  	(env2, val) := <stack-pop(|env1)>
+	
+	eval: (Jump(Label(lbl)), env1) -> env2
+	  where
+	  	env2 := <vm-jump(|env1)> lbl
+	
+	eval: (JumpZ(Label(then), Label(else)), env1) -> env3
+	  where
+	  	(env2, IntV(val)) := <stack-pop(|env1)>;
+	  	trgt := <jump-eval> (val, then, else);
+	  	env3 := <vm-jump(|env2)> trgt
 
 	jump-eval: ("1", _, else) -> else
 	jump-eval: ("0", then, _) -> then
@@ -85,51 +93,57 @@ rules // frame instructions
 
 	eval: (Dup(), env) -> env4
 	  where
-	  	(env2, val) := <stack-pop> env;
-	  	env3 := <stack-push> (env2, val);
-	  	env4 := <stack-push> (env3, val)
+	  	(env2, val) := <stack-pop(|env)>;
+	  	env3 := <stack-push(|env2)> val;
+	  	env4 := <stack-push(|env3)> val
 	  	
-  	eval: (New(), env) -> <stack-push> (env1, FrameRef(frame_id))
+  	eval: (New(), env1) -> env3
   	  where
-  	  	(env1, frame_id) := <frame-new> env
+  	  	(env2, frame_id) := <frame-new(|env1)>;
+  	  	env3 := <stack-push(|env2)> FrameRef(frame_id)
   	
-  	eval: (Get(Path(p)), env) -> <stack-push> (env, <frame-get> (env, frame_id, slot))
+  	eval: (Get(Path(p)), env1) -> env2
   	  where
-  	  	(frame_id, slot) := <resolve> (p, FrameRef(<frame-this>), env)
+  	  	(frame_id, slot) := <resolve> (p, FrameRef(<frame-this(|env1)>), env1);
+  	  	env2 := <stack-push(|env1)> <frame-get> (env1, frame_id, slot)
 
-  	eval: (Set(Path(p)), env1) -> <frame-set> (env2, (frame, slot, value))
+  	eval: (Set(Path(p)), env1) -> env3
   	  where
-  	  	(frame, Slot(slot)) := <resolve> (p, FrameRef(<frame-this>), env1);
-  	  	(env2, value) := <stack-pop> env1
+  	  	(frame, Slot(slot)) := <resolve> (p, FrameRef(<frame-this(|env1)>), env1);
+  	  	(env2, value) := <stack-pop(|env1)>;
+  	  	env3 := <frame-set(|env2)> (frame, slot, value)
   	  	
-  	eval: (GetR(Path(p)), env1) -> <stack-push> (env2, <frame-get> (env2, frame_id, slot))
+  	eval: (GetR(Path(p)), env1) -> env3
   	  where
-  	  	(env2, frame) := <stack-pop> env1;
-  	  	(frame_id, slot):= <resolve> (p, frame, env2)
+  	  	(env2, frame) := <stack-pop(|env1)>;
+  	  	(frame_id, slot):= <resolve> (p, frame, env2);
+  	  	env3 := <stack-push(|env2)> <frame-get> (env2, frame_id, slot)
 
-  	eval: (SetR(Path(p)), env1) -> <frame-set> (env3, (frame, slot, value))
+  	eval: (SetR(Path(p)), env1) -> env4
   	  where
-  	  	(env2, value) := <stack-pop> env1;
-  	  	(env3, frame_init) := <stack-pop> env2;
-  	  	(frame, Slot(slot)) := <resolve> (p, frame_init, env1)
+  	  	(env2, value) := <stack-pop(|env1)>;
+  	  	(env3, frame_init) := <stack-pop(|env2)>;
+  	  	(frame, Slot(slot)) := <resolve> (p, frame_init, env1);
+  	  	env4 := <frame-set(|env3)> (frame, slot, value)
 
-	eval: (LinkR(lbl), env1) -> <frame-link> (env2, (frame_from_id, frame_to_id, lbl))
+	eval: (LinkR(lbl), env1) -> env3
 	  where
-	  	frame_to_id := <frame-this> env1;
-	  	(env2, FrameRef(frame_from_id)) := <stack-pop> env1
+	  	frame_to_id := <frame-this(|env1)>;
+	  	(env2, FrameRef(frame_from_id)) := <stack-pop(|env1)>;
+	  	env3 := <frame-link(|env2)> (frame_from_id, frame_to_id, lbl)
 	  	
-	eval: (Link(Path(path), lbl), env1) -> <frame-link> (env2, (frame_from_id, frame_to_id, lbl))
+	eval: (Link(Path(path), lbl), env1) -> env3
 	  where
-	  	frame_to_id := <frame-this> env1;
-	  	(frame_id, aaa) := <resolve> (path, FrameRef(<frame-this>), env1);
-	  	_ := <debug> aaa;
-	  	(env2, FrameRef(frame_from_id)) := <stack-pop> env1
+	  	frame_to_id := <frame-this(|env1)>;
+	  	(frame_id, _) := <resolve> (path, FrameRef(<frame-this(|env1)>), env1);
+	  	(env2, FrameRef(frame_from_id)) := <stack-pop(|env1)>;
+	  	env3 := <frame-link(|env2)> (frame_from_id, frame_to_id, lbl)
 	
 	
 	frame-get: (env, frame_id, Link(link_id)) -> <frame-get> (env, frame_id, link_id)
-	frame-get: (env, frame_id, Slot(slot_id)) -> <frame-get-slot> (env, frame_id, slot_id)
-	frame-get: (env, frame_id, "r") -> <frame-get-slot> (env, frame_id, "r")
-	frame-get: (env, frame_id, link_id) -> <frame-get-link> (env, frame_id, link_id)
+	frame-get: (env, frame_id, Slot(slot_id)) -> <frame-get-slot(|env)> (frame_id, slot_id)
+	frame-get: (env, frame_id, "r") -> <frame-get-slot(|env)> (frame_id, "r")
+	frame-get: (env, frame_id, link_id) -> <frame-get-link(|env)> (frame_id, link_id)
 	
   	resolve: ([slot_id], FrameRef(frame_id), env) -> (frame_id, slot_id) 
   	resolve: ([h|t], FrameRef(frame_id), env) -> <resolve> (t, <frame-get> (env, frame_id, h), env)
@@ -137,8 +151,8 @@ rules // frame instructions
 rules	// Other
 	eval: (Print(), env1) -> env3
 	  where
-	  	(env2, out) := <stack-pop> env1;
-	  	env3 := <vm-print> ( env2, <debug> <val-to-string> out)
+	  	(env2, out) := <stack-pop(|env1)>;
+	  	env3 := <vm-print(|env2)> <debug> <val-to-string> out
 
 	eval: (instr, env) -> env
 	  where

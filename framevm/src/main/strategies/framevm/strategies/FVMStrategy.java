@@ -1,34 +1,22 @@
 package framevm.strategies;
 
-import java.util.HashMap;
-
+import org.spoofax.interpreter.library.IOAgent;
+import org.spoofax.interpreter.terms.IStrategoTerm;
+import org.spoofax.interpreter.terms.ITermFactory;
+import org.strategoxt.lang.Context;
 import org.strategoxt.lang.Strategy;
 
-import framevm.strategies.util.Routine;
+import framevm.strategies.util.Environment;
+import mb.nabl2.stratego.StrategoBlob;
 
-public class FVMStrategy extends Strategy {
-	protected static HashMap<String, Routine> routines = new HashMap<>();
-	
-	//TODO: This heap shouldn't be needed in a full Java implementation as all frames are linked
-	// - `dup` instruction breaks stuff as you don't want to duplicate this, so the operandStacks stack might need a tiny local heap
-	protected static HashMap<String, Frame> heap = new HashMap<>();
-	
-	protected static Frame currentFrame;
-	protected static StringBuilder stdout = new StringBuilder();
+public abstract class FVMStrategy extends Strategy {
+	@Override
+	 // env| args -> env'
+	 public IStrategoTerm invoke(Context context, IStrategoTerm current, IStrategoTerm env) {
+		Environment environment = (Environment) ((StrategoBlob) env).value();
+		
+		return this.invoke(context.getIOAgent(), context.getFactory(), environment, current);
+	}
 
-	private static int count = 0;
-	
-	protected Routine getRoutine(String name) {
-		return routines.get(name);
-	}
-	
-	protected Frame getFrame(String id) {
-		return heap.get(id);
-	}
-	
-	protected String newFrame() {
-		String id = "frame_" + count++;
-		heap.put(id, new Frame(id));
-		return id;
-	}
+	protected abstract IStrategoTerm invoke(IOAgent io, ITermFactory factory, Environment env, IStrategoTerm arg);
 }
