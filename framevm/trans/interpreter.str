@@ -23,6 +23,7 @@ rules
 	external frame-set(|)		// (env, (frame_id, slot, val)) -> env'
 	external frame-new(|)		// env -> (env', frame_id)
 	external frame-this(|)		// env -> frame_id
+	external frame-link(|)		// (env, (frame_id, frame_id, lbl)) -> env'
 	
 	external vm-print(|)		// (env, val) -> env'
 	external vm-jump(|)			// (env, lbl) -> env'
@@ -67,8 +68,8 @@ rules // control
 	  	(env2, IntV(val)) := <stack-pop> env1;
 	  	trgt := <jump-eval> (val, then, else)
 
-	jump-eval: ("0", _, else) -> else
-	jump-eval: ("1", then, _) -> then
+	jump-eval: ("1", _, else) -> else
+	jump-eval: ("0", then, _) -> then
 
 rules // frame instructions
 
@@ -102,6 +103,19 @@ rules // frame instructions
   	  	(env3, frame_init) := <stack-pop> env2;
   	  	(frame, Slot(slot)) := <resolve> (p, frame_init, env1)
 
+	eval: (LinkR(lbl), env1) -> <frame-link> (env2, (frame_from_id, frame_to_id, lbl))
+	  where
+	  	frame_to_id := <frame-this> env1;
+	  	(env2, FrameRef(frame_from_id)) := <stack-pop> env1
+	  	
+	eval: (Link(Path(path), lbl), env1) -> <frame-link> (env2, (frame_from_id, frame_to_id, lbl))
+	  where
+	  	frame_to_id := <frame-this> env1;
+	  	(frame_id, aaa) := <resolve> (path, FrameRef(<frame-this>), env1);
+	  	_ := <debug> aaa;
+	  	(env2, FrameRef(frame_from_id)) := <stack-pop> env1
+	
+	
 	frame-get: (env, frame_id, Link(link_id)) -> <frame-get> (env, frame_id, link_id)
 	frame-get: (env, frame_id, Slot(slot_id)) -> <frame-get-slot> (env, frame_id, slot_id)
 	frame-get: (env, frame_id, "r") -> <frame-get-slot> (env, frame_id, "r")

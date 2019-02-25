@@ -3,7 +3,7 @@ module Common
 lexical syntax
 
   ID             = [a-zA-Z\_] [a-zA-Z0-9\_]*
-  LABEL          = [A-Z] [A-Z0-9]* 
+  LABEL          = [A-Z\_] [A-Z0-9\_]* 
   MAIN			 = "MAIN"
   INT            = "-"? [0-9]+ 
   BOOL			 = "true"

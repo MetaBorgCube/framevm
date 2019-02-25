@@ -31,6 +31,7 @@ public class InteropRegisterer extends JavaInteropRegisterer {
         		frame_get_link_0_0.instance,
         		frame_get_slot_0_0.instance,
         		frame_set_0_0.instance,
+        		frame_link_0_0.instance,
         		frame_this_0_0.instance
         });
     }

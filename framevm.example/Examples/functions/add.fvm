@@ -17,6 +17,8 @@ MAIN:
 	iconst 10		//
 	set [0] 		// value of x in current frame
 	new 			// create new call frame
+	dup				//	
+	linkr P			// Link function scope to local scope
 	dup 			// duplicate ref to call frame
 	iconst 1 		// 
 	setr [0] 		// j := 2 // assign to formal parameter j in call frame
