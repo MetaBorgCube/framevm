@@ -3,8 +3,6 @@ package framevm.strategies.util;
 import java.util.Stack;
 
 import org.spoofax.interpreter.terms.IStrategoTerm;
-import org.strategoxt.strc.current_definition_0_0;
-
 import framevm.strategies.Frame;
 
 public class OperandStack {

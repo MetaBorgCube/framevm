@@ -18,7 +18,8 @@ rules
 	external stack-push(|)		// (env, val) -> env'
 	external stack-pop(|)		// (env) -> (env', val)
 	
-	external frame-get(|)		// (env, frame_id, slot) -> val
+	external frame-get-slot(|)	// (env, frame_id, slot) -> val
+	external frame-get-link(|)	// (env, frame_id, link) -> frame_id
 	external frame-set(|)		// (env, (frame_id, slot, val)) -> env'
 	external frame-new(|)		// env -> (env', frame_id)
 	external frame-this(|)		// env -> frame_id
@@ -87,7 +88,7 @@ rules // frame instructions
 
   	eval: (Set(Path(p)), env1) -> <frame-set> (env2, (frame, slot, value))
   	  where
-  	  	(frame, slot) := <resolve> (p, FrameRef(<frame-this>), env1);
+  	  	(frame, Slot(slot)) := <resolve> (p, FrameRef(<frame-this>), env1);
   	  	(env2, value) := <stack-pop> env1
   	  	
   	eval: (GetR(Path(p)), env1) -> <stack-push> (env2, <frame-get> (env2, frame_id, slot))
@@ -99,9 +100,14 @@ rules // frame instructions
   	  where
   	  	(env2, value) := <stack-pop> env1;
   	  	(env3, frame_init) := <stack-pop> env2;
-  	  	(frame, slot) := <resolve> (p, frame_init, env1)
+  	  	(frame, Slot(slot)) := <resolve> (p, frame_init, env1)
 
-  	resolve: ([h], FrameRef(frame_id), env) -> (frame_id, h) 	
+	frame-get: (env, frame_id, Link(link_id)) -> <frame-get> (env, frame_id, link_id)
+	frame-get: (env, frame_id, Slot(slot_id)) -> <frame-get-slot> (env, frame_id, slot_id)
+	frame-get: (env, frame_id, "r") -> <frame-get-slot> (env, frame_id, "r")
+	frame-get: (env, frame_id, link_id) -> <frame-get-link> (env, frame_id, link_id)
+	
+  	resolve: ([slot_id], FrameRef(frame_id), env) -> (frame_id, slot_id) 
   	resolve: ([h|t], FrameRef(frame_id), env) -> <resolve> (t, <frame-get> (env, frame_id, h), env)
   	
 rules	// Other
@@ -112,7 +118,8 @@ rules	// Other
 
 	eval: (instr, env) -> env
 	  where
-	  	_ := <debug> ("Instruction not implemented", instr)
+	  	_ := <debug> ("Instruction not implemented", instr);
+	  	_ := <fail>
 	
 	
 rules

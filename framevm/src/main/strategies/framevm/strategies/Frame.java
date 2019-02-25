@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.spoofax.interpreter.terms.IStrategoTerm;
+
+import framevm.strategies.util.Link;
 import framevm.strategies.util.OperandStack;
 import framevm.strategies.util.Routine;
 import framevm.strategies.util.Slot;
@@ -12,7 +14,7 @@ import framevm.strategies.util.Slot;
 public class Frame {
 	private OperandStack operandStack;
 	public List<Slot> slots;
-	private HashMap<String, Frame> parents;
+	private HashMap<String, Link> links;
 	
 	// TODO: remove this, it shouldn't be needed with proper get/set resolve
 	public String id;
@@ -20,12 +22,12 @@ public class Frame {
 	public Frame(String id) {
 		this.operandStack = null;
 		this.slots = new ArrayList<>();
-		this.parents = new HashMap<>();
+		this.links = new HashMap<>();
 		this.id = id;
 	}
 	
 	public void link(String id, Frame parent) {
-		parents.put(id, parent);
+		links.put(id, new Link(id, parent));
 	}
 	
 	public void set(int id, IStrategoTerm value) {
@@ -51,6 +53,9 @@ public class Frame {
 		return null;
 	}
 
+	/**
+	 * Get Slot, create one if not present
+	 */
 	public Slot getSlot(int id, boolean create) {
 		if (id < slots.size()) {
 			return slots.get(id);
@@ -63,5 +68,9 @@ public class Frame {
 				return null;
 			}
 		}
+	}
+
+	public Link getLink(String linkId) {
+		return links.get(linkId);
 	}
 }

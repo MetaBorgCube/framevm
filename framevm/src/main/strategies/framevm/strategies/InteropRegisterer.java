@@ -3,7 +3,8 @@ package framevm.strategies;
 import org.strategoxt.lang.JavaInteropRegisterer;
 import org.strategoxt.lang.Strategy;
 
-import framevm.strategies.frame_ops.frame_get_0_0;
+import framevm.strategies.frame_ops.frame_get_link_0_0;
+import framevm.strategies.frame_ops.frame_get_slot_0_0;
 import framevm.strategies.frame_ops.frame_new_0_0;
 import framevm.strategies.frame_ops.frame_set_0_0;
 import framevm.strategies.stack_ops.stack_pop_0_0;
@@ -27,7 +28,8 @@ public class InteropRegisterer extends JavaInteropRegisterer {
         		stack_pop_0_0.instance,
         		
         		frame_new_0_0.instance,
-        		frame_get_0_0.instance,
+        		frame_get_link_0_0.instance,
+        		frame_get_slot_0_0.instance,
         		frame_set_0_0.instance,
         		frame_this_0_0.instance
         });

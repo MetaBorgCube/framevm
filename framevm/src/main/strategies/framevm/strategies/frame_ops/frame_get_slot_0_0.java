@@ -9,8 +9,8 @@ import org.strategoxt.lang.Context;
 import framevm.strategies.FVMStrategy;
 import framevm.strategies.Frame;
 
-public class frame_get_0_0 extends FVMStrategy {
-	public static frame_get_0_0 instance = new frame_get_0_0();
+public class frame_get_slot_0_0 extends FVMStrategy {
+	public static frame_get_slot_0_0 instance = new frame_get_slot_0_0();
 	
 	 @Override
 	 // (env, frame_id, slot) -> val
