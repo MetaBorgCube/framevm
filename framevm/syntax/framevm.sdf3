@@ -21,7 +21,8 @@ sorts Block context-free syntax
   
 sorts Instr context-free syntax
   
-  Instr.IAdd 	 = <addi>					// Consumes two values from stack and adds them, result is stored on stack
+  Instr.IAdd 	 = <addi>					// Consumes two ints from stack and adds them, result is stored on stack
+  Instr.IEq 	 = <eqi>					// Consumes two ints from stack and equals them, result is stored on stack
   Instr.IConst 	 = <iconst <INT>>			// Push int value to stack
   
   Instr.New      = <new>					// Create new frame and push pointer on stack

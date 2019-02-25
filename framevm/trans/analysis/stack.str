@@ -20,6 +20,7 @@ rules // Debugging
   		
   stack-update: (IConst(_), (size, err)) -> (<inc> size, err)
   stack-update: (IAdd(), (size, err)) -> (<dec> size, err)
+  stack-update: (IEq(), (size, err)) -> (<dec> size, err)
   
   stack-update: (New(), (size, err)) -> (<inc> size, err)
   stack-update: (Dup(), (size, err)) -> (<inc> size, err)

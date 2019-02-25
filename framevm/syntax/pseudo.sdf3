@@ -39,6 +39,8 @@ sorts PsdInstr context-free syntax
 sorts PsdExp context-free syntax
 
   PsdExp.Add  = PsdExp "+" PsdExp
+  PsdExp.Sub  = PsdExp "-" PsdExp
+  PsdExp.Eq  = PsdExp "==" PsdExp
   PsdExp.Int  = <<INT>>
   PsdExp.ID   = <<PsdRef>>
   PsdExp.Bool = BOOL
