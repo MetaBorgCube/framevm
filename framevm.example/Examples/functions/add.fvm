@@ -1,0 +1,30 @@
+{  
+	func (i, j) = { 
+  		return i + j
+	}
+	x := 10
+	y := func(1, 3)
+	print(y)
+}
+
+ADD:
+  	get [0] // i
+  	get [1] // j
+  	addi
+  	return
+
+MAIN:
+	iconst 10		//
+	set [0] 		// value of x in current frame
+	new 			// create new call frame
+	dup 			// duplicate ref to call frame
+	iconst 1 		// 
+	setr [0] 		// j := 2 // assign to formal parameter j in call frame
+	dup
+	iconst 3 		// 
+	setr [1] 		// j := 2 // assign to formal parameter j in call frame
+	call ADD CONT2	// create operand stack with frame ref on top of stack and run INC
+					// Returns to CONT
+CONT2:
+	get [r]			// Get return value
+	print

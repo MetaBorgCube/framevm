@@ -1,0 +1,18 @@
+{
+  var x := 10  // path of x = [0]
+  var y := 11  // path of y = [1]
+  print(x)
+  print(y)
+}
+
+MAIN:
+//	new 		// Is this needed?
+//	mkcurrent	// Same here
+	iconst 10
+	set [0] 
+	iconst 11
+	set [1]
+	get [0]
+	print
+	get [1]
+	print

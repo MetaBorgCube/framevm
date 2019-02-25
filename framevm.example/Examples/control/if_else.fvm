@@ -1,0 +1,31 @@
+{
+	x := 1
+	y := 2
+	if x:
+		x := y
+	else:
+		x := 10
+	print(x)
+}
+
+MAIN:
+	iconst 1
+	set [0]
+	iconst 2
+	set [1]
+	get [0]
+	jumpz THEN ELSE
+
+THEN:
+	get [1]
+	set [0]
+	jump CONT
+  
+ELSE:
+	iconst 10
+	set [0]
+	jump CONT
+ 
+CONT:
+	get [0]
+	print
