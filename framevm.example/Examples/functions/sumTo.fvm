@@ -1,0 +1,53 @@
+{  
+	sumTo (i) = { 
+		if i == 0:
+			return 0
+		else:
+  			return i + sumTo(i -1)
+	}
+	
+	print(sumTo(42))		// prints 903
+}
+	
+MAIN:
+	new 			// create new call frame
+	dup				//	
+	linkr P			// Link function scope to local scope
+	dup 			// duplicate ref to call frame
+	iconst 42 		// 
+	setr [0] 		// assign to formal parameter i in call frame
+	call SUMTO END	// create operand stack with frame ref on top of stack and run function
+					// Returns to END
+
+SUMTO:
+  	get [0] 		// i
+  	iconst 0
+  	eqi
+	jumpz SUMTO_ELSE SUMTO_THEN
+
+SUMTO_THEN:
+	iconst 0		//
+	return			// return 0
+	
+SUMTO_ELSE:
+	new				// Call frame for recursion
+	dup				//
+	link [P] P		// Link it to parent
+	
+	dup				// Setup parameters
+	iconst -1		//
+	get [0]			// 
+	addi			// i -1
+	setr [0]		// store as argument
+	
+	call SUMTO SUMTO_RETURN
+
+SUMTO_RETURN:
+	get [r]			// get result	
+	get [0]			// i
+	addi			//
+	return			//
+	
+END:
+	get [r]			// Get return value
+	print			// print sumto(1)
