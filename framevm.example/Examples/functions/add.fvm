@@ -8,10 +8,10 @@
 }
 
 ADD:
-  	get [0] // i
-  	get [1] // j
-  	addi
-  	return
+  	get [0] 		// i
+  	get [1] 		// j
+  	addi			// i + j
+  	return			//
 
 MAIN:
 	iconst 10		//
@@ -29,4 +29,4 @@ MAIN:
 					// Returns to CONT
 CONT2:
 	get [r]			// Get return value
-	print
+	print			//

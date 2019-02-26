@@ -3,22 +3,25 @@
   	x : Int // [0] 
   	y : Int // [1]
   }
-  var p : Point // [0]
+  p := new Point() // [0]
   p.x := 10  // [0]
   p.y := p.x + 1
   print(p.y)	// print 11
 }
 
 MAIN:
-	new
-	dup
-	link [] P
-	set [0]
-	iconst 10
-	set [0, 0]   // set p.x
-	iconst 1
-	get [0, 0]   // p.x
-	addi
-	set [0, 1]   // set p.y
-	get [0, 1]
-	print
+	new				// Frame for Point
+	dup				//
+	link [] P		// Link to main
+	set [0]			// store in p
+					//
+	iconst 10		//
+	set [0, 0]   	// p.x := 10
+	
+	iconst 1		//
+	get [0, 0]   	// p.x
+	addi			// 1 + p.x
+	set [0, 1]   	// set p.y
+					//
+	get [0, 1]		//
+	print			//

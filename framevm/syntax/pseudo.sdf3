@@ -40,6 +40,7 @@ sorts PsdInstr context-free syntax
   
 sorts PsdExp context-free syntax
 
+  PsdExp = "(" PsdExp ")" 						{bracket}
   PsdExp.Add  = PsdExp "+" PsdExp
   PsdExp.Sub  = PsdExp "-" PsdExp
   PsdExp.Eq  = PsdExp "==" PsdExp

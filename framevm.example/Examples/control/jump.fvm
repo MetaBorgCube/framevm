@@ -3,10 +3,10 @@
 		i: int
 	}
 	var a := 1 + 2
-	new A b
+	b := new A()
 	
 	b.i := a + 3
-	print(b.i)
+	print(b.i)		// 6
 }
 
 MAIN:
@@ -22,7 +22,7 @@ START :
 MORE:
   new			// new A
   dup
-  linkr P		// Link the scope to the current frame
+  link [] P		// Link the scope to the current frame
   set [1]		// store rec in b
   get [0]		
   iconst 3
@@ -33,5 +33,4 @@ MORE:
 FOO:
   get [1, 0]
   print			// print b.i
-  // Out = 6
   

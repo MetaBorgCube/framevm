@@ -1,31 +1,33 @@
 {
 	x := 1
 	y := 2
-	if x:
+	if x == 1:
 		x := y
 	else:
 		x := 10
-	print(x)
+	print(x)			// 10
 }
 
 MAIN:
-	iconst 1
-	set [0]
-	iconst 2
-	set [1]
-	get [0]
-	jumpz THEN ELSE
+	iconst 1			// 
+	set [0]				// x := 1
+	iconst 2			//
+	set [1]				// y := 2
+	get [0]				//
+	iconst 1			//
+	eqi					// x == 1
+	jumpz THEN ELSE		//
 
 THEN:
-	get [1]
-	set [0]
-	jump CONT
+	get [1]				//
+	set [0]				// x := y
+	jump CONT			//
   
 ELSE:
-	iconst 10
-	set [0]
-	jump CONT
+	iconst 10			//
+	set [0]				// x: = 10
+	jump CONT			//
  
 CONT:
-	get [0]
-	print
+	get [0]				//
+	print				// print(x)

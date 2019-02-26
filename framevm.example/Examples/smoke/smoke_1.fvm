@@ -5,35 +5,39 @@
 	}
 	a := new A()
 	a.i := 1 + 1
-	a.j := true
+	a.j := 12
 	
-	if a.j:
+	if (a.j - 12) == 0:
 		print(10)
 	else:
 		print(11)
 }
 
 MAIN:
-	new			// Create new scope/frame
-	dup
-	link [] P	// Link to main frame
-	set [0]		// Store in 'a'
-
-	iconst 1
-	iconst 1
-	addi		// 1 + 1
-	set [0, 0]	// a.i = 2
-	
-	iconst 1		// true
-	set [0, 1]	// a.j = true
-	
-	get [0, 1]
-	jumpz THEN ELSE	// if a.j
+	new				// Create new  call-frame
+	dup				//
+	link [] P		// Link to main frame
+	set [0]			// Store in 'a'
+					//
+	iconst 1		//
+	iconst 1		//
+	addi			// 1 + 1
+	set [0, 0]		// a.i = 2
+					//
+	iconst 1		// 
+	set [0, 1]		// a.j := 12
+					//
+	get [0, 1]		//
+	iconst -12		//
+	addi			// a.j - 12
+	iconst 0		//
+	eqi				// a.j - 12 == 0
+	jumpz THEN ELSE
 	
 THEN:
-	iconst 10
-	print		// print(10)
+	iconst 10		//
+	print			// print(10)
 
 ELSE:
-	iconst 11
-	print		// print(11)
+	iconst 11		//
+	print			// print(11)
