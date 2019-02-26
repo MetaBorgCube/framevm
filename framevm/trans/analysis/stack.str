@@ -27,7 +27,7 @@ rules
 	stack-update: (Dup(), (size, err)) 		-> (<inc> size, err)
   
 	stack-update: (Link(_, _), (size, err)) -> (<dec> size, err)
-	stack-update: (LinkR(_), (size, err))   -> (<dec> size, err) 
+	stack-update: (LinkR(_), (size, err))   -> (<dec><dec> size, err) 
   
 	stack-update: (Get(path), (size, err)) 	-> (<inc> size, err)
 	stack-update: (GetR(path), (size, err)) -> (size, err)

@@ -26,8 +26,8 @@ sorts Instr context-free syntax
   Instr.IConst 	 = <iconst <INT>>			// Push int value to stack
   
   Instr.New      = <new>					// Create new frame and push pointer on stack
-  Instr.Link	 = <link <Path> <ID>>			// Link frame on stack to given location
-  Instr.LinkR	 = <linkr <ID>>					// Link frame on stack to current frame
+  Instr.Link	 = <link <Path> <ID>>		// Link frame on stack to given location (Empty path is current frame)
+  Instr.LinkR	 = <linkr <ID>>				// Link frame on stack to the frame in second place
   Instr.Set      = <set <Path>>				// Set value on the stack at path location
   Instr.SetR     = <setr <Path>>			// Set value on the stack at path location starting in frame on stack
   Instr.Get      = <get <Path>>				// Store value at path in the stack
@@ -42,6 +42,7 @@ sorts Instr context-free syntax
   Instr.Debug    = <debug>					// Prints the state of the vm
   Instr.Return   = <return>					// Takes return address from opstack and copies top of stack to caller stack 
   
+  Path.Self  = <[]>
   Path.Path  = <[<{PathRef ","}+>]>
   PathRef.Slot = INT
   PathRef.Link = ID

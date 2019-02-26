@@ -13,7 +13,7 @@ import framevm.strategies.util.Slot;
 
 public class Frame {
 	private OperandStack operandStack;
-	public List<Slot> slots;
+	private List<Slot> slots;
 	private HashMap<String, Link> links;
 	
 	// TODO: remove this, it shouldn't be needed with proper get/set resolve

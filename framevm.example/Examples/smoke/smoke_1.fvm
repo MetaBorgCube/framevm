@@ -3,7 +3,7 @@
 		i: int
 		j: bool
 	}
-	new A a
+	a := new A()
 	a.i := 1 + 1
 	a.j := true
 	
@@ -15,6 +15,8 @@
 
 MAIN:
 	new			// Create new scope/frame
+	dup
+	link [] P	// Link to main frame
 	set [0]		// Store in 'a'
 
 	iconst 1

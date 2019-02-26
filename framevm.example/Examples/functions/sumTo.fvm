@@ -12,7 +12,7 @@
 MAIN:
 	new 			// create new call frame
 	dup				//	
-	linkr P			// Link function scope to local scope
+	link [] P		// Link function scope to local scope
 	dup 			// duplicate ref to call frame
 	iconst 42 		// 
 	setr [0] 		// assign to formal parameter i in call frame
