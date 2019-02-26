@@ -5,18 +5,17 @@ imports
 	interpreter/common
 
 rules	// Other instructions
+
+	// Print/0
+	// Print the value on top of the stack to the console
 	eval: (Print(), env1) -> env3
 	  where
 	  	(env2, out) := <stack-pop(|env1)>;
 	  	env3 := <vm-print(|env2)> <debug> <val-to-string> out
-
-	eval: (instr, env) -> env
-	  where
-	  	_ := <debug> ("Instruction not implemented", instr);
-	  	_ := <fail>
 	
 	
 rules	// Util
+	// Convert a value to a displayable string 
 	val-to-string: IntV(v) -> v
 	val-to-string: FrameRef(v) -> v
 	

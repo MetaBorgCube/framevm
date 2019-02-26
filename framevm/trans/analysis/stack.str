@@ -3,43 +3,47 @@ module stack
 imports
 	signatures/framevm-sig
 
-rules // Debugging
+rules
 
-  // Prints the abstract syntax ATerm of a selection.
-  stack-calc: Program(routines) -> Program(out_routines)
-    where
+	// check stack sizes of routines
+	stack-calc: Program(routines) -> Program(out_routines)
+	  where
     	(errors, out_routines) := <unzip><mapconcat(stack-calc)> routines
   
-  stack-calc: PseudoCode(_) -> []
+	stack-calc: PseudoCode(_) -> []
   
-  stack-calc:Routine(Label(lbl), Seq(body)) -> [(errors, Routine(Label(lbl), Seq(body)))]
-  	where
+  	stack-calc:Routine(Label(lbl), Seq(body)) -> [(errors, Routine(Label(lbl), Seq(body)))]
+  	  where
   		(size, errors) := <foldl(stack-update)>(body, (0, []));
   		_ := <debug> ("Stack size after routine", lbl, size)
   		// If size > 0 give warning
-  		
-  stack-update: (IConst(_), (size, err)) -> (<inc> size, err)
-  stack-update: (IAdd(), (size, err)) -> (<dec> size, err)
-  stack-update: (IEq(), (size, err)) -> (<dec> size, err)
   
-  stack-update: (New(), (size, err)) -> (<inc> size, err)
-  stack-update: (Dup(), (size, err)) -> (<inc> size, err)
+	// For each operation, calculate the change in stack size
+	stack-update: (IConst(_), (size, err)) 	-> (<inc> size, err)
+	stack-update: (IAdd(), (size, err)) 	-> (<dec> size, err)
+	stack-update: (IEq(), (size, err)) 		-> (<dec> size, err)
   
-  stack-update: (Link(path, _), (size, err)) -> (<dec> size, err)
-  stack-update: (LinkR(_), (size, err))    -> (<dec> size, err) 
+	stack-update: (New(), (size, err)) 		-> (<inc> size, err)
+	stack-update: (Dup(), (size, err)) 		-> (<inc> size, err)
   
-  stack-update: (Get(path), (size, err)) -> (<inc> size, err)
-  stack-update: (GetR(path), (size, err)) -> (size, err)
+	stack-update: (Link(_, _), (size, err)) -> (<dec> size, err)
+	stack-update: (LinkR(_), (size, err))   -> (<dec> size, err) 
   
-  stack-update: (Set(path), (size, err)) -> (<dec> size, err)
-  stack-update: (SetR(path), (size, err)) -> (<dec><dec>size, err)
+	stack-update: (Get(path), (size, err)) 	-> (<inc> size, err)
+	stack-update: (GetR(path), (size, err)) -> (size, err)
+  
+	stack-update: (Set(path), (size, err)) 	-> (<dec> size, err)
+	stack-update: (SetR(path), (size, err)) -> (<dec><dec>size, err)
+  
+	stack-update: (Print(), (size, err)) 	-> (<dec> size, err)
+	stack-update: (Return(), (size, err))	-> (<dec> size, err)
   
   
-  stack-update: (JumpZ(lbl1, lbl2), (size, err)) -> (<dec> size, err)
-  stack-update: (Jump(lbl1), (size, err)) -> (size, err)
-  stack-update: (Call(lbl1, lbl2), (size, err)) -> (<dec> size, err)
+	stack-update: (JumpZ(lbl1, lbl2), (size, err)) 	-> (<dec> size, err)
+	stack-update: (Jump(lbl1), (size, err)) 		-> (size, err)
+	stack-update: (Call(lbl1, lbl2), (size, err)) 	-> (<dec> size, err)
 
-  stack-update: (Print(), (size, err)) -> (<dec> size, err)
-  stack-update: (Return(), (size, err)) -> (<dec> size, err)
   
-  stack-update: (a, (size, err)) -> (size, err) where _ := <debug> a
+  	stack-update: (a, (size, err)) -> (size, err)
+  	  where
+  		_ := <debug> ("Stack calculations not implemented for", a)

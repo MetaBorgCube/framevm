@@ -5,34 +5,48 @@ imports
 	interpreter/common
 
 rules
-	eval: (Dup(), env) -> env4
+	// Dup
+	// Duplicates the element on top of the stack
+	eval: (Dup(), env1) -> env4
 	  where
-	  	(env2, val) := <stack-pop(|env)>;
-	  	env3 := <stack-push(|env2)> val;
-	  	env4 := <stack-push(|env3)> val
+	  	(env2, val) := <stack-pop(|env1)>;	// pop once
+	  	env3 := <stack-push(|env2)> val;	//
+	  	env4 := <stack-push(|env3)> val		// push twice
 	  	
+	// New
+	// pushes an empty frame on the stack
   	eval: (New(), env1) -> env3
   	  where
   	  	(env2, frame_id) := <frame-new(|env1)>;
   	  	env3 := <stack-push(|env2)> FrameRef(frame_id)
   	
+  	// Get/1
+  	// Push a value on the stack, this value is found by following arg1
   	eval: (Get(Path(p)), env1) -> env2
   	  where
   	  	(frame_id, slot) := <resolve> (p, FrameRef(<frame-this(|env1)>), env1);
   	  	env2 := <stack-push(|env1)> <frame-get> (env1, frame_id, slot)
 
+	// Set/1
+	// Store the value on top of the stack at the location found by traversing arg1 
   	eval: (Set(Path(p)), env1) -> env3
   	  where
   	  	(frame, Slot(slot)) := <resolve> (p, FrameRef(<frame-this(|env1)>), env1);
   	  	(env2, value) := <stack-pop(|env1)>;
   	  	env3 := <frame-set(|env2)> (frame, slot, value)
   	  	
+  	// GetR/1
+  	// Push a value on the stack, this value is found by 
+  	// following arg1 (starting from the frame on top of the stack)
   	eval: (GetR(Path(p)), env1) -> env3
   	  where
   	  	(env2, frame) := <stack-pop(|env1)>;
   	  	(frame_id, slot):= <resolve> (p, frame, env2);
   	  	env3 := <stack-push(|env2)> <frame-get> (env2, frame_id, slot)
 
+	// Setr/1
+  	// Store the value on top of the stack at 
+  	// the location found by traversing arg1 from the frame on top of the stack
   	eval: (SetR(Path(p)), env1) -> env4
   	  where
   	  	(env2, value) := <stack-pop(|env1)>;
@@ -40,24 +54,33 @@ rules
   	  	(frame, Slot(slot)) := <resolve> (p, frame_init, env1);
   	  	env4 := <frame-set(|env3)> (frame, slot, value)
 
-	eval: (LinkR(lbl), env1) -> env3
-	  where
-	  	frame_to_id := <frame-this(|env1)>;
-	  	(env2, FrameRef(frame_from_id)) := <stack-pop(|env1)>;
-	  	env3 := <frame-link(|env2)> (frame_from_id, frame_to_id, lbl)
-	  	
+	// LinkR/1
+	// Link the frame on top of the stack to the frame pointed to by arg1
+	// using label arg2
 	eval: (Link(Path(path), lbl), env1) -> env3
 	  where
 	  	frame_to_id := <frame-this(|env1)>;
 	  	(frame_id, _) := <resolve> (path, FrameRef(<frame-this(|env1)>), env1);
 	  	(env2, FrameRef(frame_from_id)) := <stack-pop(|env1)>;
 	  	env3 := <frame-link(|env2)> (frame_from_id, frame_to_id, lbl)
+	  	
+	// LinkR/1
+	// Link the frame on top of the stack to the current frame using label arg1
+	eval: (LinkR(lbl), env1) -> env3
+	  where
+	  	frame_to_id := <frame-this(|env1)>;
+	  	(env2, FrameRef(frame_from_id)) := <stack-pop(|env1)>;
+	  	env3 := <frame-link(|env2)> (frame_from_id, frame_to_id, lbl)
+	  	
+	// Get a Slot or Link with the given id and frame
+	frame-get: (env, frame_id, Link(link_id)) -> <frame-get> (env, frame_id, link_id)		// As the 'link' r is actually a slot, we need to check for this case
+	frame-get: (env, frame_id, Slot(slot_id)) -> <frame-get-slot(|env)> (frame_id, slot_id)	// Just get the slor
+	frame-get: (env, frame_id, "r") -> <frame-get-slot(|env)> (frame_id, "r")				// Link r is the return value slot
+	frame-get: (env, frame_id, link_id) -> <frame-get-link(|env)> (frame_id, link_id)		// It is indeed a link, so get that one
 	
-	
-	frame-get: (env, frame_id, Link(link_id)) -> <frame-get> (env, frame_id, link_id)
-	frame-get: (env, frame_id, Slot(slot_id)) -> <frame-get-slot(|env)> (frame_id, slot_id)
-	frame-get: (env, frame_id, "r") -> <frame-get-slot(|env)> (frame_id, "r")
-	frame-get: (env, frame_id, link_id) -> <frame-get-link(|env)> (frame_id, link_id)
-	
+	// Resolve a path
+	// returns the frame_id and slot/link of the location pointed to
   	resolve: ([slot_id], FrameRef(frame_id), env) -> (frame_id, slot_id) 
   	resolve: ([h|t], FrameRef(frame_id), env) -> <resolve> (t, <frame-get> (env, frame_id, h), env)
+  	
+  	

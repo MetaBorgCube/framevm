@@ -5,23 +5,34 @@ imports
 	interpreter/common
 
 rules
+	// IConst/1
+	// Pushes the given interger on the stack
 	eval: (IConst(i), env1) -> env2
 	  where
 	  	env2 := <stack-push(|env1)> IntV(i)
 	
+	// IAdd/0
+	// Takes two integers from the stack, adds them together
+	// Pushes the result on the stack
 	eval: (IAdd(), env) -> env3
 	  where
 	  	(env1, IntV(e1)) := <stack-pop(|env)>;
 	  	(env2, IntV(e2)) := <stack-pop(|env1)>;
 	  	env3 := <stack-push(|env2)> IntV(<addS>(e1, e2))
-	  	
+	
+	// IEq/0
+	// Takes two integers from the stack, checks if they are equal
+	// and pushes the result on the stack
   	eval: (IEq(), env) -> env3
 	  where
 	  	(env1, IntV(e1)) := <stack-pop(|env)>;
 	  	(env2, IntV(e2)) := <stack-pop(|env1)>;
 	  	env3 := <stack-push(|env2)> <eval-eq> (e1, e2)
 
+	// Check if the to given values are equal
+	// TODO: This should return a boolean when these are implemented
 	eval-eq: (e1, e2) -> IntV("1")
 	  where
 	  	_ := <equal> (e1, e2)
 	eval-eq: _ -> IntV("0")	
+

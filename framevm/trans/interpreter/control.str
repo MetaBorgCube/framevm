@@ -5,24 +5,35 @@ imports
 	interpreter/common
 	
 rules
+	// Call/2
+	// Call the routine at arg1 using the frame at the top of the stack
+	// This function returns to arg2 when finished
 	eval: (Call(Label(routine), Label(returnAddr)), env1) -> env3
 	  where
-	  	(env2, FrameRef(frame_id)) := <stack-pop(|env1)>;
-	  	env3 := <vm-call(|env2)> (frame_id, routine, returnAddr)
-	  	
+	  	(env2, FrameRef(frame_id)) := <stack-pop(|env1)>;			// get the function frame
+	  	env3 := <vm-call(|env2)> (frame_id, routine, returnAddr)	// call the function
+	 
+	// Return/0
+	// Takes the value on top of the stack and returns to the caller frame
 	eval: (Return(), env1) -> <vm-return(|env2)> val
 	  where
 	  	(env2, val) := <stack-pop(|env1)>
 	
+	// Jump/1
+	// Unconditional jump to a new routine ar arg1
 	eval: (Jump(Label(lbl)), env1) -> env2
 	  where
 	  	env2 := <vm-jump(|env1)> lbl
 	
+	// JumpZ/2
+	// Conditional jump. 
+	// Checks top of the stack, when zero goes to arg1 else to arg2
 	eval: (JumpZ(Label(then), Label(else)), env1) -> env3
 	  where
 	  	(env2, IntV(val)) := <stack-pop(|env1)>;
 	  	trgt := <jump-eval> (val, then, else);
 	  	env3 := <vm-jump(|env2)> trgt
 
-	jump-eval: ("1", _, else) -> else
+	// Resolve which label to pick
 	jump-eval: ("0", then, _) -> then
+	jump-eval: ("1", _, else) -> else	// We might want to make this catch all, like in C

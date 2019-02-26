@@ -3,14 +3,8 @@ module interpreter
 imports 
 	signatures/framevm-sig
 	interpreter/-
-
-signature
-  sorts V
-  constructors
-    FrameRef : String -> V
-    IntV : Int -> V
     
-rules 
+rules
   	eval : Program(blocks) -> out
       where 
     	env1 := <init-vm>;
@@ -22,5 +16,13 @@ rules
     store-block: (PseudoCode(_), env) -> env
   	store-block: (Routine(Label(lbl), Seq(body)), env) -> <store-routine(|env)> (lbl, body)
     
+    // Ask next instruction and evaluate it
+    // Repeat until no instructions are left
   	execute = 
     	repeat(next-instr; debug(!"execute: "); eval) // this should not be defined recursively!
+
+    // Instruction not implemented
+	// Catches missing instructions and reports that they are missing
+	eval: (instr, env) -> <fail>
+	  where
+	  	_ := <debug> ("Instruction not implemented", instr)
