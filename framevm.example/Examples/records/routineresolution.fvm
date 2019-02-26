@@ -1,0 +1,70 @@
+{
+	rec A = {
+		func (i) = { 
+			if (i) == 0:
+				return 42
+			else:
+  				return new A().func(i - 1)
+		}
+	}
+	
+	x := new A()
+	y := x.func(2)
+	print(y)  			// print 42	
+}
+
+MAIN:
+	new					// New A
+	dup					//
+	link [] P			// Link to root
+	set [0]				// x := new A()
+						//
+	new					// Func callframe
+	dup					//
+	link [0] P			// Link to A
+						//
+	dup					//
+	iconst 2			//
+	setr [0]			// first arg
+	
+	call FUNC MAIN_CONT
+	
+MAIN_CONT:
+	get [r]				// get result
+	set [1]				// y := result
+	get [1]				//
+	print				// print(y)
+	
+FUNC:
+	get [0]				//
+	iconst 0			//
+	eqi					// i == 0
+	jumpz FUNC_ELSE FUNC_THEN
+	
+FUNC_THEN:
+	iconst 42			//
+	return				// return 42
+	
+FUNC_ELSE:	
+	new 				// func call frame
+	dup					//
+						//
+	new					// New A
+	dup					//
+	link [P, P] P		//
+	linkr P				// link call frame to A
+						//
+	dup					//
+	get [0]				//
+	iconst -1			//
+	addi				// i - 1
+	setr [0]			// store arg
+	call FUNC_THEN FUNC_END
+	
+FUNC_END:
+	get [r]				//
+	return				// fallthrough return
+	
+	
+	
+	

@@ -27,7 +27,7 @@ sorts PsdInstr context-free syntax
   PsdInstr.RecExtDef = "rec" ID ":" ID "=" "{" fields:PsdRecField* "}" 				{ layout (indent "rec" fields && align "rec" "}" && align-list fields) }
   
   PsdRef.Var = <<ID>>
-  PsdRef.Comp = <<ID> . <PsdRef>>
+  PsdRef.Comp = <<PsdExp> . <PsdRef>>
   
   PsdRecField.Field = ID ":" PsdType
   PsdRecField.Field = ID ":" PsdType ","
