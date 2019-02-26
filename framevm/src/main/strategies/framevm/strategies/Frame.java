@@ -73,4 +73,13 @@ public class Frame {
 	public Link getLink(String linkId) {
 		return links.get(linkId);
 	}
+	
+	@Override
+	public String toString() {
+		String id = "id: " + this.id;
+		String stack = "Stack: " + (this.operandStack == null ? "null" : this.operandStack.toString());
+		String links = "Links: " + this.links.toString();
+		String slots = "Slots: " + this.slots.toString();
+		return "Frame(\n\t\t" + id + ",\n\t\t" + stack + ",\n\t\t" + links + ",\n\t\t" + slots + "\n\t)";
+	}
 }

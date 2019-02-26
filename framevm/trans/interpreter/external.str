@@ -8,6 +8,7 @@ rules
 	external stop-vm(|env)			// env| -> string
 	external store-routine(|env)	// env| (lbl, [instr]) -> env' 
 	external next-instr(|)			// env -> (instr, env')
+	external vm-debug(|env)			// env| -> state_string
 	
 	external stack-push(|env)		// env| val -> env'
 	external stack-pop(|env)		// env| -> (env', val)

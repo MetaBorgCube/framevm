@@ -21,8 +21,8 @@ rules
   	execute = 
     	repeat(next-instr; debug(!"execute: "); eval) // this should not be defined recursively!
 
-    // Instruction not implemented
-	// Catches missing instructions and reports that they are missing
+    // Instruction not implemented or execution failed
+	// Catches current instructions and reports them
 	eval: (instr, env) -> <fail>
 	  where
-	  	_ := <debug> ("Instruction not implemented", instr)
+	  	_ := <debug> ("Execution failed at instruction", instr)

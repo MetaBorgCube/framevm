@@ -37,4 +37,12 @@ public class Environment {
 		routines = new HashMap<>();
 		heap = new HashMap<>();
 	}
+	
+	@Override
+	public String toString() {
+		String current = "Current: " + currentFrame.id;
+		String heap = "Heap: " + this.heap.toString();
+		String routines = "Routines: " + this.routines.toString();
+		return "Environment(\n\t" + current + ",\n\t" + heap + ",\nt" + routines + "\n)";
+	}
 }

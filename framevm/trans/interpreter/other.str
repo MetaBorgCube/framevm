@@ -12,6 +12,12 @@ rules	// Other instructions
 	  where
 	  	(env2, out) := <stack-pop(|env1)>;
 	  	env3 := <vm-print(|env2)> <debug> <val-to-string> out
+	  	
+	// Debug/0
+	// Print the state of the vm to the console and terminate
+	eval: (Debug(), env1) -> <fail>
+	  where
+	  	env2 := <vm-print(|env1)> <vm-debug(|env1)>
 	
 	
 rules	// Util

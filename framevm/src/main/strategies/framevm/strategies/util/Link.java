@@ -11,5 +11,10 @@ public class Link {
 		this.target = target;
 		this.linkId = linkId;
 	}
+	
+	@Override
+	public String toString() {
+		return "=>" + target.id;
+	}
 
 }

@@ -18,7 +18,6 @@ public class frame_new_0_1 extends FVMStrategy {
 		String frameId = env.newFrame();
 		IStrategoString val = factory.makeString(frameId);
 
-		io.printError(val.toString());
 		return factory.makeTuple(new StrategoBlob(env), val);
 	}
 }
