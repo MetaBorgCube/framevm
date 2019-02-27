@@ -1,0 +1,49 @@
+{
+	rec A = {
+		x:int
+	}
+	
+	func(i) = {
+		j := new A(i)
+		k := 3
+		
+		return j.x + k
+	}
+	x := func(2)
+	print(x)				// print(5)
+}
+
+MAIN:
+	new					// new call frame for func
+	dup					// 
+	link [] P			// link to self
+						//
+	dup					//
+	iconst 2			//
+	setr [0]			// first arg
+						//
+	call FUNC MAIN_END	//
+	
+FUNC:
+	new					// new A
+	dup					//
+	link [P] P			// link to main
+						//
+	dup					//
+	get [0]				//
+	setr [0]			// a.x := i
+	set [1]				// j := a
+						//
+	iconst 3			//
+	set [2]				// k := 3
+						//
+	get [1, 0]			//
+	get [2]				//
+	addi				// j.x + k
+	return				//
+	
+MAIN_END:
+	get [r]				//
+	dup					//
+	set[0]				// x := returnVal
+	print				// print(x)

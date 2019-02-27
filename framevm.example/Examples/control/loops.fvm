@@ -1,0 +1,83 @@
+{
+	count := 0
+	for i = 0 -> 3:
+		j := i
+		while j != 4:
+			j := j + 1
+			print (j)
+			count := count + 1
+		print(j)
+	// print(j)				// should not work (scoping)
+	print(count)			// print(9)
+}
+
+MAIN:
+	iconst 0				//
+	set [0]					// count := 0
+							//
+	new						// For frame
+	dup						//
+	link [] P				//
+	scopedown FOR_INIT		// move execution to new frame
+	
+FOR_INIT:
+	iconst 0				//
+	set [0]					// i := 0
+	jump FOR				// start actual loop
+
+FOR:
+	get[0]					// i
+	iconst 3				//
+	lti						// i < 3
+	jumpz FOR_END FOR_BODY	// continue or stop loop
+	
+FOR_BODY:
+	get [0]					// i
+	set [1]					// j := i
+	
+	new						// while frame
+	dup						//
+	link [] P				//
+	scopedown WHILE			// enter while loop
+
+WHILE:
+	get [P, 1]				// j
+	iconst 4				//
+	eqi						// j == 4
+	jumpz WHILE_BODY WHILE_END 
+	
+WHILE_BODY:
+	get [P, 1]				// j
+	dup						//
+	print					// print(j)
+	iconst 1				//
+	addi					//
+	set [P, 1]				// j := j + 1
+							//
+	get [P, P, 0]			// count
+	iconst 1				//
+	addi					//
+	set [P, P, 0]			// count := count + 1
+	jump WHILE				//
+	
+WHILE_END:
+	scopeup [P] FOR_INC		// exit while loop
+	
+FOR_INC:
+	get [0]					//
+	iconst 1				//
+	addi					//
+	set [0]					// i := i + 1
+	jump FOR				// start new iteration of for
+	
+	
+FOR_END:
+	scopeup [P]	MAIN_END	// break for loop, continue in outer scope
+
+MAIN_END:
+	get[0]					// count
+	print					// print(count)
+	
+	
+	
+	
