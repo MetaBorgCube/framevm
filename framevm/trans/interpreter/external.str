@@ -20,6 +20,9 @@ rules
 	external frame-this(|env)		// env| -> frame_id
 	external frame-link(|env)		// env| (frame_id, frame_id, lbl) -> env'
 	
+	external frame-break-to(|env)		// env| frame_id -> env'
+	external frame-scope-switch(|env)	// env| (frame_id, frame_id, lbl) -> env'
+	
 	external vm-print(|env)			// env| val -> env'
 	external vm-jump(|env)			// env| lbl -> env'
 	external vm-call(|env)			// env| (frame_id, lbl, lbl) -> env'

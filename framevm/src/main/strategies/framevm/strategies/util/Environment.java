@@ -43,6 +43,6 @@ public class Environment {
 		String current = "Current: " + currentFrame.id;
 		String heap = "Heap: " + this.heap.toString();
 		String routines = "Routines: " + this.routines.toString();
-		return "Environment(\n\t" + current + ",\n\t" + heap + ",\nt" + routines + "\n)";
+		return "Environment(\n\t" + current + ",\n\t" + heap + ",\n\t" + routines + "\n)";
 	}
 }

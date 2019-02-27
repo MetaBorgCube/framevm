@@ -82,7 +82,19 @@ rules
 	  	(env2, FrameRef(frame_to_id)) := <stack-pop(|env1)>;
 	  	(env3, FrameRef(frame_from_id)) := <stack-pop(|env2)>;
 	  	env4 := <frame-link(|env3)> (frame_from_id, frame_to_id, lbl)
-	  	
+	  
+	 
+	eval: (ScopeUp(Path(path), Label(lbl)), env1) -> env2
+	  where
+		(frame_id, Link(link_id)) := <resolve> (path, FrameRef(<frame-this(|env1)>), env1);
+		env2 := <frame-break-to(|env1)> (<frame-get-link(|env1)> (frame_id, link_id), lbl)
+		
+	eval: (ScopeDown(Label(lbl)), env1) -> env3
+	  where
+	  	(env2, FrameRef(frame_to_id)) := <stack-pop(|env1)>;
+	  	frame_from_id := <frame-this(|env2)>;
+	  	env3 := <frame-scope-switch(|env2)> <debug>(frame_from_id, frame_to_id, lbl)
+		
 	// Get a Slot or Link with the given id and frame
 	frame-get: (env, frame_id, Link(link_id)) -> <frame-get> (env, frame_id, link_id)		// As the 'link' r is actually a slot, we need to check for this case
 	frame-get: (env, frame_id, Slot(slot_id)) -> <frame-get-slot(|env)> (frame_id, slot_id)	// Just get the slor

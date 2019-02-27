@@ -22,9 +22,11 @@ rules
 	stack-update: (IConst(_), (size, err)) 	-> (<inc> size, err)
 	stack-update: (IAdd(), (size, err)) 	-> (<dec> size, err)
 	stack-update: (IEq(), (size, err)) 		-> (<dec> size, err)
+	stack-update: (ILt(), (size, err)) 		-> (<dec> size, err)
   
 	stack-update: (New(), (size, err)) 		-> (<inc> size, err)
 	stack-update: (Dup(), (size, err)) 		-> (<inc> size, err)
+	stack-update: (Swap(), (size, err)) 	-> (size, err)
   
 	stack-update: (Link(_, _), (size, err)) -> (<dec> size, err)
 	stack-update: (LinkR(_), (size, err))   -> (<dec><dec> size, err) 
@@ -33,15 +35,18 @@ rules
 	stack-update: (GetR(path), (size, err)) -> (size, err)
   
 	stack-update: (Set(path), (size, err)) 	-> (<dec> size, err)
-	stack-update: (SetR(path), (size, err)) -> (<dec><dec>size, err)
+	stack-update: (SetR(path), (size, err)) -> (<dec><dec> size, err)
   
 	stack-update: (Print(), (size, err)) 	-> (<dec> size, err)
 	stack-update: (Return(), (size, err))	-> (<dec> size, err)
   
   
 	stack-update: (JumpZ(lbl1, lbl2), (size, err)) 	-> (<dec> size, err)
-	stack-update: (Jump(lbl1), (size, err)) 		-> (size, err)
+	stack-update: (Jump(lbl), (size, err)) 		    -> (size, err)
 	stack-update: (Call(lbl1, lbl2), (size, err)) 	-> (<dec> size, err)
+	
+	stack-update: (ScopeUp(path, lbl), (size, err)) -> (size, err)
+	stack-update: (ScopeDown(lbl), (size, err)) 	-> (<dec> size, err)
 
   
   	stack-update: (a, (size, err)) -> (size, err)

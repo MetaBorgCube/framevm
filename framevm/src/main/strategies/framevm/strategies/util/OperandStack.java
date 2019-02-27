@@ -56,4 +56,12 @@ public class OperandStack {
 	public Slot getReturnValue() {
 		return this.returnValue;
 	}
+	
+	public Frame getReturnFrame() {
+		return this.returnFrame;
+	}
+
+	public Routine getReturnAddr() {
+		return this.returnAddr;
+	}
 }

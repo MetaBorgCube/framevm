@@ -33,7 +33,7 @@ rules
 	  	(env2, IntV(val)) := <stack-pop(|env1)>;
 	  	trgt := <jump-eval> (val, then, else);
 	  	env3 := <vm-jump(|env2)> trgt
-
+	
 	// Resolve which label to pick
 	jump-eval: ("0", then, _) -> then
 	jump-eval: ("1", _, else) -> else	// We might want to make this catch all, like in C

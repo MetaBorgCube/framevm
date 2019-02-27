@@ -37,7 +37,11 @@ sorts Instr context-free syntax
   Instr.Jump     = <jump <Label>>			// Unconditional jump to LABEL
   Instr.Call     = <call <Label> <Label>>	// Call routine LABEL, using frame on the stack
   
-  Instr.Dup      = <dup>					// duplicates the value on the stack
+  Instr.ScopeUp  = <scopeup <Path> <Label>>
+  Instr.ScopeDown = <scopedown <Label>>
+  
+  Instr.Dup      = <dup>					// Duplicates the value on the stack
+  Instr.Swap     = <swap>					// Swaps two values on the stack
   Instr.Print    = <print>					// Prints value on the stack
   Instr.Debug    = <debug>					// Prints the state of the vm
   Instr.Return   = <return>					// Takes return address from opstack and copies top of stack to caller stack 
