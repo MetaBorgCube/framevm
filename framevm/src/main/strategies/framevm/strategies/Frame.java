@@ -8,7 +8,7 @@ import org.spoofax.interpreter.terms.IStrategoTerm;
 
 import framevm.strategies.util.Link;
 import framevm.strategies.util.OperandStack;
-import framevm.strategies.util.Routine;
+import framevm.strategies.util.Block;
 import framevm.strategies.util.Slot;
 
 public class Frame {
@@ -38,8 +38,8 @@ public class Frame {
 		}
 	}
 	
-	public void setExecutable(Routine routine, Routine returnAddr, Frame returnFrame) {
-		this.operandStack = new OperandStack(routine, returnAddr, returnFrame);
+	public void setExecutable(Block block, Block returnAddr, Frame returnFrame) {
+		this.operandStack = new OperandStack(block, returnAddr, returnFrame);
 	}
 
 	public OperandStack getOperandStack() {

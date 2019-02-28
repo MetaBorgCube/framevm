@@ -6,7 +6,7 @@ import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermFactory;
 import org.spoofax.terms.StrategoString;
 import framevm.strategies.util.Environment;
-import framevm.strategies.util.Routine;
+import framevm.strategies.util.Block;
 import mb.nabl2.stratego.StrategoBlob;
 
 public class vm_jump_0_1 extends FVMStrategy {
@@ -15,12 +15,12 @@ public class vm_jump_0_1 extends FVMStrategy {
 	@Override
 	// env| lbl -> env'
 	protected IStrategoTerm invoke(IOAgent io, ITermFactory factory, Environment env, IStrategoTerm arg) {
-		String routineName = ((StrategoString) arg).stringValue();
-		Routine routine = env.getRoutine(routineName);
-		if (routine == null) {
-			io.printError("Routine " + routineName + " not found!");
+		String blockName = ((StrategoString) arg).stringValue();
+		Block block = env.getBlock(blockName);
+		if (block == null) {
+			io.printError("Block " + blockName + " not found!");
 		}
-		env.currentFrame.getOperandStack().jump(routine);
+		env.currentFrame.getOperandStack().jump(block);
 		return new StrategoBlob(env);
 	}
 }

@@ -6,12 +6,12 @@ imports
 	
 rules
 	// Call/2
-	// Call the routine at arg1 using the frame at the top of the stack
+	// Call the block at arg1 using the frame at the top of the stack
 	// This function returns to arg2 when finished
-	eval: (Call(Label(routine), Label(returnAddr)), env1) -> env3
+	eval: (Call(Label(block), Label(returnAddr)), env1) -> env3
 	  where
 	  	(env2, FrameRef(frame_id)) := <stack-pop(|env1)>;			// get the function frame
-	  	env3 := <vm-call(|env2)> (frame_id, routine, returnAddr)	// call the function
+	  	env3 := <vm-call(|env2)> (frame_id, block, returnAddr)		// call the function
 	 
 	// Return/0
 	// Takes the value on top of the stack and returns to the caller frame
@@ -20,7 +20,7 @@ rules
 	  	(env2, val) := <stack-pop(|env1)>
 	
 	// Jump/1
-	// Unconditional jump to a new routine ar arg1
+	// Unconditional jump to a new block ar arg1
 	eval: (Jump(Label(lbl)), env1) -> env2
 	  where
 	  	env2 := <vm-jump(|env1)> lbl

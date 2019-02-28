@@ -2,11 +2,11 @@ package framevm.strategies.util;
 
 import org.spoofax.interpreter.terms.IStrategoTerm;
 
-public class Routine {
+public class Block {
 	private String name;
 	private IStrategoTerm[] body;
 	
-	public Routine(String name, IStrategoTerm[] body) {
+	public Block(String name, IStrategoTerm[] body) {
 		this.name = name;
 		this.body = body;
 	}

@@ -4,7 +4,7 @@ import org.spoofax.interpreter.library.IOAgent;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermFactory;
 import framevm.strategies.util.Environment;
-import framevm.strategies.util.Routine;
+import framevm.strategies.util.Block;
 import mb.nabl2.stratego.StrategoBlob;
 
 
@@ -14,16 +14,16 @@ public class start_vm_0_1 extends FVMStrategy {
 	@Override
 	// env -> env'
 	protected IStrategoTerm invoke(IOAgent io, ITermFactory factory, Environment env, IStrategoTerm arg) {
-		Routine routine = env.getRoutine("MAIN");
+		Block block = env.getBlock("MAIN");
 
-		if (routine == null) {
-			io.printError("No MAIN routine found!");
+		if (block == null) {
+			io.printError("No MAIN block found!");
 			return null;
 		}
 
-		env.currentFrame.setExecutable(routine, null, null);
+		env.currentFrame.setExecutable(block, null, null);
 
-		io.printError("FrameVM started: " + routine.getName());
+		io.printError("FrameVM started: " + block.getName());
 		return new StrategoBlob(env);
 	}
 }

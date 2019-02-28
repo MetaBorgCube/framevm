@@ -5,17 +5,17 @@ imports
 
 rules
 
-	// check stack sizes of routines
-	stack-calc: Program(routines) -> Program(out_routines)
+	// check stack sizes of blocks
+	stack-calc: Program(blocks) -> Program(out_blocks)
 	  where
-    	(errors, out_routines) := <unzip><mapconcat(stack-calc)> routines
+    	(errors, out_blocks) := <unzip><mapconcat(stack-calc)> blocks
   
 	stack-calc: PseudoCode(_) -> []
   
-  	stack-calc:Routine(Label(lbl), Seq(body)) -> [(errors, Routine(Label(lbl), Seq(body)))]
+  	stack-calc: Block(Label(lbl), Seq(body)) -> [(errors, Block(Label(lbl), Seq(body)))]
   	  where
   		(size, errors) := <foldl(stack-update)>(body, (0, []));
-  		_ := <debug> ("Stack size after routine", lbl, size)
+  		_ := <debug> ("Stack size after block", lbl, size)
   		// If size > 0 give warning
   
 	// For each operation, calculate the change in stack size

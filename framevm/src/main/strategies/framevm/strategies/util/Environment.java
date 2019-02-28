@@ -5,7 +5,7 @@ import java.util.HashMap;
 import framevm.strategies.Frame;
 
 public class Environment {
-	public HashMap<String, Routine> routines = new HashMap<>();
+	public HashMap<String, Block> blocks = new HashMap<>();
 	
 	//TODO: This heap shouldn't be needed in a full Java implementation as all frames are linked
 	// - `dup` instruction breaks stuff as you don't want to duplicate this, so the operandStacks stack might need a tiny local heap
@@ -16,8 +16,8 @@ public class Environment {
 
 	private int count = 0;
 	
-	public Routine getRoutine(String name) {
-		return routines.get(name);
+	public Block getBlock(String name) {
+		return blocks.get(name);
 	}
 	
 	public Frame getFrame(String id) {
@@ -34,7 +34,7 @@ public class Environment {
 		currentFrame = null;
 		stdout = new StringBuilder();
 
-		routines = new HashMap<>();
+		blocks = new HashMap<>();
 		heap = new HashMap<>();
 	}
 	
@@ -42,7 +42,7 @@ public class Environment {
 	public String toString() {
 		String current = "Current: " + currentFrame.id;
 		String heap = "Heap: " + this.heap.toString();
-		String routines = "Routines: " + this.routines.toString();
-		return "Environment(\n\t" + current + ",\n\t" + heap + ",\n\t" + routines + "\n)";
+		String blocks = "Blocks: " + this.blocks.toString();
+		return "Environment(\n\t" + current + ",\n\t" + heap + ",\n\t" + blocks + "\n)";
 	}
 }

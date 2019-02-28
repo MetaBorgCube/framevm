@@ -7,11 +7,11 @@ import org.spoofax.terms.StrategoList;
 import org.spoofax.terms.StrategoString;
 import org.spoofax.terms.StrategoTuple;
 import framevm.strategies.util.Environment;
-import framevm.strategies.util.Routine;
+import framevm.strategies.util.Block;
 import mb.nabl2.stratego.StrategoBlob;
 
-public class store_routine_0_1 extends FVMStrategy {
-	public static store_routine_0_1 instance = new store_routine_0_1();
+public class store_block_0_1 extends FVMStrategy {
+	public static store_block_0_1 instance = new store_block_0_1();
 
 	@Override
 	// (env, (lbl, [instr])) -> env' 
@@ -26,8 +26,8 @@ public class store_routine_0_1 extends FVMStrategy {
 			data[idx++] = instr;
 		}
 		String name = lbl.stringValue();
-		io.printError("Added routine " + name + " with " + instrs.size() + " instructions");
-		env.routines.put(name, new Routine(name, data));
+		io.printError("Added block " + name + " with " + instrs.size() + " instructions");
+		env.blocks.put(name, new Block(name, data));
 		return new StrategoBlob(env);
 	}
 }

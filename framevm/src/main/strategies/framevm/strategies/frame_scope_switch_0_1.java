@@ -9,7 +9,7 @@ import org.spoofax.terms.StrategoTuple;
 
 import framevm.strategies.util.Environment;
 import framevm.strategies.util.OperandStack;
-import framevm.strategies.util.Routine;
+import framevm.strategies.util.Block;
 import mb.nabl2.stratego.StrategoBlob;
 
 public class frame_scope_switch_0_1 extends FVMStrategy {
@@ -22,12 +22,12 @@ public class frame_scope_switch_0_1 extends FVMStrategy {
 		
 		Frame frame_from = env.getFrame(((StrategoString) tuple.get(0)).stringValue());
 		Frame frame_to   = env.getFrame(((StrategoString) tuple.get(1)).stringValue());
-		Routine routine  = env.getRoutine(((StrategoString) tuple.get(2)).stringValue());
+		Block block  = env.getBlock(((StrategoString) tuple.get(2)).stringValue());
 
 		OperandStack opstack = frame_from.getOperandStack();
 		if (opstack == null) return null;
 		
-		frame_to.setExecutable(routine, opstack.getReturnAddr(), opstack.getReturnFrame());
+		frame_to.setExecutable(block, opstack.getReturnAddr(), opstack.getReturnFrame());
 		env.currentFrame = frame_to;
 		
 		return new StrategoBlob(env);

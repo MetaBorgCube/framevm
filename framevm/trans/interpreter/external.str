@@ -6,7 +6,7 @@ rules
 	external init-vm(|)				// -> env
 	external start-vm(|env)			// env| -> env'
 	external stop-vm(|env)			// env| -> string
-	external store-routine(|env)	// env| (lbl, [instr]) -> env' 
+	external store-block(|env)		// env| (lbl, [instr]) -> env' 
 	external next-instr(|)			// env -> (instr, env')
 	external vm-debug(|env)			// env| -> state_string
 	

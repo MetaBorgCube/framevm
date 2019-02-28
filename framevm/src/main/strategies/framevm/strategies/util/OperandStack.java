@@ -6,24 +6,24 @@ import org.spoofax.interpreter.terms.IStrategoTerm;
 import framevm.strategies.Frame;
 
 public class OperandStack {
-	private Routine routine;
-	private Routine returnAddr;
+	private Block block;
+	private Block returnAddr;
 	private int instr_count;
 	private Stack<IStrategoTerm> stack;
 	private Frame returnFrame;
 	private Slot returnValue;
 	
-	public OperandStack(Routine routine, Routine returnAddr, Frame returnFrame) {
-		this.routine = routine;
+	public OperandStack(Block block, Block returnAddr, Frame returnFrame) {
+		this.block = block;
 		this.returnAddr = returnAddr;
 		this.returnFrame = returnFrame;
 		
 		this.instr_count = 0;
-		this.stack = new Stack<>(); //TODO: pre-allocate routine.max-stack
+		this.stack = new Stack<>(); //TODO: pre-allocate block.max-stack
 	}
 	
 	public IStrategoTerm next() {
-		return routine.getInstr(instr_count++);
+		return block.getInstr(instr_count++);
 	}
 	
 	public IStrategoTerm push(IStrategoTerm term) {
@@ -38,8 +38,8 @@ public class OperandStack {
 		return !stack.isEmpty();
 	}
 	
-	public void jump(Routine routine) {
-		this.routine = routine;
+	public void jump(Block block) {
+		this.block = block;
 		this.instr_count = 0;
 	}
 	
@@ -48,7 +48,7 @@ public class OperandStack {
 		return returnFrame;
 	}
 
-	private void do_return(Routine returnAddr, IStrategoTerm value) {
+	private void do_return(Block returnAddr, IStrategoTerm value) {
 		this.returnValue = new Slot(value);
 		this.jump(returnAddr);
 	}
@@ -61,7 +61,7 @@ public class OperandStack {
 		return this.returnFrame;
 	}
 
-	public Routine getReturnAddr() {
+	public Block getReturnAddr() {
 		return this.returnAddr;
 	}
 }

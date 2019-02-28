@@ -8,7 +8,7 @@ import org.spoofax.terms.StrategoString;
 import org.spoofax.terms.StrategoTuple;
 
 import framevm.strategies.util.Environment;
-import framevm.strategies.util.Routine;
+import framevm.strategies.util.Block;
 import mb.nabl2.stratego.StrategoBlob;
 
 public class frame_break_to_0_1 extends FVMStrategy {
@@ -25,8 +25,8 @@ public class frame_break_to_0_1 extends FVMStrategy {
 		//env.currentFrame.markGarbage()
 		
 		env.currentFrame = target;
-		Routine routine = env.getRoutine(((StrategoString) tuple.get(1)).stringValue());
-		env.currentFrame.getOperandStack().jump(routine);
+		Block block = env.getBlock(((StrategoString) tuple.get(1)).stringValue());
+		env.currentFrame.getOperandStack().jump(block);
 		return new StrategoBlob(env);
 	}
 }
