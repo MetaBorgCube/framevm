@@ -5,6 +5,10 @@ import java.util.Stack;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import framevm.strategies.Frame;
 
+/**
+ * Operand stack that gets attached to a {@link Frame} when it becomes executable.
+ * This opstack holds the stack, instruction counter and return addresses.
+ */
 public class OperandStack {
 	private Block block;
 	private Block returnAddr;
@@ -13,6 +17,16 @@ public class OperandStack {
 	private Frame returnFrame;
 	private Slot returnValue;
 	
+	/**
+	 * Create an operand stack.
+	 * 
+	 * @param block
+	 * 		The {@link Block} to execute
+	 * @param returnAddr
+	 * 		The {@link Block} to return to
+	 * @param returnFrame
+	 * 		The {@link Frame} to return to
+	 */
 	public OperandStack(Block block, Block returnAddr, Frame returnFrame) {
 		this.block = block;
 		this.returnAddr = returnAddr;
@@ -22,45 +36,100 @@ public class OperandStack {
 		this.stack = new Stack<>(); //TODO: pre-allocate block.max-stack
 	}
 	
+	/**
+	 * @return
+	 * 		The next instruction
+	 */
 	public IStrategoTerm next() {
 		return block.getInstr(instr_count++);
 	}
 	
+	/**
+	 * Push a term on the stack.
+	 * 
+	 * @param term
+	 * 		The term to put on the stack
+	 * @return
+	 * 		The term pushed on the stack
+	 */
 	public IStrategoTerm push(IStrategoTerm term) {
 		return stack.push(term);
 	}
 	
+	/**
+	 * @return
+	 * 		The term popped from the stack
+	 */
 	public IStrategoTerm pop() {
 		return stack.pop();
 	}
 
+	/**
+	 * @return
+	 * 		false when the stack is empty, true otherwise
+	 */
 	public boolean hasNext() {
 		return !stack.isEmpty();
 	}
 	
+	/**
+	 * Jump execution to the given block.
+	 * 
+	 * @param block
+	 * 		The block to jump to
+	 */
 	public void jump(Block block) {
 		this.block = block;
 		this.instr_count = 0;
 	}
 	
+	/**
+	 * Return from this operand stack.
+	 * 
+	 * @param value
+	 * 		The value to return
+	 * @return
+	 * 		The frame returned to
+	 */
 	public Frame do_return(IStrategoTerm value) {
-		returnFrame.getOperandStack().do_return(returnAddr, value);
+		returnFrame.getOperandStack().on_return(returnAddr, value);
 		return returnFrame;
 	}
 
-	private void do_return(Block returnAddr, IStrategoTerm value) {
+	/**
+	 * Called when returning to this operand stack.
+	 * Stores the return value.
+	 * 
+	 * @param returnAddr
+	 * 		The block to execute after returning
+	 * @param value
+	 * 		The returned value
+	 */
+	private void on_return(Block returnAddr, IStrategoTerm value) {
 		this.returnValue = new Slot(value);
 		this.jump(returnAddr);
 	}
 	
+	/**
+	 * @return
+	 * 		The return value
+	 */
 	public Slot getReturnValue() {
 		return this.returnValue;
 	}
 	
+	/**
+	 * @return
+	 * 		The frame to return to
+	 */
 	public Frame getReturnFrame() {
 		return this.returnFrame;
 	}
 
+	/**
+	 * @return
+	 * 		The block to return to
+	 */
 	public Block getReturnAddr() {
 		return this.returnAddr;
 	}

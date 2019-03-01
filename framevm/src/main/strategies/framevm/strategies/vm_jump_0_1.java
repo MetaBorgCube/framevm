@@ -14,11 +14,13 @@ public class vm_jump_0_1 extends FVMStrategy {
 
 	@Override
 	// env| lbl -> env'
+	// Jump the execution to a different block
 	protected IStrategoTerm invoke(IOAgent io, ITermFactory factory, Environment env, IStrategoTerm arg) {
 		String blockName = ((StrategoString) arg).stringValue();
 		Block block = env.getBlock(blockName);
 		if (block == null) {
 			io.printError("Block " + blockName + " not found!");
+			return null;
 		}
 		env.currentFrame.getOperandStack().jump(block);
 		return new StrategoBlob(env);

@@ -13,6 +13,7 @@ public class stack_push_0_1 extends FVMStrategy {
 
 	@Override
 	// env| val -> env'
+	// Push the given value to the stack
 	protected IStrategoTerm invoke(IOAgent io, ITermFactory factory, Environment env, IStrategoTerm arg) {
 		env.currentFrame.getOperandStack().push(arg);
 		return new StrategoBlob(env);

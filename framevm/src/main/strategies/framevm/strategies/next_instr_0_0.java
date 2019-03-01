@@ -13,6 +13,7 @@ public class next_instr_0_0 extends Strategy {
 
 	@Override
 	//env -> (instr, env')
+	// Get the next instruction to execute or null if not found
 	public IStrategoTerm invoke(Context context, IStrategoTerm current) {
 		Environment env = (Environment) ((StrategoBlob) current).value();
 		IStrategoTerm next = env.currentFrame.getOperandStack().next();

@@ -14,13 +14,15 @@ public class stack_pop_0_1 extends FVMStrategy {
 
 	@Override
 	// env| -> (env', val)
+	// Pop a value from the stack
 	protected IStrategoTerm invoke(IOAgent io, ITermFactory factory, Environment env, IStrategoTerm arg) {
 		OperandStack opStack = env.currentFrame.getOperandStack();
 		if (!opStack.hasNext()) {
 			io.printError("SEGFAULT");
 			io.printError("Cannot pop from empty stack");
-			throw new IllegalStateException("Empty Stack");
+			return null;
+//			throw new IllegalStateException("Empty Stack");
 		}
-		return factory.makeTuple(new StrategoBlob(env),opStack.pop());
+		return factory.makeTuple(new StrategoBlob(env), opStack.pop());
 	}
 }

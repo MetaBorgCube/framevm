@@ -14,6 +14,7 @@ public class frame_link_0_1 extends FVMStrategy {
 	
 	@Override
 	// (env, (frame_id, frame_id, lbl)) -> env'
+	// Link the two given frames using a link with the given label name
 	protected IStrategoTerm invoke(IOAgent io, ITermFactory factory, Environment env, IStrategoTerm arg) {
 		StrategoTuple tuple = (StrategoTuple) arg;
 		String frame_from = ((StrategoString) tuple.get(0)).stringValue();

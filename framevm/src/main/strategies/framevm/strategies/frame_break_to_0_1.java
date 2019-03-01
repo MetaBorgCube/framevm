@@ -16,12 +16,14 @@ public class frame_break_to_0_1 extends FVMStrategy {
 
 	@Override
 	// env| (frame_id, lbl) -> env'
+	// Set the target frame as the current frame and jump execution to the provided block
 	protected IStrategoTerm invoke(IOAgent io, ITermFactory factory, Environment env, IStrategoTerm arg) {
 		StrategoTuple tuple = (StrategoTuple) arg;
 		Frame target = env.getFrame(((StrategoString) tuple.get(0)).stringValue());
 		
 		// TODO: old frame can be garbage collected
-		//   -More specifically, all frames between current and target
+		//   - More specifically, all frames between current and target
+		//   - Maybe not as some language constructs might want to reuse this scope?
 		//env.currentFrame.markGarbage()
 		
 		env.currentFrame = target;

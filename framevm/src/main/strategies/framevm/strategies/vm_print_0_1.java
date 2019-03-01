@@ -13,6 +13,7 @@ public class vm_print_0_1 extends FVMStrategy {
 
 	@Override
 	// env| val -> env'
+	// Print the given string to console
 	protected IStrategoTerm invoke(IOAgent io, ITermFactory factory, Environment env, IStrategoTerm arg) {
 		String out = ((StrategoString) arg).stringValue();
 		env.stdout.append(out).append('\n');

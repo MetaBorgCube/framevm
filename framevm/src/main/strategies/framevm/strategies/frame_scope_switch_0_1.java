@@ -17,6 +17,7 @@ public class frame_scope_switch_0_1 extends FVMStrategy {
 
 	@Override
 	// env| (frame_id, frame_id) -> env'
+	// Move the execution to a new frame and new block, but keep the return pointers
 	protected IStrategoTerm invoke(IOAgent io, ITermFactory factory, Environment env, IStrategoTerm arg) {
 		StrategoTuple tuple = (StrategoTuple) arg;
 		

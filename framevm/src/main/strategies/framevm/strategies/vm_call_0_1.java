@@ -15,6 +15,8 @@ public class vm_call_0_1 extends FVMStrategy {
 
 	@Override
 	// env| (frame_id, lbl, lbl) -> env'
+	// Call a function with the given frame and block, 
+	// set return address to the current frame and given return address
 	protected IStrategoTerm invoke(IOAgent io, ITermFactory factory, Environment env, IStrategoTerm arg) {
 		StrategoTuple tuple = (StrategoTuple) arg;
 		Frame target = env.getFrame(((StrategoString) tuple.get(0)).stringValue());

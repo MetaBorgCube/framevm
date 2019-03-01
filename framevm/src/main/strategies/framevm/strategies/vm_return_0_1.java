@@ -12,6 +12,7 @@ public class vm_return_0_1 extends FVMStrategy {
 
 	@Override
 	// env| value -> env'
+	// Return execution to the return address and -frame
 	protected IStrategoTerm invoke(IOAgent io, ITermFactory factory, Environment env, IStrategoTerm arg) {
 		IStrategoTerm value = arg;
 

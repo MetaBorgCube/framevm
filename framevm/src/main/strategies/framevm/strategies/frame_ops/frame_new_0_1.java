@@ -14,6 +14,7 @@ public class frame_new_0_1 extends FVMStrategy {
 
 	@Override
 	// env| -> (env', frame_id)
+	// create a new frame, return its id
 	protected IStrategoTerm invoke(IOAgent io, ITermFactory factory, Environment env, IStrategoTerm arg) {
 		String frameId = env.newFrame();
 		IStrategoString val = factory.makeString(frameId);

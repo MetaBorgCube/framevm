@@ -11,7 +11,8 @@ public class frame_this_0_1 extends FVMStrategy {
 	
 	@Override
 	// env -> frame_id
+	// Get the frame id of the currently executing frame
 	protected IStrategoTerm invoke(IOAgent io, ITermFactory factory, Environment env, IStrategoTerm arg) {
-		return factory.makeString(env.currentFrame.id);
+		return factory.makeString(env.currentFrame.getId());
 	}
 }

@@ -16,6 +16,7 @@ public class frame_get_link_0_1 extends FVMStrategy {
 
 	@Override
 	// env| (frame_id, link) -> frame_id
+	// Get the target of the given link in the given frame
 	protected IStrategoTerm invoke(IOAgent io, ITermFactory factory, Environment env, IStrategoTerm arg) {
 		StrategoTuple tuple = (StrategoTuple) arg;
 		StrategoString frame_id = (StrategoString) tuple.get(0);
@@ -25,6 +26,6 @@ public class frame_get_link_0_1 extends FVMStrategy {
 		Link link = frame.getLink(linkId);
 		if (link == null) return null;
 		Frame target = link.target;
-		return factory.makeString(target.id);
+		return factory.makeString(target.getId());
 	}
 }

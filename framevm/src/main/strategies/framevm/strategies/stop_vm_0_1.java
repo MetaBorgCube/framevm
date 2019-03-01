@@ -11,6 +11,8 @@ public class stop_vm_0_1 extends FVMStrategy {
 
 	@Override
 	// env -> string
+	// Clear the environment for reuse (TODO: Is this still needed?)
+	// Return the output that was written to 'console'
 	protected IStrategoTerm invoke(IOAgent io, ITermFactory factory, Environment env, IStrategoTerm arg) {
 		String out = env.stdout.toString();
 		env.clear();

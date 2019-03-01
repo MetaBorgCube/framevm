@@ -83,12 +83,19 @@ rules
 	  	(env3, FrameRef(frame_from_id)) := <stack-pop(|env2)>;
 	  	env4 := <frame-link(|env3)> (frame_from_id, frame_to_id, lbl)
 	  
-	 
+	// ScopeUp//2
+	// Move execution to a parent scope without actually returning
+	// Can be seen as functioning like a break statement
+	// Breaks to the scpoe at the provided path and move execution to the given block
 	eval: (ScopeUp(Path(path), Label(lbl)), env1) -> env2
 	  where
 		(frame_id, Link(link_id)) := <resolve> (path, FrameRef(<frame-this(|env1)>), env1);
 		env2 := <frame-break-to(|env1)> (<frame-get-link(|env1)> (frame_id, link_id), lbl)
-		
+	
+	// ScopeDown/1
+	// Move execution to a child scope, for example when entering a for loop
+	// Uses the frame on top of the stack as new execution frame (make sure its properly linked)
+	// Jumps the execution to the given block
 	eval: (ScopeDown(Label(lbl)), env1) -> env3
 	  where
 	  	(env2, FrameRef(frame_to_id)) := <stack-pop(|env1)>;

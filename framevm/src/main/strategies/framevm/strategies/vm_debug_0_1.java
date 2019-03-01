@@ -11,6 +11,7 @@ public class vm_debug_0_1 extends FVMStrategy {
 
 	@Override
 	// env| -> string
+	// Return a string representation of the environment
 	protected IStrategoTerm invoke(IOAgent io, ITermFactory factory, Environment env, IStrategoTerm arg) {
 		return factory.makeString(env.toString());
 	}
