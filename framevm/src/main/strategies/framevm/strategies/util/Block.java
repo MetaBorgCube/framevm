@@ -42,4 +42,8 @@ public class Block {
 		if (idx >= body.length) return null;
 		return body[idx];
 	}
+
+	public int size() {
+		return body.length;
+	}
 }

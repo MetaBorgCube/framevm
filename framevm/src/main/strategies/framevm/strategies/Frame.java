@@ -1,6 +1,7 @@
 package framevm.strategies;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
@@ -149,5 +150,13 @@ public class Frame {
 		String links = "Links: " + this.links.toString();
 		String slots = "Slots: " + this.slots.toString();
 		return "Frame(\n\t\t" + id + ",\n\t\t" + stack + ",\n\t\t" + links + ",\n\t\t" + slots + "\n\t)";
+	}
+
+	public List<Slot> getSlots() {
+		return slots;
+	}
+
+	public Collection<Link> links() {
+		return this.links.values();
 	}
 }
