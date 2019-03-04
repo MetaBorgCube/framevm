@@ -22,7 +22,7 @@ public class start_vm_0_1 extends FVMStrategy {
 			return null;
 		}
 
-		env.currentFrame.setExecutable(block, null, null);
+		env.currentFrame.setExecutable(block, null);
 
 		io.printError("FrameVM started: " + block.getName());
 		return new StrategoBlob(env);

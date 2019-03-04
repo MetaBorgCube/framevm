@@ -11,7 +11,6 @@ import framevm.strategies.Frame;
  */
 public class OperandStack {
 	private Block block;
-	private Block returnAddr;
 	private int instr_count;
 	private Stack<IStrategoTerm> stack;
 	private Frame returnFrame;
@@ -22,14 +21,11 @@ public class OperandStack {
 	 * 
 	 * @param block
 	 * 		The {@link Block} to execute
-	 * @param returnAddr
-	 * 		The {@link Block} to return to
 	 * @param returnFrame
 	 * 		The {@link Frame} to return to
 	 */
-	public OperandStack(Block block, Block returnAddr, Frame returnFrame) {
+	public OperandStack(Block block, Frame returnFrame) {
 		this.block = block;
-		this.returnAddr = returnAddr;
 		this.returnFrame = returnFrame;
 		
 		this.instr_count = 0;
@@ -92,7 +88,7 @@ public class OperandStack {
 	 * 		The frame returned to
 	 */
 	public Frame do_return(IStrategoTerm value) {
-		returnFrame.getOperandStack().on_return(returnAddr, value);
+		returnFrame.getOperandStack().on_return(value);
 		return returnFrame;
 	}
 
@@ -100,14 +96,11 @@ public class OperandStack {
 	 * Called when returning to this operand stack.
 	 * Stores the return value.
 	 * 
-	 * @param returnAddr
-	 * 		The block to execute after returning
 	 * @param value
 	 * 		The returned value
 	 */
-	private void on_return(Block returnAddr, IStrategoTerm value) {
+	private void on_return(IStrategoTerm value) {
 		this.returnValue = new Slot(value);
-		this.jump(returnAddr);
 	}
 	
 	/**
@@ -125,12 +118,16 @@ public class OperandStack {
 	public Frame getReturnFrame() {
 		return this.returnFrame;
 	}
+	
+	public Block getBlock() {
+		return block;
+	}
 
-	/**
-	 * @return
-	 * 		The block to return to
-	 */
-	public Block getReturnAddr() {
-		return this.returnAddr;
+	public int getInstr_count() {
+		return instr_count;
+	}
+
+	public Stack<IStrategoTerm> getStack() {
+		return stack;
 	}
 }

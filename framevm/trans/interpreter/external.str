@@ -25,7 +25,7 @@ rules
 	
 	external vm-print(|env)			// env| val -> env'
 	external vm-jump(|env)			// env| lbl -> env'
-	external vm-call(|env)			// env| (frame_id, lbl, lbl) -> env'
+	external vm-call-cc(|env)		// env| (frame_id, lbl, frame) -> env'
 	external vm-return(|env)		// env| value -> env'
 	
 	

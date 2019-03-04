@@ -28,7 +28,7 @@ public class frame_scope_switch_0_1 extends FVMStrategy {
 		OperandStack opstack = frame_from.getOperandStack();
 		if (opstack == null) return null;
 		
-		frame_to.setExecutable(block, opstack.getReturnAddr(), opstack.getReturnFrame());
+		frame_to.setExecutable(block, opstack.getReturnFrame());
 		env.currentFrame = frame_to;
 		
 		return new StrategoBlob(env);

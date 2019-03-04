@@ -67,13 +67,11 @@ public class Frame {
 	 * 
 	 * @param block
 	 * 		The {@link Block} to execute
-	 * @param returnAddr
-	 * 		The {@link Block} to return to after execution is finished
 	 * @param returnFrame
 	 * 		The frame to return execution to
 	 */
-	public void setExecutable(Block block, Block returnAddr, Frame returnFrame) {
-		this.operandStack = new OperandStack(block, returnAddr, returnFrame);
+	public void setExecutable(Block block, Frame returnFrame) {
+		this.operandStack = new OperandStack(block, returnFrame);
 	}
 
 	/**

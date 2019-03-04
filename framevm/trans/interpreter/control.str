@@ -11,7 +11,9 @@ rules
 	eval: (Call(Label(block), Label(returnAddr)), env1) -> env3
 	  where
 	  	(env2, FrameRef(frame_id)) := <stack-pop(|env1)>;			// get the function frame
-	  	env3 := <vm-call(|env2)> (frame_id, block, returnAddr)		// call the function
+	  	env3 := <vm-jump(|env2)> returnAddr;
+	  	frame_this := <frame-this(|env1)>;
+	  	env4 := <vm-call-cc(|env3)> (frame_id, block, frame_this)		// call the function
 	 
 	// Return/0
 	// Takes the value on top of the stack and returns to the caller frame
