@@ -16,9 +16,9 @@ public class DotBlock implements DotSerializable {
 		this.links = new ArrayList<>();
 		String instrsString = "";
 		for (int i = 0; i < block.size(); i++) {
-			instrsString += "|<" + i + ">" + block.getInstr(i).toString().replace("\"", ""); 
+			instrsString += "|<" + i + ">" + block.getInstr(i).toString().replace("\"", "").replace(",Link(", ",").replace("[Link(", "[").replace("Slot(", "").replace("),", ",").replace(")]", "]"); 
 		}
-		this.dotString = "\t" + name + "[label=\"{" + name + instrsString + "}\"];";
+		this.dotString = "\t" + name + "[label=\"{" + block.getName() + instrsString + "}\"];";
 	}
 
 	@Override

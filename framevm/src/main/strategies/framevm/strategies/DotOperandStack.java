@@ -23,8 +23,13 @@ public class DotOperandStack implements DotSerializable {
 		int count = opstack.getInstr_count();
 		
 		links.add(name + ":block -> block_" + opstack.getBlock().getName() + ":" + ((count < opstack.getBlock().size()) ? count : count - 1) + " [style=dotted]");
-		links.add(name + ":ret -> frame_" + frame.getId() + ":id [color=green, style=dashed]");
 		links.add(name + ":stack -> stack_" + frame.getId() + ":head [color=red, style=dashed]");
+		
+		if (opstack.getReturnFrame() != null) {
+			links.add(name + ":ret -> frame_" + opstack.getReturnFrame().getId() + ":id [color=green, style=dashed]");
+		} else {
+			links.add(name + ":ret -> finish [color=green, style=dashed]");				
+		}
 		
 		String returnVal;
 		if (opstack.getReturnValue() == null) {
@@ -42,6 +47,8 @@ public class DotOperandStack implements DotSerializable {
 		}
 		this.dotString = "\t" + name + "[label=\"{<head>Opstack | {{R | Block | ret | stack}| { " + returnVal + " | <block> | <ret> | <stack>}}}\"]";
 		String stackString = "";
+		
+		@SuppressWarnings("unchecked")
 		Stack<IStrategoTerm> stack = (Stack<IStrategoTerm>) opstack.getStack().clone();
 		while (!stack.isEmpty())  {
 			stackString += "|" + stack.pop().toString().replace("\"", "");

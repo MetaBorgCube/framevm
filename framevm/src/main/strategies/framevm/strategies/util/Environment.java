@@ -97,6 +97,6 @@ public class Environment {
 				links.append('\t').append(link).append('\n');
 			}
 		}
-		return "digraph frames {\n\tnode [shape=circle]\n\tcurrent [color=red]\n\n\tnode [shape=record];\n\n" + nodes.toString() + "\n\n\n" + "\tcurrent -> frame_" + currentFrame.getId() + "\n\n" + links.toString() + "}";
+		return "digraph frames {\n\tnode [shape=circle]\n\tfinish [color=red]\n\tcurrent [color=red]\n\n\tnode [shape=record];\n\n" + nodes.toString() + "\n\n\n" + "\tcurrent -> frame_" + currentFrame.getId() + "\n\n" + links.toString() + "}";
 	}
 }
