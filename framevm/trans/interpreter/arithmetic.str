@@ -59,6 +59,6 @@ rules
 	// TODO: This should return a boolean when these are implemented
 	eval-lt: (e1, e2) -> IntV("1")
 	  where
-	  	_ := <lt><debug> (e1, e2)
+	  	_ := <lt> (e1, e2)
 	eval-lt: _ -> IntV("0")	
 
