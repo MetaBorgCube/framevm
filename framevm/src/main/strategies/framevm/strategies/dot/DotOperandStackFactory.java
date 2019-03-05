@@ -29,7 +29,7 @@ public class DotOperandStackFactory extends DotFactory {
 		int count = opstack.getInstr_count();
 		
 		// Add links to the executing instruction and the stack
-		String target = block(opstack.getBlock()) + ":" + ((count < opstack.getBlock().size()) ? count : count - 1);
+		String target = block(opstack.getBlock()) + ":" + (count - 1);
 		links.add(blockLink(name, target));
 		links.add(stackLink(name, DotFactory.stack(frame)));
 		
