@@ -77,6 +77,9 @@ FOR_END:
 MAIN_END:
 	get[0]					// count
 	print					// print(count)
+							//
+	iconst 0				// load exitcode 0
+	return					// exit
 	
 	
 	

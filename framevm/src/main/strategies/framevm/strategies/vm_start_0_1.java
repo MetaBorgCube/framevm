@@ -8,8 +8,8 @@ import framevm.strategies.util.Block;
 import mb.nabl2.stratego.StrategoBlob;
 
 
-public class start_vm_0_1 extends FVMStrategy {
-	public static start_vm_0_1 instance = new start_vm_0_1();
+public class vm_start_0_1 extends FVMStrategy {
+	public static vm_start_0_1 instance = new vm_start_0_1();
 
 	@Override
 	// env -> env'

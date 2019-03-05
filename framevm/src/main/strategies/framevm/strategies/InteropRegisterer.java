@@ -12,13 +12,11 @@ import framevm.strategies.stack_ops.stack_push_0_1;
 
 public class InteropRegisterer extends JavaInteropRegisterer {
     public InteropRegisterer() {
-        super(new Strategy[] {
-        		next_instr_0_0.instance,
-        		
-        		init_vm_0_0.instance,
-        		start_vm_0_1.instance,
-        		store_block_0_1.instance,
-        		stop_vm_0_1.instance,
+        super(new Strategy[] {        		
+        		vm_init_0_0.instance,
+        		vm_start_0_1.instance,
+        		vm_store_block_0_1.instance,
+        		vm_stop_0_1.instance,
         		vm_print_0_1.instance,
         		vm_debug_0_1.instance,
         		vm_jump_0_1.instance,
@@ -36,7 +34,9 @@ public class InteropRegisterer extends JavaInteropRegisterer {
         		frame_link_0_1.instance,
         		frame_this_0_1.instance,
         		frame_scope_switch_0_1.instance,
-        		frame_break_to_0_1.instance
+        		frame_break_to_0_1.instance,
+        		
+        		vm_execute_1_1.instance
         });
     }
 }

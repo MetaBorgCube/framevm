@@ -47,3 +47,6 @@ MAIN_END:
 	dup					//
 	set[0]				// x := returnVal
 	print				// print(x)
+						//
+	iconst 0			// load exitcode 0
+	return				// exit

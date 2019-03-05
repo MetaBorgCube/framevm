@@ -12,9 +12,16 @@ rules
   
 	stack-calc: PseudoCode(_) -> []
   
-  	stack-calc: Block(Label(lbl), Seq(body)) -> [(errors, Block(Label(lbl), Seq(body)))]
-  	  where
+  	stack-calc: Block(Label(lbl), SeqNoJump(body)) -> [(errors, Block(Label(lbl), SeqNoJump(body)))]
+  	where
   		(size, errors) := <foldl(stack-update)>(body, (0, []));
+  		_ := <debug> ("Stack size after block", lbl, size);
+  		_ := <debug> ("Block not ended by a control instruction", lbl)
+  		// If size > 0 give warning
+  		
+  	stack-calc: Block(Label(lbl), Seq(body, jmp)) -> [(errors, Block(Label(lbl), Seq(body, jmp)))]
+  	  where
+  		(size, errors) := <foldl(stack-update)>(<concat> [body, [jmp]], (0, []));
   		_ := <debug> ("Stack size after block", lbl, size)
   		// If size > 0 give warning
   

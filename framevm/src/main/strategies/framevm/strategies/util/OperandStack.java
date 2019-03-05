@@ -36,8 +36,16 @@ public class OperandStack {
 	 * @return
 	 * 		The next instruction
 	 */
-	public IStrategoTerm next() {
+	public IStrategoTerm nextInstruction() {
 		return block.getInstr(instr_count++);
+	}
+	
+	/**
+	 * @return
+	 * 		True if there is a next instruction, false otherwise
+	 */
+	public boolean hasNextInstruction() {
+		return null != block.getInstr(instr_count);
 	}
 	
 	/**

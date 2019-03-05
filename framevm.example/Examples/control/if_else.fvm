@@ -31,3 +31,6 @@ ELSE:
 CONT:
 	get [0]				//
 	print				// print(x)
+						//
+	iconst 0			// load exitcode 0
+	return				// exit

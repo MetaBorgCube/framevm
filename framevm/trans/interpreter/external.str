@@ -3,11 +3,10 @@ module external
 imports signatures/framevm-sig
 
 rules 
-	external init-vm(|)				// -> env
-	external start-vm(|env)			// env| -> env'
-	external stop-vm(|env)			// env| -> string
-	external store-block(|env)		// env| (lbl, [instr]) -> env' 
-	external next-instr(|)			// env -> (instr, env')
+	external vm-init(|)				// -> env
+	external vm-start(|env)			// env| -> env'
+	external vm-stop(|env)          // env| -> string
+	external vm-store-block(|env)   // env| (lbl, [instr]) -> env' 
 	external vm-debug(|env)			// env| -> state_string
 	
 	external stack-push(|env)		// env| val -> env'
@@ -27,6 +26,8 @@ rules
 	external vm-jump(|env)			// env| lbl -> env'
 	external vm-call-cc(|env)		// env| (frame_id, lbl, frame) -> env'
 	external vm-return(|env)		// env| value -> env'
+	
+	external vm-execute(eval|env)
 	
 	
 	

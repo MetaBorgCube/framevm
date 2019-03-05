@@ -30,3 +30,6 @@ MAIN:
 CONT2:
 	get [r]			// Get return value
 	print			//
+					//
+	iconst 0		// load exitcode 0
+	return			// exit

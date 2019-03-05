@@ -16,3 +16,6 @@ MAIN:
 	print
 	get [1]
 	print
+	
+	iconst 0		// load exitcode 0
+	return			// exit

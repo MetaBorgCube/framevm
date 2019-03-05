@@ -7,19 +7,19 @@ imports
 rules
   	eval : Program(blocks) -> out
       where 
-    	env1 := <init-vm>;
+    	env1 := <vm-init>;
       	env2 := <foldl(store-block)> (blocks, env1);
-      	env3 := <start-vm(|env2)> ;
-    	env4 := <execute> env3;
-    	out  := <stop-vm(|env4)>
+      	env3 := <vm-start(|env2)> ;
+    	env4 := <execute(|env3)>;
+    	out  := <vm-stop(|env4)>
     	
     store-block: (PseudoCode(_), env) -> env
-  	store-block: (Block(Label(lbl), Seq(body)), env) -> <store-block(|env)> (lbl, body)
+  	store-block: (Block(Label(lbl), Seq(body, jmp)), env) -> <vm-store-block(|env)> (lbl, <concat> [body, [jmp]])
     
     // Ask next instruction and evaluate it
     // Repeat until no instructions are left
-  	execute = 
-    	repeat(next-instr; debug(!"execute: "); eval) // this should not be defined recursively!
+  	execute(|env) = vm-execute(debug(!"execute: "); eval | env)
+//  	execute(|env) = vm-execute(eval | env)
 
     // Instruction not implemented or execution failed
 	// Catches current instructions and reports them

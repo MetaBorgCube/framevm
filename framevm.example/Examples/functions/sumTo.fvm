@@ -51,3 +51,6 @@ SUMTO_RETURN:
 END:
 	get [r]			// Get return value
 	print			// print sumto(1)
+					//
+	iconst 0		// load exitcode 0
+	return			// exit

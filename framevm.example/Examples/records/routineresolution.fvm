@@ -34,6 +34,9 @@ MAIN_CONT:
 	set [1]				// y := result
 	get [1]				//
 	print				// print(y)
+						//
+	iconst 0			// load exitcode 0
+	return				// exit
 	
 FUNC:
 	get [0]				//

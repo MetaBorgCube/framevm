@@ -10,27 +10,30 @@
 }
 
 MAIN:
-  jump START
+	jump START		//
   
 START :
-  iconst 1
-  iconst 2
-  addi			// 1 + 2
-  set [0]		// store in a
-  jump MORE
+	iconst 1		//
+	iconst 2		//
+	addi			// 1 + 2
+	set [0]			// store in a
+	jump MORE		//
   
 MORE:
-  new			// new A
-  dup
-  link [] P		// Link the scope to the current frame
-  set [1]		// store rec in b
-  get [0]		
-  iconst 3
-  addi 			// a + 3
-  set [1, 0]	// store in b.i
-  jump FOO
+	new				// new A
+	dup				//
+	link [] P		// Link the scope to the current frame
+	set [1]			// store rec in b
+	get [0]			//
+	iconst 3		//
+	addi 			// a + 3
+	set [1, 0]		// store in b.i
+	jump FOO		//
   
 FOO:
-  get [1, 0]
-  print			// print b.i
+	get [1, 0]		//
+	print			// print b.i
+  					//
+	iconst 0		// load exitcode 0
+	return			// exit
   

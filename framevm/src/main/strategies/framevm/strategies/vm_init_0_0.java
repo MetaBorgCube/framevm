@@ -8,8 +8,8 @@ import framevm.strategies.util.Environment;
 import mb.nabl2.stratego.StrategoBlob;
 
 
-public class init_vm_0_0 extends Strategy {
-	public static init_vm_0_0 instance = new init_vm_0_0();
+public class vm_init_0_0 extends Strategy {
+	public static vm_init_0_0 instance = new vm_init_0_0();
 
 	@Override
 	// -> env
@@ -18,7 +18,7 @@ public class init_vm_0_0 extends Strategy {
 		Environment env = new Environment();
 		env.currentFrame = env.getFrame(env.newFrame());
 
-		context.getIOAgent().printError("FrameVM initialized" + env.currentFrame.getId() + env.currentFrame.getOperandStack());
+		context.getIOAgent().printError("FrameVM initialized" + env.currentFrame.getId());
 		return new StrategoBlob(env);
 	}
 }

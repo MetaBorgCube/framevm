@@ -6,8 +6,8 @@ import org.spoofax.interpreter.terms.ITermFactory;
 import framevm.strategies.util.Environment;
 
 
-public class stop_vm_0_1 extends FVMStrategy {
-	public static stop_vm_0_1 instance = new stop_vm_0_1();
+public class vm_stop_0_1 extends FVMStrategy {
+	public static vm_stop_0_1 instance = new vm_stop_0_1();
 
 	@Override
 	// env -> string

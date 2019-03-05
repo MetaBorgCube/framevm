@@ -37,7 +37,13 @@ MAIN:
 THEN:
 	iconst 10		//
 	print			// print(10)
+					//
+	iconst 0		// load exitcode 0
+	return			// exit
 
 ELSE:
 	iconst 11		//
 	print			// print(11)
+					//
+	iconst 0		// load exitcode 0
+	return			// exit

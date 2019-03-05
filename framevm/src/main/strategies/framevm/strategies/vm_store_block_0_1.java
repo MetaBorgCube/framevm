@@ -10,8 +10,8 @@ import framevm.strategies.util.Environment;
 import framevm.strategies.util.Block;
 import mb.nabl2.stratego.StrategoBlob;
 
-public class store_block_0_1 extends FVMStrategy {
-	public static store_block_0_1 instance = new store_block_0_1();
+public class vm_store_block_0_1 extends FVMStrategy {
+	public static vm_store_block_0_1 instance = new vm_store_block_0_1();
 
 	@Override
 	// (env, (lbl, [instr])) -> env' 

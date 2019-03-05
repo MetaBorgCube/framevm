@@ -16,7 +16,8 @@ sorts Block context-free syntax
   Block.PseudoCode = "{" body:PsdBody "}" 			{ layout (indent "{" body && align "{" "}") }
   
   Body.Empty = 
-  Body.Seq = instr:Instr+ 							{ layout (align-list instr) }
+  Body.Seq = instr:Instr* jump:ControlInstr			{ layout (align-list instr && align instr jump) }
+  Body.SeqNoJump = instr:Instr+ 					{ layout (align-list instr) }
   
 sorts Instr context-free syntax
   
@@ -33,18 +34,18 @@ sorts Instr context-free syntax
   Instr.Get      = <get <Path>>				// Store value at path in the stack
   Instr.GetR     = <getr <Path>>			// Store value at path from frame on stack on stack
   
-  Instr.JumpZ    = <jumpz <Label> <Label>>	// Jump to first label if stack zero, else jump to other label
-  Instr.Jump     = <jump <Label>>			// Unconditional jump to LABEL
-  Instr.Call     = <call <Label> <Label>>	// Call block LABEL, using frame on the stack
-  
-  Instr.ScopeUp  = <scopeup <Path> <Label>>
-  Instr.ScopeDown = <scopedown <Label>>
-  
   Instr.Dup      = <dup>					// Duplicates the value on the stack
   Instr.Swap     = <swap>					// Swaps two values on the stack
   Instr.Print    = <print>					// Prints value on the stack
   Instr.Debug    = <debug>					// Prints the state of the vm
-  Instr.Return   = <return>					// Takes return address from opstack and copies top of stack to caller stack 
+  
+  ControlInstr.Return    = <return>					// Takes return address from opstack and copies top of stack to caller stack  
+  ControlInstr.JumpZ     = <jumpz <Label> <Label>>	// Jump to first label if stack zero, else jump to other label
+  ControlInstr.Jump      = <jump <Label>>			// Unconditional jump to LABEL
+  ControlInstr.Call      = <call <Label> <Label>>	// Call block LABEL, using frame on the stack
+  
+  ControlInstr.ScopeUp   = <scopeup <Path> <Label>>
+  ControlInstr.ScopeDown = <scopedown <Label>>
   
   Path.Self  = <[]>
   Path.Path  = <[<{PathRef ","}+>]>
