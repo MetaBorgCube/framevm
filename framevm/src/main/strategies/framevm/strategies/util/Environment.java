@@ -2,9 +2,6 @@ package framevm.strategies.util;
 
 import java.util.HashMap;
 
-import framevm.strategies.DotBlock;
-import framevm.strategies.DotFrame;
-import framevm.strategies.DotOperandStack;
 import framevm.strategies.Frame;
 
 /**
@@ -68,35 +65,5 @@ public class Environment {
 		heap = new HashMap<>();
 		
 		count = 0;
-	}
-	
-	
-	public String toDotString() {
-		StringBuilder nodes = new StringBuilder();
-		StringBuilder links = new StringBuilder();
-		
-		for (Frame frame : heap.values()) {
-			DotFrame dot = new DotFrame(frame);
-			nodes.append(dot.toDotString()).append('\n');
-			for (String link : dot.links()) {
-				links.append('\t').append(link).append('\n');
-			}
-			
-			if (frame.getOperandStack() != null) {
-				DotOperandStack stackdot = new DotOperandStack(frame);
-				nodes.append(stackdot.toDotString()).append('\n');
-				for (String link : stackdot.links()) {
-					links.append('\t').append(link).append('\n');
-				}
-			}
-		}
-		for (Block block : blocks.values()) {
-			DotBlock dot = new DotBlock(block);
-			nodes.append(dot.toDotString()).append('\n');
-			for (String link : dot.links()) {
-				links.append('\t').append(link).append('\n');
-			}
-		}
-		return "digraph frames {\n\tnode [shape=circle]\n\tfinish [color=red]\n\tcurrent [color=red]\n\n\tnode [shape=record];\n\n" + nodes.toString() + "\n\n\n" + "\tcurrent -> frame_" + currentFrame.getId() + "\n\n" + links.toString() + "}";
 	}
 }
