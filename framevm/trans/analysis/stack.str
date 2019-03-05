@@ -47,6 +47,10 @@ rules
 	
 	stack-update: (ScopeUp(path, lbl), (size, err)) -> (size, err)
 	stack-update: (ScopeDown(lbl), (size, err)) 	-> (<dec> size, err)
+	
+	
+	
+	stack-update: (Debug(), (size, err)) 	-> (size, err)
 
   
   	stack-update: (a, (size, err)) -> (size, err)
