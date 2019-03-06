@@ -1,0 +1,13 @@
+module desugar
+
+imports
+	signatures/framevm-sig
+	desugar/toRISC
+	desugar/fixSeq
+
+rules  
+  desugar-all = remove-pseudo; fix-seq; to-RISC-all
+  
+  remove-pseudo: Program(blocks) -> Program(<foldl(remove-pseudo)> (blocks, []))
+  remove-pseudo: (Block(lbl, body), list) -> ([Block(lbl, body) | list])
+  remove-pseudo: (PseudoCode(body), list) -> (list)

@@ -4,11 +4,12 @@ imports
 
   statixruntime
   analysis/stack
+  desugar
   pp
 
 rules // Analysis
 
-  editor-analyze = stx-editor-analyze(stack-calc|"static-semantics", "programOK")
+  editor-analyze = stx-editor-analyze(desugar-all; stack-calc|"static-semantics", "programOK")
 
 rules // Editor Services
 

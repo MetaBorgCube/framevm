@@ -14,7 +14,7 @@ rules
     	out  := <vm-stop(|env4)>
     	
     store-block: (PseudoCode(_), env) -> env
-  	store-block: (Block(Label(lbl), Seq(body, jmp)), env) -> <vm-store-block(|env)> (lbl, <concat> [body, [jmp]])
+  	store-block: (Block(Label(lbl), Seq(body)), env) -> <vm-store-block(|env)> (lbl, body)
     
     // Ask next instruction and evaluate it
     // Repeat until no instructions are left

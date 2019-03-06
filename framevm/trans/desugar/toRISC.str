@@ -1,0 +1,10 @@
+module toRISC
+
+imports
+	signatures/framevm-sig
+
+rules
+
+  to-RISC-all = topdown(try(to-RISC))
+  
+  to-RISC: Return() -> Return()

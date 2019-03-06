@@ -17,7 +17,6 @@ sorts Block context-free syntax
   
   Body.Empty = 
   Body.Seq = instr:Instr* jump:ControlInstr			{ layout (align-list instr && align instr jump) }
-  Body.SeqNoJump = instr:Instr+ 					{ layout (align-list instr) }
   
 sorts Instr context-free syntax
   
