@@ -50,7 +50,8 @@ sorts Instr context-free syntax
   Path.Self  = <[]>
   Path.Path  = <[<{PathRef ","}+>]>
   PathRef.Slot = INT
-  PathRef.Link = ID
+  PathRef.SlotR = "r"
+  PathRef.Link = LABEL
 
   
 /* 
