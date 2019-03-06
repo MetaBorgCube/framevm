@@ -93,10 +93,10 @@ rules
 		env2 := <vm-call(|env1)> (<frame-get-link(|env1)> (frame_id, link_id), lbl)
 	
 	// Get a Slot or Link with the given id and frame
-	frame-get: (env, frame_id, Link(link_id)) -> <frame-get> (env, frame_id, link_id)		// As the 'link' r is actually a slot, we need to check for this case
-	frame-get: (env, frame_id, Slot(slot_id)) -> <frame-get-slot(|env)> (frame_id, slot_id)	// Just get the slor
-	frame-get: (env, frame_id, "r") -> <frame-get-slot(|env)> (frame_id, "r")				// Link r is the return value slot
-	frame-get: (env, frame_id, link_id) -> FrameRef(<frame-get-link(|env)> (frame_id, link_id))		// It is indeed a link, so get that one
+	frame-get: (env, frame_id, Link(link_id)) -> <frame-get> (env, frame_id, link_id)			// As the 'link' r is actually a slot, we need to check for this case
+	frame-get: (env, frame_id, Slot(slot_id)) -> <frame-get-slot(|env)> (frame_id, slot_id)		// Just get the slor
+	frame-get: (env, frame_id, "r") -> <frame-get-slot(|env)> (frame_id, "r")					// Link r is the return value slot
+	frame-get: (env, frame_id, link_id) -> FrameRef(<frame-get-link(|env)> (frame_id, link_id))	// It is indeed a link, so get that one
 	
 	// Resolve a path
 	// returns the frame_id and slot/link of the location pointed to

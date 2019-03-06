@@ -81,19 +81,6 @@ public class OperandStack {
 		this.block = block;
 		this.instr_count = 0;
 	}
-	
-	/**
-	 * Return from this operand stack.
-	 * 
-	 * @param value
-	 * 		The value to return
-	 * @return
-	 * 		The frame returned to
-	 */
-	public Frame do_return(IStrategoTerm value) {
-		returnFrame.getOperandStack().on_return(value);
-		return returnFrame;
-	}
 
 	/**
 	 * Called when returning to this operand stack.

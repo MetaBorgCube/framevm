@@ -19,6 +19,9 @@ public class Environment {
 	
 	private int count;		// Used for generating unique frame ids
 	
+	/**
+	 * Constructor for a new environment.
+	 */
 	public Environment() {
 		this.heap = new HashMap<>();
 		this.blocks = new HashMap<>();

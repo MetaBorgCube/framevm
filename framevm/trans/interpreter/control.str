@@ -5,30 +5,39 @@ imports
 	interpreter/common
 	
 rules
+	// Call the given callFrame and set its continuation
 	eval-call(|env1): (callFrame, callLabel, Continuation(contFrame, contLabel)) -> env4
 	  where
-	  	env2 := <vm-jump(|env1)> (contFrame, contLabel);							// Prepare return location
+	  	env2 := <vm-jump(|env1)> (contFrame, contLabel);							// Prepare return location (This cannot be done in bytecode as stuff will break)
 	  	env3 := <vm-set-cc(|env2)> (callFrame, Continuation(contFrame, contLabel));	// Set the return address
 	  	env4 := <vm-call(|env3)> (callFrame, callLabel)								// call the function
-	  	
+	
+	// Call to the given continuation
 	eval-call(|env1): Continuation("exit", _) -> env1	
 	eval-call(|env1): Continuation(contFrame, contLabel) -> env2
 	  where
 	  	env2 := <vm-call(|env1)> (contFrame, contLabel)	// call the function
 
+	// Create a new continuation of the current frame
 	new-continuation(|env): addr -> Continuation(<frame-this(|env)>, addr)
-		
+	
+	// Store the return value in the 'r' register of the continuation
+	// If the continuation is 'exit', print the exitcodes
 	set-return-val(|env1): (Continuation("exit", _), val) -> env1
 	  where
 	  	_ := <print-exit> val
-	  	
+	
 	set-return-val(|env1): (Continuation(frame, _), val) -> env2
 	  where
 	  	env2 := <frame-set(|env1)> (frame, "r", val)
 	  	
+	// Print succesfull when IntV(0), print an error otherwise
 	print-exit: IntV(e) -> <print-exit> e
 	print-exit: "0" -> <debug> "Execution finished cleanly"
 	print-exit: e -> <debug> ("Terminated with errors:", e)
+	
+	
+	
 	
 	// Call/2
 	// Call the block at arg1 using the frame at the top of the stack

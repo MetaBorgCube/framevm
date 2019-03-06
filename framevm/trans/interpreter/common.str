@@ -9,5 +9,5 @@ signature
   constructors    
     FrameRef : String -> V
     IntV : Int -> V
+    
     Continuation : FrameRef * Block -> C
-    Exit : C

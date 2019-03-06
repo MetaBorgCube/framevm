@@ -4,9 +4,11 @@ imports signatures/framevm-sig
 
 rules 
 	external vm-init(|)				// -> env
+	external vm-store-block(|env)   // env| (lbl, [instr]) -> env' 
 	external vm-start(|env)			// env| -> env'
 	external vm-stop(|env)          // env| -> string
-	external vm-store-block(|env)   // env| (lbl, [instr]) -> env' 
+	external vm-execute(eval|env)	// eval|env| -> env'
+	
 	external vm-debug(|env)			// env| -> state_string
 	
 	external stack-push(|env)		// env| val -> env'
@@ -22,10 +24,9 @@ rules
 	external vm-print(|env)			// env| val -> env'
 	external vm-jump(|env)			// env| (frame_id, lbl) -> env'
 	external vm-call(|env)		    // env| (frame_id, lbl) -> env'
-	
-	external vm-execute(eval|env)
 	external vm-get-cc(|env)		// env| -> continuation
 	external vm-set-cc(|env)		// env| (frame, continuation) -> env'
+	
 	
 	
 	

@@ -8,7 +8,6 @@ import java.util.List;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import framevm.strategies.util.Link;
 import framevm.strategies.util.OperandStack;
-import framevm.strategies.util.Block;
 import framevm.strategies.util.Slot;
 
 /**
