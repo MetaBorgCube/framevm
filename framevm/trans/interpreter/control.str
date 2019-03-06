@@ -5,27 +5,53 @@ imports
 	interpreter/common
 	
 rules
+	eval-call(|env1): (callFrame, callLabel, Continuation(contFrame, contLabel)) -> env4
+	  where
+	  	env2 := <vm-jump(|env1)> (contFrame, contLabel);							// Prepare return location
+	  	env3 := <vm-set-cc(|env2)> (callFrame, Continuation(contFrame, contLabel));	// Set the return address
+	  	env4 := <vm-call(|env3)> (callFrame, callLabel)								// call the function
+	  	
+	eval-call(|env1): Continuation("exit", _) -> env1	
+	eval-call(|env1): Continuation(contFrame, contLabel) -> env2
+	  where
+	  	env2 := <vm-call(|env1)> (contFrame, contLabel)	// call the function
+
+	new-continuation(|env): addr -> Continuation(<frame-this(|env)>, addr)
+		
+	set-return-val(|env1): (Continuation("exit", _), val) -> env1
+	  where
+	  	_ := <print-exit> val
+	  	
+	set-return-val(|env1): (Continuation(frame, _), val) -> env2
+	  where
+	  	env2 := <frame-set(|env1)> (frame, "r", val)
+	  	
+	print-exit: IntV(e) -> <print-exit> e
+	print-exit: "0" -> <debug> "Execution finished cleanly"
+	print-exit: e -> <debug> ("Terminated with errors:", e)
+	
 	// Call/2
 	// Call the block at arg1 using the frame at the top of the stack
 	// This function returns to arg2 when finished
 	eval: (Call(Label(block), Label(returnAddr)), env1) -> env3
 	  where
 	  	(env2, FrameRef(frame_id)) := <stack-pop(|env1)>;			// get the function frame
-	  	env3 := <vm-jump(|env2)> returnAddr;
-	  	frame_this := <frame-this(|env1)>;
-	  	env4 := <vm-call-cc(|env3)> (frame_id, block, frame_this)		// call the function
+	  	env3 := <eval-call(|env2)> (frame_id, block, <new-continuation(|env2)> returnAddr)
 	 
 	// Return/0
 	// Takes the value on top of the stack and returns to the caller frame
-	eval: (Return(), env1) -> <vm-return(|env2)> val
+	eval: (Return(), env1) -> env4
 	  where
-	  	(env2, val) := <stack-pop(|env1)>
+	  	(env2, val) := <stack-pop(|env1)>;
+	  	continuation := <vm-get-cc(|env2)>;
+	  	env3 := <set-return-val(|env2)> (continuation, val);
+	  	env4 := <eval-call(|env3)> continuation
 	
 	// Jump/1
 	// Unconditional jump to a new block ar arg1
 	eval: (Jump(Label(lbl)), env1) -> env2
 	  where
-	  	env2 := <vm-jump(|env1)> lbl
+	  	env2 := <vm-jump(|env1)> (<frame-this(|env1)>, lbl)
 	
 	// JumpZ/2
 	// Conditional jump. 
@@ -34,8 +60,18 @@ rules
 	  where
 	  	(env2, IntV(val)) := <stack-pop(|env1)>;
 	  	trgt := <jump-eval> (val, then, else);
-	  	env3 := <vm-jump(|env2)> trgt
+	  	env3 := <vm-jump(|env2)> (<frame-this(|env2)>, trgt)
 	
+	// ScopeDown/1
+	// Move execution to a child scope, for example when entering a for loop
+	// Uses the frame on top of the stack as new execution frame (make sure its properly linked)
+	// Jumps the execution to the given block
+	eval: (ScopeDown(Label(lbl)), env1) -> env4
+	  where
+	  	(env2, FrameRef(frame_to_id)) := <stack-pop(|env1)>;
+	  	env3 := <vm-set-cc(|env2)> (frame_to_id, <vm-get-cc(|env2)>);
+	  	env4 := <vm-call(|env3)> (frame_to_id, lbl)
+
 	// Resolve which label to pick
 	jump-eval: ("0", then, _) -> then
 	jump-eval: ("1", _, else) -> else	// We might want to make this catch all, like in C

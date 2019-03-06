@@ -3,6 +3,7 @@ package framevm.strategies.dot;
 import java.util.List;
 import java.util.Stack;
 import org.spoofax.interpreter.terms.IStrategoTerm;
+import org.spoofax.terms.StrategoString;
 
 import framevm.strategies.Frame;
 import framevm.strategies.util.OperandStack;
@@ -27,19 +28,20 @@ public class DotOperandStackFactory extends DotFactory {
 		String name = operandStack(frame);
 		OperandStack opstack = frame.getOperandStack();
 		int count = opstack.getInstr_count();
-		
+
 		// Add links to the executing instruction and the stack
-		String target = block(opstack.getBlock()) + ":" + (count - 1);
+		String target = block(opstack.getBlock()) + ":" + (Math.max(0, count - 1));
 		links.add(blockLink(name, target));
 		links.add(stackLink(name, DotFactory.stack(frame)));
-		
+
 		// Link the return address
-		if (opstack.getReturnFrame() != null) {
-			links.add(returnLink(name, frame(opstack.getReturnFrame()) + ":id"));
+		String returnTarget_id = ((StrategoString) opstack.getContinuation().getSubterm(0)).stringValue();
+		if ("exit".equals(returnTarget_id)) {
+			links.add(returnLink(name, "finish"));
 		} else {
-			links.add(returnLink(name, "finish"));			
+			links.add(returnLink(name, frame(returnTarget_id) + ":id"));
 		}
-		
+
 		// Get the value in the return (r) slot
 		String returnVal;
 		if (opstack.getReturnValue() == null) {

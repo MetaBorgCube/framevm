@@ -5,7 +5,9 @@ imports
 	interpreter/external
 
 signature
-  sorts V
-  constructors
+  sorts V C
+  constructors    
     FrameRef : String -> V
     IntV : Int -> V
+    Continuation : FrameRef * Block -> C
+    Exit : C

@@ -20,8 +20,10 @@ public class InteropRegisterer extends JavaInteropRegisterer {
         		vm_print_0_1.instance,
         		vm_debug_0_1.instance,
         		vm_jump_0_1.instance,
+        		vm_get_cc_0_1.instance,
+        		vm_set_cc_0_1.instance,
         		
-        		vm_call_cc_0_1.instance,
+        		vm_call_0_1.instance,
         		vm_return_0_1.instance,
 
         		stack_push_0_1.instance,
@@ -33,10 +35,8 @@ public class InteropRegisterer extends JavaInteropRegisterer {
         		frame_set_0_1.instance,
         		frame_link_0_1.instance,
         		frame_this_0_1.instance,
-        		frame_scope_switch_0_1.instance,
-        		frame_break_to_0_1.instance,
         		
-        		vm_execute_1_1.instance
+        		vm_execute_1_1.instance        		
         });
     }
 }

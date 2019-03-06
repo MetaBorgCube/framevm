@@ -20,12 +20,17 @@ public class frame_set_0_1 extends FVMStrategy {
 	protected IStrategoTerm invoke(IOAgent io, ITermFactory factory, Environment env, IStrategoTerm arg) {
 		StrategoTuple tuple = (StrategoTuple) arg;
 		
-		StrategoString frame_id = (StrategoString) tuple.get(0);
-		int slotId = Integer.valueOf(((StrategoString) tuple.get(1)).stringValue());
+		String frame_id = ((StrategoString) tuple.get(0)).stringValue();
 		IStrategoTerm value = tuple.get(2);
+		try {
+			int slotId = Integer.valueOf(((StrategoString) tuple.get(1)).stringValue());
 
-		Slot slot = env.getFrame(frame_id.stringValue()).getSlot(slotId, true);
-		slot.update(value);
+			Slot slot;
+			slot = env.getFrame(frame_id).getSlot(slotId, true);
+			slot.update(value);
+		} catch (NumberFormatException ex) {
+			env.getFrame(frame_id).getOperandStack().on_return(value);
+		}
 		return new StrategoBlob(env);
 	}
 }

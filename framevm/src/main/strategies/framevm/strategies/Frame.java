@@ -65,14 +65,9 @@ public class Frame {
 	
 	/**
 	 * Mark this frame as executable by setting up its {@link OperandStack}.
-	 * 
-	 * @param block
-	 * 		The {@link Block} to execute
-	 * @param returnFrame
-	 * 		The frame to return execution to
 	 */
-	public void setExecutable(Block block, Frame returnFrame) {
-		this.operandStack = new OperandStack(block, returnFrame);
+	public void setExecutable() {
+		this.operandStack = new OperandStack();
 	}
 
 	/**

@@ -13,20 +13,15 @@ public class OperandStack {
 	private Block block;
 	private int instr_count;
 	private Stack<IStrategoTerm> stack;
-	private Frame returnFrame;
+	private IStrategoTerm continuation;
 	private Slot returnValue;
 	
 	/**
 	 * Create an operand stack.
-	 * 
-	 * @param block
-	 * 		The {@link Block} to execute
-	 * @param returnFrame
-	 * 		The {@link Frame} to return to
 	 */
-	public OperandStack(Block block, Frame returnFrame) {
-		this.block = block;
-		this.returnFrame = returnFrame;
+	public OperandStack() {
+		this.block = null;
+		this.continuation = null;
 		
 		this.instr_count = 0;
 		this.stack = new Stack<>(); //TODO: pre-allocate block.max-stack
@@ -107,7 +102,7 @@ public class OperandStack {
 	 * @param value
 	 * 		The returned value
 	 */
-	private void on_return(IStrategoTerm value) {
+	public void on_return(IStrategoTerm value) {
 		this.returnValue = new Slot(value);
 	}
 	
@@ -121,10 +116,10 @@ public class OperandStack {
 	
 	/**
 	 * @return
-	 * 		The frame to return to
+	 * 		The current continuation
 	 */
-	public Frame getReturnFrame() {
-		return this.returnFrame;
+	public IStrategoTerm getContinuation() {
+		return this.continuation;
 	}
 	
 	public Block getBlock() {
@@ -137,5 +132,9 @@ public class OperandStack {
 
 	public Stack<IStrategoTerm> getStack() {
 		return stack;
+	}
+
+	public void setContinuation(IStrategoTerm continuation) {
+		this.continuation = continuation;
 	}
 }

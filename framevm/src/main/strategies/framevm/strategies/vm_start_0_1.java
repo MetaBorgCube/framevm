@@ -14,7 +14,7 @@ public class vm_start_0_1 extends FVMStrategy {
 	@Override
 	// env -> env'
 	// Start the vm by setting the initial frame as executable and running the MAIN block
-	protected IStrategoTerm invoke(IOAgent io, ITermFactory factory, Environment env, IStrategoTerm arg) {
+	protected IStrategoTerm invoke(IOAgent io, ITermFactory factory, Environment env, IStrategoTerm continuation) {
 		Block block = env.getBlock("MAIN");
 
 		if (block == null) {
@@ -22,7 +22,9 @@ public class vm_start_0_1 extends FVMStrategy {
 			return null;
 		}
 
-		env.currentFrame.setExecutable(block, null);
+		env.currentFrame.setExecutable();
+		env.currentFrame.getOperandStack().jump(block);
+		env.currentFrame.getOperandStack().setContinuation(continuation);
 
 		io.printError("FrameVM started: " + block.getName());
 		return new StrategoBlob(env);

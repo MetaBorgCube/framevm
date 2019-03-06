@@ -12,12 +12,20 @@ import framevm.strategies.Frame;
 public class Environment {
 	//TODO: This heap shouldn't be needed in a full Java implementation as all frames are linked
 	// - `dup` instruction breaks stuff as you don't want to duplicate this, so the operandStacks stack might need a tiny local heap
-	public HashMap<String, Frame> heap = new HashMap<>();
-	public HashMap<String, Block> blocks = new HashMap<>();
+	public HashMap<String, Frame> heap;
+	public HashMap<String, Block> blocks;
 	public Frame currentFrame;
-	public StringBuilder stdout = new StringBuilder();	
+	public StringBuilder stdout;	
 	
-	private int count = 0;		// Used for generating unique frame ids
+	private int count;		// Used for generating unique frame ids
+	
+	public Environment() {
+		this.heap = new HashMap<>();
+		this.blocks = new HashMap<>();
+		this.stdout = new StringBuilder();	
+		
+		this.count = 0;
+	}
 	
 	/**
 	 * Get the {@link Block} with the given name.

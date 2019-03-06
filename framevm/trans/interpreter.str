@@ -9,7 +9,7 @@ rules
       where 
     	env1 := <vm-init>;
       	env2 := <foldl(store-block)> (blocks, env1);
-      	env3 := <vm-start(|env2)> ;
+      	env3 := <vm-start(|env2)> Continuation("exit", "") ;
     	env4 := <execute(|env3)>;
     	out  := <vm-stop(|env4)>
     	

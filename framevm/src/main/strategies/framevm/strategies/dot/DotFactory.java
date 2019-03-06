@@ -35,7 +35,7 @@ public abstract class DotFactory {
 		 * @return
 		 * 		The generated id
 		 */
-		private static String frame(String id) {
+		public static String frame(String id) {
 			return "frame_"+ id;
 		}
 		

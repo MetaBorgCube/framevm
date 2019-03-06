@@ -26,7 +26,11 @@ public class frame_get_slot_0_1 extends FVMStrategy {
 			int idx = Integer.valueOf(slotId);
 			return frame.getSlot(idx, false).value;
 		} catch (NumberFormatException ex) {
-			return frame.getSlot(slotId).value;
+			if ("r".equals(slotId)) {
+				return frame.getOperandStack().getReturnValue().value;
+			} else {
+				return null;
+			}
 		}
 	}
 }
