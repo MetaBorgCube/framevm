@@ -2,6 +2,7 @@ module stack
 
 imports
 	signatures/framevm-sig
+	desugar
 
 rules
 	// check stack sizes of blocks
@@ -47,9 +48,19 @@ rules
 	stack-update: (ScopeUp(path, lbl), (size, err)) -> (size, err)
 	stack-update: (ScopeDown(lbl), (size, err)) 	-> (<dec> size, err)
 	
+	stack-update: (ContNew(), (size, err)) 				-> (<inc>size, err)
+	stack-update: (ContNew(Label(lbl)), (size, err))	-> (<inc>size, err)
+	stack-update: (ContNewR(Label(lbl)), (size, err)) 	-> (size, err)
 	
+	stack-update: (ContSet(), (size, err)) 		-> (<dec>size, err)
+	stack-update: (ContSetR(), (size, err)) 	-> (<dec><dec>size, err)
+	stack-update: (ContGet(), (size, err)) 		-> (<inc>size, err)
+	stack-update: (ContGetR(), (size, err)) 	-> (size, err)
 	
-	stack-update: (Debug(), (size, err)) 	-> (size, err)
+	stack-update: (ContUnpack(), (size, err)) 	-> (size, err)
+	stack-update: (ContCall(), (size, err)) 	-> (<dec>size, err)
+	
+	stack-update: (Debug(), (size, err)) -> (size, err)
 
   
   	stack-update: (a, (size, err)) -> (size, err)

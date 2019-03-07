@@ -53,23 +53,24 @@ sorts Instr context-free syntax
   
   
   Instr = ContInstr
-  ContInstr.ContNew = <cnew>  
-  ContInstr.ContNew = <cnew <Label>> 
-  ContInstr.ContNewR = <cnewr <Label>>  
-  ContInstr.ContSet = <cset>
-  ContInstr.ContSetR = <csetr>
-  ContInstr.ContGet = <cget>
-  ContInstr.ContGetR = <cgetr>
-  ContInstr.ContUnpack = <cunpack>
+  ContInstr.ContNew    = <cnew>  			// Create a new continuation for the current execution point
+  ContInstr.ContNew    = <cnew <Label>> 	// Create a continuation of the current frame at a new execution point
+  ContInstr.ContNewR   = <cnewr <Label>>  	// Create a continuation for a frame on the stack at a new execution point
+  ContInstr.ContSet    = <cset>				// Set the current continuation
+  ContInstr.ContSetR   = <csetr>			// Set the current continuation of the frame on stack
+  ContInstr.ContGet    = <cget>				// Get the current continuation
+  ContInstr.ContGetR   = <cgetr>			// Get the current continuation of the frame on top of the stack
+  ContInstr.ContUnpack = <cunpack>			// Get the execution frame from a continuation
+  
   
   ControlInstr.Return    = <return>					// Takes return address from opstack and copies top of stack to caller stack  
   ControlInstr.JumpZ     = <jumpz <Label> <Label>>	// Jump to first label if stack zero, else jump to other label
   ControlInstr.Jump      = <jump <Label>>			// Unconditional jump to LABEL
   ControlInstr.Call      = <call <Label> <Label>>	// Call block LABEL, using frame on the stack
-  ControlInstr.ContCall = <ccall>
+  ControlInstr.ContCall = <ccall>					// Call a continuation
   
-  ControlInstr.ScopeUp   = <scopeup <Path> <Label>>
-  ControlInstr.ScopeDown = <scopedown <Label>>
+  ControlInstr.ScopeUp   = <scopeup <Path> <Label>>	// Break execution to a higher scope
+  ControlInstr.ScopeDown = <scopedown <Label>>		// Move execution to another scope and copy over the current continuation
   
   Path.Self  = <[]>
   Path.Path  = <[<{PathRef ","}+>]>

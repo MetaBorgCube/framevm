@@ -6,49 +6,67 @@ imports
 	interpreter/control
 	
 rules	
+	// ContNew/0
+	// Push a continuation on the stack of the current execution point
 	eval: (ContNew(), env1) -> env2
 	  where
 	  	frame_this := <frame-this(|env1)>;
 	  	env2 := <stack-push(|env1)> Continuation(frame_this, <frame-get-block(|env1)> frame_this)
 	  	
+	// ContNew/1
+	// Push a continuation on the stack of the current execution point after a jump to label
 	eval: (ContNew(Label(lbl)), env1) -> env2
 	  where
 	  	env2 := <stack-push(|env1)> Continuation(<frame-this(|env1)>, lbl)
-	  	  	
+	
+	// ContNewR/1
+	// Push a continuation on the stack of the execution frame on the stack after a jump to label
 	eval: (ContNewR(Label(lbl)), env1) -> env3
 	  where
 	  	(env2, FrameRef(frame)) := <stack-pop(|env1)>;
 	  	env3 := <stack-push(|env2)> Continuation(frame, lbl)
-	  	
+	
+	// ContSet/0
+	// Set the continuation of the current frame to the continuation on top of the stack
 	eval: (ContSet(), env1) -> env2
 	  where
 	  	(env2, cont) := <stack-pop(|env1)>;
 	  	this_frame := <frame-this(|env2)>;
 	  	env3 := <vm-set-cc(|env2)> (this_frame, cont)
-	  	
+	 
+	// ContSetR/0
+	// Set the continuation of the frame on second position on the stack to the continuation on top of the stack
 	eval: (ContSetR(), env1) -> env4
 	  where
 	  	(env2, cont) := <stack-pop(|env1)>;
 	  	(env3, FrameRef(frame)) := <stack-pop(|env2)>;
 	  	env4 := <vm-set-cc(|env3)> (frame, cont)
-	  	
+	
+	// ContGet/0
+	// Get the continuation of the current frame
 	eval: (ContGet(), env1) -> env2
 	  where
 	  	this_frame := <frame-this(|env1)>;
 	  	cont := <vm-get-cc(|env1)> this_frame;
 	  	env2 := <stack-push(|env1)> cont
-	  		  	
+	
+	// ContGetR/0
+	// Get the continuation of the frame on top of the stack
 	eval: (ContGetR(), env1) -> env2
 	  where
 	  	(env2, FrameRef(frame)) := <stack-pop(|env1)>;
 	  	cont := <vm-get-cc(|env2)> frame;
 	  	env3 := <stack-push(|env2)> cont
-	  	
+	
+	// ContUnpack/0
+	// Get the frame enclosed in a continuation
 	eval: (ContUnpack(), env1) -> env3
 	  where
 	  	(env2, Continuation(frame, _)) := <stack-pop(|env1)>;
 	  	env3 := <stack-push(|env2)> FrameRef(frame)
-	  	 	
+	
+	// ContCall/0
+	// Call the continuation on top of the stack
 	eval: (ContCall(), env1) -> env3
 	  where
 	  	(env2, Continuation(frame, lbl)) := <stack-pop(|env1)>;
