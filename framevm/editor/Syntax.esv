@@ -50,6 +50,11 @@ menus
     
     action: "Format"          = editor-format (source)
     action: "Show parsed AST" = debug-show-aterm (source)
+    
+  menu: "Desugar" (openeditor)
+    
+    action: "Desuagar"           = editor-format-desugar (source)
+    action: "Show desugared AST" = debug-show-desugared-aterm (source)
   
   menu: "Run" (openeditor)
     

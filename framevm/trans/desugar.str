@@ -6,8 +6,13 @@ imports
 	desugar/fixSeq
 
 rules  
-  desugar-all = remove-pseudo; fix-seq; to-RISC-all
+    desugar-all = remove-pseudo; fix-seq; to-RISC-all
   
-  remove-pseudo: Program(blocks) -> Program(<foldl(remove-pseudo)> (blocks, []))
-  remove-pseudo: (Block(lbl, body), list) -> ([Block(lbl, body) | list])
-  remove-pseudo: (PseudoCode(body), list) -> (list)
+    remove-pseudo: Program(blocks) -> Program(<foldr(![], remove-pseudo)> blocks)
+    remove-pseudo: (Block(lbl, body), list) -> ([Block(lbl, body) | list])
+    remove-pseudo: (PseudoCode(body), list) -> (list)
+
+    resugar: Program(blocks) -> Program(<map(resugar)> blocks)
+    resugar: Block(lbl, Seq(body)) -> Block(lbl, SeqJump(body2, last))
+      where
+      	(body2, last) := <split-init-last> body 
