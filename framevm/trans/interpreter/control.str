@@ -13,10 +13,10 @@ rules
 	// This function returns to arg2 when finished
 	eval: (Call(Label(block), Label(returnAddr)), env1) -> env4
 	  where
-	  	(env2, FrameRef(callFrame)) := <stack-pop(|env1)>;				// get the function frame
+	  	(env2, FrameRef(callFrame)) := <stack-pop(|env1)>;		// get the function frame
 	  	continuation := <new-continuation(|env2)> returnAddr;
-	  	env3 := <vm-set-cc(|env2)> (callFrame, continuation);			// Set the return address
-	  	env4 := <vm-call(|env3)> (callFrame, block)		// call the function
+	  	env3 := <vm-set-cc(|env2)> (callFrame, continuation);	// Set the return address
+	  	env4 := <vm-call(|env3)> (callFrame, block)				// call the function
 	 
 	// Return/0
 	// Takes the value on top of the stack and returns to the caller frame

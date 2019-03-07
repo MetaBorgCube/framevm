@@ -14,6 +14,7 @@ public class vm_stop_0_1 extends FVMStrategy {
 	// Clear the environment for reuse (TODO: Is this still needed?)
 	// Return the output that was written to 'console'
 	protected IStrategoTerm invoke(IOAgent io, ITermFactory factory, Environment env, IStrategoTerm arg) {
+		//TODO: get the exitcode from the current frame
 		String out = env.stdout.toString();
 		env.clear();
 

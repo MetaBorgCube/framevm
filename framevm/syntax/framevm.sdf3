@@ -54,18 +54,19 @@ sorts Instr context-free syntax
   
   Instr = ContInstr
   ContInstr.ContNew = <cnew>  
-  ContInstr.ContNew = <cnew <Label>>  
+  ContInstr.ContNew = <cnew <Label>> 
+  ContInstr.ContNewR = <cnewr <Label>>  
   ContInstr.ContSet = <cset>
   ContInstr.ContSetR = <csetr>
   ContInstr.ContGet = <cget>
   ContInstr.ContGetR = <cgetr>
   ContInstr.ContUnpack = <cunpack>
-  ContInstr.ContCall = <ccall>
   
   ControlInstr.Return    = <return>					// Takes return address from opstack and copies top of stack to caller stack  
   ControlInstr.JumpZ     = <jumpz <Label> <Label>>	// Jump to first label if stack zero, else jump to other label
   ControlInstr.Jump      = <jump <Label>>			// Unconditional jump to LABEL
   ControlInstr.Call      = <call <Label> <Label>>	// Call block LABEL, using frame on the stack
+  ControlInstr.ContCall = <ccall>
   
   ControlInstr.ScopeUp   = <scopeup <Path> <Label>>
   ControlInstr.ScopeDown = <scopedown <Label>>

@@ -14,6 +14,11 @@ rules
 	eval: (ContNew(Label(lbl)), env1) -> env2
 	  where
 	  	env2 := <stack-push(|env1)> Continuation(<frame-this(|env1)>, lbl)
+	  	  	
+	eval: (ContNewR(Label(lbl)), env1) -> env3
+	  where
+	  	(env2, FrameRef(frame)) := <stack-pop(|env1)>;
+	  	env3 := <stack-push(|env2)> Continuation(frame, lbl)
 	  	
 	eval: (ContSet(), env1) -> env2
 	  where
@@ -21,10 +26,10 @@ rules
 	  	this_frame := <frame-this(|env2)>;
 	  	env3 := <vm-set-cc(|env2)> (this_frame, cont)
 	  	
-	eval: (ContSetR(), env1) -> env2
+	eval: (ContSetR(), env1) -> env4
 	  where
 	  	(env2, cont) := <stack-pop(|env1)>;
-	  	(env3, frame) := <stack-pop(|env2)>;
+	  	(env3, FrameRef(frame)) := <stack-pop(|env2)>;
 	  	env4 := <vm-set-cc(|env3)> (frame, cont)
 	  	
 	eval: (ContGet(), env1) -> env2
@@ -35,7 +40,7 @@ rules
 	  		  	
 	eval: (ContGetR(), env1) -> env2
 	  where
-	  	(env2, frame) := <stack-pop(|env1)>;
+	  	(env2, FrameRef(frame)) := <stack-pop(|env1)>;
 	  	cont := <vm-get-cc(|env2)> frame;
 	  	env3 := <stack-push(|env2)> cont
 	  	

@@ -9,24 +9,24 @@ rules
 	to-RISC-all: Program(blocks) -> Program(<map(to-RISC-all)> blocks)
 	to-RISC-all: Block(lbl, Seq(body)) -> Block(lbl, Seq(body_risc))
 	  where
-		body_risc := <to-RISC(r-return)><to-RISC(r-set)><to-RISC(r-get)><to-RISC(r-link)> body
+		body_risc := <to-RISC(r-set)><to-RISC(r-get)><to-RISC(r-link)><to-RISC(r-cont2)><to-RISC(r-cont)> body
   
-  	to-RISC(s): x -> <foldr(![], (s <+ idf))> x 
+  	to-RISC(s): x -> <foldr(![], (fpr(s) <+ idf))> x 
+  	fpr(s): (e, body) -> <concat> [<s>e, body]
   	idf: (e, body) -> [e|body]
   	
-	r-link: (Link(path, lbl), body) -> [Get(path), LinkR(lbl) | body]
+	r-link: Link(path, lbl) -> [Get(path), LinkR(lbl)]
   
-    r-set: (Set(Path(path)), body) -> [Get(Self()), Swap(), SetR(Path(path)) | body]
+    r-set: Set(Path(path)) -> [Get(Self()), Swap(), SetR(Path(path))]
 
-    r-get: (Get(Path(path)), body) -> [Get(Self()), GetR(Path(path)) | body]
+    r-get: Get(Path(path)) -> [Get(Self()), GetR(Path(path))]
 
-	r-return: (Return(), body) -> [ContGet(), ContUnpack(), Swap(), SetR(Path([Slot("r")])), ContGet(), ContCall()]
-
-
-//  ControlInstr.Return    = <return>					// Takes return address from opstack and copies top of stack to caller stack  
-//  ControlInstr.JumpZ     = <jumpz <Label> <Label>>	// Jump to first label if stack zero, else jump to other label
-//  ControlInstr.Jump      = <jump <Label>>			// Unconditional jump to LABEL
-//  ControlInstr.Call      = <call <Label> <Label>>	// Call block LABEL, using frame on the stack
-//  
-//  ControlInstr.ScopeUp   = <scopeup <Path> <Label>>
-//  ControlInstr.ScopeDown = <scopedown <Label>>
+	r-cont: Return() -> [ContGet(), ContUnpack(), Swap(), SetR(Path([Slot("r")])), ContGet(), ContCall()]
+	r-cont: Call(Label(block), Label(returnAddr)) -> [Dup(), ContNew(Label(returnAddr)), ContSetR(), ContNewR(Label(block)), ContCall()]
+	r-cont: ScopeDown(lbl) -> [Dup(), ContGet(), ContSetR(), Dup(), ContNewR(lbl), ContCall()]
+	r-cont: ScopeUp(path, lbl) -> [Get(path), ContNewR(lbl), ContCall()]
+	
+	r-cont2: ContNew(lbl) -> [Get(Self()), ContNewR(lbl)]
+	r-cont2: ContGet()    -> [Get(Self()), ContGetR()]
+	r-cont2: ContSet()    -> [Get(Self()), ContSetR()]
+	
