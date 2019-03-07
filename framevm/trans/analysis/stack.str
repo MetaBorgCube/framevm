@@ -4,7 +4,6 @@ imports
 	signatures/framevm-sig
 
 rules
-
 	// check stack sizes of blocks
 	stack-calc: Program(blocks) -> Program(out_blocks)
 	  where
@@ -19,7 +18,7 @@ rules
   		// If size > 0 give warning
   
 	// For each operation, calculate the change in stack size
-	stack-update: (IConst(_), (size, err)) 	-> (<inc> size, err)
+	stack-update: (IPush(_), (size, err)) 	-> (<inc> size, err)
 	stack-update: (IAdd(), (size, err)) 	-> (<dec> size, err)
 	stack-update: (IEq(), (size, err)) 		-> (<dec> size, err)
 	stack-update: (ILt(), (size, err)) 		-> (<dec> size, err)

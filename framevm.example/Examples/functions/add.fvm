@@ -14,16 +14,16 @@ ADD:
   	return			//
 
 MAIN:
-	iconst 10		//
+	ipush 10		//
 	set [0] 		// value of x in current frame
 	new 			// create new call frame
 	dup				//	
 	link [] P		// Link function scope to local scope
 	dup 			// duplicate ref to call frame
-	iconst 1 		// 
+	ipush 1 		// 
 	setr [0] 		// j := 2 // assign to formal parameter j in call frame
 	dup
-	iconst 3 		// 
+	ipush 3 		// 
 	setr [1] 		// j := 2 // assign to formal parameter j in call frame
 	call ADD CONT2	// create operand stack with frame ref on top of stack and run INC
 					// Returns to CONT
@@ -31,5 +31,5 @@ CONT2:
 	get [r]			// Get return value
 	print			//
 					//
-	iconst 0		// load exitcode 0
+	ipush 0			// load exitcode 0
 	return			// exit

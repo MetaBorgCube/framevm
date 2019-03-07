@@ -15,10 +15,10 @@ MAIN:
 	link [] P		// Link to main
 	set [0]			// store in p
 					//
-	iconst 10		//
+	ipush 10		//
 	set [0, 0]   	// p.x := 10
-	
-	iconst 1		//
+					//
+	ipush 1			//
 	get [0, 0]   	// p.x
 	addi			// 1 + p.x
 	set [0, 1]   	// set p.y
@@ -26,5 +26,5 @@ MAIN:
 	get [0, 1]		//
 	print			//
 					//
-	iconst 0		// load exitcode 0
+	ipush 0			// load exitcode 0
 	return			// exit

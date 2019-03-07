@@ -24,7 +24,7 @@ MAIN:
 	link [0] P			// Link to A
 						//
 	dup					//
-	iconst 2			//
+	ipush 2				//
 	setr [0]			// first arg
 	
 	call FUNC MAIN_CONT
@@ -35,17 +35,17 @@ MAIN_CONT:
 	get [1]				//
 	print				// print(y)
 						//
-	iconst 0			// load exitcode 0
+	ipush 0				// load exitcode 0
 	return				// exit
 	
 FUNC:
 	get [0]				//
-	iconst 0			//
+	ipush 0				//
 	eqi					// i == 0
 	jumpz FUNC_ELSE FUNC_THEN
 	
 FUNC_THEN:
-	iconst 42			//
+	ipush 42			//
 	return				// return 42
 	
 FUNC_ELSE:	
@@ -59,7 +59,7 @@ FUNC_ELSE:
 						//
 	dup					//
 	get [0]				//
-	iconst -1			//
+	ipush -1			//
 	addi				// i - 1
 	setr [0]			// store arg
 	call FUNC_THEN FUNC_END

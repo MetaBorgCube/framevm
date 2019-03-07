@@ -2,7 +2,12 @@ module fixSeq
 
 imports
 	signatures/framevm-sig
-
+	
+signature
+  sorts C
+  constructors
+    Seq : [Instr] -> C
+    
 rules //
 
   fix-seq: Program(blocks) -> Program(<map(fix-seq)> blocks)

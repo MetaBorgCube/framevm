@@ -5,9 +5,9 @@ imports
 	interpreter/common
 
 rules
-	// IConst/1
+	// IPush/1
 	// Pushes the given interger on the stack
-	eval: (IConst(i), env1) -> env2
+	eval: (IPush(i), env1) -> env2
 	  where
 	  	env2 := <stack-push(|env1)> IntV(i)
 	
@@ -20,16 +20,6 @@ rules
 	  	(env2, IntV(e2)) := <stack-pop(|env1)>;
 	  	env3 := <stack-push(|env2)> IntV(<addS>(e1, e2))
 	  	
-	 // Swap/0
-	// Takes two values from the stack
-	// Pushes them on the stack in reverse order
-	eval: (Swap(), env) -> env4
-	  where
-	  	(env1, e1) := <stack-pop(|env)>;
-	  	(env2, e2) := <stack-pop(|env1)>;
-	  	env3 := <stack-push(|env2)> e1;
-	  	env4 := <stack-push(|env3)> e2
-	
 	// IEq/0
 	// Takes two integers from the stack, checks if they are equal
 	// and pushes the result on the stack
@@ -48,6 +38,16 @@ rules
 	  	(env2, IntV(e2)) := <stack-pop(|env1)>;
 	  	env3 := <stack-push(|env2)> <eval-lt> (e2, e1)
 
+	// Swap/0
+	// Takes two values from the stack
+	// Pushes them on the stack in reverse order
+	eval: (Swap(), env) -> env4
+	  where
+	  	(env1, e1) := <stack-pop(|env)>;
+	  	(env2, e2) := <stack-pop(|env1)>;
+	  	env3 := <stack-push(|env2)> e1;
+	  	env4 := <stack-push(|env3)> e2
+	
 	// Check if the to given values are equal
 	// TODO: This should return a boolean when these are implemented
 	eval-eq: (e1, e2) -> IntV("1")

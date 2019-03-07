@@ -19,7 +19,7 @@ MAIN:
 	link [] P			// link to self
 						//
 	dup					//
-	iconst 2			//
+	ipush 2				//
 	setr [0]			// first arg
 						//
 	call FUNC MAIN_END	//
@@ -34,7 +34,7 @@ FUNC:
 	setr [0]			// a.x := i
 	set [1]				// j := a
 						//
-	iconst 3			//
+	ipush 3				//
 	set [2]				// k := 3
 						//
 	get [1, 0]			//
@@ -48,5 +48,5 @@ MAIN_END:
 	set[0]				// x := returnVal
 	print				// print(x)
 						//
-	iconst 0			// load exitcode 0
+	ipush 0				// load exitcode 0
 	return				// exit

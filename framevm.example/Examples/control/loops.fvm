@@ -12,7 +12,7 @@
 }
 
 MAIN:
-	iconst 0				//
+	ipush 0					//
 	set [0]					// count := 0
 							//
 	new						// For frame
@@ -21,13 +21,13 @@ MAIN:
 	scopedown FOR_INIT		// move execution to new frame
 	
 FOR_INIT:
-	iconst 0				//
+	ipush 0					//
 	set [0]					// i := 0
 	jump FOR				// start actual loop
 
 FOR:
 	get[0]					// i
-	iconst 3				//
+	ipush 3					//
 	lti						// i < 3
 	jumpz FOR_END FOR_BODY	// continue or stop loop
 	
@@ -42,7 +42,7 @@ FOR_BODY:
 
 WHILE:
 	get [P, 1]				// j
-	iconst 4				//
+	ipush 4					//
 	eqi						// j == 4
 	jumpz WHILE_BODY WHILE_END 
 	
@@ -50,12 +50,12 @@ WHILE_BODY:
 	get [P, 1]				// j
 	dup						//
 	print					// print(j)
-	iconst 1				//
+	ipush 1					//
 	addi					//
 	set [P, 1]				// j := j + 1
 							//
 	get [P, P, 0]			// count
-	iconst 1				//
+	ipush 1					//
 	addi					//
 	set [P, P, 0]			// count := count + 1
 	jump WHILE				//
@@ -65,7 +65,7 @@ WHILE_END:
 	
 FOR_INC:
 	get [0]					//
-	iconst 1				//
+	ipush 1					//
 	addi					//
 	set [0]					// i := i + 1
 	jump FOR				// start new iteration of for
@@ -78,7 +78,7 @@ MAIN_END:
 	get[0]					// count
 	print					// print(count)
 							//
-	iconst 0				// load exitcode 0
+	ipush 0					// load exitcode 0
 	return					// exit
 	
 	

@@ -8,14 +8,14 @@
 MAIN:
 //	new 		// Is this needed?
 //	mkcurrent	// Same here
-	iconst 10
+	ipush 10
 	set [0] 
-	iconst 11
+	ipush 11
 	set [1]
 	get [0]
 	print
 	get [1]
 	print
 	
-	iconst 0		// load exitcode 0
-	return			// exit
+	ipush 0		// load exitcode 0
+	return		// exit

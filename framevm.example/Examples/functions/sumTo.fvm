@@ -14,19 +14,19 @@ MAIN:
 	dup				//	
 	link [] P		// Link function scope to local scope
 	dup 			// duplicate ref to call frame
-	iconst 42 		// 
+	ipush 42 		// 
 	setr [0] 		// assign to formal parameter i in call frame
 	call SUMTO END	// create operand stack with frame ref on top of stack and run function
 					// Returns to END
 
 SUMTO:
   	get [0] 		// i
-  	iconst 0
+  	ipush 0
   	eqi
 	jumpz SUMTO_ELSE SUMTO_THEN
 
 SUMTO_THEN:
-	iconst 0		//
+	ipush 0			//
 	return			// return 0
 	
 SUMTO_ELSE:
@@ -35,7 +35,7 @@ SUMTO_ELSE:
 	link [P] P		// Link it to parent
 	
 	dup				// Setup parameters
-	iconst -1		//
+	ipush -1		//
 	get [0]			// 
 	addi			// i -1
 	setr [0]		// store as argument
@@ -52,5 +52,5 @@ END:
 	get [r]			// Get return value
 	print			// print sumto(1)
 					//
-	iconst 0		// load exitcode 0
+	ipush 0			// load exitcode 0
 	return			// exit

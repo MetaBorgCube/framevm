@@ -19,31 +19,31 @@ MAIN:
 	link [] P		// Link to main frame
 	set [0]			// Store in 'a'
 					//
-	iconst 1		//
-	iconst 1		//
+	ipush 1			//
+	ipush 1			//
 	addi			// 1 + 1
 	set [0, 0]		// a.i = 2
 					//
-	iconst 1		// 
+	ipush 1			// 
 	set [0, 1]		// a.j := 12
 					//
 	get [0, 1]		//
-	iconst -12		//
+	ipush -12		//
 	addi			// a.j - 12
-	iconst 0		//
+	ipush 0			//
 	eqi				// a.j - 12 == 0
 	jumpz THEN ELSE
 	
 THEN:
-	iconst 10		//
+	ipush 10		//
 	print			// print(10)
 					//
-	iconst 0		// load exitcode 0
+	ipush 0			// load exitcode 0
 	return			// exit
 
 ELSE:
-	iconst 11		//
+	ipush 11		//
 	print			// print(11)
 					//
-	iconst 0		// load exitcode 0
+	ipush 0			// load exitcode 0
 	return			// exit

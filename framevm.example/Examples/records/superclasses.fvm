@@ -33,7 +33,7 @@ MAIN:
 	linkr P					// link B to super
 	set [0]					// a := new B
 							//
-	iconst 1				//
+	ipush 1					//
 	set [0, P, 0]			// a.a := 1
 							//
 	new 					// function call frame
@@ -41,7 +41,7 @@ MAIN:
 	link [0] P				// Link function scope to function of object in a
 							//
 	dup						//
-	iconst 2				//
+	ipush 2					//
 	setr [0]				// first argument of function
 	
 	call FUNC_2 MAIN_CONT
@@ -52,7 +52,7 @@ MAIN_CONT:
 	link [0, P] P			// Link function to B's super
 	
 	dup						// func arg 1
-	iconst 1				//
+	ipush 1					//
 	setr [0]				// assign
 	
 	dup						// func arg 2
@@ -71,12 +71,12 @@ MAIN_CONT2:
 	get [0, 1]				// print b.j
 	print					//
 							//
-	iconst 0				// load exitcode 0
+	ipush 0					// load exitcode 0
 	return					// exit
 	
 FUNC_2:
 	get [0]					// i
-	iconst 1				//
+	ipush 1					//
 	addi					// i + 1
 	return					//
 	

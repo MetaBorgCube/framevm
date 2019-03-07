@@ -23,7 +23,7 @@ sorts Instr context-free syntax
   Instr.IAdd 	 = <addi>					// Consumes two ints from stack and adds them, result is stored on stack
   Instr.IEq 	 = <eqi>					// Consumes two ints from stack and equals them, result is stored on stack
   Instr.ILt 	 = <lti>					// Consumes two ints from stack and performs < on them, result is stored on stack
-  Instr.IConst 	 = <iconst <INT>>			// Push int value to stack
+  Instr.IPush 	 = <ipush <INT>>			// Push int value to stack
   
   Instr.New      = <new>					// Create new frame and push pointer on stack
   Instr.Link	 = <link <Path> <ID>>		// Link frame on stack to given location (Empty path is current frame)

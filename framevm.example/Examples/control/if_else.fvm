@@ -9,12 +9,12 @@
 }
 
 MAIN:
-	iconst 1			// 
+	ipush 1				// 
 	set [0]				// x := 1
-	iconst 2			//
+	ipush 2				//
 	set [1]				// y := 2
 	get [0]				//
-	iconst 1			//
+	ipush 1				//
 	eqi					// x == 1
 	jumpz THEN ELSE		//
 
@@ -24,7 +24,7 @@ THEN:
 	jump CONT			//
   
 ELSE:
-	iconst 10			//
+	ipush 10			//
 	set [0]				// x: = 10
 	jump CONT			//
  
@@ -32,5 +32,5 @@ CONT:
 	get [0]				//
 	print				// print(x)
 						//
-	iconst 0			// load exitcode 0
+	ipush 0				// load exitcode 0
 	return				// exit
