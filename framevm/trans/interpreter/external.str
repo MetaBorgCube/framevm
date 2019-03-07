@@ -14,6 +14,7 @@ rules
 	external stack-push(|env)		// env| val -> env'
 	external stack-pop(|env)		// env| -> (env', val)
 	
+	external frame-get-block(|env)	// env| frame_id -> lbl
 	external frame-get-slot(|env)	// env| (frame_id, slot) -> val
 	external frame-get-link(|env)	// env| (frame_id, link) -> frame_id
 	external frame-set(|env)		// env| (frame_id, slot, val) -> env'
@@ -24,7 +25,7 @@ rules
 	external vm-print(|env)			// env| val -> env'
 	external vm-jump(|env)			// env| (frame_id, lbl) -> env'
 	external vm-call(|env)		    // env| (frame_id, lbl) -> env'
-	external vm-get-cc(|env)		// env| -> continuation
+	external vm-get-cc(|env)		// env| frame_id -> continuation
 	external vm-set-cc(|env)		// env| (frame, continuation) -> env'
 	
 	

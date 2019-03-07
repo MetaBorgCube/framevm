@@ -36,18 +36,31 @@ sorts Instr context-free syntax
   Instr.ILt 	 = <lti>					// Consumes two ints from stack and performs < on them, result is stored on stack
   Instr.IPush 	 = <ipush <INT>>			// Push int value to stack
   
-  Instr.New      = <new>					// Create new frame and push pointer on stack
-  Instr.Link	 = <link <Path> <ID>>		// Link frame on stack to given location (Empty path is current frame)
-  Instr.LinkR	 = <linkr <ID>>				// Link frame on second position on the stack to the frame on top
-  Instr.Set      = <set <Path>>				// Set value on the stack at path location
-  Instr.SetR     = <setr <Path>>			// Set value on the stack at path location starting in frame on stack
-  Instr.Get      = <get <Path>>				// Store value at path in the stack
-  Instr.GetR     = <getr <Path>>			// Store value at path from frame on stack on stack
-  
   Instr.Dup      = <dup>					// Duplicates the value on the stack
   Instr.Swap     = <swap>					// Swaps two values on the stack
   Instr.Print    = <print>					// Prints value on the stack
   Instr.Debug    = <debug>					// Prints the state of the vm
+  
+  
+  Instr = FrameInstr
+  FrameInstr.New      = <new>					// Create new frame and push pointer on stack
+  FrameInstr.Link	  = <link <Path> <ID>>		// Link frame on stack to given location (Empty path is current frame)
+  FrameInstr.LinkR	  = <linkr <ID>>			// Link frame on second position on the stack to the frame on top
+  FrameInstr.Set      = <set <Path>>			// Set value on the stack at path location
+  FrameInstr.SetR     = <setr <Path>>			// Set value on the stack at path location starting in frame on stack
+  FrameInstr.Get      = <get <Path>>			// Store value at path in the stack
+  FrameInstr.GetR     = <getr <Path>>			// Store value at path from frame on stack on stack
+  
+  
+  Instr = ContInstr
+  ContInstr.ContNew = <cnew>  
+  ContInstr.ContNew = <cnew <Label>>  
+  ContInstr.ContSet = <cset>
+  ContInstr.ContSetR = <csetr>
+  ContInstr.ContGet = <cget>
+  ContInstr.ContGetR = <cgetr>
+  ContInstr.ContUnpack = <cunpack>
+  ContInstr.ContCall = <ccall>
   
   ControlInstr.Return    = <return>					// Takes return address from opstack and copies top of stack to caller stack  
   ControlInstr.JumpZ     = <jumpz <Label> <Label>>	// Jump to first label if stack zero, else jump to other label

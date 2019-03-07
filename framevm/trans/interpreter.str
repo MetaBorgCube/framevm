@@ -3,15 +3,17 @@ module interpreter
 imports 
 	signatures/framevm-sig
 	interpreter/-
+	desugar
     
 rules
   	eval : Program(blocks) -> out
       where 
     	env1 := <vm-init>;
       	env2 := <foldl(store-block)> (blocks, env1);
-      	env3 := <vm-start(|env2)> Continuation("exit", "") ;
-    	env4 := <execute(|env3)>;
-    	out  := <vm-stop(|env4)>
+      	env3 := <store-block> (Block(Label("_exit"), Seq([])), env2);
+      	env4 := <vm-start(|env3)> Continuation("exit", "_exit") ;
+    	env5 := <execute(|env4)>;
+    	out  := <vm-stop(|env5)>
     	
     store-block: (PseudoCode(_), env) -> env
   	store-block: (Block(Label(lbl), Seq(body)), env) -> <vm-store-block(|env)> (lbl, body)

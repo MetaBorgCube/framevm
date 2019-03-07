@@ -2,23 +2,31 @@ module toRISC
 
 imports
 	signatures/framevm-sig
+	desugar
 
 rules
 
 	to-RISC-all: Program(blocks) -> Program(<map(to-RISC-all)> blocks)
-	to-RISC-all: Block(lbl, Seq(body)) -> Block(lbl, Seq(risc_body))
+	to-RISC-all: Block(lbl, Seq(body)) -> Block(lbl, Seq(body_risc))
 	  where
-		link_risc := <foldr(![], to-RISC-link)> body;
-		set_risc := <foldr(![], to-RISC-set)> link_risc;
-		get_risc := <foldr(![], to-RISC-get)> set_risc;
-		risc_body := get_risc
+		body_risc := <to-RISC(r-return)><to-RISC(r-set)><to-RISC(r-get)><to-RISC(r-link)> body
   
-	to-RISC-link: (Link(path, lbl), body) -> [Get(path), LinkR(lbl) | body]
-	to-RISC-link: (e, body) -> [e|body]
+  	to-RISC(s): x -> <foldr(![], (s <+ idf))> x 
+  	idf: (e, body) -> [e|body]
+  	
+	r-link: (Link(path, lbl), body) -> [Get(path), LinkR(lbl) | body]
   
-    to-RISC-set: (Set(Path(path)), body) -> [Get(Self()), Swap(), SetR(Path(path)) | body]
-  	to-RISC-set: (e, body) -> [e|body]
+    r-set: (Set(Path(path)), body) -> [Get(Self()), Swap(), SetR(Path(path)) | body]
 
-    to-RISC-get: (Get(Path(path)), body) -> [Get(Self()), GetR(Path(path)) | body]
-  	to-RISC-get: (e, body) -> [e|body]
- 
+    r-get: (Get(Path(path)), body) -> [Get(Self()), GetR(Path(path)) | body]
+
+	r-return: (Return(), body) -> [ContGet(), ContUnpack(), Swap(), SetR(Path([Slot("r")])), ContGet(), ContCall()]
+
+
+//  ControlInstr.Return    = <return>					// Takes return address from opstack and copies top of stack to caller stack  
+//  ControlInstr.JumpZ     = <jumpz <Label> <Label>>	// Jump to first label if stack zero, else jump to other label
+//  ControlInstr.Jump      = <jump <Label>>			// Unconditional jump to LABEL
+//  ControlInstr.Call      = <call <Label> <Label>>	// Call block LABEL, using frame on the stack
+//  
+//  ControlInstr.ScopeUp   = <scopeup <Path> <Label>>
+//  ControlInstr.ScopeDown = <scopedown <Label>>

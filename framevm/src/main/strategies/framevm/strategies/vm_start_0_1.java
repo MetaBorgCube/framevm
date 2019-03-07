@@ -25,6 +25,11 @@ public class vm_start_0_1 extends FVMStrategy {
 		env.currentFrame.setExecutable();
 		env.currentFrame.getOperandStack().jump(block);
 		env.currentFrame.getOperandStack().setContinuation(continuation);
+		
+		Frame exit = new Frame("exit");
+		exit.setExecutable();
+//		env.currentFrame.getOperandStack().jump(env.getBlock("_exit"));
+		env.heap.put("exit", exit);
 
 		io.printError("FrameVM started: " + block.getName());
 		return new StrategoBlob(env);

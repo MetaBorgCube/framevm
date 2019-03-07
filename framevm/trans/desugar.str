@@ -5,6 +5,11 @@ imports
 	desugar/toRISC
 	desugar/fixSeq
 
+signature
+  sorts S
+  constructors    
+    Seq : [Instr] -> S
+    
 rules  
     desugar-all = remove-pseudo; fix-seq; to-RISC-all
   

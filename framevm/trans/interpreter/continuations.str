@@ -1,0 +1,52 @@
+module continuations
+
+imports 
+	signatures/framevm-sig
+	interpreter/common
+	interpreter/control
+	
+rules	
+	eval: (ContNew(), env1) -> env2
+	  where
+	  	frame_this := <frame-this(|env1)>;
+	  	env2 := <stack-push(|env1)> Continuation(frame_this, <frame-get-block(|env1)> frame_this)
+	  	
+	eval: (ContNew(Label(lbl)), env1) -> env2
+	  where
+	  	env2 := <stack-push(|env1)> Continuation(<frame-this(|env1)>, lbl)
+	  	
+	eval: (ContSet(), env1) -> env2
+	  where
+	  	(env2, cont) := <stack-pop(|env1)>;
+	  	this_frame := <frame-this(|env2)>;
+	  	env3 := <vm-set-cc(|env2)> (this_frame, cont)
+	  	
+	eval: (ContSetR(), env1) -> env2
+	  where
+	  	(env2, cont) := <stack-pop(|env1)>;
+	  	(env3, frame) := <stack-pop(|env2)>;
+	  	env4 := <vm-set-cc(|env3)> (frame, cont)
+	  	
+	eval: (ContGet(), env1) -> env2
+	  where
+	  	this_frame := <frame-this(|env1)>;
+	  	cont := <vm-get-cc(|env1)> this_frame;
+	  	env2 := <stack-push(|env1)> cont
+	  		  	
+	eval: (ContGetR(), env1) -> env2
+	  where
+	  	(env2, frame) := <stack-pop(|env1)>;
+	  	cont := <vm-get-cc(|env2)> frame;
+	  	env3 := <stack-push(|env2)> cont
+	  	
+	eval: (ContUnpack(), env1) -> env3
+	  where
+	  	(env2, Continuation(frame, _)) := <stack-pop(|env1)>;
+	  	env3 := <stack-push(|env2)> FrameRef(frame)
+	  	 	
+	eval: (ContCall(), env1) -> env3
+	  where
+	  	(env2, Continuation(frame, lbl)) := <stack-pop(|env1)>;
+	  	env3 := <vm-call(|env1)> (frame, lbl)
+
+	  	
