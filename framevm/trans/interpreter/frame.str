@@ -90,7 +90,7 @@ rules
 	eval: (ScopeUp(Path(path), Label(lbl)), env1) -> env2
 	  where
 		(frame_id, Link(link_id)) := <resolve> (path, FrameRef(<frame-this(|env1)>), env1);
-		env2 := <vm-call(|env1)> (<frame-get-link(|env1)> (frame_id, link_id), lbl)
+		env2 := <cont-call(|env1)> (<frame-get-link(|env1)> (frame_id, link_id), lbl)
 	
 	// Get a Slot or Link with the given id and frame
 	frame-get: (env, frame_id, Link(link_id)) -> FrameRef(<frame-get-link(|env)> (frame_id, link_id))

@@ -1,4 +1,4 @@
-package framevm.strategies;
+package framevm.strategies.continuation;
 
 
 import org.spoofax.interpreter.library.IOAgent;
@@ -6,10 +6,11 @@ import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermFactory;
 import org.spoofax.terms.StrategoString;
 
+import framevm.strategies.FVMStrategy;
 import framevm.strategies.util.Environment;
 
-public class vm_get_cc_0_1 extends FVMStrategy {
-	public static vm_get_cc_0_1 instance = new vm_get_cc_0_1();
+public class cont_get_cc_0_1 extends FVMStrategy {
+	public static cont_get_cc_0_1 instance = new cont_get_cc_0_1();
 
 	@Override
 	// env| frame_id -> frame_id

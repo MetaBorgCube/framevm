@@ -1,4 +1,4 @@
-package framevm.strategies;
+package framevm.strategies.continuation;
 
 
 import org.spoofax.interpreter.library.IOAgent;
@@ -7,11 +7,13 @@ import org.spoofax.interpreter.terms.ITermFactory;
 import org.spoofax.terms.StrategoString;
 import org.spoofax.terms.StrategoTuple;
 
+import framevm.strategies.FVMStrategy;
+import framevm.strategies.Frame;
 import framevm.strategies.util.Environment;
 import mb.nabl2.stratego.StrategoBlob;
 
-public class vm_set_cc_0_1 extends FVMStrategy {
-	public static vm_set_cc_0_1 instance = new vm_set_cc_0_1();
+public class cont_set_cc_0_1 extends FVMStrategy {
+	public static cont_set_cc_0_1 instance = new cont_set_cc_0_1();
 
 	@Override
 	// env| (frame, continuation) -> env'
