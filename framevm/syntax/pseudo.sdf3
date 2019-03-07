@@ -43,9 +43,9 @@ else:
     <fields:PsdInstr*>
 }>				 				{ layout (indent name fields && align name "}" && align-list fields) }
   
-  FuncDef.GenDef = <gen <name:ID>(<PsdArgList>) = {
+  FuncDef.GenDef = <gen <ID>(<PsdArgList>) = {
     <fields:PsdInstr*>
-}>				 				{ layout (indent name fields && align name "}" && align-list fields) }
+}>				 				{ layout (indent "gen" fields && align "gen" "}" && align-list fields) }
 
   PsdInstr.RecDef = <rec <ID> = {
     <fields:PsdRecField*>
