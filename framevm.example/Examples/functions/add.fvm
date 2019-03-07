@@ -22,7 +22,7 @@ MAIN:
 	dup 			// duplicate ref to call frame
 	ipush 1 		// 
 	setr [0] 		// j := 2 // assign to formal parameter j in call frame
-	dup
+	dup				//
 	ipush 3 		// 
 	setr [1] 		// j := 2 // assign to formal parameter j in call frame
 	call ADD CONT2	// create operand stack with frame ref on top of stack and run INC

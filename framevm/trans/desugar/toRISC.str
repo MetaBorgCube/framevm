@@ -5,6 +5,20 @@ imports
 
 rules
 
-  to-RISC-all = topdown(try(to-RISC))
+	to-RISC-all: Program(blocks) -> Program(<map(to-RISC-all)> blocks)
+	to-RISC-all: Block(lbl, Seq(body)) -> Block(lbl, Seq(risc_body))
+	  where
+		link_risc := <foldr(![], to-RISC-link)> body;
+		set_risc := <foldr(![], to-RISC-set)> link_risc;
+		get_risc := <foldr(![], to-RISC-get)> set_risc;
+		risc_body := get_risc
   
-  to-RISC: Return() -> Return()
+	to-RISC-link: (Link(path, lbl), body) -> [Get(path), LinkR(lbl) | body]
+	to-RISC-link: (e, body) -> [e|body]
+  
+    to-RISC-set: (Set(Path(path)), body) -> [Get(Self()), Swap(), SetR(Path(path)) | body]
+  	to-RISC-set: (e, body) -> [e|body]
+
+    to-RISC-get: (Get(Path(path)), body) -> [Get(Self()), GetR(Path(path)) | body]
+  	to-RISC-get: (e, body) -> [e|body]
+ 
