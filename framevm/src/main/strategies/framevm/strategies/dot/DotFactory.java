@@ -13,7 +13,9 @@ import framevm.strategies.util.Slot;
  * @see <a href="https://en.wikipedia.org/wiki/DOT_(graph_description_language)">DOT (graph descriptionlanguage)</a>
  */
 public abstract class DotFactory {
-		private static final Pattern PATTERN = Pattern.compile("FrameRef\\((.*)\\)");
+	private static final Pattern FRAME_PATTERN = Pattern.compile("FrameRef\\((.+)\\)");
+	private static final Pattern CONTINUATION_PATTERN = Pattern.compile("Continuation\\((.+),.+\\)");
+		
 		
 		/**
 		 * Generate the id used in the DOT file for a given frame.
@@ -202,9 +204,16 @@ public abstract class DotFactory {
 		 */
 		public static String slotToString(Slot slot, List<String> links, String slotRef) {
 			String value = slot.value.toString().replace("\"", "");
-			Matcher matcher = PATTERN.matcher(value);
+			Matcher matcher = FRAME_PATTERN.matcher(value);
 			
 			if (matcher.matches()) {	// If it is a reference
+				String frameRef = frame(matcher.group(1));
+				links.add(referenceLink(slotRef, frameRef + ":id"));
+			}
+			
+			matcher = CONTINUATION_PATTERN.matcher(value);
+			
+			if (matcher.matches()) {	// If it is a continuation
 				String frameRef = frame(matcher.group(1));
 				links.add(referenceLink(slotRef, frameRef + ":id"));
 			}

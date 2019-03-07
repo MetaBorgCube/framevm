@@ -28,6 +28,8 @@ public class DotEnvironmentFactory extends DotFactory {
 		
 		// Add all frames
 		for (Frame frame : env.heap.values()) {
+			if (frame.getId().equals("exit")) continue;
+			
 			nodeList.add(DotFrameFactory.build(frame, linkList));
 			
 			if (frame.getOperandStack() != null) {
@@ -39,6 +41,8 @@ public class DotEnvironmentFactory extends DotFactory {
 		
 		// Add all code blocks
 		for (Block block : env.blocks.values()) {
+			if (block.getName().equals("_exit")) continue;
+			
 			nodeList.add(DotBlockFactory.build(block, linkList));
 		}
 
