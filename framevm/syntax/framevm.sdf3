@@ -12,11 +12,22 @@ sorts Program context-free syntax
   
 sorts Block context-free syntax
 
-  Block.Block = lbl:Label ":" body:Body 			{ layout (indent lbl body) }
-  Block.PseudoCode = "{" body:PsdBody "}" 			{ layout (indent "{" body && align "{" "}") }
+  Block.Block = <
+<lbl:Label>: 
+    <body:Body>
+
+> 			{ layout (indent lbl body) }
+  
+  Block.PseudoCode = <{ 
+  	<body:PsdBody>
+}
+
+> 			{ layout (indent "{" body && align "{" "}") }
   
   Body.Empty = 
-  Body.Seq = instr:Instr* jump:ControlInstr			{ layout (align-list instr && align instr jump) }
+  Body.Seq = <<instr:Instr*> 
+<jump:ControlInstr>
+>			{ layout (align-list instr && align instr jump) }
   
 sorts Instr context-free syntax
   
@@ -49,7 +60,7 @@ sorts Instr context-free syntax
   Path.Self  = <[]>
   Path.Path  = <[<{PathRef ","}+>]>
   PathRef.Slot = INT
-  PathRef.SlotR = "r"
+  PathRef.SlotR = <r>
   PathRef.Link = LABEL
 
   
