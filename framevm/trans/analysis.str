@@ -9,7 +9,7 @@ imports
 
 rules // Analysis
 
-  editor-analyze = stx-editor-analyze(desugar-all; stack-calc|"static-semantics", "programOK")
+  editor-analyze = stx-editor-analyze(desugar-full; stack-calc|"static-semantics", "programOK")
 
 rules // Editor Services
 

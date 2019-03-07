@@ -19,18 +19,24 @@ rules // Debugging
     (node, _, _, path, project-path) -> (filename, result)
     with
       filename := <guarantee-extension(|"aterm")> path
-    ; result   := <desugar-all> node
+    ; result   := <desugar-full> node
     
   editor-format-desugar:
     (node, _, ast, path, project-path) -> (filename, result)
     with
       ext      := <get-extension> path
     ; filename := <guarantee-extension(|$[pp.[ext]])> path
-    ; result   := <pp-debug> <resugar> <desugar-all> node
+    ; result   := <pp-debug> <resugar> <desugar-full> node
     
   run-program:
     (node, _, _, path, project-path) -> (filename, result)
     with
       filename := <guarantee-extension(|"value")> path
-    ; result   := <eval><desugar-all>node
+    ; result   := <eval> <desugar> node
+    
+  run-desugared-program:
+    (node, _, _, path, project-path) -> (filename, result)
+    with
+      filename := <guarantee-extension(|"value")> path
+    ; result   := <eval> <desugar-full> node
     

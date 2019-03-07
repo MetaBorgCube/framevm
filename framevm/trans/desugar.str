@@ -11,7 +11,8 @@ signature
     Seq : [Instr] -> S
     
 rules  
-    desugar-all = remove-pseudo; fix-seq; to-RISC-all
+    desugar-full = remove-pseudo; fix-seq; to-RISC-all
+    desugar = remove-pseudo; fix-seq
   
     remove-pseudo: Program(blocks) -> Program(<foldr(![], remove-pseudo)> blocks)
     remove-pseudo: (Block(lbl, body), list) -> ([Block(lbl, body) | list])

@@ -58,7 +58,8 @@ menus
   
   menu: "Run" (openeditor)
     
-    action: "Run"          = run-program (source)
+    action: "Run"            = run-program (source)
+    action: "Run desugared"  = run-desugared-program (source)
 
 views
   
