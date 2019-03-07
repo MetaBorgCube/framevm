@@ -1,0 +1,86 @@
+{
+	gen func () = {
+		yield 1
+		yield 2
+		yield 3
+	}
+	print(func())
+	print(func())
+	print(func())	
+}
+
+MAIN:
+	new					// call frame for func
+	dup					//
+	link [] P			// Link it
+						//
+	call FUNC_1 MAIN_2	// Call func
+	
+MAIN_2:
+	get [r]				// Get result
+	dup					//
+	getr [0]			// Get result value
+	print				//
+	getr [1]			// Get continuation
+	dup					//
+	cunpack				// Get corresponding frame
+	cnew MAIN_3			//
+	csetr				// Update the continuation of function frame
+	ccall				// Call the function again
+	
+MAIN_3:
+	get [r]				// Get result
+	dup					//
+	getr [0]			// Get result value
+	print				//
+	getr [1]			// Get continuation
+	dup					//
+	cunpack				// Get corresponding frame
+	cnew MAIN_4			//
+	csetr				// Update the continuation of function frame
+	ccall				// Call the function again
+	
+	
+MAIN_4:
+	get [r]				// Get result
+	getr [0]			// Get result value
+	print				//
+						//
+	ipush 0				// Load exitcode
+	return				// exit
+	
+FUNC_1:
+	new					// Return object frame
+	dup					//
+	ipush 1				//
+	setr [0]			// Result = 1
+						//
+	dup					//
+	cnew FUNC_2			// Create continuation
+	setr [1]			// Store in return object
+						//
+	return				//
+	
+FUNC_2:
+	new					// Return object frame
+	dup					//
+	ipush 2				//
+	setr [0]			// Result = 1
+						//
+	dup					//
+	cnew FUNC_3			// Create continuation
+	setr [1]			// Store in return object
+						//
+	return				//
+	
+FUNC_3:
+	new					// Return object frame
+	dup					//
+	ipush 3				//
+	setr [0]			// Result = 1
+						//
+	dup					//
+	cnew FUNC_3			// Create continuation
+	setr [1]			// Store in return object
+						//
+	return				//
