@@ -21,8 +21,8 @@ MAIN:
 
 SUMTO:
   	get [0] 		// i
-  	ipush 0
-  	eqi
+  	ipush 0			//
+  	eqi				// i == 0
 	jumpz SUMTO_ELSE SUMTO_THEN
 
 SUMTO_THEN:
