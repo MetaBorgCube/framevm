@@ -8,8 +8,10 @@ import framevm.strategies.continuation.cont_get_cc_0_1;
 import framevm.strategies.continuation.cont_set_cc_0_1;
 import framevm.strategies.frame_ops.frame_get_link_0_1;
 import framevm.strategies.frame_ops.frame_get_slot_0_1;
+import framevm.strategies.frame_ops.frame_link_0_1;
 import framevm.strategies.frame_ops.frame_new_0_1;
 import framevm.strategies.frame_ops.frame_set_0_1;
+import framevm.strategies.frame_ops.frame_this_0_1;
 import framevm.strategies.stack_ops.stack_pop_0_1;
 import framevm.strategies.stack_ops.stack_push_0_1;
 
