@@ -4,14 +4,7 @@ imports
 	signatures/framevm-sig
 	interpreter/common
 	
-rules
-	// Call the given callFrame and set its continuation
-	eval-call(|env1): (callFrame, callLabel, Continuation(contFrame, contLabel)) -> env4
-	  where
-	  	env2 := <vm-jump(|env1)> (contFrame, contLabel);							// Prepare return location (This cannot be done in bytecode as stuff will break)
-	  	env3 := <vm-set-cc(|env2)> (callFrame, Continuation(contFrame, contLabel));	// Set the return address
-	  	env4 := <vm-call(|env3)> (callFrame, callLabel)								// call the function
-	
+rules	
 	// Call to the given continuation
 	eval-call(|env1): Continuation("exit", _) -> env1	
 	eval-call(|env1): Continuation(contFrame, contLabel) -> env2
@@ -42,10 +35,13 @@ rules
 	// Call/2
 	// Call the block at arg1 using the frame at the top of the stack
 	// This function returns to arg2 when finished
-	eval: (Call(Label(block), Label(returnAddr)), env1) -> env3
+	eval: (Call(Label(block), Label(returnAddr)), env1) -> env4
 	  where
-	  	(env2, FrameRef(frame_id)) := <stack-pop(|env1)>;			// get the function frame
-	  	env3 := <eval-call(|env2)> (frame_id, block, <new-continuation(|env2)> returnAddr)
+	  	(env2, FrameRef(callFrame)) := <stack-pop(|env1)>;				// get the function frame
+	  	continuation := <debug><new-continuation(|env2)> returnAddr;
+//	  	env3 := <vm-jump(|env2)> (<frame-this(|env1)>, returnAddr);		// Prepare return location (This cannot be done in bytecode as stuff will break)
+	  	env3 := <vm-set-cc(|env2)> (callFrame, continuation);			// Set the return address
+	  	env4 := <eval-call(|env3)> Continuation(callFrame, block)		// call the function
 	 
 	// Return/0
 	// Takes the value on top of the stack and returns to the caller frame
