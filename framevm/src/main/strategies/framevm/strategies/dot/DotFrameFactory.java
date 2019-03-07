@@ -2,7 +2,7 @@ package framevm.strategies.dot;
 
 import java.util.List;
 
-import framevm.strategies.Frame;
+import framevm.strategies.util.Frame;
 import framevm.strategies.util.Link;
 import framevm.strategies.util.Slot;
 

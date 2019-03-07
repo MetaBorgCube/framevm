@@ -1,4 +1,4 @@
-package framevm.strategies;
+package framevm.strategies.util;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -6,9 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.spoofax.interpreter.terms.IStrategoTerm;
-import framevm.strategies.util.Link;
-import framevm.strategies.util.OperandStack;
-import framevm.strategies.util.Slot;
 
 /**
  * Class representing a frame.

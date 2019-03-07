@@ -5,7 +5,7 @@ import java.util.Stack;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.terms.StrategoString;
 
-import framevm.strategies.Frame;
+import framevm.strategies.util.Frame;
 import framevm.strategies.util.OperandStack;
 
 /**

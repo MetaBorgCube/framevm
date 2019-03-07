@@ -1,7 +1,5 @@
 package framevm.strategies.util;
 
-import framevm.strategies.Frame;
-
 /**
  * A link to a {@link frame}.
  */

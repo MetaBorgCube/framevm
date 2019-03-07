@@ -14,6 +14,14 @@ import framevm.strategies.frame_ops.frame_set_0_1;
 import framevm.strategies.frame_ops.frame_this_0_1;
 import framevm.strategies.stack_ops.stack_pop_0_1;
 import framevm.strategies.stack_ops.stack_push_0_1;
+import framevm.strategies.vm.vm_debug_0_1;
+import framevm.strategies.vm.vm_execute_1_1;
+import framevm.strategies.vm.vm_init_0_0;
+import framevm.strategies.vm.vm_jump_0_1;
+import framevm.strategies.vm.vm_print_0_1;
+import framevm.strategies.vm.vm_start_0_1;
+import framevm.strategies.vm.vm_stop_0_1;
+import framevm.strategies.vm.vm_store_block_0_1;
 
 public class InteropRegisterer extends JavaInteropRegisterer {
 	public InteropRegisterer() {

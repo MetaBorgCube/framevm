@@ -2,8 +2,6 @@ package framevm.strategies.util;
 
 import java.util.HashMap;
 
-import framevm.strategies.Frame;
-
 /**
  * The environment that is passed around.
  * Contains a heap of all frames, a list of blocks, 

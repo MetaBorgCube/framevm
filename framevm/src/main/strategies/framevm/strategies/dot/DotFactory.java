@@ -4,8 +4,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import framevm.strategies.Frame;
 import framevm.strategies.util.Block;
+import framevm.strategies.util.Frame;
 import framevm.strategies.util.Slot;
 
 /**

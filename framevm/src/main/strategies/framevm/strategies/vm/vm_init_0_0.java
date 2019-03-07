@@ -1,4 +1,4 @@
-package framevm.strategies;
+package framevm.strategies.vm;
 
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.strategoxt.lang.Context;

@@ -3,9 +3,9 @@ package framevm.strategies.dot;
 import java.util.ArrayList;
 import java.util.List;
 
-import framevm.strategies.Frame;
 import framevm.strategies.util.Block;
 import framevm.strategies.util.Environment;
+import framevm.strategies.util.Frame;
 
 /**
  * Factory for creating a dotfile representing an {@link Environment}.

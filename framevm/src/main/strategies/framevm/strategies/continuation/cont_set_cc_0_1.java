@@ -8,8 +8,8 @@ import org.spoofax.terms.StrategoString;
 import org.spoofax.terms.StrategoTuple;
 
 import framevm.strategies.FVMStrategy;
-import framevm.strategies.Frame;
 import framevm.strategies.util.Environment;
+import framevm.strategies.util.Frame;
 import mb.nabl2.stratego.StrategoBlob;
 
 public class cont_set_cc_0_1 extends FVMStrategy {

@@ -2,8 +2,6 @@ package framevm.strategies.util;
 
 import org.spoofax.interpreter.terms.IStrategoTerm;
 
-import framevm.strategies.Frame;
-
 /**
  * A Slot in a {@link Frame}
  */

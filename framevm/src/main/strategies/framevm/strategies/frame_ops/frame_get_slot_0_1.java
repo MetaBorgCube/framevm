@@ -7,8 +7,8 @@ import org.spoofax.interpreter.terms.ITermFactory;
 import org.spoofax.terms.StrategoString;
 import org.spoofax.terms.StrategoTuple;
 import framevm.strategies.FVMStrategy;
-import framevm.strategies.Frame;
 import framevm.strategies.util.Environment;
+import framevm.strategies.util.Frame;
 
 public class frame_get_slot_0_1 extends FVMStrategy {
 	public static frame_get_slot_0_1 instance = new frame_get_slot_0_1();

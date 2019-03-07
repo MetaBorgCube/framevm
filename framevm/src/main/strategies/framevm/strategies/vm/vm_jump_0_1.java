@@ -1,4 +1,4 @@
-package framevm.strategies;
+package framevm.strategies.vm;
 
 
 import org.spoofax.interpreter.library.IOAgent;
@@ -8,6 +8,8 @@ import org.spoofax.terms.StrategoString;
 import org.spoofax.terms.StrategoTuple;
 
 import framevm.strategies.util.Environment;
+import framevm.strategies.util.Frame;
+import framevm.strategies.FVMStrategy;
 import framevm.strategies.util.Block;
 import mb.nabl2.stratego.StrategoBlob;
 

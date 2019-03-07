@@ -3,7 +3,6 @@ package framevm.strategies.util;
 import java.util.Stack;
 
 import org.spoofax.interpreter.terms.IStrategoTerm;
-import framevm.strategies.Frame;
 
 /**
  * Operand stack that gets attached to a {@link Frame} when it becomes executable.
