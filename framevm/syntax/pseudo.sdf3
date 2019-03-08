@@ -27,6 +27,10 @@ else:
     <body:PsdBody>
 >								{ layout (indent "for" body && indent "for" body) }
 
+  PsdInstr.ForIter = <for <ID> in <PsdExp>:
+    <body:PsdBody>
+>								{ layout (indent "for" body && indent "for" body) }
+
   PsdInstr.While = <while <PsdExp>:
     <body:PsdBody>
 >								{ layout (indent "while" body && indent "while" body) }
@@ -36,6 +40,7 @@ else:
   PsdInstr.Return = <return <PsdExp>>
   PsdInstr.FieldDef = <var <ID> : <PsdType>> 
   PsdInstr.Yield = <yield <PsdExp>>
+  PsdInstr.Throw = <throw <PsdExp>>
   
   PsdInstr = FuncDef 
   
@@ -50,6 +55,12 @@ else:
   PsdInstr.RecDef = <rec <ID> = {
     <fields:PsdRecField*>
 }>				 				{ layout (indent "rec" fields && align "rec" "}" && align-list fields) }
+
+PsdInstr.TryCatch = <try:
+    <try:PsdInstr*>
+catch <ID>:
+	<catch:PsdInstr*>
+>				 				{ layout (indent "try:" try && align "try:" "catch" && align-list try && indent "catch" catch && align-list catch) }
 
   PsdInstr.RecExtDef = <rec <ID>:<ID> = {
     <fields:PsdRecField*>

@@ -1,0 +1,40 @@
+{
+	try:
+		throw new A(1)
+	catch e:
+		print(e.m)
+	print(0)
+}
+
+MAIN:
+	new							// Try frame
+	dup							//
+	link [] P					//
+								//
+	new							// Catch frame
+	dup							//
+	link [] P					//
+								//
+	try MAIN_TRY MAIN_CATCH		//
+	
+MAIN_TRY:
+	new						// New A() frame
+	dup						//
+	link [P] P				//
+							//
+	dup						//
+	ipush 1					//
+	setr [0]				// new A().m := 1
+	throw					// Throw A
+	
+MAIN_CATCH:
+	get [r, 0]				// Get ex.m
+	print					//
+	scopeup [P] MAIN_END	// Exit catch block
+	
+MAIN_END:
+	ipush 0					//
+	print					// print(0)
+							//
+	ipush 0					//
+	return					// Exitcode = 0
