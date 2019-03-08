@@ -37,6 +37,7 @@ sorts Instr context-free syntax
   Instr.IPush 	 = <ipush <INT>>			// Push int value to stack
   
   Instr.Dup      = <dup>					// Duplicates the value on the stack
+  Instr.DupN     = <dup <INT>>				// Duplicates the n-th value on the stack
   Instr.Swap     = <swap>					// Swaps two values on the stack
   Instr.Print    = <print>					// Prints value on the stack
   Instr.Debug    = <debug>					// Prints the state of the vm

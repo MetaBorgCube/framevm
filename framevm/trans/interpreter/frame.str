@@ -5,7 +5,7 @@ imports
 	interpreter/common
 
 rules
-	// Dup
+	// Dup/0
 	// Duplicates the element on top of the stack
 	eval: (Dup(), env1) -> env4
 	  where
@@ -13,6 +13,26 @@ rules
 	  	env3 := <stack-push(|env2)> val;	//
 	  	env4 := <stack-push(|env3)> val		// push twice
 	  	
+	// DupN/1
+	// Duplicates the n-th element on top of the stack
+	eval: (DupN(n), env1) -> env3
+	  where
+	  	(env2, val) := <eval-dup(|env1)> <string-to-int>n ;
+	  	env3 := <stack-push(|env2)> val
+	 
+	eval-dup(|env1): 1 -> (env3, val)
+	  where
+	  	(env2, val) := <stack-pop(|env1)>;
+	  	env3 := <stack-push(|env2)> val
+	  	
+	eval-dup(|env1): n -> (env4, val)
+	  where
+	  	_ := <geq>(n, 2);
+	  	(env2, tmp) := <stack-pop(|env1)>;
+	  	(env3, val) := <eval-dup(|env2)> <dec> n;
+	  	env4 := <stack-push(|env3)> tmp
+	 
+	 
 	// New
 	// pushes an empty frame on the stack
   	eval: (New(), env1) -> env3

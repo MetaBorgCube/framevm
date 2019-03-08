@@ -29,7 +29,7 @@ public class cont_call_0_1 extends FVMStrategy {
 				io.printError("Continuation not set for " + target.getId());
 				return null;
 			}
-			io.printError(target.getOperandStack().getException().toString());
+
 			if (target.getOperandStack().getException() == null) {
 				io.printError("Exception handler not set for " + target.getId());
 				return null;
