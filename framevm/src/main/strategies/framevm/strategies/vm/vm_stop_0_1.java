@@ -9,6 +9,7 @@ import org.spoofax.interpreter.terms.ITermFactory;
 
 import framevm.strategies.FVMStrategy;
 import framevm.strategies.util.Environment;
+import framevm.strategies.util.Slot;
 
 
 public class vm_stop_0_1 extends FVMStrategy {
@@ -19,19 +20,21 @@ public class vm_stop_0_1 extends FVMStrategy {
 	// env -> string
 	// Return the output that was written to 'console'
 	protected IStrategoTerm invoke(IOAgent io, ITermFactory factory, Environment env, IStrategoTerm arg) {
-		String exitObj = env.currentFrame.getOperandStack().getReturnValue().value.toString();
-		Matcher match = PATTERN.matcher(exitObj);
-		if (match.matches()) {
-			int exitcode = Integer.valueOf(match.group(1));
-			if (exitcode == 0) {
-				io.printError("Execution terminated sucessfully");
+		Slot returnVal = env.currentFrame.getOperandStack().getReturnValue();
+		if (returnVal != null) {
+			String exitObj = returnVal.value.toString();
+			Matcher match = PATTERN.matcher(exitObj);
+			if (match.matches()) {
+				int exitcode = Integer.valueOf(match.group(1));
+				if (exitcode == 0) {
+					io.printError("Execution terminated sucessfully");
+				} else {
+					io.printError("Execution terminated with errors: " + exitcode);
+				}
 			} else {
-				io.printError("Execution terminated with errors: " + exitcode);
+				return null;	// Exitcode is not an intV 
 			}
-		} else {
-			return null;	// Exitcode is not an intV 
 		}
-		
 		String out = env.stdout.toString();
 
 		return factory.makeString(out);

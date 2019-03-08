@@ -13,7 +13,7 @@ public class cont_get_cc_0_1 extends FVMStrategy {
 	public static cont_get_cc_0_1 instance = new cont_get_cc_0_1();
 
 	@Override
-	// env| frame_id -> frame_id
+	// env| frame_id -> continuation
 	// Get the currently active continuation
 	protected IStrategoTerm invoke(IOAgent io, ITermFactory factory, Environment env, IStrategoTerm value) {
 		String frame = ((StrategoString) value).stringValue();
