@@ -38,6 +38,13 @@ rules
 	
 	r-cont: ScopeUp(path, lbl) -> 
 		[Get(path), ContNewR(lbl), ContCall()]
+		
+	r-cont: Try(lbl_try, lbl_catch) ->
+		[Dup(), ExGet(), ExSetR(), Dup(), ContGet(), ContSetR(), ContNewR(lbl_catch), 
+		DupN("2"), Swap(), ExSetR(), Dup(), ContGet(), ContSetR(), ContNewR(lbl_try), ContCall()]
+		
+	r-cont: Throw() -> 
+		[ExGet(), ContUnpack(), Swap(), SetR(Path([SlotR()])), ExGet(), ContCall()]
 	
 	// Continuations to relative continuations
 	r-cont2: ContNew(lbl) -> [Get(Self()), ContNewR(lbl)]

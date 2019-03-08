@@ -62,9 +62,9 @@ rules
 	eval: (Throw(), env1) -> env4
 	  where
 	  	(env2, throwable) := <stack-pop(|env1)>;
-	  	Continuation(handle_frame, handle_block) := <debug><ex-get-cx(|env2)> <frame-this(|env2)>;
-	  	env3 := <frame-set(|env2)> <debug>(handle_frame, "r", throwable);
-	  	env4 := <cont-call(|env3)> <debug>(handle_frame, handle_block)
+	  	Continuation(handle_frame, handle_block) := <ex-get-cx(|env2)> <frame-this(|env2)>;
+	  	env3 := <frame-set(|env2)> (handle_frame, "r", throwable);
+	  	env4 := <cont-call(|env3)> (handle_frame, handle_block)
 	  	
 	  	
 	
