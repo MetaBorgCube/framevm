@@ -13,6 +13,7 @@ public class OperandStack {
 	private int instr_count;
 	private Stack<IStrategoTerm> stack;
 	private IStrategoTerm continuation;
+	private IStrategoTerm exception;
 	private Slot returnValue;
 	
 	/**
@@ -21,6 +22,7 @@ public class OperandStack {
 	public OperandStack() {
 		this.block = null;
 		this.continuation = null;
+		this.exception = null;
 		
 		this.instr_count = 0;
 		this.stack = new Stack<>(); //TODO: pre-allocate block.max-stack
@@ -122,5 +124,13 @@ public class OperandStack {
 
 	public void setContinuation(IStrategoTerm continuation) {
 		this.continuation = continuation;
+	}
+
+	public void setException(IStrategoTerm exception) {
+		this.exception = exception;
+	}
+
+	public IStrategoTerm getException() {
+		return this.exception;
 	}
 }

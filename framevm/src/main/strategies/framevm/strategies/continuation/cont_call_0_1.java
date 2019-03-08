@@ -24,7 +24,18 @@ public class cont_call_0_1 extends FVMStrategy {
 		Frame target = env.getFrame(((StrategoString) tuple.get(0)).stringValue());
 		Block target_block = env.getBlock(((StrategoString) tuple.get(1)).stringValue());
 		
-		if (target.getOperandStack() == null) target.setExecutable();
+		if (!target.getId().equals("_exit") && !target.getId().equals("_catch")) {
+			if (target.getOperandStack().getContinuation() == null) {
+				io.printError("Continuation not set for " + target.getId());
+				return null;
+			}
+			io.printError(target.getOperandStack().getException().toString());
+			if (target.getOperandStack().getException() == null) {
+				io.printError("Exception handler not set for " + target.getId());
+				return null;
+			}
+		}
+		
 		target.getOperandStack().jump(target_block);
 		env.currentFrame = target;
 

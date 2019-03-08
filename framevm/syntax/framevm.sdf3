@@ -62,12 +62,21 @@ sorts Instr context-free syntax
   ContInstr.ContGetR   = <cgetr>			// Get the current continuation of the frame on top of the stack
   ContInstr.ContUnpack = <cunpack>			// Get the execution frame from a continuation
   
+  Instr = ExInstr
+  ExInstr.ExGet        = <xget>
+  ExInstr.ExGetR       = <xgetr>
+  ExInstr.ExSet        = <xset>
+  ExInstr.ExSetR       = <xsetr>
   
   ControlInstr.Return    = <return>					// Takes return address from opstack and copies top of stack to caller stack  
   ControlInstr.JumpZ     = <jumpz <Label> <Label>>	// Jump to first label if stack zero, else jump to other label
   ControlInstr.Jump      = <jump <Label>>			// Unconditional jump to LABEL
   ControlInstr.Call      = <call <Label> <Label>>	// Call block LABEL, using frame on the stack
-  ControlInstr.ContCall = <ccall>					// Call a continuation
+  ControlInstr.Call      = <call <Label>>			// Call continuation on the stack with new block
+  ControlInstr.ContCall  = <ccall>					// Call a continuation
+  
+  ControlInstr.Try       = <try <Label> <Label>>
+  ControlInstr.Throw     = <throw>
   
   ControlInstr.ScopeUp   = <scopeup <Path> <Label>>	// Break execution to a higher scope
   ControlInstr.ScopeDown = <scopedown <Label>>		// Move execution to another scope and copy over the current continuation

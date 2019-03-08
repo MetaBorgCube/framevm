@@ -1,0 +1,73 @@
+module exceptions
+
+imports 
+	signatures/framevm-sig
+	interpreter/common
+	
+rules	
+	// ExSet/0
+	// Set the exception continuation of the current frame to the continuation on top of the stack
+	eval: (ExSet(), env1) -> env2
+	  where
+	  	(env2, cont) := <stack-pop(|env1)>;
+	  	this_frame := <frame-this(|env2)>;
+	  	env3 := <ex-set-cx(|env2)> (this_frame, cont)
+	 
+	// ExSetR/0
+	// Set the exception continuation of the frame on second position on the stack to the continuation on top of the stack
+	eval: (ExSetR(), env1) -> env4
+	  where
+	  	(env2, cont) := <stack-pop(|env1)>;
+	  	(env3, FrameRef(frame)) := <stack-pop(|env2)>;
+	  	env4 := <ex-set-cx(|env3)> (frame, cont)
+	
+	// ExGet/0
+	// Get the exception continuation of the current frame
+	eval: (ExGet(), env1) -> env2
+	  where
+	  	this_frame := <frame-this(|env1)>;
+	  	cont := <ex-get-cx(|env1)> this_frame;
+	  	env2 := <stack-push(|env1)> cont
+	
+	// ExGetR/0
+	// Get the exception continuation of the frame on top of the stack
+	eval: (ExGetR(), env1) -> env2
+	  where
+	  	(env2, FrameRef(frame)) := <stack-pop(|env1)>;
+	  	cont := <ex-get-cx(|env2)> frame;
+	  	env3 := <stack-push(|env2)> cont
+	  	
+	// Try/2
+	// 
+	eval: (Try(Label(lbl_try), Label(lbl_catch)), env1) -> env8
+	  where
+	  	cont := <cont-get-cc(|env1)> <frame-this(|env1)>;
+	  	ex   := <ex-get-cx(|env1)>   <frame-this(|env1)>;
+	  	
+	  	(env2, FrameRef(frame_catch)) := <stack-pop(|env1)>;
+	  	(env3, FrameRef(frame_try))   := <stack-pop(|env2)>;
+	  	
+	  	catch := Continuation(frame_catch, lbl_catch);
+	  	
+	  	env4 := <cont-set-cc(|env3)> (frame_try, cont);
+	  	env5 := <ex-set-cx(|env4)>   (frame_try, catch);
+	  	
+	  	env6 := <cont-set-cc(|env5)> (frame_catch, cont);
+	  	env7 := <ex-set-cx(|env6)>   (frame_catch, ex);
+	  	
+	  	env8 := <cont-call(|env7)> (frame_try, lbl_try) 
+	
+	// Throw/0
+	// 
+	eval: (Throw(), env1) -> env4
+	  where
+	  	(env2, throwable) := <stack-pop(|env1)>;
+	  	Continuation(handle_frame, handle_block) := <debug><ex-get-cx(|env2)> <frame-this(|env2)>;
+	  	env3 := <frame-set(|env2)> <debug>(handle_frame, "r", throwable);
+	  	env4 := <cont-call(|env3)> <debug>(handle_frame, handle_block)
+	  	
+	  	
+	
+	
+	
+	

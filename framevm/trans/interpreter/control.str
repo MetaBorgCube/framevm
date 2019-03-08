@@ -11,12 +11,25 @@ rules
 	// Call/2
 	// Call the block at arg1 using the frame at the top of the stack
 	// This function returns to arg2 when finished
-	eval: (Call(Label(block), Label(returnAddr)), env1) -> env4
+	eval: (Call(Label(block), Label(returnAddr)), env1) -> env5
 	  where
 	  	(env2, FrameRef(callFrame)) := <stack-pop(|env1)>;		// get the function frame
 	  	continuation := <new-continuation(|env2)> returnAddr;
 	  	env3 := <cont-set-cc(|env2)> (callFrame, continuation);	// Set the return address
-	  	env4 := <cont-call(|env3)> (callFrame, block)				// call the function
+	  	ex := <ex-get-cx(|env3)> <frame-this(|env3)>;
+	  	env4 := <ex-set-cx(|env3)> (callFrame, ex);				// Copy over exception
+	  	env5 := <cont-call(|env4)> (callFrame, block)			// call the function
+	  	
+	// Call/1
+	// Call the block at arg1 using the continuation at the top of the stack
+	eval: (Call(Label(block)), env1) -> env5
+	  where
+	  	(env2, Continuation(frame, lbl)) := <stack-pop(|env1)>;		// get the function continuation
+	  	continuation := <new-continuation(|env2)> block;
+	  	env3 := <cont-set-cc(|env2)> (frame, continuation);			// Set the return address
+	  	ex := <ex-get-cx(|env3)> <frame-this(|env3)>;
+	  	env4 := <ex-set-cx(|env3)> (frame, ex);						// Copy over exception
+	  	env5 := <cont-call(|env4)> (frame, lbl)						// call the function
 	 
 	// Return/0
 	// Takes the value on top of the stack and returns to the caller frame
@@ -46,11 +59,12 @@ rules
 	// Move execution to a child scope, for example when entering a for loop
 	// Uses the frame on top of the stack as new execution frame (make sure its properly linked)
 	// Jumps the execution to the given block
-	eval: (ScopeDown(Label(lbl)), env1) -> env4
+	eval: (ScopeDown(Label(lbl)), env1) -> env5
 	  where
 	  	(env2, FrameRef(frame_to_id)) := <stack-pop(|env1)>;
 	  	env3 := <cont-set-cc(|env2)> (frame_to_id, <cont-get-cc(|env2)> <frame-this(|env2)>);
-	  	env4 := <cont-call(|env3)> (frame_to_id, lbl)
+	  	env4 := <ex-set-cx(|env3)> (frame_to_id, <ex-get-cx(|env3)> <frame-this(|env3)>);
+	  	env5 := <cont-call(|env4)> (frame_to_id, lbl)
 
 	// Resolve which label to pick
 	jump-eval: ("0", then, _) -> then

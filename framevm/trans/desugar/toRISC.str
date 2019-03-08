@@ -9,7 +9,6 @@ rules
 	to-RISC-all: Block(lbl, Seq(body)) -> Block(lbl, Seq(body_risc))
 	  where
 		body_risc := <to-RISC(r-set)><to-RISC(r-get)><to-RISC(r-link)><to-RISC(r-cont2)><to-RISC(r-cont)> body
-//		body_risc := body
   
     // Boilerplate to make the desugaring step simpler
   	to-RISC(s): x -> <foldr(![], (fpr(s) <+ idf))> x 
@@ -23,11 +22,22 @@ rules
     r-set: Set(Path(path)) -> [Get(Self()), Swap(), SetR(Path(path))]
     r-get: Get(Path(path)) -> [Get(Self()), GetR(Path(path))]
 
+
 	// Implicit continuations to explicit continuations
-	r-cont: Return() -> [ContGet(), ContUnpack(), Swap(), SetR(Path([SlotR()])), ContGet(), ContCall()]
-	r-cont: Call(Label(block), Label(returnAddr)) -> [Dup(), ContNew(Label(returnAddr)), ContSetR(), ContNewR(Label(block)), ContCall()]
-	r-cont: ScopeDown(lbl) -> [Dup(), ContGet(), ContSetR(), Dup(), ContNewR(lbl), ContCall()]
-	r-cont: ScopeUp(path, lbl) -> [Get(path), ContNewR(lbl), ContCall()]
+	r-cont: Return() -> 
+		[ContGet(), ContUnpack(), Swap(), SetR(Path([SlotR()])), ContGet(), ContCall()]
+		
+	r-cont: Call(Label(block), Label(returnAddr)) -> 
+		[Dup(), ContNew(Label(returnAddr)), ContSetR(), Dup(), ExGet(), ExSetR(), ContNewR(Label(block)), ContCall()]
+	
+	r-cont: Call(Label(block)) -> 
+		[Dup(), ContUnpack(), Dup(), ExGet(), ExSetR(), ContNew(Label(block)), ContSetR(), ContCall()]
+	
+	r-cont: ScopeDown(lbl) -> 
+		[Dup(), ContGet(), ContSetR(), Dup(), ExGet(), ExSetR(), Dup(), ContNewR(lbl), ContCall()]
+	
+	r-cont: ScopeUp(path, lbl) -> 
+		[Get(path), ContNewR(lbl), ContCall()]
 	
 	// Continuations to relative continuations
 	r-cont2: ContNew(lbl) -> [Get(Self()), ContNewR(lbl)]

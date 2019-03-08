@@ -23,16 +23,20 @@ public class vm_stop_0_1 extends FVMStrategy {
 		Slot returnVal = env.currentFrame.getOperandStack().getReturnValue();
 		if (returnVal != null) {
 			String exitObj = returnVal.value.toString();
-			Matcher match = PATTERN.matcher(exitObj);
-			if (match.matches()) {
-				int exitcode = Integer.valueOf(match.group(1));
-				if (exitcode == 0) {
-					io.printError("Execution terminated sucessfully");
+			if (env.currentFrame.getId().equals("_exit")) {
+				Matcher match = PATTERN.matcher(exitObj);
+				if (match.matches()) {
+					int exitcode = Integer.valueOf(match.group(1));
+					if (exitcode == 0) {
+						io.printError("Execution terminated sucessfully");
+					} else {
+						io.printError("Execution terminated with errors: " + exitcode);
+					}
 				} else {
-					io.printError("Execution terminated with errors: " + exitcode);
+					return null;	// Exitcode is not an intV 
 				}
-			} else {
-				return null;	// Exitcode is not an intV 
+			} else if (env.currentFrame.getId().equals("_catch")) {
+				io.printError("Uncought exception: " + exitObj);
 			}
 		}
 		String out = env.stdout.toString();
