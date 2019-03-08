@@ -18,7 +18,7 @@ public class vm_init_0_0 extends Strategy {
 		Environment env = new Environment();
 		env.currentFrame = env.getFrame(env.newFrame());
 
-		context.getIOAgent().printError("FrameVM initialized" + env.currentFrame.getId());
+		context.getIOAgent().printError("FrameVM initialized " + env.currentFrame.getId());
 		return new StrategoBlob(env);
 	}
 }

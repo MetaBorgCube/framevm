@@ -28,7 +28,7 @@ public class DotEnvironmentFactory extends DotFactory {
 		
 		// Add all frames
 		for (Frame frame : env.heap.values()) {
-			if (frame.getId().equals("exit")) continue;
+			if (frame.getId().equals("_exit") || frame.getId().equals("_catch")) continue;
 			
 			nodeList.add(DotFrameFactory.build(frame, linkList));
 			
@@ -41,7 +41,7 @@ public class DotEnvironmentFactory extends DotFactory {
 		
 		// Add all code blocks
 		for (Block block : env.blocks.values()) {
-			if (block.getName().equals("_exit")) continue;
+			if (block.getName().equals("_exit") || block.getName().equals("_catch")) continue;
 			
 			nodeList.add(DotBlockFactory.build(block, linkList));
 		}
@@ -53,7 +53,8 @@ public class DotEnvironmentFactory extends DotFactory {
 		return "digraph frames {\n"
 				+ "\tnode [shape=circle]\n"
 				+ "\tfinish [color=red]\n"
-				+ "\tcurrent [color=red]\n\n"
+				+ "\texception [color=purple]\n"
+				+ "\tcurrent [color=green]\n\n"
 				+ "\tnode [shape=record];\n\n" 
 				+ nodes + "\n\n\n" 
 				+ "\tcurrent -> " + currentFrame + "\n\n" 

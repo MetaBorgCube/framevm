@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.spoofax.interpreter.terms.IStrategoTerm;
+
 import framevm.strategies.util.Block;
 import framevm.strategies.util.Frame;
 import framevm.strategies.util.Slot;
@@ -190,6 +192,20 @@ public abstract class DotFactory {
 		}
 		
 		/**
+		 * Create a DOT link representing an exception path.
+		 * 
+		 * @param from
+		 * 		The from location of the link
+		 * @param to
+		 * 		The to location of the link
+		 * @return
+		 * 		A string containing the DOT link
+		 */
+		public static String exceptionLink(String from, String to) {
+			return from + ":ex -> " + to + " [color=purple, style=dashed];";
+		}
+		
+		/**
 		 * Convert a slot to string.
 		 * When the slot contains a reference, this reference is added to the links.
 		 * 
@@ -203,7 +219,24 @@ public abstract class DotFactory {
 		 * 		The value in the slot
 		 */
 		public static String slotToString(Slot slot, List<String> links, String slotRef) {
-			String value = slot.value.toString().replace("\"", "");
+			return termToString(slot.value, links, slotRef);
+		}
+		
+		/**
+		 * Convert a term to string.
+		 * When the term is a reference, this reference is added to the links.
+		 * 
+		 * @param term
+		 * 		The term to convert
+		 * @param links
+		 * 		A mutable list to add the links to
+		 * @param slotRef
+		 * 		The DOT id of the current slot
+		 * @return
+		 * 		The value in the term
+		 */
+		public static String termToString(IStrategoTerm term, List<String> links, String slotRef) {
+			String value = term.toString().replace("\"", "");
 			Matcher matcher = FRAME_PATTERN.matcher(value);
 			
 			if (matcher.matches()) {	// If it is a reference
@@ -218,5 +251,5 @@ public abstract class DotFactory {
 				links.add(referenceLink(slotRef, frameRef + ":id"));
 			}
 			return value;
-		}
+		} 
 }

@@ -30,16 +30,30 @@ public class DotOperandStackFactory extends DotFactory {
 		int count = opstack.getInstr_count();
 
 		// Add links to the executing instruction and the stack
-		String target = block(opstack.getBlock()) + ":" + (Math.max(0, count - 1));
-		links.add(blockLink(name, target));
+		if (opstack.getBlock() != null) {
+			String target = block(opstack.getBlock()) + ":" + (Math.max(0, count - 1));
+			links.add(blockLink(name, target));
+		}
 		links.add(stackLink(name, DotFactory.stack(frame)));
 
 		// Link the return address
-		String returnTarget_id = ((StrategoString) opstack.getContinuation().getSubterm(0)).stringValue();
-		if ("exit".equals(returnTarget_id)) {
-			links.add(returnLink(name, "finish"));
-		} else {
-			links.add(returnLink(name, frame(returnTarget_id) + ":id"));
+		if (opstack.getContinuation() != null) {
+			String returnTarget_id = ((StrategoString) opstack.getContinuation().getSubterm(0)).stringValue();
+			if ("_exit".equals(returnTarget_id)) {
+				links.add(returnLink(name, "finish"));
+			} else {
+				links.add(returnLink(name, frame(returnTarget_id) + ":id"));
+			}
+		}
+		
+		// Link the exception address
+		if (opstack.getException() != null) {
+			String exceptionTarget_id = ((StrategoString) opstack.getException().getSubterm(0)).stringValue();
+			if ("_catch".equals(exceptionTarget_id)) {
+				links.add(exceptionLink(name, "exception"));
+			} else {
+				links.add(exceptionLink(name, frame(exceptionTarget_id) + ":id"));
+			}
 		}
 
 		// Get the value in the return (r) slot
@@ -51,7 +65,7 @@ public class DotOperandStackFactory extends DotFactory {
 		}
 		
 		// Generate main node
-		String dotString = node(name, "{<head>Opstack | {{R | Block | ret | stack}| { <r>" + returnVal + " | <block> | <ret> | <stack>}}}");
+		String dotString = node(name, "{<head>Opstack | {{R | Block | ret | ex | stack}| { <r>" + returnVal + " | <block> | <ret> | <ex> | <stack>}}}");
 		
 		// Generate the node for the local stack
 		String stackString = "";
@@ -59,9 +73,14 @@ public class DotOperandStackFactory extends DotFactory {
 		// Copy the stack as we do a destructive read
 		@SuppressWarnings("unchecked")
 		Stack<IStrategoTerm> stack = (Stack<IStrategoTerm>) opstack.getStack().clone();
+		
+		count = 0;
+		name = stack(frame);
+		
 		while (!stack.isEmpty())  {
-			stackString += "|" + stack.pop().toString().replace("\"", "");
+			count++;
+			stackString += "|<" + count + ">" + termToString(stack.pop(), links, name + ":" + count);
 		}
-		return dotString + node(stack(frame), "{<head>" + stackString + "}");
+		return dotString + node(name, "{<head>" + stackString + "}");
 	}
 }
