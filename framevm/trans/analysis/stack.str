@@ -26,6 +26,7 @@ rules
   
 	stack-update: (New(), (size, err)) 		-> (<inc> size, err)
 	stack-update: (Dup(), (size, err)) 		-> (<inc> size, err)
+	stack-update: (DupN(_), (size, err)) 	-> (<inc> size, err)
 	stack-update: (Swap(), (size, err)) 	-> (size, err)
   
 	stack-update: (Link(_, _), (size, err)) -> (<dec> size, err)
@@ -44,6 +45,7 @@ rules
 	stack-update: (JumpZ(lbl1, lbl2), (size, err)) 	-> (<dec> size, err)
 	stack-update: (Jump(lbl), (size, err)) 		    -> (size, err)
 	stack-update: (Call(lbl1, lbl2), (size, err)) 	-> (<dec> size, err)
+	stack-update: (Call(lbl), (size, err))          -> (<dec> size, err)
 	
 	stack-update: (ScopeUp(path, lbl), (size, err)) -> (size, err)
 	stack-update: (ScopeDown(lbl), (size, err)) 	-> (<dec> size, err)
@@ -59,6 +61,15 @@ rules
 	
 	stack-update: (ContUnpack(), (size, err)) 	-> (size, err)
 	stack-update: (ContCall(), (size, err)) 	-> (<dec>size, err)
+	
+	stack-update: (ExSet(), (size, err)) 		-> (<dec>size, err)
+	stack-update: (ExSetR(), (size, err))       -> (<dec><dec>size, err)
+	stack-update: (ExGet(), (size, err)) 		-> (<inc>size, err)
+	stack-update: (ExGetR(), (size, err)) 		-> (size, err)
+	
+	
+	stack-update: (Try(_, _), (size, err)) 		-> (<dec><dec>size, err)
+	stack-update: (Throw(), (size, err)) 		-> (<dec>size, err)
 	
 	stack-update: (Debug(), (size, err)) -> (size, err)
 

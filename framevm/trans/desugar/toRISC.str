@@ -8,7 +8,7 @@ rules
 	to-RISC-all: Program(blocks) -> Program(<map(to-RISC-all)> blocks)
 	to-RISC-all: Block(lbl, Seq(body)) -> Block(lbl, Seq(body_risc))
 	  where
-		body_risc := <to-RISC(r-set)><to-RISC(r-get)><to-RISC(r-link)><to-RISC(r-cont2)><to-RISC(r-cont)> body
+		body_risc := <to-RISC(r-gset2)><to-RISC(r-link)><to-RISC(r-cont2)><to-RISC(r-cont)> body
   
     // Boilerplate to make the desugaring step simpler
   	to-RISC(s): x -> <foldr(![], (fpr(s) <+ idf))> x 
@@ -16,12 +16,7 @@ rules
   	idf: (e, body) -> [e|body]
   	
   	// Link -> LinkR
-	r-link: Link(path, lbl) -> [Get(path), LinkR(lbl)]
-  
-  	// Set/Get -> SetR/GetR
-    r-set: Set(Path(path)) -> [Get(Self()), Swap(), SetR(Path(path))]
-    r-get: Get(Path(path)) -> [Get(Self()), GetR(Path(path))]
-
+	r-link: Link(path, lbl)  -> [Get(path),  LinkR(lbl)]
 
 	// Implicit continuations to explicit continuations
 	r-cont: Return() -> 
@@ -34,7 +29,7 @@ rules
 		[Dup(), ContUnpack(), Dup(), ExGet(), ExSetR(), ContNew(Label(block)), ContSetR(), ContCall()]
 	
 	r-cont: ScopeDown(lbl) -> 
-		[Dup(), ContGet(), ContSetR(), Dup(), ExGet(), ExSetR(), Dup(), ContNewR(lbl), ContCall()]
+		[Dup(), ContGet(), ContSetR(), Dup(), ExGet(), ExSetR(), ContNewR(lbl), ContCall()]
 	
 	r-cont: ScopeUp(path, lbl) -> 
 		[Get(path), ContNewR(lbl), ContCall()]
@@ -50,4 +45,19 @@ rules
 	r-cont2: ContNew(lbl) -> [Get(Self()), ContNewR(lbl)]
 	r-cont2: ContGet()    -> [Get(Self()), ContGetR()]
 	r-cont2: ContSet()    -> [Get(Self()), ContSetR()]
+	r-cont2: ExGet()      -> [Get(Self()), ExGetR()]
+	r-cont2: ExSet()      -> [Get(Self()), ExSetR()]
+	
+	// Get/Set unfolding to single segment paths and only relative gets/sets
+	r-gset2: Get(path) -> [Get(Self()) | <r-gset2> GetR(path)]
+	r-gset2: GetR(Path(path)) -> <foldr(![], r-gset2-get)> path
+	
+	r-gset2: Set(Path(path)) -> <concat> [[Get(Self()) | <r-gset2> GetR(Path(body))] , [Swap(), SetR(Path([last]))]]
+	  where
+	  	(body, last) := <split-init-last> path
+	r-gset2: SetR(Path(path)) -> <concat> [<r-gset2> GetR(Path(body)) , [SetR(Path([last]))]]
+	  where
+	  	(body, last) := <split-init-last> path
+	
+	r-gset2-get: (e, list) -> [GetR(Path([e])) | list]
 	
