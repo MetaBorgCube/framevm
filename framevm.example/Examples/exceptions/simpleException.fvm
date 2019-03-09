@@ -21,7 +21,6 @@ MAIN:
 	
 MAIN_TRY:
 	new						// New A() frame
-	debug
 	dup						//
 	link [P] P				//
 							//
