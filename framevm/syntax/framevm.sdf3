@@ -64,10 +64,10 @@ sorts Instr context-free syntax
   ContInstr.ContUnpack = <cunpack>			// Get the execution frame from a continuation
   
   Instr = ExInstr
-  ExInstr.ExGet        = <xget>
-  ExInstr.ExGetR       = <xgetr>
-  ExInstr.ExSet        = <xset>
-  ExInstr.ExSetR       = <xsetr>
+  ExInstr.ExGet        = <xget>				// Get the current exceoption
+  ExInstr.ExGetR       = <xgetr>			// Get the current exception of the frame on top of the stack
+  ExInstr.ExSet        = <xset>				// Set the exception of the current frame
+  ExInstr.ExSetR       = <xsetr>			// Set the exception of the frame on second position on the stack
   
   ControlInstr.Return    = <return>					// Takes return address from opstack and copies top of stack to caller stack  
   ControlInstr.JumpZ     = <jumpz <Label> <Label>>	// Jump to first label if stack zero, else jump to other label
@@ -76,8 +76,9 @@ sorts Instr context-free syntax
   ControlInstr.Call      = <call <Label>>			// Call continuation on the stack with new block
   ControlInstr.ContCall  = <ccall>					// Call a continuation
   
-  ControlInstr.Try       = <try <Label> <Label>>
-  ControlInstr.Throw     = <throw>
+  ControlInstr.Try       = <try <Label> <Label>>	// Execute the frame on second position on the stack and set the first frame as exception handler
+  ControlInstr.Try       = <try>					// Execute the continuation on second position on the stack and set the first continuation as exception handler
+  ControlInstr.Throw     = <throw>					// Throw the element on top of the stack to the exception handler
   
   ControlInstr.ScopeUp   = <scopeup <Path> <Label>>	// Break execution to a higher scope
   ControlInstr.ScopeDown = <scopedown <Label>>		// Move execution to another scope and copy over the current continuation

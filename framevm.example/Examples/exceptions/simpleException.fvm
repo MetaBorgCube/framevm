@@ -7,18 +7,21 @@
 }
 
 MAIN:
-	new							// Try frame
-	dup							//
-	link [] P					//
-								//
-	new							// Catch frame
-	dup							//
-	link [] P					//
-								//
-	try MAIN_TRY MAIN_CATCH		//
+	new						// Try frame
+	dup						//
+	link [] P				//
+	cnewr MAIN_TRY			//
+							//
+	new						// Catch frame
+	dup						//
+	link [] P				//
+	cnewr MAIN_CATCH		//
+							//
+	try						//
 	
 MAIN_TRY:
 	new						// New A() frame
+	debug
 	dup						//
 	link [P] P				//
 							//

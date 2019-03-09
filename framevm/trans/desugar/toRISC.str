@@ -38,6 +38,10 @@ rules
 		[Dup(), ExGet(), ExSetR(), Dup(), ContGet(), ContSetR(), ContNewR(lbl_catch), 
 		DupN("2"), Swap(), ExSetR(), Dup(), ContGet(), ContSetR(), ContNewR(lbl_try), ContCall()]
 		
+	r-cont: Try() ->
+		[Dup(), ContUnpack(), Dup(), ExGet(), ExSetR(), ContGet(), ContSetR(), 
+		DupN("2"), ContUnpack(), Swap(), ExSetR(), Dup(), ContUnpack(), ContGet(), ContSetR(), ContCall()]
+		
 	r-cont: Throw() -> 
 		[ExGet(), ContUnpack(), Swap(), SetR(Path([SlotR()])), ExGet(), ContCall()]
 	
