@@ -1,0 +1,82 @@
+{
+	func1 () = {
+		func2()
+	}
+	
+	func2() = {
+		throw 1
+	}
+	
+	try:
+		func1()
+	catch e:
+		print(e.m)
+		trace := e.trace
+		print(trace)
+		print(trace.parent)
+		print(trace.parent.parent)
+}
+
+MAIN:
+	new						// Try frame
+	dup						//
+	link [] P				//
+	cnewr MAIN_TRY			//
+							//
+	new						// Catch frame
+	dup						//
+	link [] P				//
+	cnewr MAIN_CATCH		//
+							//
+	try						//
+	
+MAIN_TRY:
+	new						// New func1 frame
+	dup						//
+	link [P] P				//
+							//
+	call FUNC1 MAIN_END		//
+	
+FUNC1:
+	new						//
+	dup						//
+	link [] P				//
+	call FUNC2 FUNC1_END	//	Call func 1
+	
+FUNC1_END:
+	get [r]					// Pass along the return
+	return					// This should not be executed
+	
+FUNC2:
+	new						// exception frame
+	dup						//
+	get []					// Current frame for the stacktrace
+	setr [0]				// 
+							//
+	dup						//
+	ipush 1					// Store actual exception val
+	setr [1]				//
+	throw					//
+	
+MAIN_CATCH:
+	get [r, 1]				// Get ex.m
+	print					//
+	get [r, 0]				// Get the trace start pointer
+	dup						//
+	set [0]					//
+							//
+	dup						//
+	print					// Print trace root
+							//
+	dup						//
+	getr [P]				//
+	print					// Print next
+							//
+	getr [P, P]				// Print next
+	print					//
+							//
+	scopeup [P] MAIN_END	// Exit catch block
+	
+MAIN_END:
+	ipush 0					//
+	return					// Exitcode = 0
