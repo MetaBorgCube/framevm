@@ -35,8 +35,8 @@ else:
     <body:PsdBody>
 >								{ layout (indent "while" body && indent "while" body) }
 
-  PsdInstr.Assign = <<PsdRef> := <PsdExp>>
-  PsdInstr.Assign = <var <PsdRef> := <PsdExp>>
+  PsdInstr.Assign = <<PsdExp> := <PsdExp>>
+  PsdInstr.Assign = <var <PsdExp> := <PsdExp>>
   PsdInstr.Return = <return <PsdExp>>
   PsdInstr.FieldDef = <var <ID> : <PsdType>> 
   PsdInstr.Yield = <yield <PsdExp>>
@@ -65,9 +65,10 @@ catch <ID>:
   PsdInstr.RecExtDef = <rec <ID>:<ID> = {
     <fields:PsdRecField*>
 }>				 				{ layout (indent "rec" fields && align "rec" "}" && align-list fields) }
-  
-  PsdRef.Var = <<ID>>
-  PsdRef.Comp = <<PsdExp> . <PsdRef>>
+
+  PsdInstr.WithFrom = <with <ID> from <PsdExp>:
+    <body:PsdInstr*>
+>				 				{ layout (indent "with" body && align-list body) }
   
   PsdRecField.Field = <<ID> : <PsdType>>
   PsdRecField.Field = <<ID> : <PsdType>,>
@@ -80,15 +81,18 @@ catch <ID>:
   
 sorts PsdExp context-free syntax
 
-  PsdExp = "(" PsdExp ")" 						{bracket}
-  PsdExp.Add  = PsdExp "+" PsdExp
-  PsdExp.Sub  = PsdExp "-" PsdExp
-  PsdExp.Eq  = PsdExp "==" PsdExp
-  PsdExp.Neq  = PsdExp "!=" PsdExp
+  PsdExp = <(<PsdExp>)> 						{bracket}
+  PsdExp.SubScript = <<PsdExp>[<PsdExp>]>
+  PsdExp.Add  = <<PsdExp> + <PsdExp>>
+  PsdExp.Sub  = <<PsdExp> - <PsdExp>>
+  PsdExp.Eq   = <<PsdExp> == <PsdExp>>
+  PsdExp.Neq  = <<PsdExp> != <PsdExp>>
   PsdExp.Int  = <<INT>>
-  PsdExp.ID   = <<PsdRef>>
+  PsdExp.ID   = <<ID>>
   PsdExp.Bool = BOOL
-  PsdExp.FunApp = <<PsdRef>(<{PsdExp ","}*>)>
+  PsdExp.FunApp = <<PsdExp>(<{PsdExp ","}*>)>
   PsdExp.New = <new <ID>(<{PsdExp ","}*>)>
+  PsdExp.List = <[<{PsdExp ","}*>]>
+  PsdExp.Ref = <<PsdExp>.<PsdExp>>				{left}
   
   
