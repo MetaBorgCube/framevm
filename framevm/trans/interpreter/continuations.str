@@ -4,6 +4,7 @@ imports
 	signatures/framevm-sig
 	interpreter/common
 	interpreter/control
+	interpreter/external
 	
 rules	
 	// ContNew/0

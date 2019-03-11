@@ -3,6 +3,7 @@ module frame
 imports 
 	signatures/framevm-sig
 	interpreter/common
+	interpreter/external
 
 rules
 	// Dup/0
@@ -120,7 +121,7 @@ rules
 	// Resolve a path
 	// returns the frame_id and slot/link of the location pointed to
   	resolve: ([SlotR()], FrameRef(frame_id), env) -> (frame_id, Slot("r")) 
-  	resolve: ([slot_id], FrameRef(frame_id), env) -> (frame_id, slot_id) 
+  	resolve: ([slot], FrameRef(frame_id), env)    -> (frame_id, slot) 
   	resolve: ([h|t], FrameRef(frame_id), env) -> <resolve> (t, <frame-get> (env, frame_id, h), env)
   	
   	

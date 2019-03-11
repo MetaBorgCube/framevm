@@ -3,6 +3,7 @@ module arithmetic
 imports 
 	signatures/framevm-sig
 	interpreter/common
+	interpreter/external
 
 rules
 	// IPush/1

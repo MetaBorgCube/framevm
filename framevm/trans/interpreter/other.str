@@ -3,6 +3,7 @@ module other
 imports 
 	signatures/framevm-sig
 	interpreter/common
+	interpreter/external
 
 rules	// Other instructions
 

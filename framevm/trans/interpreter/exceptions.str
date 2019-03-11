@@ -3,6 +3,7 @@ module exceptions
 imports 
 	signatures/framevm-sig
 	interpreter/common
+	interpreter/external
 	
 rules	
 	// ExSet/0

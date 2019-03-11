@@ -3,6 +3,7 @@ module control
 imports 
 	signatures/framevm-sig
 	interpreter/common
+	interpreter/external
 	
 rules	
 	// Create a new continuation of the current frame
