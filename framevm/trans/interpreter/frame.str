@@ -41,6 +41,13 @@ rules
   	  	(env2, frame_id) := <frame-new(|env1)>;
   	  	env3 := <stack-push(|env2)> FrameRef(frame_id)
   	
+  	// Get/0
+  	// Get index on top of stack of the current frame
+  	eval: (Get(), env1) -> env3
+  	  where
+  	  	(env2, IntV(slot)) := <stack-pop(|env1)>;
+  	  	env3 := <stack-push(|env2)> <frame-get> (env2, <frame-this(|env2)>, Slot(slot))
+  	  	
   	// Get/1
   	// Push a value on the stack, this value is found by following arg1
   	eval: (Get(Self()), env1) -> env2
@@ -52,6 +59,14 @@ rules
   	  	(frame_id, slot) := <resolve> (p, FrameRef(<frame-this(|env1)>), env1);
   	  	env2 := <stack-push(|env1)> <frame-get> (env1, frame_id, slot)
 
+	// Set/0
+	// Store value on top of stack in slot on second position on stack of the current frame
+  	eval: (Set(), env1) -> env4
+  	  where
+  	  	(env2, value) := <stack-pop(|env1)>;
+  	  	(env3, IntV(slot)) := <stack-pop(|env2)>;
+  	  	env4 := <frame-set(|env3)> (<frame-this(|env3)>, slot, value)
+  	  	
 	// Set/1
 	// Store the value on top of the stack at the location found by traversing arg1 
   	eval: (Set(Path(p)), env1) -> env3
@@ -60,6 +75,14 @@ rules
   	  	(env2, value) := <stack-pop(|env1)>;
   	  	env3 := <frame-set(|env2)> (frame, slot, value)
   	  	
+  	// GetR/0
+  	// Get index on top of stack in frame on second position
+  	eval: (GetR(), env1) -> env4
+  	  where
+  	  	(env2, IntV(slot)) := <stack-pop(|env1)>;
+  	  	(env3, FrameRef(frame)) := <stack-pop(|env2)>;
+  	  	env4 := <stack-push(|env3)> <frame-get> (env3, frame, Slot(slot))
+  	
   	// GetR/1
   	// Push a value on the stack, this value is found by 
   	// following arg1 (starting from the frame on top of the stack)
@@ -69,6 +92,15 @@ rules
   	  	(frame_id, slot):= <resolve> (p, frame, env2);
   	  	env3 := <stack-push(|env2)> <frame-get> (env2, frame_id, slot)
 
+	// SetR/0
+	// Store value on top of stack in slot on second position of frame on third position
+  	eval: (SetR(), env1) -> env5
+  	  where
+  	  	(env2, value) := <stack-pop(|env1)>;
+  	  	(env3, IntV(slot)) := <stack-pop(|env2)>;
+  	  	(env4, FrameRef(frame)) := <stack-pop(|env3)>;
+  	  	env5 := <frame-set(|env4)> (frame, slot, value)
+  	
 	// Setr/1
   	// Store the value on top of the stack at 
   	// the location found by traversing arg1 from the frame on second position on the stack

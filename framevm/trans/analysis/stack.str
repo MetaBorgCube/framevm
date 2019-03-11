@@ -32,10 +32,14 @@ rules
 	stack-update: (Link(_, _), (size, err)) -> (<dec> size, err)
 	stack-update: (LinkR(_), (size, err))   -> (<dec><dec> size, err) 
   
+	stack-update: (Get(), (size, err)) 	    -> (size, err)
 	stack-update: (Get(path), (size, err)) 	-> (<inc> size, err)
+	stack-update: (GetR(), (size, err))     -> (<dec> size, err)
 	stack-update: (GetR(path), (size, err)) -> (size, err)
   
+	stack-update: (Set(), (size, err)) 	    -> (<dec><dec> size, err)
 	stack-update: (Set(path), (size, err)) 	-> (<dec> size, err)
+	stack-update: (SetR(), (size, err))     -> (<dec><dec><dec> size, err)
 	stack-update: (SetR(path), (size, err)) -> (<dec><dec> size, err)
   
 	stack-update: (Print(), (size, err)) 	-> (<dec> size, err)

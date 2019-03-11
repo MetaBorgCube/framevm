@@ -40,6 +40,27 @@ rules
 	  	env3 := <stack-push(|env2)> <eval-lt> (e2, e1)
 
 	// Swap/0
+	// Swaps the value on top of the stack with the one in (n+1)th position
+	eval: (SwapN(n), env1) -> env4
+	  where
+	  	(env2, e1) := <stack-pop(|env1)>;
+	  	v := <string-to-int> n;
+	  	(env3, e2) := <eval-swap(|env2)> (v, e1);
+	  	env4 := <stack-push(|env3)>
+	  	
+	eval-swap(|env1): (1, e1) -> (env3, e2)
+	  where
+	  	(env2, e2) := <stack-pop(|env1)>;
+	  	env3 := <stack-push(|env2)> e1
+	  	
+	eval-swap(|env1): (n, e1) -> (env4, e2)
+	  where
+	  	_ := <geq>(n, 2);
+	  	(env2, tmp) := <stack-pop(|env1)>;
+	  	(env3, e2) := <eval-swap(|env2)> (<dec> n, e1);
+	  	env4 := <stack-push(|env3)> tmp
+	  	
+	// Swap/1
 	// Takes two values from the stack
 	// Pushes them on the stack in reverse order
 	eval: (Swap(), env) -> env4

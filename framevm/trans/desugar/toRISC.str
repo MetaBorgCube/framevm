@@ -53,6 +53,9 @@ rules
 	r-cont2: ExSet()      -> [Get(Self()), ExSetR()]
 	
 	// Get/Set unfolding to single segment paths and only relative gets/sets
+	r-gset2: Get() -> [Get(Self()), Swap(), GetR()]
+	r-gset2: Set() -> [Get(Self()), SwapN("2"), Swap(), SetR()]
+	
 	r-gset2: Get(path) -> [Get(Self()) | <r-gset2> GetR(path)]
 	r-gset2: GetR(Path(path)) -> <foldr(![], r-gset2-get)> path
 	
