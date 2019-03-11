@@ -1,0 +1,11 @@
+module test
+
+language framevm
+
+test parse [[
+MAIN:
+	ipush 1
+	print
+	ipush 0
+	return
+]] transform "Run -> RISC" to "1"

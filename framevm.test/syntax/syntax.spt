@@ -1,0 +1,9 @@
+module test
+
+language framevm
+
+test parse [[
+MAIN:
+	ipush 1
+	return
+]] parse succeeds
