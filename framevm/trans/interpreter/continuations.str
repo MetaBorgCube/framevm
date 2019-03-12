@@ -6,7 +6,7 @@ imports
 	interpreter/control
 	interpreter/external
 	
-rules	
+rules
 	// ContNew/0
 	// Push a continuation on the stack of the current execution point
 	eval: (ContNew(), env1) -> env2

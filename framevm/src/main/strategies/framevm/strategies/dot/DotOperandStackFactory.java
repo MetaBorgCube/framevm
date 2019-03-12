@@ -38,7 +38,7 @@ public class DotOperandStackFactory extends DotFactory {
 
 		// Link the return address
 		if (opstack.getContinuation() != null) {
-			String returnTarget_id = ((StrategoString) opstack.getContinuation().getSubterm(0)).stringValue();
+			String returnTarget_id = ((StrategoString) opstack.getContinuation().value.getSubterm(0)).stringValue();
 			if ("_exit".equals(returnTarget_id)) {
 				links.add(returnLink(name, "finish"));
 			} else {
@@ -48,7 +48,7 @@ public class DotOperandStackFactory extends DotFactory {
 		
 		// Link the exception address
 		if (opstack.getException() != null) {
-			String exceptionTarget_id = ((StrategoString) opstack.getException().getSubterm(0)).stringValue();
+			String exceptionTarget_id = ((StrategoString) opstack.getException().value.getSubterm(0)).stringValue();
 			if ("_catch".equals(exceptionTarget_id)) {
 				links.add(exceptionLink(name, "exception"));
 			} else {

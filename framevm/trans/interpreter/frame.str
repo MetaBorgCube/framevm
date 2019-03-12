@@ -149,10 +149,14 @@ rules
 	frame-get: (env, frame_id, Link(link_id)) -> FrameRef(<frame-get-link(|env)> (frame_id, link_id))
 	frame-get: (env, frame_id, Slot(slot_id)) -> <frame-get-slot(|env)> (frame_id, slot_id)				// Normal slots
 	frame-get: (env, frame_id, SlotR())       -> <frame-get-slot(|env)> (frame_id, "r")					// Slot 'r'
+	frame-get: (env, frame_id, SlotC())       -> <frame-get-slot(|env)> (frame_id, "c")					// Slot 'c'
+	frame-get: (env, frame_id, SlotX())       -> <frame-get-slot(|env)> (frame_id, "x")					// Slot 'x'
 	
 	// Resolve a path
 	// returns the frame_id and slot/link of the location pointed to
   	resolve: ([SlotR()], FrameRef(frame_id), env) -> (frame_id, Slot("r")) 
+  	resolve: ([SlotC()], FrameRef(frame_id), env) -> (frame_id, Slot("c")) 
+  	resolve: ([SlotX()], FrameRef(frame_id), env) -> (frame_id, Slot("x")) 
   	resolve: ([slot], FrameRef(frame_id), env)    -> (frame_id, slot) 
   	resolve: ([h|t], FrameRef(frame_id), env) -> <resolve> (t, <frame-get> (env, frame_id, h), env)
   	
