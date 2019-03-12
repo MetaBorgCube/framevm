@@ -18,55 +18,65 @@ rules
   		_ := <debug> ("Stack size after block", lbl, size)
   		// If size > 0 give warning
   
+  	stack-update: (instr, (size, err)) -> (new_size, err)
+  	  where
+  	  	new_size := <addi> (size, <stack-delta> instr);
+  	  	_ := <geq> (new_size, 0)
+  	  	
+  	 stack-update: (instr, (size, errs)) -> (0, [err | errs])
+  	  where
+  	  	err := <debug> ("Popping from empty stack at", instr)
+  	  	
 	// For each operation, calculate the change in stack size
-	stack-update: (IPush(_), (size, err)) 	-> (<inc> size, err)
-	stack-update: (IAdd(), (size, err)) 	-> (<dec> size, err)
-	stack-update: (IEq(), (size, err)) 		-> (<dec> size, err)
-	stack-update: (ILt(), (size, err)) 		-> (<dec> size, err)
+	stack-delta: IPush(_) -> 1
+	stack-delta: IAdd()   -> -1
+	stack-delta: IEq()    -> -1
+	stack-delta: ILt()    -> -1
   
-	stack-update: (New(), (size, err)) 		-> (<inc> size, err)
-	stack-update: (Dup(), (size, err)) 		-> (<inc> size, err)
-	stack-update: (DupN(_), (size, err)) 	-> (<inc> size, err)
-	stack-update: (Swap(), (size, err)) 	-> (size, err)
+	stack-delta: New()    -> 1
+	stack-delta: Dup()    -> 1
+	stack-delta: DupN(_)  -> 1
+	stack-delta: Swap()   -> 0
+	stack-delta: SwapN(_) -> 0
   
-	stack-update: (Link(_, _), (size, err)) -> (<dec> size, err)
-	stack-update: (LinkR(_), (size, err))   -> (<dec><dec> size, err) 
+	stack-delta: Link(_, _) -> -1
+	stack-delta: LinkR(_)   -> -2
   
-	stack-update: (Get(), (size, err)) 	    -> (size, err)
-	stack-update: (Get(path), (size, err)) 	-> (<inc> size, err)
-	stack-update: (GetR(), (size, err))     -> (<dec> size, err)
-	stack-update: (GetR(path), (size, err)) -> (size, err)
+	stack-delta: Get()      -> 0
+	stack-delta: Get(path)  -> 1
+	stack-delta: GetR()     -> -1
+	stack-delta: GetR(path) -> 0
   
-	stack-update: (Set(), (size, err)) 	    -> (<dec><dec> size, err)
-	stack-update: (Set(path), (size, err)) 	-> (<dec> size, err)
-	stack-update: (SetR(), (size, err))     -> (<dec><dec><dec> size, err)
-	stack-update: (SetR(path), (size, err)) -> (<dec><dec> size, err)
+	stack-delta: Set()      -> -2
+	stack-delta: Set(path)  -> -1
+	stack-delta: SetR()     -> -3
+	stack-delta: SetR(path) -> -2
   
-	stack-update: (Print(), (size, err)) 	-> (<dec> size, err)
-	stack-update: (Return(), (size, err))	-> (<dec> size, err)
+	stack-delta: Print()  -> -1
+	stack-delta: Return() -> -1
   
   
-	stack-update: (JumpZ(lbl1, lbl2), (size, err)) 	-> (<dec> size, err)
-	stack-update: (Jump(lbl), (size, err)) 		    -> (size, err)
-	stack-update: (Call(lbl1, lbl2), (size, err)) 	-> (<dec> size, err)
-	stack-update: (Call(lbl), (size, err))          -> (<dec> size, err)
+	stack-delta: JumpZ(lbl1, lbl2) -> -1
+	stack-delta: Jump(lbl) -> 0
+	stack-delta: Call(lbl1, lbl2) -> -1
+	stack-delta: Call(lbl) -> -1
 	
-	stack-update: (ScopeUp(path, lbl), (size, err)) -> (size, err)
-	stack-update: (ScopeDown(lbl), (size, err)) 	-> (<dec> size, err)
+	stack-delta: ScopeUp(path, lbl) -> 0
+	stack-delta: ScopeDown(lbl) -> -1
 	
-	stack-update: (ContNew(), (size, err)) 				-> (<inc>size, err)
-	stack-update: (ContNew(Label(lbl)), (size, err))	-> (<inc>size, err)
-	stack-update: (ContNewR(Label(lbl)), (size, err)) 	-> (size, err)
+	stack-delta: ContNew() -> 1
+	stack-delta: ContNew(Label(lbl)) -> 1
+	stack-delta: ContNewR(Label(lbl)) -> 0
 	
-	stack-update: (ContUnpack(), (size, err)) 	-> (size, err)
-	stack-update: (ContCall(), (size, err)) 	-> (<dec>size, err)
+	stack-delta: ContUnpack() -> 0
+	stack-delta: ContCall() -> -1
 	
-	stack-update: (Try(_, _), (size, err)) 		-> (<dec><dec>size, err)
-	stack-update: (Throw(), (size, err)) 		-> (<dec>size, err)
+	stack-delta: Try(_, _) -> -2
+	stack-delta: Try() -> -2
+	stack-delta: Throw() -> -1
 	
-	stack-update: (Debug(), (size, err)) -> (size, err)
-
+	stack-delta: Debug() -> 0
   
-  	stack-update: (a, (size, err)) -> (size, err)
+  	stack-delta: a -> 0
   	  where
   		_ := <debug> ("Stack calculations not implemented for", a)
