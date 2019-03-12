@@ -58,19 +58,8 @@ rules
 	stack-update: (ContNew(Label(lbl)), (size, err))	-> (<inc>size, err)
 	stack-update: (ContNewR(Label(lbl)), (size, err)) 	-> (size, err)
 	
-	stack-update: (ContSet(), (size, err)) 		-> (<dec>size, err)
-	stack-update: (ContSetR(), (size, err)) 	-> (<dec><dec>size, err)
-	stack-update: (ContGet(), (size, err)) 		-> (<inc>size, err)
-	stack-update: (ContGetR(), (size, err)) 	-> (size, err)
-	
 	stack-update: (ContUnpack(), (size, err)) 	-> (size, err)
 	stack-update: (ContCall(), (size, err)) 	-> (<dec>size, err)
-	
-	stack-update: (ExSet(), (size, err)) 		-> (<dec>size, err)
-	stack-update: (ExSetR(), (size, err))       -> (<dec><dec>size, err)
-	stack-update: (ExGet(), (size, err)) 		-> (<inc>size, err)
-	stack-update: (ExGetR(), (size, err)) 		-> (size, err)
-	
 	
 	stack-update: (Try(_, _), (size, err)) 		-> (<dec><dec>size, err)
 	stack-update: (Throw(), (size, err)) 		-> (<dec>size, err)

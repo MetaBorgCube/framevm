@@ -12,8 +12,8 @@ public class OperandStack {
 	private Block block;
 	private int instr_count;
 	private Stack<IStrategoTerm> stack;
-	private IStrategoTerm continuation;
-	private IStrategoTerm exception;
+	private Slot continuation;
+	private Slot exception;
 	private Slot returnValue;
 	
 	/**
@@ -90,7 +90,7 @@ public class OperandStack {
 	 * @param value
 	 * 		The returned value
 	 */
-	public void on_return(IStrategoTerm value) {
+	public void setReturnValue(IStrategoTerm value) {
 		this.returnValue = new Slot(value);
 	}
 	
@@ -106,7 +106,7 @@ public class OperandStack {
 	 * @return
 	 * 		The current continuation
 	 */
-	public IStrategoTerm getContinuation() {
+	public Slot getContinuation() {
 		return this.continuation;
 	}
 	
@@ -123,14 +123,14 @@ public class OperandStack {
 	}
 
 	public void setContinuation(IStrategoTerm continuation) {
-		this.continuation = continuation;
+		this.continuation = new Slot(continuation);
 	}
 
 	public void setException(IStrategoTerm exception) {
-		this.exception = exception;
+		this.exception = new Slot(exception);
 	}
 
-	public IStrategoTerm getException() {
+	public Slot getException() {
 		return this.exception;
 	}
 }

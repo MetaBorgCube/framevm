@@ -8,6 +8,7 @@ import org.spoofax.terms.StrategoString;
 import org.spoofax.terms.StrategoTuple;
 import framevm.strategies.FVMStrategy;
 import framevm.strategies.util.Environment;
+import framevm.strategies.util.Frame;
 import framevm.strategies.util.Slot;
 import mb.nabl2.stratego.StrategoBlob;
 
@@ -20,16 +21,26 @@ public class frame_set_0_1 extends FVMStrategy {
 	protected IStrategoTerm invoke(IOAgent io, ITermFactory factory, Environment env, IStrategoTerm arg) {
 		StrategoTuple tuple = (StrategoTuple) arg;
 		
-		String frame_id = ((StrategoString) tuple.get(0)).stringValue();
+		Frame frame = env.getFrame(((StrategoString) tuple.get(0)).stringValue());
 		IStrategoTerm value = tuple.get(2);
+		String slotId = ((StrategoString) tuple.get(1)).stringValue();
 		try {
-			int slotId = Integer.valueOf(((StrategoString) tuple.get(1)).stringValue());
+			int slotIdx = Integer.valueOf(slotId);
 
 			Slot slot;
-			slot = env.getFrame(frame_id).getSlot(slotId, true);
+			slot = frame.getSlot(slotIdx, true);
 			slot.update(value);
 		} catch (NumberFormatException ex) {
-			env.getFrame(frame_id).getOperandStack().on_return(value);
+			if (frame.getOperandStack() == null) frame.setExecutable();
+			if ("r".equals(slotId)) {
+				frame.getOperandStack().setReturnValue(value);
+			} else if ("c".equals(slotId)) {
+				frame.getOperandStack().setContinuation(value);
+			} else if ("x".equals(slotId)) {
+				frame.getOperandStack().setException(value);
+			} else {
+				throw new IllegalArgumentException();
+			}
 		}
 		return new StrategoBlob(env);
 	}

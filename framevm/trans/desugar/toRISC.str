@@ -20,37 +20,33 @@ rules
 
 	// Implicit continuations to explicit continuations
 	r-cont: Return() -> 
-		[ContGet(), ContUnpack(), Swap(), SetR(Path([SlotR()])), ContGet(), ContCall()]
+		[Get(Path([SlotC()])), ContUnpack(), Swap(), SetR(Path([SlotR()])), Get(Path([SlotC()])), ContCall()]
 		
 	r-cont: Call(Label(block), Label(returnAddr)) -> 
-		[Dup(), ContNew(Label(returnAddr)), ContSetR(), Dup(), ExGet(), ExSetR(), ContNewR(Label(block)), ContCall()]
+		[Dup(), ContNew(Label(returnAddr)), SetR(Path([SlotC()])), Dup(), Get(Path([SlotX()])), SetR(Path([SlotX()])), ContNewR(Label(block)), ContCall()]
 	
 	r-cont: Call(Label(block)) -> 
-		[Dup(), ContUnpack(), Dup(), ExGet(), ExSetR(), ContNew(Label(block)), ContSetR(), ContCall()]
+		[Dup(), ContUnpack(), Dup(), Get(Path([SlotX()])), SetR(Path([SlotX()])), ContNew(Label(block)), SetR(Path([SlotC()])), ContCall()]
 	
 	r-cont: ScopeDown(lbl) -> 
-		[Dup(), ContGet(), ContSetR(), Dup(), ExGet(), ExSetR(), ContNewR(lbl), ContCall()]
+		[Dup(), Get(Path([SlotC()])), SetR(Path([SlotC()])), Dup(), Get(Path([SlotX()])), SetR(Path([SlotX()])), ContNewR(lbl), ContCall()]
 	
 	r-cont: ScopeUp(path, lbl) -> 
 		[Get(path), ContNewR(lbl), ContCall()]
 		
 	r-cont: Try(lbl_try, lbl_catch) ->
-		[Dup(), ExGet(), ExSetR(), Dup(), ContGet(), ContSetR(), ContNewR(lbl_catch), 
-		DupN("2"), Swap(), ExSetR(), Dup(), ContGet(), ContSetR(), ContNewR(lbl_try), ContCall()]
+		[Dup(), Get(Path([SlotX()])), SetR(Path([SlotX()])), Dup(), Get(Path([SlotC()])), SetR(Path([SlotC()])), ContNewR(lbl_catch), 
+		DupN("2"), Swap(), SetR(Path([SlotX()])), Dup(), Get(Path([SlotC()])), SetR(Path([SlotC()])), ContNewR(lbl_try), ContCall()]
 		
 	r-cont: Try() ->
-		[Dup(), ContUnpack(), Dup(), ExGet(), ExSetR(), ContGet(), ContSetR(), 
-		DupN("2"), ContUnpack(), Swap(), ExSetR(), Dup(), ContUnpack(), ContGet(), ContSetR(), ContCall()]
+		[Dup(), ContUnpack(), Dup(), Get(Path([SlotX()])), SetR(Path([SlotX()])), Get(Path([SlotC()])), SetR(Path([SlotC()])), 
+		DupN("2"), ContUnpack(), Swap(), SetR(Path([SlotX()])), Dup(), ContUnpack(), Get(Path([SlotC()])), SetR(Path([SlotC()])), ContCall()]
 		
 	r-cont: Throw() -> 
-		[ExGet(), ContUnpack(), Swap(), SetR(Path([SlotR()])), ExGet(), ContCall()]
+		[Get(Path([SlotX()])), ContUnpack(), Swap(), SetR(Path([SlotR()])), Get(Path([SlotX()])), ContCall()]
 	
 	// Continuations to relative continuations
 	r-cont2: ContNew(lbl) -> [Get(Self()), ContNewR(lbl)]
-	r-cont2: ContGet()    -> [Get(Self()), ContGetR()]
-	r-cont2: ContSet()    -> [Get(Self()), ContSetR()]
-	r-cont2: ExGet()      -> [Get(Self()), ExGetR()]
-	r-cont2: ExSet()      -> [Get(Self()), ExSetR()]
 	
 	// Get/Set unfolding to single segment paths and only relative gets/sets
 	r-gset2: Get() -> [Get(Self()), Swap(), GetR()]

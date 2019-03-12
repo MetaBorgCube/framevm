@@ -4,8 +4,6 @@ import org.strategoxt.lang.JavaInteropRegisterer;
 import org.strategoxt.lang.Strategy;
 
 import framevm.strategies.continuation.cont_call_0_1;
-import framevm.strategies.continuation.cont_get_cc_0_1;
-import framevm.strategies.continuation.cont_set_cc_0_1;
 import framevm.strategies.frame_ops.frame_get_link_0_1;
 import framevm.strategies.frame_ops.frame_get_slot_0_1;
 import framevm.strategies.frame_ops.frame_link_0_1;
@@ -35,10 +33,6 @@ public class InteropRegisterer extends JavaInteropRegisterer {
 				vm_debug_0_1.instance,
 				vm_jump_0_1.instance,
 
-				ex_get_cx_0_1.instance,
-				ex_set_cx_0_1.instance,
-				cont_get_cc_0_1.instance,
-				cont_set_cc_0_1.instance,
 				cont_call_0_1.instance,
 
 				stack_push_0_1.instance,

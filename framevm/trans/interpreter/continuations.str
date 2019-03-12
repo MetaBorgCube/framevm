@@ -27,38 +27,6 @@ rules
 	  	(env2, FrameRef(frame)) := <stack-pop(|env1)>;
 	  	env3 := <stack-push(|env2)> Continuation(frame, lbl)
 	
-	// ContSet/0
-	// Set the continuation of the current frame to the continuation on top of the stack
-	eval: (ContSet(), env1) -> env2
-	  where
-	  	(env2, cont) := <stack-pop(|env1)>;
-	  	this_frame := <frame-this(|env2)>;
-	  	env3 := <cont-set-cc(|env2)> (this_frame, cont)
-	 
-	// ContSetR/0
-	// Set the continuation of the frame on second position on the stack to the continuation on top of the stack
-	eval: (ContSetR(), env1) -> env4
-	  where
-	  	(env2, cont) := <stack-pop(|env1)>;
-	  	(env3, FrameRef(frame)) := <stack-pop(|env2)>;
-	  	env4 := <cont-set-cc(|env3)> (frame, cont)
-	
-	// ContGet/0
-	// Get the continuation of the current frame
-	eval: (ContGet(), env1) -> env2
-	  where
-	  	this_frame := <frame-this(|env1)>;
-	  	cont := <cont-get-cc(|env1)> this_frame;
-	  	env2 := <stack-push(|env1)> cont
-	
-	// ContGetR/0
-	// Get the continuation of the frame on top of the stack
-	eval: (ContGetR(), env1) -> env2
-	  where
-	  	(env2, FrameRef(frame)) := <stack-pop(|env1)>;
-	  	cont := <cont-get-cc(|env2)> frame;
-	  	env3 := <stack-push(|env2)> cont
-	
 	// ContUnpack/0
 	// Get the frame enclosed in a continuation
 	eval: (ContUnpack(), env1) -> env3

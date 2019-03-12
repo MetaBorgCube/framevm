@@ -26,11 +26,10 @@ rules
 	external vm-jump(|env)			// env| (frame_id, lbl) -> env'
 
 	external cont-call(|env)	    // env| (frame_id, lbl) -> env'
-	external cont-get-cc(|env)		// env| frame_id -> continuation
-	external cont-set-cc(|env)		// env| (frame_id, continuation) -> env'
 	
-	external ex-get-cx(|env)		// env| frame_id -> continuation
-	external ex-set-cx(|env)		// env| (frame_id, continuation) -> env'
+rules
+	ex-set-cx(|env):   (frame, ex)   -> <frame-set(|env)> (frame, "x", ex)
+	cont-set-cc(|env): (frame, cont) -> <frame-set(|env)> (frame, "c", cont)
 	
-	
-	
+	ex-get-cx(|env):   frame -> <frame-get-slot(|env)> (frame, "x")
+	cont-get-cc(|env): frame -> <frame-get-slot(|env)> (frame, "c")
