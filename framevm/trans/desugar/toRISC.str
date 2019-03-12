@@ -8,7 +8,7 @@ rules
 	to-RISC-all: Program(blocks) -> Program(<map(to-RISC-all)> blocks)
 	to-RISC-all: Block(lbl, Seq(body)) -> Block(lbl, Seq(body_risc))
 	  where
-		body_risc := <to-RISC(r-gset2)><to-RISC(r-link)><to-RISC(r-cont2)><to-RISC(r-cont)> body
+		body_risc := <to-RISC(r-relative)><to-RISC(r-link)><to-RISC(r-cont)> body
   
     // Boilerplate to make the desugaring step simpler
   	to-RISC(s): x -> <foldr(![], (fpr(s) <+ idf))> x 
@@ -45,22 +45,24 @@ rules
 	r-cont: Throw() -> 
 		[Get(Path([SlotX()])), ContUnpack(), Swap(), SetR(Path([SlotR()])), Get(Path([SlotX()])), ContCall()]
 	
+	
+	
 	// Continuations to relative continuations
-	r-cont2: ContNew(lbl) -> [Get(Self()), ContNewR(lbl)]
+	r-relative: ContNew(lbl) -> [Get(Self()), ContNewR(lbl)]
 	
 	// Get/Set unfolding to single segment paths and only relative gets/sets
-	r-gset2: Get() -> [Get(Self()), Swap(), GetR()]
-	r-gset2: Set() -> [Get(Self()), SwapN("2"), Swap(), SetR()]
+	r-relative: Get() -> [Get(Self()), Swap(), GetR()]
+	r-relative: Set() -> [Get(Self()), SwapN("2"), Swap(), SetR()]
 	
-	r-gset2: Get(path) -> [Get(Self()) | <r-gset2> GetR(path)]
-	r-gset2: GetR(Path(path)) -> <foldr(![], r-gset2-get)> path
+	r-relative: Get(path) -> [Get(Self()) | <r-relative> GetR(path)]
+	r-relative: GetR(Path(path)) -> <foldr(![], r-relative-get)> path
 	
-	r-gset2: Set(Path(path)) -> <concat> [[Get(Self()) | <r-gset2> GetR(Path(body))] , [Swap(), SetR(Path([last]))]]
+	r-relative: Set(Path(path)) -> <concat> [[Get(Self()) | <r-relative> GetR(Path(body))] , [Swap(), SetR(Path([last]))]]
 	  where
 	  	(body, last) := <split-init-last> path
-	r-gset2: SetR(Path(path)) -> <concat> [<r-gset2> GetR(Path(body)) , [SetR(Path([last]))]]
+	r-relative: SetR(Path(path)) -> <concat> [<r-relative> GetR(Path(body)) , [SetR(Path([last]))]]
 	  where
 	  	(body, last) := <split-init-last> path
 	
-	r-gset2-get: (e, list) -> [GetR(Path([e])) | list]
+	r-relative-get: (e, list) -> [GetR(Path([e])) | list]
 	

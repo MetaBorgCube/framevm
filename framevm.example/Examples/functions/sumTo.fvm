@@ -3,7 +3,7 @@
 		if i == 0:
 			return 0
 		else:
-  			return i + sumTo(i -1)
+  			return i + (sumTo(i -1))
 	}
 	
 	print(sumTo(42))		// prints 903
@@ -16,8 +16,8 @@ MAIN:
 	dup 			// duplicate ref to call frame
 	ipush 42 		// 
 	setr [0] 		// assign to formal parameter i in call frame
-	call SUMTO END	// create operand stack with frame ref on top of stack and run function
-					// Returns to END
+	call SUMTO MAIN_END	// create operand stack with frame ref on top of stack and run function
+						// Returns to END
 
 SUMTO:
   	get [0] 		// i
@@ -48,7 +48,7 @@ SUMTO_RETURN:
 	addi			//
 	return			//
 	
-END:
+MAIN_END:
 	get [r]			// Get return value
 	print			// print sumto(1)
 					//
