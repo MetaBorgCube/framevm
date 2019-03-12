@@ -1,0 +1,155 @@
+module smoke_generator
+
+language framevm
+
+test Generator example RISC [[MAIN:
+	new
+	dup
+	link [] P
+	scopedown FOR_INIT
+	
+MAIN_END:
+	ipush 0
+	return
+	
+FOR_INIT:
+	new
+	dup
+	link [] P
+	new
+	dup
+	link [] P
+	try FOR_START FOR_END
+	
+FOR_START:
+	new
+	dup
+	link [] P
+	call FUNC_1 FOR_BODY
+	
+FOR_BODY:
+	get [r]
+	dup
+	getr [0]
+	set [0]
+	get [0]
+	print
+	getr [1]
+	call FOR_BODY
+
+FOR_END:
+	scopeup [P] MAIN_END
+	
+FUNC_1:
+	new
+	dup
+	ipush 1
+	setr [0]
+	dup
+	cnew FUNC_2
+	setr [1]
+	return
+	
+FUNC_2:
+	new
+	dup
+	ipush 2
+	setr [0]
+	dup
+	cnew FUNC_3
+	setr [1]
+	return
+	
+FUNC_3:
+	new
+	dup
+	ipush 3
+	setr [0]
+	dup
+	cnew FUNC_END
+	setr [1]
+	return
+	
+FUNC_END:
+	ipush -1
+	throw
+]] transform "Run -> RISC" to "1
+2
+3"
+
+
+test Generator example CISC [[MAIN:
+	new
+	dup
+	link [] P
+	scopedown FOR_INIT
+	
+MAIN_END:
+	ipush 0
+	return
+	
+FOR_INIT:
+	new
+	dup
+	link [] P
+	new
+	dup
+	link [] P
+	try FOR_START FOR_END
+	
+FOR_START:
+	new
+	dup
+	link [] P
+	call FUNC_1 FOR_BODY
+	
+FOR_BODY:
+	get [r]
+	dup
+	getr [0]
+	set [0]
+	get [0]
+	print
+	getr [1]
+	call FOR_BODY
+
+FOR_END:
+	scopeup [P] MAIN_END
+	
+FUNC_1:
+	new
+	dup
+	ipush 1
+	setr [0]
+	dup
+	cnew FUNC_2
+	setr [1]
+	return
+	
+FUNC_2:
+	new
+	dup
+	ipush 2
+	setr [0]
+	dup
+	cnew FUNC_3
+	setr [1]
+	return
+	
+FUNC_3:
+	new
+	dup
+	ipush 3
+	setr [0]
+	dup
+	cnew FUNC_END
+	setr [1]
+	return
+	
+FUNC_END:
+	ipush -1
+	throw
+]] transform "Run -> CISC" to "1
+2
+3"
+

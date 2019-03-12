@@ -1,0 +1,69 @@
+module smoke_exception
+
+language framevm
+
+test Simple exception example RISC [[MAIN:
+	new
+	dup
+	link [] P
+	cnewr MAIN_TRY
+	new
+	dup
+	link [] P
+	cnewr MAIN_CATCH
+	try
+	
+MAIN_TRY:
+	new
+	dup
+	link [P] P
+	dup
+	ipush 1
+	setr [0]
+	throw
+	
+MAIN_CATCH:
+	get [r, 0]
+	print
+	scopeup [P] MAIN_END
+	
+MAIN_END:
+	ipush 0
+	print
+	ipush 0
+	return
+]] transform "Run -> RISC" to "1
+0"
+
+test Simple exception example CISC [[MAIN:
+	new
+	dup
+	link [] P
+	cnewr MAIN_TRY
+	new
+	dup
+	link [] P
+	cnewr MAIN_CATCH
+	try
+	
+MAIN_TRY:
+	new
+	dup
+	link [P] P
+	dup
+	ipush 1
+	setr [0]
+	throw
+	
+MAIN_CATCH:
+	get [r, 0]
+	print
+	scopeup [P] MAIN_END
+	
+MAIN_END:
+	ipush 0
+	print
+	ipush 0
+	return
+]] transform "Run -> CISC" to "1
+0"

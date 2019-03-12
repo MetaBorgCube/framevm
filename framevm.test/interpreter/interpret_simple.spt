@@ -1,8 +1,8 @@
-module test
+module interpreter_simple
 
 language framevm
 
-test parse [[
+test simple print [[
 MAIN:
 	ipush 1
 	print

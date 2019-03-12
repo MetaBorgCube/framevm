@@ -1,0 +1,191 @@
+module smoke_with
+
+language framevm
+
+test with example RISC [[MAIN:
+	new
+	dup
+	link [] P
+	scopedown WITH_I_1
+	
+MAIN_END:
+	ipush 0
+	return
+	
+ASSERT_FALSE:
+	get [0]
+	ccall
+	
+WITH_I_1:
+	cnew WITH_I_2
+	set [0]
+	ipush 5
+	set [1]
+	jump WITH_I_BODY
+		
+WITH_I_2:
+	cnew WITH_I_3
+	set [0]
+	ipush 6
+	set [1]
+	jump WITH_I_BODY
+		
+WITH_I_3:
+	cnew WITH_I_EXIT
+	set [0]
+	ipush 7
+	set [1]
+	jump WITH_I_BODY
+	
+WITH_I_BODY:
+	new
+	dup
+	link [] P
+	scopedown WITH_J_1
+	
+WITH_I_END:
+	get [0]
+	ccall
+	
+WITH_I_EXIT:
+	scopeup [P] MAIN_END
+	
+WITH_J_1:
+	cnew WITH_J_2
+	set [0]
+	ipush 1
+	set [1]
+	jump WITH_J_BODY
+	
+WITH_J_2:
+	cnew WITH_J_3
+	set [0]
+	ipush 2
+	set [1]
+	jump WITH_J_BODY
+	
+	
+WITH_J_3:
+	cnew WITH_J_END
+	set [0]
+	ipush 3
+	set [1]
+	jump WITH_J_BODY
+	
+WITH_J_BODY:
+	get [1]
+	get [P, 1]
+	addi
+	ipush 9
+	eqi
+	jumpz ASSERT_FALSE WITH_J_BODY2
+	
+WITH_J_BODY2:
+	get [P, 1]
+	print
+	get [1]
+	print
+	get[0]
+	ccall
+	
+WITH_J_END:
+	scopeup [P] WITH_I_END
+]] transform "Run -> RISC" to "6
+3
+7
+2"
+
+test with example CISC [[MAIN:
+	new
+	dup
+	link [] P
+	scopedown WITH_I_1
+	
+MAIN_END:
+	ipush 0
+	return
+	
+ASSERT_FALSE:
+	get [0]
+	ccall
+	
+WITH_I_1:
+	cnew WITH_I_2
+	set [0]
+	ipush 5
+	set [1]
+	jump WITH_I_BODY
+		
+WITH_I_2:
+	cnew WITH_I_3
+	set [0]
+	ipush 6
+	set [1]
+	jump WITH_I_BODY
+		
+WITH_I_3:
+	cnew WITH_I_EXIT
+	set [0]
+	ipush 7
+	set [1]
+	jump WITH_I_BODY
+	
+WITH_I_BODY:
+	new
+	dup
+	link [] P
+	scopedown WITH_J_1
+	
+WITH_I_END:
+	get [0]
+	ccall
+	
+WITH_I_EXIT:
+	scopeup [P] MAIN_END
+	
+WITH_J_1:
+	cnew WITH_J_2
+	set [0]
+	ipush 1
+	set [1]
+	jump WITH_J_BODY
+	
+WITH_J_2:
+	cnew WITH_J_3
+	set [0]
+	ipush 2
+	set [1]
+	jump WITH_J_BODY
+	
+	
+WITH_J_3:
+	cnew WITH_J_END
+	set [0]
+	ipush 3
+	set [1]
+	jump WITH_J_BODY
+	
+WITH_J_BODY:
+	get [1]
+	get [P, 1]
+	addi
+	ipush 9
+	eqi
+	jumpz ASSERT_FALSE WITH_J_BODY2
+	
+WITH_J_BODY2:
+	get [P, 1]
+	print
+	get [1]
+	print
+	get[0]
+	ccall
+	
+WITH_J_END:
+	scopeup [P] WITH_I_END
+]] transform "Run -> CISC" to "6
+3
+7
+2"
+	
+	

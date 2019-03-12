@@ -1,0 +1,108 @@
+module smoke_routineres
+
+language framevm
+
+test Routine resolution example RISC [[MAIN:
+	new
+	dup
+	link [] P
+	set [0]
+	new
+	dup
+	link [0] P
+	dup
+	ipush 2
+	setr [0]
+	
+	call FUNC MAIN_CONT
+	
+MAIN_CONT:
+	get [r]
+	set [1]
+	get [1]
+	print
+	ipush 0
+	return
+	
+FUNC:
+	get [0]
+	ipush 0
+	eqi
+	jumpz FUNC_ELSE FUNC_THEN
+	
+FUNC_THEN:
+	ipush 42
+	return
+	
+FUNC_ELSE:	
+	new
+	dup
+	new
+	dup
+	link [P, P] P
+	linkr P
+	dup
+	get [0]
+	ipush -1
+	addi
+	setr [0]
+	call FUNC_THEN FUNC_END
+	
+FUNC_END:
+	get [r]
+	return
+]] transform "Run -> RISC" to "42"
+	
+
+test Routine resolution example CISC [[MAIN:
+	new
+	dup
+	link [] P
+	set [0]
+	new
+	dup
+	link [0] P
+	dup
+	ipush 2
+	setr [0]
+	
+	call FUNC MAIN_CONT
+	
+MAIN_CONT:
+	get [r]
+	set [1]
+	get [1]
+	print
+	ipush 0
+	return
+	
+FUNC:
+	get [0]
+	ipush 0
+	eqi
+	jumpz FUNC_ELSE FUNC_THEN
+	
+FUNC_THEN:
+	ipush 42
+	return
+	
+FUNC_ELSE:	
+	new
+	dup
+	new
+	dup
+	link [P, P] P
+	linkr P
+	dup
+	get [0]
+	ipush -1
+	addi
+	setr [0]
+	call FUNC_THEN FUNC_END
+	
+FUNC_END:
+	get [r]
+	return
+]] transform "Run -> CISC" to "42"
+	
+	

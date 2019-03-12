@@ -1,0 +1,60 @@
+module smoke_array
+
+language framevm
+
+test Array example RISC [[MAIN:
+	new
+	dup
+	ipush 5
+	setr [0]
+	dup
+	ipush 1
+	setr [1]
+	dup
+	ipush 6
+	setr [2]
+	dup
+	ipush 7
+	setr [3]
+	
+	set [0]
+	
+	ipush 2
+	set [1]
+	get [0]
+	get [1]
+	getr
+	print
+	
+	ipush 0
+	return
+]] transform "Run -> RISC" to "6"
+	
+
+test Array example CISC [[MAIN:
+	new
+	dup
+	ipush 5
+	setr [0]
+	dup
+	ipush 1
+	setr [1]
+	dup
+	ipush 6
+	setr [2]
+	dup
+	ipush 7
+	setr [3]
+	
+	set [0]
+	
+	ipush 2
+	set [1]
+	get [0]
+	get [1]
+	getr
+	print
+	
+	ipush 0
+	return
+]] transform "Run -> CISC" to "6"

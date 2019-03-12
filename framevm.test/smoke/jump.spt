@@ -1,0 +1,59 @@
+module smoke_jump
+
+language framevm
+
+test Jump example RISC [[MAIN:
+	jump START
+  
+START :
+	ipush 1
+	ipush 2
+	addi
+	set [0]
+	jump MORE
+  
+MORE:
+	new
+	dup
+	link [] P
+	set [1]
+	get [0]
+	ipush 3
+	addi
+	set [1, 0]
+	jump FOO
+  
+FOO:
+	get [1, 0]
+	print
+	ipush 0
+	return
+]] transform "Run -> RISC" to "6" 
+
+test Jump example CISC [[MAIN:
+	jump START
+  
+START :
+	ipush 1
+	ipush 2
+	addi
+	set [0]
+	jump MORE
+  
+MORE:
+	new
+	dup
+	link [] P
+	set [1]
+	get [0]
+	ipush 3
+	addi
+	set [1, 0]
+	jump FOO
+  
+FOO:
+	get [1, 0]
+	print
+	ipush 0
+	return
+]] transform "Run -> CISC" to "6" 

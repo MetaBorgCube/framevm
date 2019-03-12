@@ -1,8 +1,8 @@
-module test
+module parser_simple
 
 language framevm
 
-test parse [[
+test parse minimal [[
 MAIN:
 	ipush 1
 	return

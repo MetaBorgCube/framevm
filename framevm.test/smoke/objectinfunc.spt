@@ -1,0 +1,69 @@
+module smoke_obj_in_func
+
+language framevm
+
+test Object in function example RISC [[MAIN:
+	new
+	dup
+	link [] P
+	dup
+	ipush 2
+	setr [0]
+	call FUNC MAIN_END
+	
+FUNC:
+	new
+	dup
+	link [P] P
+	dup
+	get [0]
+	setr [0]
+	set [1]
+	ipush 3
+	set [2]
+	get [1, 0]
+	get [2]
+	addi
+	return
+	
+MAIN_END:
+	get [r]
+	dup
+	set[0]
+	print
+	ipush 0
+	return
+]] transform "Run -> RISC" to "5"
+
+test Object in function example CISC [[MAIN:
+	new
+	dup
+	link [] P
+	dup
+	ipush 2
+	setr [0]
+	call FUNC MAIN_END
+	
+FUNC:
+	new
+	dup
+	link [P] P
+	dup
+	get [0]
+	setr [0]
+	set [1]
+	ipush 3
+	set [2]
+	get [1, 0]
+	get [2]
+	addi
+	return
+	
+MAIN_END:
+	get [r]
+	dup
+	set[0]
+	print
+	ipush 0
+	return
+]] transform "Run -> CISC" to "5"
