@@ -18,7 +18,7 @@ rules
 	// Duplicates the n-th element on top of the stack
 	eval: (DupN(n), env1) -> env3
 	  where
-	  	(env2, val) := <eval-dup(|env1)> <string-to-int>n ;
+	  	(env2, val) := <eval-dup(|env1)> <string-to-int> n;
 	  	env3 := <stack-push(|env2)> val
 	 
 	eval-dup(|env1): 1 -> (env3, val)
