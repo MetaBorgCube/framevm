@@ -81,6 +81,6 @@ public class DotOperandStackFactory extends DotFactory {
 			count++;
 			stackString += "|<" + count + ">" + termToString(stack.pop(), links, name + ":" + count);
 		}
-		return dotString + node(name, "{<head>" + stackString + "}");
+		return dotString + "\n\t\t" + node(name, "{<head>" + stackString + "}");
 	}
 }

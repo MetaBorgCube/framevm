@@ -241,15 +241,37 @@ public abstract class DotFactory {
 			
 			if (matcher.matches()) {	// If it is a reference
 				String frameRef = frame(matcher.group(1));
-				links.add(referenceLink(slotRef, frameRef + ":id"));
+				addFrameRef(links, slotRef, frameRef);
 			}
 			
 			matcher = CONTINUATION_PATTERN.matcher(value);
 			
 			if (matcher.matches()) {	// If it is a continuation
 				String frameRef = frame(matcher.group(1));
-				links.add(referenceLink(slotRef, frameRef + ":id"));
+				addFrameRef(links, slotRef, frameRef);
 			}
 			return value;
-		} 
+		}
+
+		/**
+		 * Add a reference to a frame to the given set of links.
+		 * If this frame happens to be the _exit or _catch frame,
+		 * the links are correctly drawn to the end points.
+		 * 
+		 * @param links
+		 * 		a list of links to add to
+		 * @param slotRef
+		 * 		the current slot reference as starting point of the link
+		 * @param frame_id
+		 * 		the frame to link to
+		 */
+		private static void addFrameRef(List<String> links, String slotRef, String frame_id) {
+			if (frame_id.equals("frame__exit")) {
+				links.add(referenceLink(slotRef, "finish"));
+			} else if (frame_id.equals("frame__catch")) {
+				links.add(referenceLink(slotRef, "exception"));
+			} else {
+				links.add(referenceLink(slotRef, frame_id + ":id"));
+			}
+		}
 }
