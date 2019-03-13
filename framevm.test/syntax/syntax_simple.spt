@@ -1,9 +1,0 @@
-module parser_simple
-
-language framevm
-
-test parse minimal [[
-MAIN:
-	ipush 1
-	return
-]] parse succeeds

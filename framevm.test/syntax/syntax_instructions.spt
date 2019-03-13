@@ -1,0 +1,148 @@
+module parser_instructions
+
+language framevm
+
+// Fixture of minimal block
+fixture [[MAIN:
+	[[...]]
+	return
+]]
+
+
+test ipush correct  [[ipush 1]]     parse succeeds
+test ipush negative [[ipush -1]]    parse succeeds
+test ipush large    [[ipush 123459876]] parse succeeds
+
+test ipush empty    [[ipush ]]      parse fails
+test ipush char     [[ipush 'a']]   parse fails
+test ipush sum      [[ipush 1+1]]   parse fails
+
+
+test addi  [[addi]]     parse succeeds
+test eqi   [[eqi]]      parse succeeds
+test lti   [[lti]]      parse succeeds
+
+test dup   [[dup]]      parse succeeds
+test swap  [[swap]]     parse succeeds
+test print [[print]]    parse succeeds
+test debug [[debug]]    parse succeeds
+
+
+test dupn correct  [[dup 2]]     parse succeeds
+test dupn negative [[dup -1]]    parse fails
+test dupn zero     [[dup 0]]     parse fails
+test dupn one      [[dup 1]]     parse succeeds
+test dupn large    [[dup 123]]   parse succeeds
+
+test swapn correct  [[swap 2]]     parse succeeds
+test swapn negative [[swap -1]]    parse fails
+test swapn zero     [[swap 0]]     parse fails
+test swapn one      [[swap 1]]     parse succeeds
+test swapn large    [[swap 123]]   parse succeeds
+
+
+test new     [[new]]     parse succeeds
+test cnew    [[cnew]]    parse succeeds
+test new     [[new]]     parse succeeds
+test set     [[set]]     parse succeeds
+test setr    [[setr]]    parse succeeds
+test get     [[get]]     parse succeeds
+test getr    [[getr]]    parse succeeds
+test cunpack [[cunpack]] parse succeeds
+
+test link simple         [[link [] P]]          parse succeeds
+test link path single    [[link [P] P]]         parse succeeds
+test link path multiple  [[link [C, 0] G]]      parse succeeds
+test link path multiple2 [[link [I, 0, L] Q]]   parse succeeds
+
+test link path lower     [[link [e] P]]   parse fails
+test link path r         [[link [r] P]]   parse succeeds
+test link path x         [[link [x] P]]   parse succeeds
+test link path c         [[link [c] P]]   parse succeeds
+test link path negative  [[link [-1] P]]  parse fails
+test link no path        [[link P]]       parse fails
+
+test link lbl number     [[link [] 0]]   parse fails
+test link lbl lower      [[link [] e]]   parse fails
+test link lbl r          [[link [] r]]   parse fails
+test link lbl c          [[link [] c]]   parse fails
+test link lbl x          [[link [] x]]   parse fails
+test link lbl char       [[link [] 'x']] parse fails
+test link no lbl         [[link [] ]]    parse fails
+
+
+test linkr simple     [[linkr P]]   parse succeeds
+test linkr simple2    [[linkr G]]   parse succeeds
+test linkr number     [[linkr 0]]   parse fails
+test linkr lower      [[linkr e]]   parse fails
+test linkr r          [[linkr r]]   parse fails
+test linkr c          [[linkr c]]   parse fails
+test linkr x          [[linkr x]]   parse fails
+test linkr char       [[linkr 'x']] parse fails
+
+
+test set simple          [[set [] ]]          parse succeeds
+test set path single     [[set [P] ]]         parse succeeds
+test set path multiple   [[set [C, 0] ]]      parse succeeds
+test set path multiple2  [[set [I, 0, L] ]]   parse succeeds
+
+test set path lower      [[set [e] ]]   parse fails
+test set path r          [[set [r] ]]   parse succeeds
+test set path x          [[set [x] ]]   parse succeeds
+test set path c          [[set [c] ]]   parse succeeds
+test set path negative   [[set [-1] ]]  parse fails
+
+
+test setr simple         [[setr [] ]]         parse succeeds
+test setr path single    [[setr [P] ]]        parse succeeds
+test setr path multiple  [[setr [C, 0] ]]     parse succeeds
+test setr path multiple2 [[setr [I, 0, L] ]]  parse succeeds
+
+test setr path lower     [[setr [e] ]]  parse fails
+test setr path r         [[setr [r] ]]  parse succeeds
+test setr path x         [[setr [x] ]]  parse succeeds
+test setr path c         [[setr [c] ]]  parse succeeds
+test setr path negative  [[setr [-1] ]] parse fails
+
+
+test get simple          [[get [] ]]          parse succeeds
+test get path single     [[get [P] ]]         parse succeeds
+test get path multiple   [[get [C, 0] ]]      parse succeeds
+test get path multiple2  [[get [I, 0, L] ]]   parse succeeds
+
+test get path lower      [[get [e] ]]   parse fails
+test get path r          [[get [r] ]]   parse succeeds
+test get path x          [[get [x] ]]   parse succeeds
+test get path c          [[get [c] ]]   parse succeeds
+test get path negative   [[get [-1] ]]  parse fails
+
+
+test getr simple         [[getr [] ]]         parse succeeds
+test getr path single    [[getr [P] ]]        parse succeeds
+test getr path multiple  [[getr [C, 0] ]]     parse succeeds
+test getr path multiple2 [[getr [I, 0, L] ]]  parse succeeds
+
+test getr path lower     [[getr [e] ]]  parse fails
+test getr path r         [[getr [r] ]]  parse succeeds
+test getr path x         [[getr [x] ]]  parse succeeds
+test getr path c         [[getr [c] ]]  parse succeeds
+test getr path negative  [[getr [-1] ]] parse fails
+
+
+test cnew simple     [[cnew P]]    parse succeeds
+test cnew simple2    [[cnew G]]    parse succeeds
+test cnew number     [[cnew 0]]    parse fails
+test cnew lower      [[cnew e]]    parse fails
+test cnew r          [[cnew r]]    parse fails
+test cnew c          [[cnew c]]    parse fails
+test cnew x          [[cnew x]]    parse fails
+test cnew char       [[cnew 'x']]  parse fails
+
+test cnewr simple    [[cnewr P]]   parse succeeds
+test cnewr simple2   [[cnewr G]]   parse succeeds
+test cnewr number    [[cnewr 0]]   parse fails
+test cnewr lower     [[cnewr e]]   parse fails
+test cnewr r         [[cnewr r]]   parse fails
+test cnewr c         [[cnewr c]]   parse fails
+test cnewr x         [[cnewr x]]   parse fails
+test cnewr char      [[cnewr 'x']] parse fails

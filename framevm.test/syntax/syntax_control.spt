@@ -1,0 +1,132 @@
+module parser_control
+
+language framevm
+
+// Fixture of minimal block
+fixture [[MAIN:
+	[[...]]
+]]
+
+
+test return  [[return]]     parse succeeds
+test ccall   [[ccall]]      parse succeeds
+test try     [[try]]        parse succeeds
+test throw   [[throw]]      parse succeeds
+
+
+test jump simple     [[jump P]]    parse succeeds
+test jump simple2    [[jump G]]    parse succeeds
+test jump number     [[jump 0]]    parse fails
+test jump lower      [[jump e]]    parse fails
+test jump r          [[jump r]]    parse fails
+test jump c          [[jump c]]    parse fails
+test jump x          [[jump x]]    parse fails
+test jump char       [[jump 'x']]  parse fails
+
+
+test jumpz single label    [[jumpz P]]      parse fails
+
+test jumpz lbl1 simple     [[jumpz P P]]    parse succeeds
+test jumpz lbl1 simple2    [[jumpz G P]]    parse succeeds
+test jumpz lbl1 number     [[jumpz 0 P]]    parse fails
+test jumpz lbl1 lower      [[jumpz e P]]    parse fails
+test jumpz lbl1 r          [[jumpz r P]]    parse fails
+test jumpz lbl1 c          [[jumpz c P]]    parse fails
+test jumpz lbl1 x          [[jumpz x P]]    parse fails
+test jumpz lbl1 char       [[jumpz 'x' P]]  parse fails
+
+test jumpz lbl2 simple     [[jumpz P P]]    parse succeeds
+test jumpz lbl2 simple2    [[jumpz P G]]    parse succeeds
+test jumpz lbl2 number     [[jumpz P 0]]    parse fails
+test jumpz lbl2 lower      [[jumpz P e]]    parse fails
+test jumpz lbl2 r          [[jumpz P r]]    parse fails
+test jumpz lbl2 c          [[jumpz P c]]    parse fails
+test jumpz lbl2 x          [[jumpz P x]]    parse fails
+test jumpz lbl2 char       [[jumpz P 'x']]  parse fails
+
+
+
+test call no label         [[call]]         parse fails
+
+test call single simple    [[call P]]       parse succeeds
+test call single simple2   [[call G]]       parse succeeds
+test call single number    [[call 0]]       parse fails
+test call single lower     [[call e]]       parse fails
+test call single r         [[call r]]       parse fails
+test call single c         [[call c]]       parse fails
+test call single x         [[call x]]       parse fails
+test call single char      [[call 'x']]     parse fails
+
+test call lbl1 simple      [[call P P]]     parse succeeds
+test call lbl1 simple2     [[call G P]]     parse succeeds
+test call lbl1 number      [[call 0 P]]     parse fails
+test call lbl1 lower       [[call e P]]     parse fails
+test call lbl1 r           [[call r P]]     parse fails
+test call lbl1 c           [[call c P]]     parse fails
+test call lbl1 x           [[call x P]]     parse fails
+test call lbl1 char        [[call 'x' P]]   parse fails
+
+test call lbl2 simple      [[call P P]]     parse succeeds
+test call lbl2 simple2     [[call P G]]     parse succeeds
+test call lbl2 number      [[call P 0]]     parse fails
+test call lbl2 lower       [[call P e]]     parse fails
+test call lbl2 r           [[call P r]]     parse fails
+test call lbl2 c           [[call P c]]     parse fails
+test call lbl2 x           [[call P x]]     parse fails
+test call lbl2 char        [[call P 'x']]   parse fails
+
+
+
+test try single label      [[try P]]        parse fails
+
+test try lbl1 simple       [[try P P]]      parse succeeds
+test try lbl1 simple2      [[try G P]]      parse succeeds
+test try lbl1 number       [[try 0 P]]      parse fails
+test try lbl1 lower        [[try e P]]      parse fails
+test try lbl1 r            [[try r P]]      parse fails
+test try lbl1 c            [[try c P]]      parse fails
+test try lbl1 x            [[try x P]]      parse fails
+test try lbl1 char         [[try 'x' P]]    parse fails
+
+test try lbl2 simple       [[try P P]]      parse succeeds
+test try lbl2 simple2      [[try P G]]      parse succeeds
+test try lbl2 number       [[try P 0]]      parse fails
+test try lbl2 lower        [[try P e]]      parse fails
+test try lbl2 r            [[try P r]]      parse fails
+test try lbl2 c            [[try P c]]      parse fails
+test try lbl2 x            [[try P x]]      parse fails
+test try lbl2 char         [[try P 'x']]    parse fails
+
+
+test scopedown no label         [[scopedown]]         parse fails
+
+test scopedown single simple    [[scopedown P]]       parse succeeds
+test scopedown single simple2   [[scopedown G]]       parse succeeds
+test scopedown single number    [[scopedown 0]]       parse fails
+test scopedown single lower     [[scopedown e]]       parse fails
+test scopedown single r         [[scopedown r]]       parse fails
+test scopedown single c         [[scopedown c]]       parse fails
+test scopedown single x         [[scopedown x]]       parse fails
+test scopedown single char      [[scopedown 'x']]     parse fails
+
+
+
+test scopeup simple         [[scopeup [] P]]          parse succeeds
+test scopeup path single    [[scopeup [P] P]]         parse succeeds
+test scopeup path multiple  [[scopeup [C, 0] G]]      parse succeeds
+test scopeup path multiple2 [[scopeup [I, 0, L] Q]]   parse succeeds
+
+test scopeup path lower     [[scopeup [e] P]]   parse fails
+test scopeup path r         [[scopeup [r] P]]   parse succeeds
+test scopeup path x         [[scopeup [x] P]]   parse succeeds
+test scopeup path c         [[scopeup [c] P]]   parse succeeds
+test scopeup path negative  [[scopeup [-1] P]]  parse fails
+test scopeup no path        [[scopeup P]]       parse fails
+
+test scopeup lbl number     [[scopeup [] 0]]    parse fails
+test scopeup lbl lower      [[scopeup [] e]]    parse fails
+test scopeup lbl r          [[scopeup [] r]]    parse fails
+test scopeup lbl c          [[scopeup [] c]]    parse fails
+test scopeup lbl x          [[scopeup [] x]]    parse fails
+test scopeup lbl char       [[scopeup [] 'x']]  parse fails
+test scopeup no lbl         [[scopeup [] ]]     parse fails
