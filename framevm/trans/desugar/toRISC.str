@@ -8,7 +8,7 @@ rules
 	to-RISC-all: Program(blocks) -> Program(<map(to-RISC-all)> blocks)
 	to-RISC-all: Block(lbl, Seq(body)) -> Block(lbl, Seq(body_risc))
 	  where
-		body_risc := <to-RISC(r-sget)><to-RISC(r-relative)><to-RISC(r-link)><to-RISC(r-cont)> body
+		body_risc := <to-RISC(r-dupswap)><to-RISC(r-sget)><to-RISC(r-relative)><to-RISC(r-link)><to-RISC(r-cont)> body
   
     // Boilerplate to make the desugaring step simpler
   	to-RISC(s): x -> <foldr(![], (fpr(s) <+ idf))> x 
@@ -70,4 +70,7 @@ rules
 	// I don't know why you would want to do this, but you can if you really want to
 	r-sget: GetR(Path([Slot(slot_id)])) -> [IPush(slot_id), GetR()]
 	r-sget: SetR(Path([Slot(slot_id)])) -> [IPush(slot_id), Swap(), SetR()]
+	
+	r-dupswap: Dup()  -> [DupN("1")]
+	r-dupswap: Swap() -> [SwapN("1")]
 	
