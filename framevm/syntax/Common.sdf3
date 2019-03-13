@@ -6,6 +6,8 @@ lexical syntax
   LABEL          = [A-Z\_] [A-Z0-9\_]* 
   MAIN			 = "MAIN"
   INT            = "-"? [0-9]+ 
+  INTLZ          = [1-9][0-9]* 
+  INTLEZ         = [0-9]+ 
   BOOL			 = "true"
   BOOL			 = "false"
   
@@ -42,6 +44,8 @@ lexical restrictions
   
   CommentChar   -/- [\/]
   INT           -/- [0-9]
+  INTLZ         -/- [0-9]
+  INTLEZ        -/- [0-9]
   ID            -/- [a-zA-Z0-9\_]
   LABEL         -/- [A-Z0-9\_]
   MAIN          -/- [A-Z0-9\_]

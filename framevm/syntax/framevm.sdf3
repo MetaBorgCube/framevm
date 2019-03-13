@@ -37,25 +37,25 @@ sorts Instr context-free syntax
   Instr.IPush 	 = <ipush <INT>>			// Push int value to stack
   
   Instr.Dup      = <dup>					// Duplicates the value on the stack
-  Instr.DupN     = <dup <INT>>				// Duplicates the n-th value on the stack
+  Instr.DupN     = <dup <INTLZ>>			// Duplicates the n-th value on the stack
   Instr.Swap     = <swap>					// Swaps two values on the stack
-  Instr.SwapN    = <swap <INT>>				// Swaps the value on top of the stack with the one in (n+1)th position
+  Instr.SwapN    = <swap <INTLZ>>			// Swaps the value on top of the stack with the one in (n+1)th position
   Instr.Print    = <print>					// Prints value on the stack
   Instr.Debug    = <debug>					// Prints the state of the vm
   
   
   Instr = FrameInstr
-  FrameInstr.New      = <new>				// Create new frame and push pointer on stack
-  FrameInstr.Link	  = <link <Path> <ID>>	// Link frame on stack to given location (Empty path is current frame)
-  FrameInstr.LinkR	  = <linkr <ID>>		// Link frame on second position on the stack to the frame on top
-  FrameInstr.Set      = <set>				// Store value on top of stack in slot on second position of the current frame
-  FrameInstr.Set      = <set <Path>>		// Set value on the stack at path location
-  FrameInstr.SetR     = <setr>				// Store value on top of stack in slot on second position of frame on third position
-  FrameInstr.SetR     = <setr <Path>>		// Set value on the stack at path location starting in frame on stack
-  FrameInstr.Get      = <get>				// Get index on top of stack of the current frame
-  FrameInstr.Get      = <get <Path>>		// Store value at path in the stack
-  FrameInstr.GetR     = <getr>				// Get index on top of stack in frame on second position
-  FrameInstr.GetR     = <getr <Path>>		// Store value at path from frame on stack on stack
+  FrameInstr.New    = <new>					// Create new frame and push pointer on stack
+  FrameInstr.Link   = <link <Path> <LABEL>> // Link frame on stack to given location (Empty path is current frame)
+  FrameInstr.LinkR	= <linkr <LABEL>>		// Link frame on second position on the stack to the frame on top
+  FrameInstr.Set    = <set>					// Store value on top of stack in slot on second position of the current frame
+  FrameInstr.Set    = <set <Path>>			// Set value on the stack at path location
+  FrameInstr.SetR   = <setr>				// Store value on top of stack in slot on second position of frame on third position
+  FrameInstr.SetR   = <setr <Path>>			// Set value on the stack at path location starting in frame on stack
+  FrameInstr.Get    = <get>					// Get index on top of stack of the current frame
+  FrameInstr.Get    = <get <Path>>			// Store value at path in the stack
+  FrameInstr.GetR   = <getr>				// Get index on top of stack in frame on second position
+  FrameInstr.GetR   = <getr <Path>>			// Store value at path from frame on stack on stack
   
   
   Instr = ContInstr
@@ -80,7 +80,7 @@ sorts Instr context-free syntax
   
   Path.Self  = <[]>
   Path.Path  = <[<{PathRef ","}+>]>
-  PathRef.Slot = INT
+  PathRef.Slot = INTLEZ
   PathRef.SlotR = <r>
   PathRef.SlotX = <x>
   PathRef.SlotC = <c>
