@@ -6,13 +6,13 @@ imports
 
 rules
 	// check stack sizes of blocks
-	stack-calc: Program(blocks) -> Program(out_blocks)
+	stack-calc: FVM_Program(blocks) -> FVM_Program(out_blocks)
 	  where
     	(errors, out_blocks) := <unzip><mapconcat(stack-calc)> blocks
   
-	stack-calc: PseudoCode(_) -> []
+	stack-calc: FVM_PseudoCode(_) -> []
     		
-  	stack-calc: Block(Label(lbl), Seq(body)) -> [(errors, Block(Label(lbl), Seq(body)))]
+  	stack-calc: FVM_Block(FVM_Label(lbl), FVM_Seq(body)) -> [(errors, FVM_Block(Label(lbl), FVM_Seq(body)))]
   	  where
   		(size, errors) := <foldl(stack-update)>(body, (0, []));
   		_ := <debug> ("Stack size after block", lbl, size)
@@ -28,54 +28,54 @@ rules
   	  	err := <debug> ("Popping from empty stack at", instr)
   	  	
 	// For each operation, calculate the change in stack size
-	stack-delta: IPush(_) -> 1
-	stack-delta: IAdd()   -> -1
-	stack-delta: IEq()    -> -1
-	stack-delta: ILt()    -> -1
+	stack-delta: FVM_IPush(_) -> 1
+	stack-delta: FVM_IAdd()   -> -1
+	stack-delta: FVM_IEq()    -> -1
+	stack-delta: FVM_ILt()    -> -1
   
-	stack-delta: New()    -> 1
-	stack-delta: Dup()    -> 1
-	stack-delta: DupN(_)  -> 1
-	stack-delta: Swap()   -> 0
-	stack-delta: SwapN(_) -> 0
+	stack-delta: FVM_New()    -> 1
+	stack-delta: FVM_Dup()    -> 1
+	stack-delta: FVM_DupN(_)  -> 1
+	stack-delta: FVM_Swap()   -> 0
+	stack-delta: FVM_SwapN(_) -> 0
   
-	stack-delta: Link(_, _) -> -1
-	stack-delta: LinkR(_)   -> -2
+	stack-delta: FVM_Link(_, _) -> -1
+	stack-delta: FVM_LinkR(_)   -> -2
   
-	stack-delta: Get()      -> 0
-	stack-delta: Get(path)  -> 1
-	stack-delta: GetR()     -> -1
-	stack-delta: GetR(path) -> 0
+	stack-delta: FVM_Get()      -> 0
+	stack-delta: FVM_Get(path)  -> 1
+	stack-delta: FVM_GetR()     -> -1
+	stack-delta: FVM_GetR(path) -> 0
   
-	stack-delta: Set()      -> -2
-	stack-delta: Set(path)  -> -1
-	stack-delta: SetR()     -> -3
-	stack-delta: SetR(path) -> -2
+	stack-delta: FVM_Set()      -> -2
+	stack-delta: FVM_Set(path)  -> -1
+	stack-delta: FVM_SetR()     -> -3
+	stack-delta: FVM_SetR(path) -> -2
   
-	stack-delta: Print()  -> -1
-	stack-delta: Return() -> -1
+	stack-delta: FVM_Print()  -> -1
+	stack-delta: FVM_Return() -> -1
   
   
-	stack-delta: JumpZ(lbl1, lbl2) -> -1
-	stack-delta: Jump(lbl) -> 0
-	stack-delta: Call(lbl1, lbl2) -> -1
-	stack-delta: Call(lbl) -> -1
+	stack-delta: FVM_JumpZ(lbl1, lbl2) -> -1
+	stack-delta: FVM_Jump(lbl) -> 0
+	stack-delta: FVM_Call(lbl1, lbl2) -> -1
+	stack-delta: FVM_Call(lbl) -> -1
 	
-	stack-delta: ScopeUp(path, lbl) -> 0
-	stack-delta: ScopeDown(lbl) -> -1
+	stack-delta: FVM_ScopeUp(path, lbl) -> 0
+	stack-delta: FVM_ScopeDown(lbl) -> -1
 	
-	stack-delta: ContNew() -> 1
-	stack-delta: ContNew(Label(lbl)) -> 1
-	stack-delta: ContNewR(Label(lbl)) -> 0
+	stack-delta: FVM_ContNew() -> 1
+	stack-delta: FVM_ContNew(lbl) -> 1
+	stack-delta: FVM_ContNewR(lbl) -> 0
 	
-	stack-delta: ContUnpack() -> 0
-	stack-delta: ContCall() -> -1
+	stack-delta: FVM_ContUnpack() -> 0
+	stack-delta: FVM_ContCall() -> -1
 	
-	stack-delta: Try(_, _) -> -2
-	stack-delta: Try() -> -2
-	stack-delta: Throw() -> -1
+	stack-delta: FVM_Try(_, _) -> -2
+	stack-delta: FVM_Try() -> -2
+	stack-delta: FVM_Throw() -> -1
 	
-	stack-delta: Debug() -> 0
+	stack-delta: FVM_Debug() -> 0
   
   	stack-delta: a -> 0
   	  where

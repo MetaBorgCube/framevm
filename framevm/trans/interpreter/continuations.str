@@ -7,36 +7,36 @@ imports
 	interpreter/external
 	
 rules
-	// ContNew/0
+	// FVM_ContNew/0
 	// Push a continuation on the stack of the current execution point
-	eval: (ContNew(), env1) -> env2
+	eval: (FVM_ContNew(), env1) -> env2
 	  where
 	  	frame_this := <frame-this(|env1)>;
 	  	env2 := <stack-push(|env1)> Continuation(frame_this, <frame-get-block(|env1)> frame_this)
 	  	
-	// ContNew/1
+	// FVM_ContNew/1
 	// Push a continuation on the stack of the current execution point after a jump to label
-	eval: (ContNew(Label(lbl)), env1) -> env2
+	eval: (FVM_ContNew(FVM_Label(lbl)), env1) -> env2
 	  where
 	  	env2 := <stack-push(|env1)> Continuation(<frame-this(|env1)>, lbl)
 	
-	// ContNewR/1
+	// FVM_ContNewR/1
 	// Push a continuation on the stack of the execution frame on the stack after a jump to label
-	eval: (ContNewR(Label(lbl)), env1) -> env3
+	eval: (FVM_ContNewR(FVM_Label(lbl)), env1) -> env3
 	  where
 	  	(env2, FrameRef(frame)) := <stack-pop(|env1)>;
 	  	env3 := <stack-push(|env2)> Continuation(frame, lbl)
 	
-	// ContUnpack/0
+	// FVM_ContUnpack/0
 	// Get the frame enclosed in a continuation
-	eval: (ContUnpack(), env1) -> env3
+	eval: (FVM_ContUnpack(), env1) -> env3
 	  where
 	  	(env2, Continuation(frame, _)) := <stack-pop(|env1)>;
 	  	env3 := <stack-push(|env2)> FrameRef(frame)
 	
-	// ContCall/0
+	// FVM_ContCall/0
 	// Call the continuation on top of the stack
-	eval: (ContCall(), env1) -> env3
+	eval: (FVM_ContCall(), env1) -> env3
 	  where
 	  	(env2, Continuation(frame, lbl)) := <stack-pop(|env1)>;
 	  	env3 := <cont-call(|env1)> (frame, lbl)

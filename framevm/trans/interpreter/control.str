@@ -9,10 +9,10 @@ rules
 	// Create a new continuation of the current frame
 	new-continuation(|env): addr -> Continuation(<frame-this(|env)>, addr)
 	
-	// Call/2
+	// FVM_Call/2
 	// Call the block at arg1 using the frame at the top of the stack
 	// This function returns to arg2 when finished
-	eval: (Call(Label(block), Label(returnAddr)), env1) -> env5
+	eval: (FVM_Call(FVM_Label(block), FVM_Label(returnAddr)), env1) -> env5
 	  where
 	  	(env2, FrameRef(callFrame)) := <stack-pop(|env1)>;		// get the function frame
 	  	continuation := <new-continuation(|env2)> returnAddr;
@@ -21,9 +21,9 @@ rules
 	  	env4 := <ex-set-cx(|env3)> (callFrame, ex);				// Copy over exception
 	  	env5 := <cont-call(|env4)> (callFrame, block)			// call the function
 	  	
-	// Call/1
+	// FVM_Call/1
 	// Call the block at arg1 using the continuation at the top of the stack
-	eval: (Call(Label(block)), env1) -> env5
+	eval: (FVM_Call(FVM_Label(block)), env1) -> env5
 	  where
 	  	(env2, Continuation(frame, lbl)) := <stack-pop(|env1)>;		// get the function continuation
 	  	continuation := <new-continuation(|env2)> block;
@@ -32,35 +32,35 @@ rules
 	  	env4 := <ex-set-cx(|env3)> (frame, ex);						// Copy over exception
 	  	env5 := <cont-call(|env4)> (frame, lbl)						// call the function
 	 
-	// Return/0
+	// FVM_Return/0
 	// Takes the value on top of the stack and returns to the caller frame
-	eval: (Return(), env1) -> env4
+	eval: (FVM_Return(), env1) -> env4
 	  where
 	  	(env2, val) := <stack-pop(|env1)>;
 	  	Continuation(frame, lbl) := <cont-get-cc(|env2)> <frame-this(|env2)>;
 	  	env3 := <frame-set(|env2)> (frame, "r", val);
 	  	env4 := <cont-call(|env3)> (frame, lbl)
 	
-	// Jump/1
+	// FVM_Jump/1
 	// Unconditional jump to a new block ar arg1
-	eval: (Jump(Label(lbl)), env1) -> env2
+	eval: (FVM_Jump(FVM_Label(lbl)), env1) -> env2
 	  where
 	  	env2 := <vm-jump(|env1)> (<frame-this(|env1)>, lbl)
 	
-	// JumpZ/2
+	// FVM_JumpZ/2
 	// Conditional jump. 
 	// Checks top of the stack, when zero goes to arg1 else to arg2
-	eval: (JumpZ(Label(then), Label(else)), env1) -> env3
+	eval: (FVM_JumpZ(FVM_Label(then), FVM_Label(else)), env1) -> env3
 	  where
 	  	(env2, IntV(val)) := <stack-pop(|env1)>;
 	  	trgt := <jump-eval> (val, then, else);
 	  	env3 := <vm-jump(|env2)> (<frame-this(|env2)>, trgt)
 	
-	// ScopeDown/1
+	// FVM_ScopeDown/1
 	// Move execution to a child scope, for example when entering a for loop
 	// Uses the frame on top of the stack as new execution frame (make sure its properly linked)
 	// Jumps the execution to the given block
-	eval: (ScopeDown(Label(lbl)), env1) -> env5
+	eval: (FVM_ScopeDown(FVM_Label(lbl)), env1) -> env5
 	  where
 	  	(env2, FrameRef(frame_to_id)) := <stack-pop(|env1)>;
 	  	env3 := <cont-set-cc(|env2)> (frame_to_id, <cont-get-cc(|env2)> <frame-this(|env2)>);

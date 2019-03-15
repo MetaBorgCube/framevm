@@ -6,42 +6,42 @@ imports
 	interpreter/external
 
 rules
-	// IPush/1
+	// FVM_IPush/1
 	// Pushes the given interger on the stack
-	eval: (IPush(i), env1) -> env2
+	eval: (FVM_IPush(i), env1) -> env2
 	  where
 	  	env2 := <stack-push(|env1)> IntV(i)
 	
-	// IAdd/0
+	// FVM_IAdd/0
 	// Takes two integers from the stack, adds them together
 	// Pushes the result on the stack
-	eval: (IAdd(), env) -> env3
+	eval: (FVM_IAdd(), env) -> env3
 	  where
 	  	(env1, IntV(e1)) := <stack-pop(|env)>;
 	  	(env2, IntV(e2)) := <stack-pop(|env1)>;
 	  	env3 := <stack-push(|env2)> IntV(<addS>(e1, e2))
 	  	
-	// IEq/0
+	// FVM_IEq/0
 	// Takes two integers from the stack, checks if they are equal
 	// and pushes the result on the stack
-  	eval: (IEq(), env) -> env3
+  	eval: (FVM_IEq(), env) -> env3
 	  where
 	  	(env1, IntV(e1)) := <stack-pop(|env)>;
 	  	(env2, IntV(e2)) := <stack-pop(|env1)>;
 	  	env3 := <stack-push(|env2)> <eval-eq> (e1, e2)
 	  	
-	// ILt/0
+	// FVM_ILt/0
 	// Takes two integers from the stack, checks if the second is smaller than the first
 	// and pushes the result on the stack
-  	eval: (ILt(), env) -> env3
+  	eval: (FVM_ILt(), env) -> env3
 	  where
 	  	(env1, IntV(e1)) := <stack-pop(|env)>;
 	  	(env2, IntV(e2)) := <stack-pop(|env1)>;
 	  	env3 := <stack-push(|env2)> <eval-lt> (e2, e1)
 
-	// Swap/0
+	// FVM_SwapN/1
 	// Swaps the value on top of the stack with the one in (n+1)th position
-	eval: (SwapN(n), env1) -> env4
+	eval: (FVM_SwapN(n), env1) -> env4
 	  where
 	  	(env2, e1) := <stack-pop(|env1)>;
 	  	v := <string-to-int> n;
@@ -60,10 +60,10 @@ rules
 	  	(env3, e2) := <eval-swap(|env2)> (<dec> n, e1);
 	  	env4 := <stack-push(|env3)> tmp
 	  	
-	// Swap/0
+	// FVM_Swap/0
 	// Takes two values from the stack
 	// Pushes them on the stack in reverse order
-	eval: (Swap(), env) -> env4
+	eval: (FVM_Swap(), env) -> env4
 	  where
 	  	(env1, e1) := <stack-pop(|env)>;
 	  	(env2, e2) := <stack-pop(|env1)>;

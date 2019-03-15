@@ -44,54 +44,54 @@ else:
   
   PsdInstr = FuncDef 
   
-  FuncDef.FuncDef = <<name:ID>(<PsdArgList>) = {
+  FuncDef.PsdFuncDef = <<name:ID>(<PsdArgList>) = {
     <fields:PsdInstr*>
 }>				 				{ layout (indent name fields && align name "}" && align-list fields) }
   
-  FuncDef.GenDef = <gen <ID>(<PsdArgList>) = {
+  FuncDef.PsdGenDef = <gen <ID>(<PsdArgList>) = {
     <fields:PsdInstr*>
 }>				 				{ layout (indent "gen" fields && align "gen" "}" && align-list fields) }
 
-  PsdInstr.RecDef = <rec <ID> = {
+  PsdInstr.PsdRecDef = <rec <ID> = {
     <fields:PsdRecField*>
 }>				 				{ layout (indent "rec" fields && align "rec" "}" && align-list fields) }
 
-PsdInstr.TryCatch = <try:
+PsdInstr.PsdTryCatch = <try:
     <try:PsdInstr*>
 catch <ID>:
 	<catch:PsdInstr*>
 >				 				{ layout (indent "try:" try && align "try:" "catch" && align-list try && indent "catch" catch && align-list catch) }
 
-  PsdInstr.RecExtDef = <rec <ID>:<ID> = {
+  PsdInstr.PsdRecExtDef = <rec <ID>:<ID> = {
     <fields:PsdRecField*>
 }>				 				{ layout (indent "rec" fields && align "rec" "}" && align-list fields) }
 
-  PsdInstr.WithFrom = <with <ID> from <PsdExp>:
+  PsdInstr.PsdWithFrom = <with <ID> from <PsdExp>:
     <body:PsdInstr*>
 >				 				{ layout (indent "with" body && align-list body) }
   
-  PsdRecField.Field = <<ID> : <PsdType>>
-  PsdRecField.Method = FuncDef
+  PsdRecField.PsdField = <<ID> : <PsdType>>
+  PsdRecField.PsdMethod = FuncDef
   PsdType = ID
   
-  PsdArgList.ArgList = {ID ","}+
-  PsdArgList.NoArgs = <>
+  PsdArgList.PsdArgList = {ID ","}+
+  PsdArgList.PsdNoArgs = <>
     
   
 sorts PsdExp context-free syntax
 
   PsdExp = <(<PsdExp>)> 						{bracket}
-  PsdExp.SubScript = <<PsdExp>[<PsdExp>]>
-  PsdExp.Add  = <<PsdExp> + <PsdExp>>
-  PsdExp.Sub  = <<PsdExp> - <PsdExp>>
-  PsdExp.Eq   = <<PsdExp> == <PsdExp>>
-  PsdExp.Neq  = <<PsdExp> != <PsdExp>>
-  PsdExp.Int  = <<INT>>
-  PsdExp.ID   = <<ID>>
-  PsdExp.Bool = BOOL
-  PsdExp.FunApp = <<PsdExp>(<{PsdExp ","}*>)>
-  PsdExp.New = <new <ID>(<{PsdExp ","}*>)>
-  PsdExp.List = <[<{PsdExp ","}*>]>
-  PsdExp.Ref = <<PsdExp>.<PsdExp>>				{left}
+  PsdExp.PsdSubScript = <<PsdExp>[<PsdExp>]>
+  PsdExp.PsdAdd  = <<PsdExp> + <PsdExp>>
+  PsdExp.PsdSub  = <<PsdExp> - <PsdExp>>
+  PsdExp.PsdEq   = <<PsdExp> == <PsdExp>>
+  PsdExp.PsdNeq  = <<PsdExp> != <PsdExp>>
+  PsdExp.PsdInt  = <<INT>>
+  PsdExp.PsdID   = <<ID>>
+  PsdExp.PsdBool = BOOL
+  PsdExp.PsdFunApp = <<PsdExp>(<{PsdExp ","}*>)>
+  PsdExp.PsdNew = <new <ID>(<{PsdExp ","}*>)>
+  PsdExp.PsdList = <[<{PsdExp ","}*>]>
+  PsdExp.PsdRef = <<PsdExp>.<PsdExp>>				{left}
   
   

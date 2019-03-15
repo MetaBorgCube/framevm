@@ -8,17 +8,32 @@ imports
 signature
   sorts S
   constructors    
-    Seq : [Instr] -> S
+    FVM_Seq : [Instr] -> S
     
 rules  
-    desugar-full = remove-pseudo; fix-seq; to-RISC-all
-    desugar = remove-pseudo; fix-seq
+    desugar-full = desugar; to-RISC-all
+    desugar = remove-pseudo; fix-seq; fix-paths-all
   
-    remove-pseudo: Program(blocks) -> Program(<foldr(![], remove-pseudo)> blocks)
-    remove-pseudo: (Block(lbl, body), list) -> ([Block(lbl, body) | list])
-    remove-pseudo: (PseudoCode(body), list) -> (list)
+    remove-pseudo: FVM_Program(blocks) -> FVM_Program(<foldr(![], remove-pseudo)> blocks)
+    remove-pseudo: (FVM_Block(lbl, body), list) -> ([FVM_Block(lbl, body) | list])
+    remove-pseudo: (FVM_PseudoCode(body), list) -> (list)
 
-    resugar: Program(blocks) -> Program(<map(resugar)> blocks)
-    resugar: Block(lbl, Seq(body)) -> Block(lbl, SeqJump(body2, last))
+	resugar = resugar-seq; unfix-paths-all
+	
+
+    resugar-seq: FVM_Program(blocks) -> FVM_Program(<map(resugar)> blocks)
+    resugar-seq: FVM_Block(lbl, FVM_Seq(body)) -> FVM_Block(lbl, FVM_SeqJump(body2, last))
       where
       	(body2, last) := <split-init-last> body 
+
+    fix-paths-all = bottomup(try(fix-paths))
+    fix-paths: FVM_Path(path, term) -> FVM_Path(<concat> [path, [term]])
+    fix-paths: FVM_Path(slot) -> FVM_Path([slot])
+    
+    
+    unfix-paths-all = bottomup(try(unfix-paths))
+    unfix-paths: FVM_Path([slot]) -> FVM_Path(slot)
+    unfix-paths: FVM_Path(full_path) -> FVM_Path(path, term)
+      where
+      	(path, term) := <split-init-last> full_path;
+      	_ := <geq> (<length> path, 1)

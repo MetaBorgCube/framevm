@@ -5,10 +5,10 @@ imports
 	desugar
 
 rules
-	to-RISC-all: Program(blocks) -> Program(<map(to-RISC-all)> blocks)
-	to-RISC-all: Block(lbl, Seq(body)) -> Block(lbl, Seq(body_risc))
+	to-RISC-all: FVM_Program(blocks) -> FVM_Program(<map(to-RISC-all)> blocks)
+	to-RISC-all: FVM_Block(lbl, FVM_Seq(body)) -> FVM_Block(lbl, FVM_Seq(body_risc))
 	  where
-		body_risc := <to-RISC(r-dupswap)><to-RISC(r-sget)><to-RISC(r-relative)><to-RISC(r-link)><to-RISC(r-cont)> body
+		body_risc := <to-RISC(r-dupswap)><to-RISC(r-sget)><to-RISC(r-relative)><to-RISC(r-link)><to-RISC(r-FVM_Cont)> body
   
     // Boilerplate to make the desugaring step simpler
   	to-RISC(s): x -> <foldr(![], (fpr(s) <+ idf))> x 
@@ -16,61 +16,61 @@ rules
   	idf: (e, body) -> [e|body]
   	
   	// Link -> LinkR
-	r-link: Link(path, lbl)  -> [Get(path),  LinkR(lbl)]
+	r-link: FVM_Link(path, lbl)  -> [FVM_Get(path),  FVM_LinkR(lbl)]
 
-	// Implicit continuations to explicit continuations
-	r-cont: Return() -> 
-		[Get(Path([SlotC()])), ContUnpack(), Swap(), SetR(Path([SlotR()])), Get(Path([SlotC()])), ContCall()]
+	// Implicit FVM_Continuations to explicit FVM_Continuations
+	r-FVM_Cont: FVM_Return() -> 
+		[FVM_Get(FVM_Path([FVM_Cont("c")])), FVM_ContUnpack(), FVM_Swap(), FVM_SetR(FVM_Path([FVM_SlotR()])), FVM_Get(FVM_Path([FVM_Cont("c")])), FVM_ContCall()]
 		
-	r-cont: Call(Label(block), Label(returnAddr)) -> 
-		[Dup(), ContNew(Label(returnAddr)), SetR(Path([SlotC()])), Dup(), Get(Path([SlotX()])), SetR(Path([SlotX()])), ContNewR(Label(block)), ContCall()]
+	r-FVM_Cont: FVM_Call(FVM_Label(block), FVM_Label(returnAddr)) -> 
+		[FVM_Dup(), FVM_ContNew(FVM_Label(returnAddr)), FVM_SetR(FVM_Path([FVM_Cont("c")])), FVM_Dup(), FVM_Get(FVM_Path([FVM_Cont("x")])), FVM_SetR(FVM_Path([FVM_Cont("x")])), FVM_ContNewR(FVM_Label(block)), FVM_ContCall()]
 	
-	r-cont: Call(Label(block)) -> 
-		[Dup(), ContUnpack(), Dup(), Get(Path([SlotX()])), SetR(Path([SlotX()])), ContNew(Label(block)), SetR(Path([SlotC()])), ContCall()]
+	r-FVM_Cont: FVM_Call(FVM_Label(block)) -> 
+		[FVM_Dup(), FVM_ContUnpack(), FVM_Dup(), FVM_Get(FVM_Path([FVM_Cont("x")])), FVM_SetR(FVM_Path([FVM_Cont("x")])), FVM_ContNew(FVM_Label(block)), FVM_SetR(FVM_Path([FVM_Cont("c")])), FVM_ContCall()]
 	
-	r-cont: ScopeDown(lbl) -> 
-		[Dup(), Get(Path([SlotC()])), SetR(Path([SlotC()])), Dup(), Get(Path([SlotX()])), SetR(Path([SlotX()])), ContNewR(lbl), ContCall()]
+	r-FVM_Cont: FVM_ScopeDown(lbl) -> 
+		[FVM_Dup(), FVM_Get(FVM_Path([FVM_Cont("c")])), FVM_SetR(FVM_Path([FVM_Cont("c")])), FVM_Dup(), FVM_Get(FVM_Path([FVM_Cont("x")])), FVM_SetR(FVM_Path([FVM_Cont("x")])), FVM_ContNewR(lbl), FVM_ContCall()]
 	
-	r-cont: ScopeUp(path, lbl) -> 
-		[Get(path), ContNewR(lbl), ContCall()]
+	r-FVM_Cont: FVM_ScopeUp(path, lbl) -> 
+		[FVM_Get(path), FVM_ContNewR(lbl), FVM_ContCall()]
 		
-	r-cont: Try(lbl_try, lbl_catch) ->
-		[Dup(), Get(Path([SlotX()])), SetR(Path([SlotX()])), Dup(), Get(Path([SlotC()])), SetR(Path([SlotC()])), ContNewR(lbl_catch), 
-		DupN("2"), Swap(), SetR(Path([SlotX()])), Dup(), Get(Path([SlotC()])), SetR(Path([SlotC()])), ContNewR(lbl_try), ContCall()]
+	r-FVM_Cont: FVM_Try(lbl_try, lbl_catch) ->
+		[FVM_Dup(), FVM_Get(FVM_Path([FVM_Cont("x")])), FVM_SetR(FVM_Path([FVM_Cont("x")])), FVM_Dup(), FVM_Get(FVM_Path([FVM_Cont("c")])), FVM_SetR(FVM_Path([FVM_Cont("c")])), FVM_ContNewR(lbl_catch), 
+		FVM_DupN("2"), FVM_Swap(), FVM_SetR(FVM_Path([FVM_Cont("x")])), FVM_Dup(), FVM_Get(FVM_Path([FVM_Cont("c")])), FVM_SetR(FVM_Path([FVM_Cont("c")])), FVM_ContNewR(lbl_try), FVM_ContCall()]
 		
-	r-cont: Try() ->
-		[Dup(), ContUnpack(), Dup(), Get(Path([SlotX()])), SetR(Path([SlotX()])), Get(Path([SlotC()])), SetR(Path([SlotC()])), 
-		DupN("2"), ContUnpack(), Swap(), SetR(Path([SlotX()])), Dup(), ContUnpack(), Get(Path([SlotC()])), SetR(Path([SlotC()])), ContCall()]
+	r-FVM_Cont: FVM_Try() ->
+		[FVM_Dup(), FVM_ContUnpack(), FVM_Dup(), FVM_Get(FVM_Path([FVM_Cont("x")])), FVM_SetR(FVM_Path([FVM_Cont("x")])), FVM_Get(FVM_Path([FVM_Cont("c")])), FVM_SetR(FVM_Path([FVM_Cont("c")])), 
+		FVM_DupN("2"), FVM_ContUnpack(), FVM_Swap(), FVM_SetR(FVM_Path([FVM_Cont("x")])), FVM_Dup(), FVM_ContUnpack(), FVM_Get(FVM_Path([FVM_Cont("c")])), FVM_SetR(FVM_Path([FVM_Cont("c")])), FVM_ContCall()]
 		
-	r-cont: Throw() -> 
-		[Get(Path([SlotX()])), ContUnpack(), Swap(), SetR(Path([SlotR()])), Get(Path([SlotX()])), ContCall()]
+	r-FVM_Cont: FVM_Throw() -> 
+		[FVM_Get(FVM_Path([FVM_Cont("x")])), FVM_ContUnpack(), FVM_Swap(), FVM_SetR(FVM_Path([FVM_SlotR()])), FVM_Get(FVM_Path([FVM_Cont("x")])), FVM_ContCall()]
 	
 	
 	
-	// Continuations to relative continuations
-	r-relative: ContNew(lbl) -> [Get(Self()), ContNewR(lbl)]
+	// FVM_Continuations to relative FVM_Continuations
+	r-relative: FVM_ContNew(lbl) -> [FVM_Get(FVM_Self()), FVM_ContNewR(lbl)]
 	
 	// Get/Set unfolding to single segment paths and only relative gets/sets
-	r-relative: Get() -> [Get(Self()), Swap(), GetR()]
-	r-relative: Set() -> [Get(Self()), SwapN("2"), Swap(), SetR()]
+	r-relative: FVM_Get() -> [FVM_Get(FVM_Self()), FVM_Swap(), FVM_GetR()]
+	r-relative: FVM_Set() -> [FVM_Get(FVM_Self()), FVM_SwapN("2"), FVM_Swap(), FVM_SetR()]
 	
-	r-relative: Get(path) -> [Get(Self()) | <r-relative> GetR(path)]
-	r-relative: GetR(Path(path)) -> <foldr(![], r-relative-get)> path
+	r-relative: FVM_Get(path) -> [FVM_Get(FVM_Self()) | <r-relative> FVM_GetR(path)]
+	r-relative: FVM_GetR(FVM_Path(path)) -> <foldr(![], r-relative-get)> path
 	
-	r-relative: Set(Path(path)) -> <concat> [[Get(Self()) | <r-relative> GetR(Path(body))] , [Swap(), SetR(Path([last]))]]
+	r-relative: FVM_Set(FVM_Path(path)) -> <concat> [[FVM_Get(FVM_Self()) | <r-relative> FVM_GetR(FVM_Path(body))] , [FVM_Swap(), FVM_SetR(FVM_Path([last]))]]
 	  where
 	  	(body, last) := <split-init-last> path
-	r-relative: SetR(Path(path)) -> <concat> [<r-relative> GetR(Path(body)) , [SetR(Path([last]))]]
+	r-relative: FVM_SetR(FVM_Path(path)) -> <concat> [<r-relative> FVM_GetR(FVM_Path(body)) , [FVM_SetR(FVM_Path([last]))]]
 	  where
 	  	(body, last) := <split-init-last> path
 	
-	r-relative-get: (e, list) -> [GetR(Path([e])) | list]
+	r-relative-get: (e, list) -> [FVM_GetR(FVM_Path([e])) | list]
 	
 	// Reduce relative gets and sets of slots to getR/0 and setR/0
 	// I don't know why you would want to do this, but you can if you really want to
-	r-sget: GetR(Path([Slot(slot_id)])) -> [IPush(slot_id), GetR()]
-	r-sget: SetR(Path([Slot(slot_id)])) -> [IPush(slot_id), Swap(), SetR()]
+	r-sget: FVM_GetR(FVM_Path([FVM_Slot(slot_id)])) -> [FVM_IPush(slot_id), FVM_GetR()]
+	r-sget: FVM_SetR(FVM_Path([FVM_Slot(slot_id)])) -> [FVM_IPush(slot_id), FVM_Swap(), FVM_SetR()]
 	
-	r-dupswap: Dup()  -> [DupN("1")]
-	r-dupswap: Swap() -> [SwapN("1")]
+	r-dupswap: FVM_Dup()  -> [FVM_DupN("1")]
+	r-dupswap: FVM_Swap() -> [FVM_SwapN("1")]
 	

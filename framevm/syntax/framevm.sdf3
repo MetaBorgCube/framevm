@@ -5,85 +5,87 @@ imports Common pseudo
 context-free start-symbols Program
 
 sorts Program context-free syntax
-  Program.Program = body:Block*	{ layout (align-list body) }
+  Program.FVM_Program = body:Block*	{ layout (align-list body) }
   
-  Label.Label = LABEL
+  Label.FVM_Label = LABEL
   
 sorts Block context-free syntax
 
-  Block.Block = <
+  Block.FVM_Block = <
 <lbl:Label>: 
     <body:Body>
 
 > 			{ layout (indent lbl body) }
   
-  Block.PseudoCode = <{ 
+  Block.FVM_PseudoCode = <{ 
   	<body:PsdBody>
 }
 
 > 			{ layout (indent "{" body && align "{" "}") }
   
-  Body.Empty = 
-  Body.SeqJump = <<instr:Instr*> 
+  Body.FVM_SeqJump = <<instr:Instr*> 
 <jump:ControlInstr>
 >			{ layout (align-list instr && align instr jump) }
   
 sorts Instr context-free syntax
   
-  Instr.IAdd 	 = <addi>					// Consumes two ints from stack and adds them, result is stored on stack
-  Instr.IEq 	 = <eqi>					// Consumes two ints from stack and equals them, result is stored on stack
-  Instr.ILt 	 = <lti>					// Consumes two ints from stack and performs < on them, result is stored on stack
-  Instr.IPush 	 = <ipush <INT>>			// Push int value to stack
+  Instr.FVM_IAdd 	 = <addi>					// Consumes two ints from stack and adds them, result is stored on stack
+  Instr.FVM_IEq 	 = <eqi>					// Consumes two ints from stack and equals them, result is stored on stack
+  Instr.FVM_ILt 	 = <lti>					// Consumes two ints from stack and performs < on them, result is stored on stack
+  Instr.FVM_IPush 	 = <ipush <INT>>			// Push int value to stack
   
-  Instr.Dup      = <dup>					// Duplicates the value on the stack
-  Instr.DupN     = <dup <INTLZ>>			// Duplicates the n-th value on the stack
-  Instr.Swap     = <swap>					// Swaps two values on the stack
-  Instr.SwapN    = <swap <INTLZ>>			// Swaps the value on top of the stack with the one in (n+1)th position
-  Instr.Print    = <print>					// Prints value on the stack
-  Instr.Debug    = <debug>					// Prints the state of the vm
+  Instr.FVM_Dup      = <dup>					// Duplicates the value on the stack
+  Instr.FVM_DupN     = <dup <INTLZ>>			// Duplicates the n-th value on the stack
+  Instr.FVM_Swap     = <swap>					// Swaps two values on the stack
+  Instr.FVM_SwapN    = <swap <INTLZ>>			// Swaps the value on top of the stack with the one in (n+1)th position
+  Instr.FVM_Print    = <print>					// Prints value on the stack
+  Instr.FVM_Debug    = <debug>					// Prints the state of the vm
   
   
   Instr = FrameInstr
-  FrameInstr.New    = <new>					// Create new frame and push pointer on stack
-  FrameInstr.Link   = <link <Path> <LABEL>> // Link frame on stack to given location (Empty path is current frame)
-  FrameInstr.LinkR	= <linkr <LABEL>>		// Link frame on second position on the stack to the frame on top
-  FrameInstr.Set    = <set>					// Store value on top of stack in slot on second position of the current frame
-  FrameInstr.Set    = <set <Path>>			// Set value on the stack at path location
-  FrameInstr.SetR   = <setr>				// Store value on top of stack in slot on second position of frame on third position
-  FrameInstr.SetR   = <setr <Path>>			// Set value on the stack at path location starting in frame on stack
-  FrameInstr.Get    = <get>					// Get index on top of stack of the current frame
-  FrameInstr.Get    = <get <Path>>			// Store value at path in the stack
-  FrameInstr.GetR   = <getr>				// Get index on top of stack in frame on second position
-  FrameInstr.GetR   = <getr <Path>>			// Store value at path from frame on stack on stack
+  FrameInstr.FVM_New    = <new>					// Create new frame and push pointer on stack
+  FrameInstr.FVM_Link   = <link <Path> <LABEL>> // Link frame on stack to given location (Empty path is current frame)
+  FrameInstr.FVM_LinkR	= <linkr <LABEL>>		// Link frame on second position on the stack to the frame on top
+  FrameInstr.FVM_Set    = <set>					// Store value on top of stack in slot on second position of the current frame
+  FrameInstr.FVM_Set    = <set <Path>>			// Set value on the stack at path location
+  FrameInstr.FVM_SetR   = <setr>				// Store value on top of stack in slot on second position of frame on third position
+  FrameInstr.FVM_SetR   = <setr <Path>>			// Set value on the stack at path location starting in frame on stack
+  FrameInstr.FVM_Get    = <get>					// Get index on top of stack of the current frame
+  FrameInstr.FVM_Get    = <get <Path>>			// Store value at path in the stack
+  FrameInstr.FVM_GetR   = <getr>				// Get index on top of stack in frame on second position
+  FrameInstr.FVM_GetR   = <getr <Path>>			// Store value at path from frame on stack on stack
   
   
   Instr = ContInstr
-  ContInstr.ContNew    = <cnew>  			// Create a new continuation for the current execution point
-  ContInstr.ContNew    = <cnew <Label>> 	// Create a continuation of the current frame at a new execution point
-  ContInstr.ContNewR   = <cnewr <Label>>  	// Create a continuation for a frame on the stack at a new execution point
-  ContInstr.ContUnpack = <cunpack>			// Get the execution frame from a continuation
+  ContInstr.FVM_ContNew    = <cnew>  			// Create a new continuation for the current execution point
+  ContInstr.FVM_ContNew    = <cnew <Label>> 	// Create a continuation of the current frame at a new execution point
+  ContInstr.FVM_ContNewR   = <cnewr <Label>>  	// Create a continuation for a frame on the stack at a new execution point
+  ContInstr.FVM_ContUnpack = <cunpack>			// Get the execution frame from a continuation
   
-  ControlInstr.Return    = <return>					// Takes return address from opstack and copies top of stack to caller stack  
-  ControlInstr.JumpZ     = <jumpz <Label> <Label>>	// Jump to first label if stack zero, else jump to other label
-  ControlInstr.Jump      = <jump <Label>>			// Unconditional jump to LABEL
-  ControlInstr.Call      = <call <Label> <Label>>	// Call block LABEL, using frame on the stack
-  ControlInstr.Call      = <call <Label>>			// Call continuation on the stack with new block
-  ControlInstr.ContCall  = <ccall>					// Call a continuation
+  ControlInstr.FVM_Return    = <return>					// Takes return address from opstack and copies top of stack to caller stack  
+  ControlInstr.FVM_JumpZ     = <jumpz <Label> <Label>>	// Jump to first label if stack zero, else jump to other label
+  ControlInstr.FVM_Jump      = <jump <Label>>			// Unconditional jump to LABEL
+  ControlInstr.FVM_Call      = <call <Label> <Label>>	// Call block LABEL, using frame on the stack
+  ControlInstr.FVM_Call      = <call <Label>>			// Call continuation on the stack with new block
+  ControlInstr.FVM_ContCall  = <ccall>					// Call a continuation
   
-  ControlInstr.Try       = <try <Label> <Label>>	// Execute the frame on second position on the stack and set the first frame as exception handler
-  ControlInstr.Try       = <try>					// Execute the continuation on second position on the stack and set the first continuation as exception handler
-  ControlInstr.Throw     = <throw>					// Throw the element on top of the stack to the exception handler
+  ControlInstr.FVM_Try       = <try <Label> <Label>>	// Execute the frame on second position on the stack and set the first frame as exception handler
+  ControlInstr.FVM_Try       = <try>					// Execute the continuation on second position on the stack and set the first continuation as exception handler
+  ControlInstr.FVM_Throw     = <throw>					// Throw the element on top of the stack to the exception handler
   
-  ControlInstr.ScopeUp   = <scopeup <Path> <Label>>	// Break execution to a higher scope
-  ControlInstr.ScopeDown = <scopedown <Label>>		// Move execution to another scope and copy over the current continuation
+  ControlInstr.FVM_ScopeUp   = <scopeup <Path> <Label>>	// Break execution to a higher scope
+  ControlInstr.FVM_ScopeDown = <scopedown <Label>>		// Move execution to another scope and copy over the current continuation
   
-  Path.Self  = <[]>
-  Path.Path  = <[<{PathRef ","}+>]>
-  PathRef.Slot = INTLEZ
-  PathRef.SlotR = <r>
-  PathRef.SlotX = <x>
-  PathRef.SlotC = <c>
-  PathRef.Link = LABEL
+  Path.FVM_Self  = <[]>
+  Path.FVM_Path  = <[<PathTerminal>]>
+  Path.FVM_Path  = <[<{PathRef ","}+>, <PathTerminal>]>
+  PathRef.FVM_Slot = INTLEZ
+  PathRef.FVM_SlotR = "r"
+  PathRef.FVM_Link = LABEL
+  
+  PathTerminal = PathRef
+  PathTerminal.FVM_Cont = CONTSLOT		// The continuation slots can never be a frame, so cannot be a path intermediate
+  
 
   
 /* 

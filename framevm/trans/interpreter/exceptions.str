@@ -6,10 +6,10 @@ imports
 	interpreter/external
 	
 rules	
-	// Try/2
+	// FVM_Try/2
 	// Takes two frames from the stack and sets them up to be a try-catch block
 	// Moves execution to the try-block with the catch block as exception handler
-	eval: (Try(Label(lbl_try), Label(lbl_catch)), env1) -> env8
+	eval: (FVM_Try(FVM_Label(lbl_try), FVM_Label(lbl_catch)), env1) -> env8
 	  where
 	  	cont := <cont-get-cc(|env1)> <frame-this(|env1)>;
 	  	ex   := <ex-get-cx(|env1)>   <frame-this(|env1)>;
@@ -27,10 +27,10 @@ rules
 	  	
 	  	env8 := <cont-call(|env7)> (frame_try, lbl_try) 
 	  	
-	// Try/0
+	// FVM_Try/0
 	// Takes two continuation from the stack and sets them up to be a try-catch block
 	// Moves execution to the try-block with the catch block as exception handler
-	eval: (Try(), env1) -> env8
+	eval: (FVM_Try(), env1) -> env8
 	  where
 	  	cont := <cont-get-cc(|env1)> <frame-this(|env1)>;
 	  	ex   := <ex-get-cx(|env1)>   <frame-this(|env1)>;
@@ -48,9 +48,9 @@ rules
 	  	
 	  	env8 := <cont-call(|env7)> (frame_try, lbl_try) 
 	
-	// Throw/0
+	// FVM_Throw/0
 	// Throw the element on top of the stack to the current exception handler
-	eval: (Throw(), env1) -> env4
+	eval: (FVM_Throw(), env1) -> env4
 	  where
 	  	(env2, throwable) := <stack-pop(|env1)>;
 	  	Continuation(handle_frame, handle_block) := <ex-get-cx(|env2)> <frame-this(|env2)>;

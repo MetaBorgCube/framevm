@@ -6,17 +6,17 @@ imports
 	interpreter/external
 
 rules
-	// Dup/0
+	// FVM_Dup/0
 	// Duplicates the element on top of the stack
-	eval: (Dup(), env1) -> env4
+	eval: (FVM_Dup(), env1) -> env4
 	  where
 	  	(env2, val) := <stack-pop(|env1)>;	// pop once
 	  	env3 := <stack-push(|env2)> val;	//
 	  	env4 := <stack-push(|env3)> val		// push twice
 	  	
-	// DupN/1
+	// FVM_DupN/1
 	// Duplicates the n-th element on top of the stack
-	eval: (DupN(n), env1) -> env3
+	eval: (FVM_DupN(n), env1) -> env3
 	  where
 	  	(env2, val) := <eval-dup(|env1)> <string-to-int> n;
 	  	env3 := <stack-push(|env2)> val
@@ -34,130 +34,127 @@ rules
 	  	env4 := <stack-push(|env3)> tmp
 	 
 	 
-	// New
+	// FVM_New
 	// pushes an empty frame on the stack
-  	eval: (New(), env1) -> env3
+  	eval: (FVM_New(), env1) -> env3
   	  where
   	  	(env2, frame_id) := <frame-new(|env1)>;
   	  	env3 := <stack-push(|env2)> FrameRef(frame_id)
   	
-  	// Get/0
+  	// FVM_Get/0
   	// Get index on top of stack of the current frame
-  	eval: (Get(), env1) -> env3
+  	eval: (FVM_Get(), env1) -> env3
   	  where
   	  	(env2, IntV(slot)) := <stack-pop(|env1)>;
-  	  	env3 := <stack-push(|env2)> <frame-get> (env2, <frame-this(|env2)>, Slot(slot))
+  	  	env3 := <stack-push(|env2)> <frame-get> (env2, <frame-this(|env2)>, FVM_Slot(slot))
   	  	
-  	// Get/1
+  	// FVM_Get/1
   	// Push a value on the stack, this value is found by following arg1
-  	eval: (Get(Self()), env1) -> env2
+  	eval: (FVM_Get(FVM_Self()), env1) -> env2
   	  where
   	  	env2 := <stack-push(|env1)> FrameRef(<frame-this(|env1)>)
 
-  	eval: (Get(Path(p)), env1) -> env2
+  	eval: (FVM_Get(FVM_Path(p)), env1) -> env2
   	  where
   	  	(frame_id, slot) := <resolve> (p, FrameRef(<frame-this(|env1)>), env1);
   	  	env2 := <stack-push(|env1)> <frame-get> (env1, frame_id, slot)
 
-	// Set/0
+	// FVM_Set/0
 	// Store value on top of stack in slot on second position on stack of the current frame
-  	eval: (Set(), env1) -> env4
+  	eval: (FVM_Set(), env1) -> env4
   	  where
   	  	(env2, value) := <stack-pop(|env1)>;
   	  	(env3, IntV(slot)) := <stack-pop(|env2)>;
   	  	env4 := <frame-set(|env3)> (<frame-this(|env3)>, slot, value)
   	  	
-	// Set/1
+	// FVM_Set/1
 	// Store the value on top of the stack at the location found by traversing arg1 
-  	eval: (Set(Path(p)), env1) -> env3
+  	eval: (FVM_Set(FVM_Path(p)), env1) -> env3
   	  where
-  	  	(frame, Slot(slot)) := <resolve> (p, FrameRef(<frame-this(|env1)>), env1);
+  	  	(frame, FVM_Slot(slot)) := <resolve> (p, FrameRef(<frame-this(|env1)>), env1);
   	  	(env2, value) := <stack-pop(|env1)>;
   	  	env3 := <frame-set(|env2)> (frame, slot, value)
   	  	
-  	// GetR/0
+  	// FVM_GetR/0
   	// Get index on top of stack in frame on second position
-  	eval: (GetR(), env1) -> env4
+  	eval: (FVM_GetR(), env1) -> env4
   	  where
   	  	(env2, IntV(slot)) := <stack-pop(|env1)>;
   	  	(env3, FrameRef(frame)) := <stack-pop(|env2)>;
-  	  	env4 := <stack-push(|env3)> <frame-get> (env3, frame, Slot(slot))
+  	  	env4 := <stack-push(|env3)> <frame-get> (env3, frame, FVM_Slot(slot))
   	
-  	// GetR/1
+  	// FVM_GetR/1
   	// Push a value on the stack, this value is found by 
   	// following arg1 (starting from the frame on top of the stack)
-  	eval: (GetR(Path(p)), env1) -> env3
+  	eval: (FVM_GetR(FVM_Path(p)), env1) -> env3
   	  where
   	  	(env2, frame) := <stack-pop(|env1)>;
   	  	(frame_id, slot):= <resolve> (p, frame, env2);
   	  	env3 := <stack-push(|env2)> <frame-get> (env2, frame_id, slot)
 
-	// SetR/0
+	// FVM_SetR/0
 	// Store value on top of stack in slot on second position of frame on third position
-  	eval: (SetR(), env1) -> env5
+  	eval: (FVM_SetR(), env1) -> env5
   	  where
   	  	(env2, value) := <stack-pop(|env1)>;
   	  	(env3, IntV(slot)) := <stack-pop(|env2)>;
   	  	(env4, FrameRef(frame)) := <stack-pop(|env3)>;
   	  	env5 := <frame-set(|env4)> (frame, slot, value)
   	
-	// Setr/1
+	// FVM_Setr/1
   	// Store the value on top of the stack at 
   	// the location found by traversing arg1 from the frame on second position on the stack
-  	eval: (SetR(Path(p)), env1) -> env4
+  	eval: (FVM_SetR(FVM_Path(p)), env1) -> env4
   	  where
   	  	(env2, value) := <stack-pop(|env1)>;
   	  	(env3, frame_init) := <stack-pop(|env2)>;
-  	  	(frame, Slot(slot)) := <resolve> (p, frame_init, env1);
+  	  	(frame, FVM_Slot(slot)) := <resolve> (p, frame_init, env1);
   	  	env4 := <frame-set(|env3)> (frame, slot, value)
 
-	// Link/2
+	// FVM_Link/2
 	// Link the frame on top of the stack to the frame pointed to by arg1
 	// using label arg2
-	eval: (Link(Self(), lbl), env1) -> env3
+	eval: (FVM_Link(FVM_Self(), lbl), env1) -> env3
 	  where
 	  	frame_to_id := <frame-this(|env1)>;
 	  	(env2, FrameRef(frame_from_id)) := <stack-pop(|env1)>;
 	  	env3 := <frame-link(|env2)> (frame_from_id, frame_to_id, lbl)
 	  	
-	eval: (Link(Path(path), lbl), env1) -> env3
+	eval: (FVM_Link(FVM_Path(path), lbl), env1) -> env3
 	  where
-//	  	frame_to_id := <frame-this(|env1)>;
 	  	(frame_id, slot_id) := <resolve> (path, FrameRef(<frame-this(|env1)>), env1);
 	  	FrameRef(frame_to_id) := <frame-get> (env1, frame_id, slot_id);
 	  	(env2, FrameRef(frame_from_id)) := <stack-pop(|env1)>;
 	  	env3 := <frame-link(|env2)> (frame_from_id, frame_to_id, lbl)
 	  	
-	// LinkR/1
+	// FVM_LinkR/1
 	// Link the frame on 2nd position to the frame on top of the stack
-	eval: (LinkR(lbl), env1) -> env4
+	eval: (FVM_LinkR(lbl), env1) -> env4
 	  where
 	  	(env2, FrameRef(frame_to_id)) := <stack-pop(|env1)>;
 	  	(env3, FrameRef(frame_from_id)) := <stack-pop(|env2)>;
 	  	env4 := <frame-link(|env3)> (frame_from_id, frame_to_id, lbl)
 	  
-	// ScopeUp//2
+	// FVM_ScopeUp//2
 	// Move execution to a parent scope without actually returning
 	// Can be seen as functioning like a break statement
 	// Breaks to the scpoe at the provided path and move execution to the given block
-	eval: (ScopeUp(Path(path), Label(lbl)), env1) -> env2
+	eval: (FVM_ScopeUp(FVM_Path(path), FVM_Label(lbl)), env1) -> env2
 	  where
-		(frame_id, Link(link_id)) := <resolve> (path, FrameRef(<frame-this(|env1)>), env1);
+		(frame_id, FVM_Link(link_id)) := <resolve> (path, FrameRef(<frame-this(|env1)>), env1);
 		env2 := <cont-call(|env1)> (<frame-get-link(|env1)> (frame_id, link_id), lbl)
 	
 	// Get a Slot or Link with the given id and frame
-	frame-get: (env, frame_id, Link(link_id)) -> FrameRef(<frame-get-link(|env)> (frame_id, link_id))
-	frame-get: (env, frame_id, Slot(slot_id)) -> <frame-get-slot(|env)> (frame_id, slot_id)				// Normal slots
-	frame-get: (env, frame_id, SlotR())       -> <frame-get-slot(|env)> (frame_id, "r")					// Slot 'r'
-	frame-get: (env, frame_id, SlotC())       -> <frame-get-slot(|env)> (frame_id, "c")					// Slot 'c'
-	frame-get: (env, frame_id, SlotX())       -> <frame-get-slot(|env)> (frame_id, "x")					// Slot 'x'
+	frame-get: (env, frame_id, FVM_Link(link_id)) -> FrameRef(<frame-get-link(|env)> (frame_id, link_id))
+	frame-get: (env, frame_id, FVM_Slot(slot_id)) -> <frame-get-slot(|env)> (frame_id, slot_id)				// Normal slots
+	frame-get: (env, frame_id, FVM_SlotR())       -> <frame-get-slot(|env)> (frame_id, "r")					// Slot 'r'
+	frame-get: (env, frame_id, FVM_Cont(name))    -> <frame-get-slot(|env)> (frame_id, name)				// Continuation slots
 	
 	// Resolve a path
 	// returns the frame_id and slot/link of the location pointed to
-  	resolve: ([SlotR()], FrameRef(frame_id), env) -> (frame_id, Slot("r")) 
-  	resolve: ([SlotC()], FrameRef(frame_id), env) -> (frame_id, Slot("c")) 
-  	resolve: ([SlotX()], FrameRef(frame_id), env) -> (frame_id, Slot("x")) 
-  	resolve: ([slot], FrameRef(frame_id), env)    -> (frame_id, slot) 
-  	resolve: ([h|t], FrameRef(frame_id), env) -> <resolve> (t, <frame-get> (env, frame_id, h), env)
+	resolve: ([FVM_SlotR()], FrameRef(frame_id), env)    -> (frame_id, FVM_Slot("r"))
+	resolve: ([FVM_Cont(name)], FrameRef(frame_id), env) -> (frame_id, FVM_Slot(name))
+  	resolve: ([slot], FrameRef(frame_id), env)           -> (frame_id, slot) 
+  	resolve: ([h|t], FrameRef(frame_id), env)            -> <resolve> (t, <frame-get> (env, frame_id, h), env)
   	
   	

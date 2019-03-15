@@ -39,7 +39,7 @@ rules // Debugging
     (node, _, _, path, project-path) -> (filename, result)
     with
       filename := <guarantee-extension(|"value")> path
-    ; result   := <eval> <desugar-full> node
+    ; result   := <eval> <debug><desugar-full> node
     
   run-program-compare:
     (node, _, _, path, project-path) -> (filename, out)
