@@ -5,6 +5,7 @@ lexical syntax
   ID             = [a-zA-Z\_] [a-zA-Z0-9\_]*
   LABEL          = [A-Z\_] [A-Z0-9\_]* 
   MAIN			 = "MAIN"
+  LABEL          = MAIN
   INT            = "-"? [0-9]+ 
   INTLZ          = [1-9][0-9]* 
   INTLEZ         = [0-9]+ 
@@ -26,7 +27,7 @@ lexical syntax
   NewLineEOF     = EOF 
   EOF            =  
 
-  LABEL = 	"MAIN" 		{reject}
+//  LABEL = 	"MAIN" 		{reject}
   ID = 		"addi" 		{reject}
   ID = 		"jump" 		{reject}
   ID = 		"jumpz" 	{reject}

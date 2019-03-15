@@ -6,7 +6,7 @@ context-free start-symbols PsdBody
 
 sorts Psdbody context-free syntax
   
-  PsdBody.Empty = 
+  PsdBody.PsdEmpty = 
   PsdBody.Seq = instr:PsdInstr+ 				{ layout (align-list instr) }
   
   
@@ -36,7 +36,7 @@ else:
 >								{ layout (indent "while" body && indent "while" body) }
 
   PsdInstr.Assign = <<PsdExp> := <PsdExp>>
-  PsdInstr.Assign = <var <PsdExp> := <PsdExp>>
+  PsdInstr.AssignVar = <var <PsdExp> := <PsdExp>>
   PsdInstr.Return = <return <PsdExp>>
   PsdInstr.FieldDef = <var <ID> : <PsdType>> 
   PsdInstr.Yield = <yield <PsdExp>>
@@ -71,12 +71,11 @@ catch <ID>:
 >				 				{ layout (indent "with" body && align-list body) }
   
   PsdRecField.Field = <<ID> : <PsdType>>
-  PsdRecField.Field = <<ID> : <PsdType>,>
   PsdRecField.Method = FuncDef
   PsdType = ID
   
-  PsdArgList.List = {ID ","}+
-  PsdArgList.Empty = <>
+  PsdArgList.ArgList = {ID ","}+
+  PsdArgList.NoArgs = <>
     
   
 sorts PsdExp context-free syntax
