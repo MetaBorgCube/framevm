@@ -1,0 +1,22 @@
+module analysis/static-semantics
+
+imports
+
+  signatures/-
+  
+signature
+	namespaces Var
+
+name resolution
+  labels
+    P
+
+  order
+    D < P
+
+  well-formedness
+	P*
+
+rules
+
+  init ^ (s) := new s.

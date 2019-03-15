@@ -1,21 +1,16 @@
 module fvm-analysis
 
 imports
-
-  statixruntime
-  analysis/stack
+  nabl2/api
+  nabl2/runtime
+  
   fvm-desugar
   fvm-pp
+  analysis/stack
+  analysis/static-semantics
 
 rules // Analysis
-
-  editor-analyze = stx-editor-analyze(desugar-full; stack-calc|"static-semantics", "programOK")
-
-rules // Editor Services
-
-  editor-resolve = stx-editor-resolve
-
-  editor-hover = stx-editor-hover
+  editor-analyze = nabl2-analyze(desugar-full; stack-calc)
 
 rules // Debugging
 
