@@ -116,7 +116,7 @@ test scopeup path single    [[scopeup [P] P]]         parse succeeds
 test scopeup path multiple  [[scopeup [C, 0] G]]      parse succeeds
 test scopeup path multiple2 [[scopeup [I, 0, L] Q]]   parse succeeds
 
-test scopeup path lower     [[scopeup [e] P]]   parse fails
+test scopeup path lower     [[scopeup [e, P] P]]   parse fails
 test scopeup path r         [[scopeup [r] P]]   parse succeeds
 test scopeup path x         [[scopeup [x] P]]   parse succeeds
 test scopeup path c         [[scopeup [c] P]]   parse succeeds

@@ -55,10 +55,11 @@ test link path single    [[link [P] P]]         parse succeeds
 test link path multiple  [[link [C, 0] G]]      parse succeeds
 test link path multiple2 [[link [I, 0, L] Q]]   parse succeeds
 
-test link path lower     [[link [e] P]]   parse fails
-test link path r         [[link [r] P]]   parse succeeds
+test link path lower     [[link [e, P] P]]   parse fails
+test link path r         [[link [r, P] P]]   parse succeeds
 test link path x         [[link [x] P]]   parse succeeds
 test link path c         [[link [c] P]]   parse succeeds
+test link path c         [[link [pp] P]]  parse succeeds
 test link path negative  [[link [-1] P]]  parse fails
 test link no path        [[link P]]       parse fails
 
@@ -86,7 +87,7 @@ test set path single     [[set [P] ]]         parse succeeds
 test set path multiple   [[set [C, 0] ]]      parse succeeds
 test set path multiple2  [[set [I, 0, L] ]]   parse succeeds
 
-test set path lower      [[set [e] ]]   parse fails
+test set path lower      [[set [e, P] ]]   parse fails
 test set path r          [[set [r] ]]   parse succeeds
 test set path x          [[set [x] ]]   parse succeeds
 test set path c          [[set [c] ]]   parse succeeds
@@ -98,7 +99,7 @@ test setr path single    [[setr [P] ]]        parse succeeds
 test setr path multiple  [[setr [C, 0] ]]     parse succeeds
 test setr path multiple2 [[setr [I, 0, L] ]]  parse succeeds
 
-test setr path lower     [[setr [e] ]]  parse fails
+test setr path lower     [[setr [e, P] ]]  parse fails
 test setr path r         [[setr [r] ]]  parse succeeds
 test setr path x         [[setr [x] ]]  parse succeeds
 test setr path c         [[setr [c] ]]  parse succeeds
@@ -110,7 +111,7 @@ test get path single     [[get [P] ]]         parse succeeds
 test get path multiple   [[get [C, 0] ]]      parse succeeds
 test get path multiple2  [[get [I, 0, L] ]]   parse succeeds
 
-test get path lower      [[get [e] ]]   parse fails
+test get path lower      [[get [e, P] ]]   parse fails
 test get path r          [[get [r] ]]   parse succeeds
 test get path x          [[get [x] ]]   parse succeeds
 test get path c          [[get [c] ]]   parse succeeds
@@ -122,7 +123,7 @@ test getr path single    [[getr [P] ]]        parse succeeds
 test getr path multiple  [[getr [C, 0] ]]     parse succeeds
 test getr path multiple2 [[getr [I, 0, L] ]]  parse succeeds
 
-test getr path lower     [[getr [e] ]]  parse fails
+test getr path lower     [[getr [e, P] ]]  parse fails
 test getr path r         [[getr [r] ]]  parse succeeds
 test getr path x         [[getr [x] ]]  parse succeeds
 test getr path c         [[getr [c] ]]  parse succeeds
