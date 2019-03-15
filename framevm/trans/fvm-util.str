@@ -1,0 +1,19 @@
+module fvm-util
+
+imports 
+	signatures/framevm-sig
+	fvm-desugar
+
+rules 
+	
+	// Convert a flat list of instructions to a VM program
+	// Blocks are separated by labels instead of actual blocks
+	// Sugar is re-added to make it printable
+	framevm-from-flat: body -> <resugar> FVM_Program(blocks)
+	  where
+		(blocks, []) := <foldr(!([], []), from-flat-fold)> [FVM_Label("MAIN") | body]
+      
+    // If the current instruction is a label, close the block (we are going bottom to top)
+    // Else just store the instruction and continue
+	from-flat-fold: (FVM_Label(lbl), (blocks, instrs)) -> ([FVM_Block(FVM_Label(lbl), FVM_Seq(instrs)) | blocks], [])
+	from-flat-fold: (instr, (blocks, instrs)) -> (blocks, [instr | instrs])
