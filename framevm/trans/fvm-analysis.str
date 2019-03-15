@@ -1,11 +1,11 @@
-module analysis
+module fvm-analysis
 
 imports
 
   statixruntime
   analysis/stack
-  desugar
-  pp
+  fvm-desugar
+  fvm-pp
 
 rules // Analysis
 

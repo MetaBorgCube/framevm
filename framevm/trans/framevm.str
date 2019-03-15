@@ -1,11 +1,11 @@
 module framevm
 
 imports completion/completion
-imports pp
 imports outline
-imports analysis
-imports interpreter
-imports desugar
+imports fvm-pp
+imports fvm-analysis
+imports fvm-interpreter
+imports fvm-desugar
 
 rules // Debugging
   
@@ -49,5 +49,5 @@ rules // Debugging
     ; result2  := <eval> <desugar-full> node
     ; out      := <compare-output> (result1, result2)
     
-    compare-output = equal < !"Yes" + !"No"
+  compare-output = equal < !"Yes" + !"No"
     

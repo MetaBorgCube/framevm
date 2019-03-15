@@ -1,4 +1,4 @@
-module desugar
+module fvm-desugar
 
 imports
 	signatures/framevm-sig

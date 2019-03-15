@@ -2,7 +2,7 @@ module toRISC
 
 imports
 	signatures/framevm-sig
-	desugar
+	fvm-desugar
 
 rules
 	to-RISC-all: FVM_Program(blocks) -> FVM_Program(<map(to-RISC-all)> blocks)

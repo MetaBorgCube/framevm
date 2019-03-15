@@ -2,7 +2,7 @@ module stack
 
 imports
 	signatures/framevm-sig
-	desugar
+	fvm-desugar
 
 rules
 	// check stack sizes of blocks

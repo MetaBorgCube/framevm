@@ -1,9 +1,9 @@
-module interpreter
+module fvm-interpreter
 
 imports 
 	signatures/framevm-sig
 	interpreter/-
-	desugar
+	fvm-desugar
     
 rules
   	eval : FVM_Program(blocks) -> out

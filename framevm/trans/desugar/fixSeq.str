@@ -2,7 +2,7 @@ module fixSeq
 
 imports
 	signatures/framevm-sig
-	desugar
+	fvm-desugar
     
 rules //
 
