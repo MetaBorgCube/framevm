@@ -20,30 +20,44 @@ rules
 
 	// Implicit FVM_Continuations to explicit FVM_Continuations
 	r-FVM_Cont: FVM_Return() -> 
-		[FVM_Get(FVM_Path([FVM_Cont("c")])), FVM_ContUnpack(), FVM_Swap(), FVM_SetR(FVM_Path([FVM_SlotR()])), FVM_Get(FVM_Path([FVM_Cont("c")])), FVM_ContCall()]
+		[FVM_Get(FVM_Path([FVM_Cont("c")])), FVM_ContUnpack(), FVM_Swap(), 
+		FVM_SetR(FVM_Path([FVM_SlotR()])), FVM_Get(FVM_Path([FVM_Cont("c")])), FVM_ContCall()]
 		
 	r-FVM_Cont: FVM_Call(FVM_Label(block), FVM_Label(returnAddr)) -> 
-		[FVM_Dup(), FVM_ContNew(FVM_Label(returnAddr)), FVM_SetR(FVM_Path([FVM_Cont("c")])), FVM_Dup(), FVM_Get(FVM_Path([FVM_Cont("x")])), FVM_SetR(FVM_Path([FVM_Cont("x")])), FVM_ContNewR(FVM_Label(block)), FVM_ContCall()]
+		[FVM_Dup(), FVM_ContNew(FVM_Label(returnAddr)), FVM_SetR(FVM_Path([FVM_Cont("c")])), 
+		FVM_Dup(), FVM_Get(FVM_Path([FVM_Cont("x")])), FVM_SetR(FVM_Path([FVM_Cont("x")])), 
+		FVM_ContNewR(FVM_Label(block)), FVM_ContCall()]
 	
 	r-FVM_Cont: FVM_Call(FVM_Label(block)) -> 
-		[FVM_Dup(), FVM_ContUnpack(), FVM_Dup(), FVM_Get(FVM_Path([FVM_Cont("x")])), FVM_SetR(FVM_Path([FVM_Cont("x")])), FVM_ContNew(FVM_Label(block)), FVM_SetR(FVM_Path([FVM_Cont("c")])), FVM_ContCall()]
+		[FVM_Dup(), FVM_ContUnpack(), FVM_Dup(), FVM_Get(FVM_Path([FVM_Cont("x")])), 
+		FVM_SetR(FVM_Path([FVM_Cont("x")])), FVM_ContNew(FVM_Label(block)), 
+		FVM_SetR(FVM_Path([FVM_Cont("c")])), FVM_ContCall()]
 	
 	r-FVM_Cont: FVM_ScopeDown(lbl) -> 
-		[FVM_Dup(), FVM_Get(FVM_Path([FVM_Cont("c")])), FVM_SetR(FVM_Path([FVM_Cont("c")])), FVM_Dup(), FVM_Get(FVM_Path([FVM_Cont("x")])), FVM_SetR(FVM_Path([FVM_Cont("x")])), FVM_ContNewR(lbl), FVM_ContCall()]
+		[FVM_Dup(), FVM_Get(FVM_Path([FVM_Cont("c")])), FVM_SetR(FVM_Path([FVM_Cont("c")])), 
+		FVM_Dup(), FVM_Get(FVM_Path([FVM_Cont("x")])), FVM_SetR(FVM_Path([FVM_Cont("x")])), 
+		FVM_ContNewR(lbl), FVM_ContCall()]
 	
 	r-FVM_Cont: FVM_ScopeUp(path, lbl) -> 
 		[FVM_Get(path), FVM_ContNewR(lbl), FVM_ContCall()]
 		
 	r-FVM_Cont: FVM_Try(lbl_try, lbl_catch) ->
-		[FVM_Dup(), FVM_Get(FVM_Path([FVM_Cont("x")])), FVM_SetR(FVM_Path([FVM_Cont("x")])), FVM_Dup(), FVM_Get(FVM_Path([FVM_Cont("c")])), FVM_SetR(FVM_Path([FVM_Cont("c")])), FVM_ContNewR(lbl_catch), 
-		FVM_DupN("2"), FVM_Swap(), FVM_SetR(FVM_Path([FVM_Cont("x")])), FVM_Dup(), FVM_Get(FVM_Path([FVM_Cont("c")])), FVM_SetR(FVM_Path([FVM_Cont("c")])), FVM_ContNewR(lbl_try), FVM_ContCall()]
+		[FVM_Dup(), FVM_Get(FVM_Path([FVM_Cont("x")])), FVM_SetR(FVM_Path([FVM_Cont("x")])), 
+		FVM_Dup(), FVM_Get(FVM_Path([FVM_Cont("c")])), FVM_SetR(FVM_Path([FVM_Cont("c")])), 
+		FVM_ContNewR(lbl_catch), FVM_DupN("2"), FVM_Swap(), FVM_SetR(FVM_Path([FVM_Cont("x")])), 
+		FVM_Dup(), FVM_Get(FVM_Path([FVM_Cont("c")])), FVM_SetR(FVM_Path([FVM_Cont("c")])), 
+		FVM_ContNewR(lbl_try), FVM_ContCall()]
 		
 	r-FVM_Cont: FVM_Try() ->
-		[FVM_Dup(), FVM_ContUnpack(), FVM_Dup(), FVM_Get(FVM_Path([FVM_Cont("x")])), FVM_SetR(FVM_Path([FVM_Cont("x")])), FVM_Get(FVM_Path([FVM_Cont("c")])), FVM_SetR(FVM_Path([FVM_Cont("c")])), 
-		FVM_DupN("2"), FVM_ContUnpack(), FVM_Swap(), FVM_SetR(FVM_Path([FVM_Cont("x")])), FVM_Dup(), FVM_ContUnpack(), FVM_Get(FVM_Path([FVM_Cont("c")])), FVM_SetR(FVM_Path([FVM_Cont("c")])), FVM_ContCall()]
+		[FVM_Dup(), FVM_ContUnpack(), FVM_Dup(), FVM_Get(FVM_Path([FVM_Cont("x")])), 
+		FVM_SetR(FVM_Path([FVM_Cont("x")])), FVM_Get(FVM_Path([FVM_Cont("c")])), 
+		FVM_SetR(FVM_Path([FVM_Cont("c")])), FVM_DupN("2"), FVM_ContUnpack(), FVM_Swap(), 
+		FVM_SetR(FVM_Path([FVM_Cont("x")])), FVM_Dup(), FVM_ContUnpack(), 
+		FVM_Get(FVM_Path([FVM_Cont("c")])), FVM_SetR(FVM_Path([FVM_Cont("c")])), FVM_ContCall()]
 		
 	r-FVM_Cont: FVM_Throw() -> 
-		[FVM_Get(FVM_Path([FVM_Cont("x")])), FVM_ContUnpack(), FVM_Swap(), FVM_SetR(FVM_Path([FVM_SlotR()])), FVM_Get(FVM_Path([FVM_Cont("x")])), FVM_ContCall()]
+		[FVM_Get(FVM_Path([FVM_Cont("x")])), FVM_ContUnpack(), FVM_Swap(), 
+		FVM_SetR(FVM_Path([FVM_SlotR()])), FVM_Get(FVM_Path([FVM_Cont("x")])), FVM_ContCall()]
 	
 	
 	
