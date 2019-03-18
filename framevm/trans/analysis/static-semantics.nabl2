@@ -9,14 +9,80 @@ signature
 
 name resolution
   labels
-    P
+    P I
 
   order
-    D < P
+    D < P,
+    D < I,
+	I < P
 
   well-formedness
-	P*
+	P* I*
 
 rules
 
   init ^ (s) := new s.
+  
+  [[FVM_Program(blocks) ^(s)]] :=
+  	Map1(block)[[blocks ^(s)]].
+  	
+  block[[FVM_Block(FVM_Label(name), FVM_Seq(body), size) ^(s)]] :=
+  	new block, 
+  	Block{name} <- s,
+  	Block{name} ===> block,
+  	block ---> s,
+  	Map1(instr)[[body ^(block)]],
+  	size == 0 | warning $[Stack delta is non-zero: [size]] @name.
+  	
+  lbl[[FVM_Label(name) ^(s)]] :=
+  	Block{name} -> s,
+  	Block{name} |-> d | error $[Unknown jump label [name]] @name.
+  	
+  	
+instr[[FVM_IAdd() ^(s)]].
+instr[[FVM_IEq() ^(s)]].
+instr[[FVM_ILt() ^(s)]].
+instr[[FVM_IPush(_) ^(s)]].
+
+instr[[FVM_Dup() ^(s)]].
+instr[[FVM_DupN(_) ^(s)]].
+
+instr[[FVM_Swap() ^(s)]].
+instr[[FVM_SwapN(_) ^(s)]].
+
+instr[[FVM_Print() ^(s)]].
+instr[[FVM_Debug() ^(s)]].
+  
+
+instr[[FVM_New() ^(s)]].
+instr[[FVM_Set() ^(s)]].
+instr[[FVM_Set(_) ^(s)]].
+instr[[FVM_SetR() ^(s)]].
+instr[[FVM_SetR(_) ^(s)]].
+instr[[FVM_Get() ^(s)]].
+instr[[FVM_Get(_) ^(s)]].
+instr[[FVM_GetR() ^(s)]].
+instr[[FVM_GetR(_) ^(s)]].
+
+instr[[FVM_ContNew() ^(s)]].
+instr[[FVM_ContUnpack() ^(s)]].
+instr[[FVM_Return() ^(s)]].
+instr[[FVM_ContCall() ^(s)]].
+instr[[FVM_Try() ^(s)]].
+instr[[FVM_Throw() ^(s)]].
+
+instr[[FVM_Link(_, _) ^(s)]].
+instr[[FVM_LinkR(_) ^(s)]].
+
+
+	instr[[FVM_ContNew(lbl) ^(s)]]  := lbl[[lbl ^(s)]].
+	instr[[FVM_ContNewR(lbl) ^(s)]] := lbl[[lbl ^(s)]].
+	
+	instr[[FVM_Jump(lbl) ^(s)]]  := lbl[[lbl ^(s)]].
+	instr[[FVM_JumpZ(lbl1, lbl2) ^(s)]]  := lbl[[lbl1 ^(s)]], lbl[[lbl2 ^(s)]].
+	instr[[FVM_Call(lbl) ^(s)]]  := lbl[[lbl ^(s)]].
+	instr[[FVM_Call(lbl1, lbl2) ^(s)]]  := lbl[[lbl1 ^(s)]], lbl[[lbl2 ^(s)]].
+	instr[[FVM_Try(lbl1, lbl2) ^(s)]]  := lbl[[lbl1 ^(s)]], lbl[[lbl2 ^(s)]].
+	
+	instr[[FVM_ScopeUp(_, lbl) ^(s)]]  := lbl[[lbl ^(s)]].
+	instr[[FVM_ScopeDown(lbl) ^(s)]]  := lbl[[lbl ^(s)]].

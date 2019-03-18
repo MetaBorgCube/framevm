@@ -9,6 +9,7 @@ signature
   sorts S
   constructors    
     FVM_Seq : [Instr] -> S
+    FVM_Block : FVM_Label * FVM_Seq * INT -> S
     
 rules  
     desugar-full = desugar; to-RISC-all
