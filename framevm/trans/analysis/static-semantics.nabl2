@@ -29,6 +29,7 @@ rules
   block[[FVM_Block(FVM_Label(name), FVM_Seq(body), size) ^(s)]] :=
   	new block, 
   	Block{name} <- s,
+  	distinct/name D(s)/Block | error $[Redefinition of label] @NAMES,
   	Block{name} ===> block,
   	block ---> s,
   	Map1(instr)[[body ^(block)]],
