@@ -1,5 +1,6 @@
 package framevm.strategies.util;
 
+import java.util.HashMap;
 import java.util.Stack;
 
 import org.spoofax.interpreter.terms.IStrategoTerm;
@@ -12,8 +13,7 @@ public class OperandStack {
 	private Block block;
 	private int instr_count;
 	private Stack<IStrategoTerm> stack;
-	private Slot continuation;
-	private Slot exception;
+	private HashMap<String, Slot> continuations;
 	private Slot returnValue;
 	
 	/**
@@ -21,8 +21,7 @@ public class OperandStack {
 	 */
 	public OperandStack() {
 		this.block = null;
-		this.continuation = null;
-		this.exception = null;
+		this.continuations = new HashMap<>();
 		
 		this.instr_count = 0;
 		this.stack = new Stack<>(); //TODO: pre-allocate block.max-stack
@@ -103,11 +102,12 @@ public class OperandStack {
 	}
 	
 	/**
+	 * @param slotId 
 	 * @return
 	 * 		The current continuation
 	 */
-	public Slot getContinuation() {
-		return this.continuation;
+	public Slot getContinuation(String id) {
+		return this.continuations.get(id);
 	}
 	
 	public Block getBlock() {
@@ -122,15 +122,15 @@ public class OperandStack {
 		return stack;
 	}
 
-	public void setContinuation(IStrategoTerm continuation) {
-		this.continuation = new Slot(continuation);
+	public void setContinuation(String id, IStrategoTerm continuation) {
+		this.continuations.put(id,  new Slot(continuation));
 	}
 
 	public void setException(IStrategoTerm exception) {
 		this.exception = new Slot(exception);
 	}
 
-	public Slot getException() {
-		return this.exception;
+	public HashMap<String, Slot> getContinuations() {
+		return continuations;
 	}
 }

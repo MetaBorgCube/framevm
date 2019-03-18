@@ -29,8 +29,8 @@ public class vm_start_0_1 extends FVMStrategy {
 
 		env.currentFrame.setExecutable();
 		env.currentFrame.getOperandStack().jump(block);
-		env.currentFrame.getOperandStack().setContinuation(tuple.get(0));
-		env.currentFrame.getOperandStack().setException(tuple.get(1));
+		env.currentFrame.getOperandStack().setContinuation("c", tuple.get(0));
+		env.currentFrame.getOperandStack().setContinuation("x", tuple.get(1));
 		
 		Frame exit = new Frame("_exit");
 		exit.setExecutable();

@@ -21,31 +21,31 @@ MAIN_END:
 	return					//
 	
 ASSERT_FALSE:
-	get [0]					// Call the continuation to the next option
+	get [n]					// Call the continuation to the next option
 	ccall					//
 	
 WITH_I_1:
 	cnew WITH_I_2			// New continuation for next option
-	set [0]					//
+	set [n]					//
 							//
 	ipush 5					//
-	set [1]					// i := 5
+	set [0]					// i := 5
 	jump WITH_I_BODY		// Go to the body
 		
 WITH_I_2:
 	cnew WITH_I_3			// New continuation for next option
-	set [0]					//
+	set [n]					//
 							//
 	ipush 6					// i := 6
-	set [1]					//	
+	set [0]					//	
 	jump WITH_I_BODY		// Execute body
 		
 WITH_I_3:
 	cnew WITH_I_EXIT		// New continuation for next option
-	set [0]					//
+	set [n]					//
 							//
 	ipush 7					//
-	set [1]					// i := 7
+	set [0]					// i := 7
 	jump WITH_I_BODY		// Execute body
 	
 WITH_I_BODY:
@@ -56,7 +56,7 @@ WITH_I_BODY:
 	scopedown WITH_J_1		// Enter inner with
 	
 WITH_I_END:
-	get [0]					// 
+	get [n]					// 
 	ccall					// 
 	
 WITH_I_EXIT:
@@ -64,32 +64,32 @@ WITH_I_EXIT:
 	
 WITH_J_1:
 	cnew WITH_J_2			// Inner with next option
-	set [0]					//
+	set [n]					//
 							//
 	ipush 1					//
-	set [1]					// j := 1
+	set [0]					// j := 1
 	jump WITH_J_BODY		//
 	
 WITH_J_2:
 	cnew WITH_J_3			// Next option
-	set [0]					//
+	set [n]					//
 							//
 	ipush 2					//
-	set [1]					// j := 2
+	set [0]					// j := 2
 	jump WITH_J_BODY		//
 	
 	
 WITH_J_3:
 	cnew WITH_J_END			// Next option
-	set [0]					//
+	set [n]					//
 							//
 	ipush 3					//
-	set [1]					// j := 3
+	set [0]					// j := 3
 	jump WITH_J_BODY		//
 	
 WITH_J_BODY:
-	get [1]					// j
-	get [P, 1]				// i
+	get [0]					// j
+	get [P, 0]				// i
 	addi					// i + j
 	ipush 9					//
 	eqi						// == 9
@@ -97,13 +97,13 @@ WITH_J_BODY:
 	jumpz ASSERT_FALSE WITH_J_BODY2
 	
 WITH_J_BODY2:
-	get [P, 1]				// i
+	get [P, 0]				// i
 	print					//
 							//
-	get [1]					// j
+	get [0]					// j
 	print					//
 							//
-	get[0]					//
+	get[n]					//
 	ccall					// Goto next
 	
 WITH_J_END:

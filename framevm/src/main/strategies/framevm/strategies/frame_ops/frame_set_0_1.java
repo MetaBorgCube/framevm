@@ -34,12 +34,8 @@ public class frame_set_0_1 extends FVMStrategy {
 			if (frame.getOperandStack() == null) frame.setExecutable();
 			if ("r".equals(slotId)) {
 				frame.getOperandStack().setReturnValue(value);
-			} else if ("c".equals(slotId)) {
-				frame.getOperandStack().setContinuation(value);
-			} else if ("x".equals(slotId)) {
-				frame.getOperandStack().setException(value);
 			} else {
-				throw new IllegalArgumentException();
+				frame.getOperandStack().setContinuation(slotId, value);
 			}
 		}
 		return new StrategoBlob(env);

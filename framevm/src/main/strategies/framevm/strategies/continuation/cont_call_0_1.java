@@ -25,14 +25,13 @@ public class cont_call_0_1 extends FVMStrategy {
 		Block target_block = env.getBlock(((StrategoString) tuple.get(1)).stringValue());
 		
 		if (!target.getId().equals("_exit") && !target.getId().equals("_catch")) {
-			if (target.getOperandStack().getContinuation() == null) {
+			if (target.getOperandStack().getContinuation("c") == null) {
 				io.printError("Continuation not set for " + target.getId());
 				return null;
 			}
 
-			if (target.getOperandStack().getException() == null) {
-				io.printError("Exception handler not set for " + target.getId());
-				return null;
+			if (target.getOperandStack().getContinuation("x") == null) {
+				io.printError("WARNING: Exception handler not set for " + target.getId());
 			}
 		}
 		

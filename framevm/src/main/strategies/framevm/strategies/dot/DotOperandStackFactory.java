@@ -36,24 +36,27 @@ public class DotOperandStackFactory extends DotFactory {
 		}
 		links.add(stackLink(name, DotFactory.stack(frame)));
 
-		// Link the return address
-		if (opstack.getContinuation() != null) {
-			String returnTarget_id = ((StrategoString) opstack.getContinuation().value.getSubterm(0)).stringValue();
-			if ("_exit".equals(returnTarget_id)) {
-				links.add(returnLink(name, "finish"));
+		// Link the continuations
+		String contSlots = "";
+		String contIds = "";
+		for (String cont_id : opstack.getContinuations().keySet()) {
+			String target_id = ((StrategoString) opstack.getContinuation(cont_id).value.getSubterm(0)).stringValue();
+			contSlots += " | " + cont_id;
+			
+			contIds += " | <cont_" + cont_id + ">";
+			if ("_exit".equals(target_id)) {
+				links.add(continuationLink(name, "finish", cont_id));
+			} else if ("_catch".equals(target_id)) {
+				links.add(continuationLink(name, "exception", cont_id));
 			} else {
-				links.add(returnLink(name, frame(returnTarget_id) + ":id"));
+				links.add(continuationLink(name, frame(target_id) + ":id", cont_id));
 			}
 		}
-		
-		// Link the exception address
-		if (opstack.getException() != null) {
-			String exceptionTarget_id = ((StrategoString) opstack.getException().value.getSubterm(0)).stringValue();
-			if ("_catch".equals(exceptionTarget_id)) {
-				links.add(exceptionLink(name, "exception"));
-			} else {
-				links.add(exceptionLink(name, frame(exceptionTarget_id) + ":id"));
-			}
+		if (contSlots.length() == 0) {
+			contSlots = " |";
+		}
+		if (contIds.length() == 0) {
+			contIds = " |";
 		}
 
 		// Get the value in the return (r) slot
@@ -65,7 +68,7 @@ public class DotOperandStackFactory extends DotFactory {
 		}
 		
 		// Generate main node
-		String dotString = node(name, "{<head>Opstack | {{R | Block | ret | ex | stack}| { <r>" + returnVal + " | <block> | <ret> | <ex> | <stack>}}}");
+		String dotString = node(name, "{<head>Opstack | {{R | Block" + contSlots + " | stack}| { <r>" + returnVal + " | <block>" + contIds + " | <stack>}}}");
 		
 		// Generate the node for the local stack
 		String stackString = "";
