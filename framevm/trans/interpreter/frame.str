@@ -6,6 +6,12 @@ imports
 	interpreter/external
 
 rules
+	// FVM_Pop/0
+	// Discards the top element on the stack
+	eval: (FVM_Pop(), env1) -> env2
+	  where
+	  	(env2, _) := <stack-pop(|env1)>
+	  	
 	// FVM_Dup/0
 	// Duplicates the element on top of the stack
 	eval: (FVM_Dup(), env1) -> env4

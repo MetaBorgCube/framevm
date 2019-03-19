@@ -45,6 +45,7 @@ instr[[FVM_IEq() ^(s)]].
 instr[[FVM_ILt() ^(s)]].
 instr[[FVM_IPush(_) ^(s)]].
 
+instr[[FVM_Pop() ^(s)]].
 instr[[FVM_Dup() ^(s)]].
 instr[[FVM_DupN(_) ^(s)]].
 

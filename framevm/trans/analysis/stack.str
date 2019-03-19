@@ -21,7 +21,7 @@ rules
   	  	new_size := <addi> (size, <stack-delta> instr);
   	  	_ := <geq> (new_size, 0)
   	  	
-  	 stack-update: (instr, (size, errs)) -> (0, [err | errs])
+  	 stack-update: (instr, (size, errs)) -> (size, [err | errs])
   	  where
   	  	err := <debug> ("Popping from empty stack at", instr)
   	  	
@@ -32,6 +32,7 @@ rules
 	stack-delta: FVM_ILt()    -> -1
   
 	stack-delta: FVM_New()    -> 1
+	stack-delta: FVM_Pop()    -> -1
 	stack-delta: FVM_Dup()    -> 1
 	stack-delta: FVM_DupN(_)  -> 1
 	stack-delta: FVM_Swap()   -> 0

@@ -34,6 +34,7 @@ sorts Instr context-free syntax
   Instr.FVM_ILt 	 = <lti>					// Consumes two ints from stack and performs < on them, result is stored on stack
   Instr.FVM_IPush 	 = <ipush <INT>>			// Push int value to stack
   
+  Instr.FVM_Pop      = <pop>					// Discards the top value on the stack
   Instr.FVM_Dup      = <dup>					// Duplicates the value on the stack
   Instr.FVM_DupN     = <dup <INTLZ>>			// Duplicates the n-th value on the stack
   Instr.FVM_Swap     = <swap>					// Swaps two values on the stack
