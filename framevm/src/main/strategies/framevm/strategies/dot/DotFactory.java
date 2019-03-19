@@ -18,11 +18,10 @@ import framevm.strategies.util.Slot;
 public abstract class DotFactory {
 	private static final Pattern FRAME_PATTERN = Pattern.compile("FrameRef\\((.+)\\)");
 	private static final Pattern CONTINUATION_PATTERN = Pattern.compile("Continuation\\((.+),.+\\)");
-	private static final String[] COLORS = {"green", "purple", "olivedrab", "burlywood", 
+	private static final String[] COLORS = {"green", "purple", "burlywood", "dodgerblue4",
 											"chocolate4", "chocolate", "darkslategray", 
 											"goldenrod", "hotpink", "aquamarine", 
-											"yellowgreen", "khaki3", "indianred3",
-											"dodgerblue4"};
+											"yellowgreen", "khaki3", "indianred3"};
 	private static HashMap<String, String> color_map = new HashMap<>();
 		
 	/**
