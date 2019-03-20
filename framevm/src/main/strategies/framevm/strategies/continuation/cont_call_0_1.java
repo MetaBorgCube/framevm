@@ -30,13 +30,11 @@ public class cont_call_0_1 extends FVMStrategy {
 			return null;
 		}
 		if (!target.getId().equals("_exit") && !target.getId().equals("_catch")) {
-			if (target.getOperandStack().getContinuation("c") == null) {
-				io.printError("Continuation not set for " + target.getId());
-				return null;
-			}
-
-			if (target.getOperandStack().getContinuation("x") == null) {
-				io.printError("WARNING: Exception handler not set for " + target.getId());
+			for (String continuation : env.currentFrame.getOperandStack().getContinuations().keySet()) {
+				if (target.getOperandStack().getContinuation(continuation) == null) {
+					io.printError("Continuation '" + continuation + "' not set for " + target.getId());
+					return null;
+				}
 			}
 		}
 		
