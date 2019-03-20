@@ -18,7 +18,7 @@ rules	// Other instructions
 	// Print the state of the vm to the console and terminate
 	eval: (FVM_Debug(), env1) -> env2
 	  where
-	  	env2 := <vm-print(|env1)> <vm-debug(|env1)>
+	  	env2 := <vm-debug(|env1)>
 	
 	
 rules	// Util

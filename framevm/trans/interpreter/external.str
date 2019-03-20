@@ -9,7 +9,7 @@ rules
 	external vm-stop(|env)          // env| -> string
 	external vm-execute(eval|env)	// eval|env| -> env'
 	
-	external vm-debug(|env)			// env| -> state_string
+	external vm-debug(|env)			// env| -> env'
 	
 	external stack-push(|env)		// env| val -> env'
 	external stack-pop(|env)		// env| -> (env', val)

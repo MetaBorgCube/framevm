@@ -39,8 +39,12 @@ public class vm_stop_0_1 extends FVMStrategy {
 				io.printError("Uncought exception: " + exitObj);
 			}
 		}
-		String out = env.stdout.toString().trim();
-
-		return factory.makeString(out);
+		if (env.debug.length() > 0) {
+			io.printError("Printing debug info, all output is discarded");
+			return factory.makeString(env.debug.trim());
+		} else {
+			String out = env.stdout.toString().trim();
+			return factory.makeString(out);
+		}
 	}
 }

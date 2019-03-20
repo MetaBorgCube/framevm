@@ -13,7 +13,8 @@ public class Environment {
 	public HashMap<String, Frame> heap;
 	public HashMap<String, Block> blocks;
 	public Frame currentFrame;
-	public StringBuilder stdout;	
+	public StringBuilder stdout;
+	public String debug;	
 	
 	private int count;		// Used for generating unique frame ids
 	
@@ -23,7 +24,8 @@ public class Environment {
 	public Environment() {
 		this.heap = new HashMap<>();
 		this.blocks = new HashMap<>();
-		this.stdout = new StringBuilder();	
+		this.stdout = new StringBuilder();
+		this.debug = "";
 		
 		this.count = 0;
 	}
@@ -88,5 +90,15 @@ public class Environment {
 		heap = new HashMap<>();
 		
 		count = 0;
+	}
+
+	/**
+	 * Set the debug string.
+	 * 
+	 * @param debug
+	 * 		The debug string
+	 */
+	public void setDebug(String debug) {
+		this.debug = debug;
 	}
 }
