@@ -25,6 +25,10 @@ public class frame_link_0_1 extends FVMStrategy {
 		String link_lbl   = ((StrategoString) tuple.get(2)).stringValue();
 		 
 		Frame frame = env.getFrame(frame_from);
+		if (frame.getLink(link_lbl) != null) {
+			io.printError("Link " + link_lbl + " already exists");
+			return null;
+		}
 		frame.link(link_lbl, env.getFrame(frame_to));
 		 
 		return new StrategoBlob(env);

@@ -32,8 +32,7 @@ public class cont_call_0_1 extends FVMStrategy {
 		if (!target.getId().equals("_exit") && !target.getId().equals("_catch")) {
 			for (String continuation : env.currentFrame.getOperandStack().getContinuations().keySet()) {
 				if (target.getOperandStack().getContinuation(continuation) == null) {
-					io.printError("Continuation '" + continuation + "' not set for " + target.getId());
-					return null;
+					io.printError("Warning: Continuation '" + continuation + "' not set for " + target.getId());
 				}
 			}
 		}
