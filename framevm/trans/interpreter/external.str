@@ -21,6 +21,7 @@ rules
 	external frame-new(|env)		// env| -> (env', frame_id)
 	external frame-this(|env)		// env| -> frame_id
 	external frame-link(|env)		// env| (frame_id, frame_id, lbl) -> env'
+	external frame-copy(|env)		// env| frame_id -> (env', frame_id)
 
 	external vm-print(|env)			// env| val -> env'
 	external vm-jump(|env)			// env| (frame_id, lbl) -> env'

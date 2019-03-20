@@ -22,7 +22,7 @@ rules
 	resugar = resugar-seq; unfix-paths-all
 	
 
-    resugar-seq: FVM_Program(blocks) -> FVM_Program(<map(resugar)> blocks)
+    resugar-seq: FVM_Program(blocks) -> FVM_Program(<map(resugar-seq)> blocks)
     resugar-seq: FVM_Block(lbl, FVM_Seq(body)) -> FVM_Block(lbl, FVM_SeqJump(body2, last))
       where
       	(body2, last) := <split-init-last> body 

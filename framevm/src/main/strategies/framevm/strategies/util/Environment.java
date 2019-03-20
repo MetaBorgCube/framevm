@@ -65,6 +65,20 @@ public class Environment {
 	}
 
 	/**
+	 * Create a new frame as a copy of the given frame and put it on the heap.
+	 * 
+	 * @param old
+	 * 		The frame to copy
+	 * @return
+	 * 		The id of the new frame
+	 */
+	public String newFrameFrom(Frame old) {
+		String id = "frame_" + count++;
+		heap.put(id, new Frame(id, old));
+		return id;
+	}
+	
+	/**
 	 * Clear all values stored in this environment.
 	 */
 	public void clear() {

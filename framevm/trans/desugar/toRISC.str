@@ -64,6 +64,9 @@ rules
 	// FVM_Continuations to relative FVM_Continuations
 	r-relative: FVM_ContNew(lbl) -> [FVM_Get(FVM_Self()), FVM_ContNewR(lbl)]
 	
+	// FVM_Continuations to relative FVM_Continuations
+	r-relative: FVM_Copy() -> [FVM_Get(FVM_Self()), FVM_CopyR()]
+	
 	// Get/Set unfolding to single segment paths and only relative gets/sets
 	r-relative: FVM_Get() -> [FVM_Get(FVM_Self()), FVM_Swap(), FVM_GetR()]
 	r-relative: FVM_Set() -> [FVM_Get(FVM_Self()), FVM_SwapN("2"), FVM_Swap(), FVM_SetR()]

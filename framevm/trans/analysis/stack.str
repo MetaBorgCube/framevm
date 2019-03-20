@@ -21,8 +21,9 @@ rules
   	  	new_size := <addi> (size, <stack-delta> instr);
   	  	_ := <geq> (new_size, 0)
   	  	
-  	 stack-update: (instr, (size, errs)) -> (size, [err | errs])
+  	 stack-update: (instr, (size, errs)) -> (new_size, [err | errs])
   	  where
+  	  	new_size := <addi> (size, <stack-delta> instr);
   	  	err := <debug> ("Popping from empty stack at", instr)
   	  	
 	// For each operation, calculate the change in stack size
@@ -54,6 +55,8 @@ rules
 	stack-delta: FVM_Print()  -> -1
 	stack-delta: FVM_Return() -> -1
   
+	stack-delta: FVM_Copy()  -> 1
+	stack-delta: FVM_CopyR() -> 0
   
 	stack-delta: FVM_JumpZ(lbl1, lbl2) -> -1
 	stack-delta: FVM_Jump(lbl) -> 0

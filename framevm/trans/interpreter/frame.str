@@ -117,6 +117,21 @@ rules
   	  	(frame, FVM_Slot(slot)) := <resolve> (p, frame_init, env1);
   	  	env4 := <frame-set(|env3)> (frame, slot, value)
 
+	// FVM_Copy/0
+	// Copy the current frame and push the copy on the stack
+	eval: (FVM_Copy(), env1) -> env3
+	  where
+	  	(env2, copy) := <frame-copy(|env1)> <frame-this(|env1)>;
+	  	env3 := <stack-push(|env2)> FrameRef(copy)
+	
+	// FVM_CopyR/0
+	// Copy the frame on top of the stack and push the copy on the stack
+	eval: (FVM_CopyR(), env1) -> env4
+	  where
+	  	(env2, FrameRef(frame)) := <stack-pop(|env1)>;
+	  	(env3, copy) := <frame-copy(|env2)> frame;
+	  	env4 := <stack-push(|env2)> FrameRef(copy)
+	
 	// FVM_Link/2
 	// Link the frame on top of the stack to the frame pointed to by arg1
 	// using label arg2

@@ -78,8 +78,11 @@ public class OperandStack {
 	 * 		The block to jump to
 	 */
 	public void jump(Block block) {
+		this.jump(block, 0);
+	}
+	public void jump(Block block, int count) {
 		this.block = block;
-		this.instr_count = 0;
+		this.instr_count = count;
 	}
 
 	/**
@@ -126,8 +129,23 @@ public class OperandStack {
 		this.continuations.put(id,  new Slot(continuation));
 	}
 
-	public void setException(IStrategoTerm exception) {
-		this.exception = new Slot(exception);
+	public OperandStack copy() {
+		OperandStack copy = new OperandStack();
+		copy.jump(block, instr_count);
+		if (getReturnValue() != null) {
+			copy.setReturnValue(getReturnValue().value);
+		}
+		for (String continuation : continuations.keySet()) {
+			copy.setContinuation(continuation, getContinuation(continuation).value);
+		}
+		
+		@SuppressWarnings("unchecked")
+		Stack<IStrategoTerm> stack = (Stack<IStrategoTerm>) this.stack.clone();
+		copy.stack = stack;
+//		while (!stack.isEmpty()) {
+//			copy.push(stack.pop());
+//		}
+		return copy;
 	}
 
 	public HashMap<String, Slot> getContinuations() {

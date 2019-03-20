@@ -30,6 +30,23 @@ public class Frame {
 		this.id = id;
 	}
 	
+	public Frame(String id, Frame original) {
+		if (original.getOperandStack() == null) {
+			this.operandStack = null;
+		} else {
+			this.operandStack = original.getOperandStack().copy();
+		}
+		this.slots = new ArrayList<>();
+		for (Slot slot : original.getSlots()) {
+			slots.add(new Slot(slot.value));
+		}
+		this.links = new HashMap<>();
+		for (Link link : original.links()) {
+			links.put(link.linkId, new Link(link.linkId, link.target));
+		}
+		this.id = id;
+	}
+
 	/**
 	 * Link this frame to the given frame.
 	 * 

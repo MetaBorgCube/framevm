@@ -44,6 +44,7 @@ public class InteropRegisterer extends JavaInteropRegisterer {
 				frame_set_0_1.instance,
 				frame_link_0_1.instance,
 				frame_this_0_1.instance,
+				frame_copy_0_1.instance,
 
 				vm_execute_1_1.instance
 		});

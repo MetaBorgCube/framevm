@@ -55,6 +55,8 @@ sorts Instr context-free syntax
   FrameInstr.FVM_Get    = <get <Path>>			// Store value at path in the stack
   FrameInstr.FVM_GetR   = <getr>				// Get index on top of stack in frame on second position
   FrameInstr.FVM_GetR   = <getr <Path>>			// Store value at path from frame on stack on stack
+  FrameInstr.FVM_Copy   = <copy>				// Copy the current frame
+  FrameInstr.FVM_CopyR  = <copyr>				// Copy the frame on top of the stack
   
   
   Instr = ContInstr

@@ -76,6 +76,9 @@ instr[[FVM_Throw() ^(s)]].
 instr[[FVM_Link(_, _) ^(s)]].
 instr[[FVM_LinkR(_) ^(s)]].
 
+instr[[FVM_Copy() ^(s)]].
+instr[[FVM_CopyR() ^(s)]].
+
 
 	instr[[FVM_ContNew(lbl) ^(s)]]  := lbl[[lbl ^(s)]].
 	instr[[FVM_ContNewR(lbl) ^(s)]] := lbl[[lbl ^(s)]].
