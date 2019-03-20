@@ -9,6 +9,7 @@ import org.spoofax.terms.StrategoTuple;
 import framevm.strategies.FVMStrategy;
 import framevm.strategies.util.Environment;
 import framevm.strategies.util.Frame;
+import framevm.strategies.util.Slot;
 
 public class frame_get_slot_0_1 extends FVMStrategy {
 	public static frame_get_slot_0_1 instance = new frame_get_slot_0_1();
@@ -24,7 +25,13 @@ public class frame_get_slot_0_1 extends FVMStrategy {
 		Frame frame = env.getFrame(frame_id.stringValue());
 		try {
 			int idx = Integer.valueOf(slotId);
-			return frame.getSlot(idx, false).value;
+			Slot slot = frame.getSlot(idx, false);
+			if (slot == null) {
+				io.printError("Slot " + idx + " does not exist!");
+				return null;
+			} else {
+				return slot.value;
+			}
 		} catch (NumberFormatException ex) {
 			if ("r".equals(slotId)) {
 				return frame.getOperandStack().getReturnValue().value;

@@ -21,9 +21,14 @@ public class cont_call_0_1 extends FVMStrategy {
 	// set return address to the given continuation
 	protected IStrategoTerm invoke(IOAgent io, ITermFactory factory, Environment env, IStrategoTerm arg) {
 		StrategoTuple tuple = (StrategoTuple) arg;
-		Frame target = env.getFrame(((StrategoString) tuple.get(0)).stringValue());
+		String frame_id = ((StrategoString) tuple.get(0)).stringValue();
+		Frame target = env.getFrame(frame_id);
 		Block target_block = env.getBlock(((StrategoString) tuple.get(1)).stringValue());
 		
+		if (target.getOperandStack() == null) {
+			io.printError("Frame " + frame_id + " not executable");
+			return null;
+		}
 		if (!target.getId().equals("_exit") && !target.getId().equals("_catch")) {
 			if (target.getOperandStack().getContinuation("c") == null) {
 				io.printError("Continuation not set for " + target.getId());
