@@ -24,21 +24,21 @@ rules
 	// Push a continuation on the stack of the execution frame on the stack after a jump to label
 	eval: (FVM_ContNewR(FVM_Label(lbl)), env1) -> env3
 	  where
-	  	(env2, FrameRef(frame)) := <stack-pop(|env1)>;
+	  	(env2, FrameRef(frame)) := <stack-pop-frame(|env1)>;
 	  	env3 := <stack-push(|env2)> Continuation(frame, lbl)
 	
 	// FVM_ContUnpack/0
 	// Get the frame enclosed in a continuation
 	eval: (FVM_ContUnpack(), env1) -> env3
 	  where
-	  	(env2, Continuation(frame, _)) := <stack-pop(|env1)>;
+	  	(env2, Continuation(frame, _)) := <stack-pop-cont(|env1)>;
 	  	env3 := <stack-push(|env2)> FrameRef(frame)
 	
 	// FVM_ContCall/0
 	// Call the continuation on top of the stack
 	eval: (FVM_ContCall(), env1) -> env3
 	  where
-	  	(env2, Continuation(frame, lbl)) := <stack-pop(|env1)>;
+	  	(env2, Continuation(frame, lbl)) := <stack-pop-cont(|env1)>;
 	  	env3 := <cont-call(|env1)> (frame, lbl)
 
 	  	

@@ -14,8 +14,8 @@ rules
 	  	cont := <cont-get-cc(|env1)> <frame-this(|env1)>;
 	  	ex   := <ex-get-cx(|env1)>   <frame-this(|env1)>;
 	  	
-	  	(env2, FrameRef(frame_catch)) := <stack-pop(|env1)>;
-	  	(env3, FrameRef(frame_try))   := <stack-pop(|env2)>;
+	  	(env2, FrameRef(frame_catch)) := <stack-pop-frame(|env1)>;
+	  	(env3, FrameRef(frame_try))   := <stack-pop-frame(|env2)>;
 	  	
 	  	catch := Continuation(frame_catch, lbl_catch);
 	  	
@@ -35,8 +35,8 @@ rules
 	  	cont := <cont-get-cc(|env1)> <frame-this(|env1)>;
 	  	ex   := <ex-get-cx(|env1)>   <frame-this(|env1)>;
 	  	
-	  	(env2, Continuation(frame_catch, lbl_catch)) := <stack-pop(|env1)>;
-	  	(env3, Continuation(frame_try, lbl_try))     := <stack-pop(|env2)>;
+	  	(env2, Continuation(frame_catch, lbl_catch)) := <stack-pop-cont(|env1)>;
+	  	(env3, Continuation(frame_try, lbl_try))     := <stack-pop-cont(|env2)>;
 	  	
 	  	catch := Continuation(frame_catch, lbl_catch);
 	  	
@@ -52,7 +52,7 @@ rules
 	// Throw the element on top of the stack to the current exception handler
 	eval: (FVM_Throw(), env1) -> env4
 	  where
-	  	(env2, throwable) := <stack-pop(|env1)>;
+	  	(env2, throwable) := <stack-pop-any(|env1)>;
 	  	Continuation(handle_frame, handle_block) := <ex-get-cx(|env2)> <frame-this(|env2)>;
 	  	env3 := <frame-set(|env2)> (handle_frame, "r", throwable);
 	  	env4 := <cont-call(|env3)> (handle_frame, handle_block)

@@ -17,8 +17,8 @@ rules
 	// Pushes the result on the stack
 	eval: (FVM_IAdd(), env) -> env3
 	  where
-	  	(env1, IntV(e1)) := <stack-pop(|env)>;
-	  	(env2, IntV(e2)) := <stack-pop(|env1)>;
+	  	(env1, IntV(e1)) := <stack-pop-int(|env)>;
+	  	(env2, IntV(e2)) := <stack-pop-int(|env1)>;
 	  	env3 := <stack-push(|env2)> IntV(<addS>(e1, e2))
 	  	
 	// FVM_IEq/0
@@ -26,8 +26,8 @@ rules
 	// and pushes the result on the stack
   	eval: (FVM_IEq(), env) -> env3
 	  where
-	  	(env1, IntV(e1)) := <stack-pop(|env)>;
-	  	(env2, IntV(e2)) := <stack-pop(|env1)>;
+	  	(env1, IntV(e1)) := <stack-pop-int(|env)>;
+	  	(env2, IntV(e2)) := <stack-pop-int(|env1)>;
 	  	env3 := <stack-push(|env2)> <eval-eq> (e1, e2)
 	  	
 	// FVM_ILt/0
@@ -35,28 +35,28 @@ rules
 	// and pushes the result on the stack
   	eval: (FVM_ILt(), env) -> env3
 	  where
-	  	(env1, IntV(e1)) := <stack-pop(|env)>;
-	  	(env2, IntV(e2)) := <stack-pop(|env1)>;
+	  	(env1, IntV(e1)) := <stack-pop-int(|env)>;
+	  	(env2, IntV(e2)) := <stack-pop-int(|env1)>;
 	  	env3 := <stack-push(|env2)> <eval-lt> (e2, e1)
 
 	// FVM_SwapN/1
 	// Swaps the value on top of the stack with the one in (n+1)th position
 	eval: (FVM_SwapN(n), env1) -> env4
 	  where
-	  	(env2, e1) := <stack-pop(|env1)>;
+	  	(env2, e1) := <stack-pop-any(|env1)>;
 	  	v := <string-to-int> n;
 	  	(env3, e2) := <eval-swap(|env2)> (v, e1);
 	  	env4 := <stack-push(|env3)> e2
 	  	
 	eval-swap(|env1): (1, e1) -> (env3, e2)
 	  where
-	  	(env2, e2) := <stack-pop(|env1)>;
+	  	(env2, e2) := <stack-pop-any(|env1)>;
 	  	env3 := <stack-push(|env2)> e1
 	  	
 	eval-swap(|env1): (n, e1) -> (env4, e2)
 	  where
 	  	_ := <geq>(n, 2);
-	  	(env2, tmp) := <stack-pop(|env1)>;
+	  	(env2, tmp) := <stack-pop-any(|env1)>;
 	  	(env3, e2) := <eval-swap(|env2)> (<dec> n, e1);
 	  	env4 := <stack-push(|env3)> tmp
 	  	
@@ -65,8 +65,8 @@ rules
 	// Pushes them on the stack in reverse order
 	eval: (FVM_Swap(), env) -> env4
 	  where
-	  	(env1, e1) := <stack-pop(|env)>;
-	  	(env2, e2) := <stack-pop(|env1)>;
+	  	(env1, e1) := <stack-pop-any(|env)>;
+	  	(env2, e2) := <stack-pop-any(|env1)>;
 	  	env3 := <stack-push(|env2)> e1;
 	  	env4 := <stack-push(|env3)> e2
 	

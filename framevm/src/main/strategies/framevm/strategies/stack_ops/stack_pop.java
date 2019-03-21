@@ -4,14 +4,14 @@ package framevm.strategies.stack_ops;
 import org.spoofax.interpreter.library.IOAgent;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermFactory;
+import org.spoofax.terms.StrategoAppl;
+
 import framevm.strategies.FVMStrategy;
 import framevm.strategies.util.Environment;
 import framevm.strategies.util.OperandStack;
 import mb.nabl2.stratego.StrategoBlob;
 
-public class stack_pop_0_1 extends FVMStrategy {
-	public static stack_pop_0_1 instance = new stack_pop_0_1();
-
+public abstract class stack_pop extends FVMStrategy {
 	@Override
 	// env| -> (env', val)
 	// Pop a value from the stack
@@ -21,8 +21,16 @@ public class stack_pop_0_1 extends FVMStrategy {
 			io.printError("SEGFAULT");
 			io.printError("Cannot pop from empty stack");
 			return null;
-//			throw new IllegalStateException("Empty Stack");
 		}
-		return factory.makeTuple(new StrategoBlob(env), opStack.pop());
+		StrategoAppl term = (StrategoAppl) opStack.pop();
+		if(accepted(term.getName())) {
+			return factory.makeTuple(new StrategoBlob(env), term);			
+		} else {
+			io.printError(term + " is not a valid " + accepted());
+			return null;
+		}
 	}
+
+	protected abstract boolean accepted(String name);
+	protected abstract String accepted();
 }

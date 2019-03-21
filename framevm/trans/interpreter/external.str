@@ -12,7 +12,10 @@ rules
 	external vm-debug(|env)			// env| -> env'
 	
 	external stack-push(|env)		// env| val -> env'
-	external stack-pop(|env)		// env| -> (env', val)
+	external stack-pop-any(|env)	// env| -> (env', val)
+	external stack-pop-int(|env)	// env| -> (env', int)
+	external stack-pop-cont(|env)	// env| -> (env', continuation)
+	external stack-pop-frame(|env)	// env| -> (env', frame)
 	
 	external frame-get-block(|env)	// env| frame_id -> lbl
 	external frame-get-slot(|env)	// env| (frame_id, slot) -> val

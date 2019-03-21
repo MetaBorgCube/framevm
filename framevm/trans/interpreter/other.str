@@ -11,7 +11,7 @@ rules	// Other instructions
 	// Print the value on top of the stack to the console
 	eval: (FVM_Print(), env1) -> env3
 	  where
-	  	(env2, out) := <stack-pop(|env1)>;
+	  	(env2, out) := <stack-pop-any(|env1)>;
 	  	env3 := <vm-print(|env2)> <debug> <val-to-string> out
 	  	
 	// FVM_Debug/0
@@ -25,6 +25,7 @@ rules	// Util
 	// Convert a value to a displayable string 
 	val-to-string: IntV(v) -> v
 	val-to-string: FrameRef(v) -> v
+	val-to-string: Continuation(frame, block) -> $[Continuation([frame], [block])]
 	
 	
 	

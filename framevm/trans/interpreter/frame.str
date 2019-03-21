@@ -10,13 +10,13 @@ rules
 	// Discards the top element on the stack
 	eval: (FVM_Pop(), env1) -> env2
 	  where
-	  	(env2, _) := <stack-pop(|env1)>
+	  	(env2, _) := <stack-pop-any(|env1)>
 	  	
 	// FVM_Dup/0
 	// Duplicates the element on top of the stack
 	eval: (FVM_Dup(), env1) -> env4
 	  where
-	  	(env2, val) := <stack-pop(|env1)>;	// pop once
+	  	(env2, val) := <stack-pop-any(|env1)>;	// pop once
 	  	env3 := <stack-push(|env2)> val;	//
 	  	env4 := <stack-push(|env3)> val		// push twice
 	  	
@@ -29,13 +29,13 @@ rules
 	 
 	eval-dup(|env1): 1 -> (env3, val)
 	  where
-	  	(env2, val) := <stack-pop(|env1)>;
+	  	(env2, val) := <stack-pop-any(|env1)>;
 	  	env3 := <stack-push(|env2)> val
 	  	
 	eval-dup(|env1): n -> (env4, val)
 	  where
 	  	_ := <geq>(n, 2);
-	  	(env2, tmp) := <stack-pop(|env1)>;
+	  	(env2, tmp) := <stack-pop-any(|env1)>;
 	  	(env3, val) := <eval-dup(|env2)> <dec> n;
 	  	env4 := <stack-push(|env3)> tmp
 	 
@@ -51,7 +51,7 @@ rules
   	// Get index on top of stack of the current frame
   	eval: (FVM_Get(), env1) -> env3
   	  where
-  	  	(env2, IntV(slot)) := <stack-pop(|env1)>;
+  	  	(env2, IntV(slot)) := <stack-pop-int(|env1)>;
   	  	env3 := <stack-push(|env2)> <frame-get> (env2, <frame-this(|env2)>, FVM_Slot(slot))
   	  	
   	// FVM_Get/1
@@ -69,8 +69,8 @@ rules
 	// Store value on top of stack in slot on second position on stack of the current frame
   	eval: (FVM_Set(), env1) -> env4
   	  where
-  	  	(env2, value) := <stack-pop(|env1)>;
-  	  	(env3, IntV(slot)) := <stack-pop(|env2)>;
+  	  	(env2, value) := <stack-pop-any(|env1)>;
+  	  	(env3, IntV(slot)) := <stack-pop-int(|env2)>;
   	  	env4 := <frame-set(|env3)> (<frame-this(|env3)>, slot, value)
   	  	
 	// FVM_Set/1
@@ -78,15 +78,15 @@ rules
   	eval: (FVM_Set(FVM_Path(p)), env1) -> env3
   	  where
   	  	(frame, FVM_Slot(slot)) := <resolve> (p, FrameRef(<frame-this(|env1)>), env1);
-  	  	(env2, value) := <stack-pop(|env1)>;
+  	  	(env2, value) := <stack-pop-any(|env1)>;
   	  	env3 := <frame-set(|env2)> (frame, slot, value)
   	  	
   	// FVM_GetR/0
   	// Get index on top of stack in frame on second position
   	eval: (FVM_GetR(), env1) -> env4
   	  where
-  	  	(env2, IntV(slot)) := <stack-pop(|env1)>;
-  	  	(env3, FrameRef(frame)) := <stack-pop(|env2)>;
+  	  	(env2, IntV(slot)) := <stack-pop-int(|env1)>;
+  	  	(env3, FrameRef(frame)) := <stack-pop-frame(|env2)>;
   	  	env4 := <stack-push(|env3)> <frame-get> (env3, frame, FVM_Slot(slot))
   	
   	// FVM_GetR/1
@@ -94,7 +94,7 @@ rules
   	// following arg1 (starting from the frame on top of the stack)
   	eval: (FVM_GetR(FVM_Path(p)), env1) -> env3
   	  where
-  	  	(env2, frame) := <stack-pop(|env1)>;
+  	  	(env2, frame) := <stack-pop-frame(|env1)>;
   	  	(frame_id, slot):= <resolve> (p, frame, env2);
   	  	env3 := <stack-push(|env2)> <frame-get> (env2, frame_id, slot)
 
@@ -102,9 +102,9 @@ rules
 	// Store value on top of stack in slot on second position of frame on third position
   	eval: (FVM_SetR(), env1) -> env5
   	  where
-  	  	(env2, value) := <stack-pop(|env1)>;
-  	  	(env3, IntV(slot)) := <stack-pop(|env2)>;
-  	  	(env4, FrameRef(frame)) := <stack-pop(|env3)>;
+  	  	(env2, value) := <stack-pop-any(|env1)>;
+  	  	(env3, IntV(slot)) := <stack-pop-int(|env2)>;
+  	  	(env4, FrameRef(frame)) := <stack-pop-frame(|env3)>;
   	  	env5 := <frame-set(|env4)> (frame, slot, value)
   	
 	// FVM_Setr/1
@@ -112,8 +112,8 @@ rules
   	// the location found by traversing arg1 from the frame on second position on the stack
   	eval: (FVM_SetR(FVM_Path(p)), env1) -> env4
   	  where
-  	  	(env2, value) := <stack-pop(|env1)>;
-  	  	(env3, frame_init) := <stack-pop(|env2)>;
+  	  	(env2, value) := <stack-pop-any(|env1)>;
+  	  	(env3, frame_init) := <stack-pop-frame(|env2)>;
   	  	(frame, FVM_Slot(slot)) := <resolve> (p, frame_init, env1);
   	  	env4 := <frame-set(|env3)> (frame, slot, value)
 
@@ -128,7 +128,7 @@ rules
 	// Copy the frame on top of the stack and push the copy on the stack
 	eval: (FVM_CopyR(), env1) -> env4
 	  where
-	  	(env2, FrameRef(frame)) := <stack-pop(|env1)>;
+	  	(env2, FrameRef(frame)) := <stack-pop-frame(|env1)>;
 	  	(env3, copy) := <frame-copy(|env2)> frame;
 	  	env4 := <stack-push(|env2)> FrameRef(copy)
 	
@@ -138,22 +138,22 @@ rules
 	eval: (FVM_Link(FVM_Self(), lbl), env1) -> env3
 	  where
 	  	frame_to_id := <frame-this(|env1)>;
-	  	(env2, FrameRef(frame_from_id)) := <stack-pop(|env1)>;
+	  	(env2, FrameRef(frame_from_id)) := <stack-pop-frame(|env1)>;
 	  	env3 := <frame-link(|env2)> (frame_from_id, frame_to_id, lbl)
 	  	
 	eval: (FVM_Link(FVM_Path(path), lbl), env1) -> env3
 	  where
 	  	(frame_id, slot_id) := <resolve> (path, FrameRef(<frame-this(|env1)>), env1);
 	  	FrameRef(frame_to_id) := <frame-get> (env1, frame_id, slot_id);
-	  	(env2, FrameRef(frame_from_id)) := <stack-pop(|env1)>;
+	  	(env2, FrameRef(frame_from_id)) := <stack-pop-frame(|env1)>;
 	  	env3 := <frame-link(|env2)> (frame_from_id, frame_to_id, lbl)
 	  	
 	// FVM_LinkR/1
 	// Link the frame on 2nd position to the frame on top of the stack
 	eval: (FVM_LinkR(lbl), env1) -> env4
 	  where
-	  	(env2, FrameRef(frame_to_id)) := <stack-pop(|env1)>;
-	  	(env3, FrameRef(frame_from_id)) := <stack-pop(|env2)>;
+	  	(env2, FrameRef(frame_to_id)) := <stack-pop-frame(|env1)>;
+	  	(env3, FrameRef(frame_from_id)) := <stack-pop-frame(|env2)>;
 	  	env4 := <frame-link(|env3)> (frame_from_id, frame_to_id, lbl)
 	  
 	// FVM_ScopeUp//2
