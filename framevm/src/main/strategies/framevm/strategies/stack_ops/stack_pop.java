@@ -22,12 +22,18 @@ public abstract class stack_pop extends FVMStrategy {
 			io.printError("Cannot pop from empty stack");
 			return null;
 		}
-		StrategoAppl term = (StrategoAppl) opStack.pop();
-		if(accepted(term.getName())) {
-			return factory.makeTuple(new StrategoBlob(env), term);			
-		} else {
+		IStrategoTerm term = opStack.pop();
+		try {
+			StrategoAppl appl = (StrategoAppl) term;
+			if(accepted(appl.getName())) {
+				return factory.makeTuple(new StrategoBlob(env), appl);			
+			} else {
+				io.printError(appl + " is not a valid " + accepted());
+				return null;
+			}
+		} catch (ClassCastException ex) {
 			io.printError(term + " is not a valid " + accepted());
-			return null;
+			return null;			
 		}
 	}
 
