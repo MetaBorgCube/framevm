@@ -40,10 +40,19 @@ rules
   	Block{name} |-> d | error $[Unknown jump label [name]] @name.
   	
   	
+instr[[FVM_IPush(_) ^(s)]].
 instr[[FVM_IAdd() ^(s)]].
+instr[[FVM_ISub() ^(s)]].
+instr[[FVM_IMul() ^(s)]].
+instr[[FVM_IDiv() ^(s)]].
+instr[[FVM_IMod() ^(s)]].
+
 instr[[FVM_IEq() ^(s)]].
 instr[[FVM_ILt() ^(s)]].
-instr[[FVM_IPush(_) ^(s)]].
+instr[[FVM_IGt() ^(s)]].
+instr[[FVM_IOr() ^(s)]].
+instr[[FVM_IXor() ^(s)]].
+instr[[FVM_IAnd() ^(s)]].
 
 instr[[FVM_Pop() ^(s)]].
 instr[[FVM_Dup() ^(s)]].

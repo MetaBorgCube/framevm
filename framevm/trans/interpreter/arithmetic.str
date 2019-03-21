@@ -113,7 +113,7 @@ rules
 	  where
 	  	(env1, IntV(e1)) := <stack-pop-int(|env)>;
 	  	(env2, IntV(e2)) := <stack-pop-int(|env1)>;
-	  	env3 := <stack-push(|env2)> <int-to-string> <andi> (<string-to-int> e1, <string-to-int> e2)
+	  	env3 := <stack-push(|env2)> IntV(<int-to-string> <andi> (<string-to-int> e1, <string-to-int> e2))
 
 
 	// Check if the to given values are equal
@@ -125,5 +125,5 @@ rules
 	// Check if the to given values are equal
 	eval-lt: (e1, e2) -> IntV("1")
 	  where
-	  	_ := <lt> (e1, e2)
+	  	_ := <lt> (<string-to-int> e1, <string-to-int> e2)
 	eval-lt: _ -> IntV("0")	

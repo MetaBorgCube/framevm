@@ -1,0 +1,280 @@
+module interpreter_arithmetic_int
+
+language framevm
+
+fixture [[MAIN:
+	[[...]]
+	print
+	ipush 0
+	return
+]]
+
+test single value [[
+	ipush 1
+]] transform "Run -> CISC" to "1"
+
+test single addition [[
+	ipush 1
+	ipush 2
+	addi
+]] transform "Run -> CISC" to "3"
+
+
+test double addition [[
+	ipush 1
+	ipush 2
+	addi
+	ipush 3
+	addi
+]] transform "Run -> CISC" to "6"
+
+test addition neg 1 [[
+	ipush 1
+	ipush -2
+	addi
+]] transform "Run -> CISC" to "-1"
+
+test addition neg 2 [[
+	ipush -1
+	ipush 2
+	addi
+]] transform "Run -> CISC" to "1"
+
+test addition neg 3 [[
+	ipush -1
+	ipush -2
+	addi
+]] transform "Run -> CISC" to "-3"
+
+
+
+test single subtraction [[
+	ipush 1
+	ipush 2
+	subi
+]] transform "Run -> CISC" to "-1"
+
+
+test double subtraction [[
+	ipush 1
+	ipush 2
+	subi
+	ipush 3
+	subi
+]] transform "Run -> CISC" to "-4"
+
+test subtraction neg 1 [[
+	ipush 1
+	ipush -2
+	subi
+]] transform "Run -> CISC" to "3"
+
+test subtraction neg 2 [[
+	ipush -1
+	ipush 2
+	subi
+]] transform "Run -> CISC" to "-3"
+
+test subtraction neg 3 [[
+	ipush -1
+	ipush -2
+	subi
+]] transform "Run -> CISC" to "1"
+
+
+
+test multiplication [[
+	ipush 1
+	ipush 2
+	muli
+]] transform "Run -> CISC" to "2"
+
+test multiplication 2 [[
+	ipush 6
+	ipush 2
+	muli
+]] transform "Run -> CISC" to "12"
+
+test multiplication 3 [[
+	ipush 0
+	ipush 2
+	muli
+]] transform "Run -> CISC" to "0"
+
+test multiplication neg 1[[
+	ipush -6
+	ipush 3
+	muli
+]] transform "Run -> CISC" to "-18"
+
+test multiplication neg 2 [[
+	ipush 6
+	ipush -3
+	muli
+]] transform "Run -> CISC" to "-18"
+
+test multiplication neg 3 [[
+	ipush -6
+	ipush -3
+	muli
+]] transform "Run -> CISC" to "18"
+
+
+
+test division [[
+	ipush 1
+	ipush 2
+	divi
+]] transform "Run -> CISC" to "0"
+
+test division 2 [[
+	ipush 6
+	ipush 2
+	divi
+]] transform "Run -> CISC" to "3"
+
+test division 3 [[
+	ipush 7
+	ipush 2
+	divi
+]] transform "Run -> CISC" to "3"
+
+
+
+test modulo [[
+	ipush 6
+	ipush 7
+	modi
+]] transform "Run -> CISC" to "6"
+
+test modulo 2 [[
+	ipush 6
+	ipush 2
+	modi
+]] transform "Run -> CISC" to "0"
+
+test modulo 3 [[
+	ipush 7
+	ipush 2
+	modi
+]] transform "Run -> CISC" to "1"
+
+
+
+test lt 1 [[
+	ipush 6
+	ipush 7
+	lti
+]] transform "Run -> CISC" to "1"
+
+test lt 2 [[
+	ipush 7
+	ipush 6
+	lti
+]] transform "Run -> CISC" to "0"
+
+test lt 3 [[
+	ipush 7
+	ipush 7
+	lti
+]] transform "Run -> CISC" to "0"
+
+
+
+test gt 1 [[
+	ipush 6
+	ipush 7
+	gti
+]] transform "Run -> CISC" to "0"
+
+test gt 2 [[
+	ipush 7
+	ipush 6
+	gti
+]] transform "Run -> CISC" to "1"
+
+test gt 3 [[
+	ipush 7
+	ipush 7
+	gti
+]] transform "Run -> CISC" to "0"
+
+
+
+test eq 1 [[
+	ipush 6
+	ipush 6
+	eqi
+]] transform "Run -> CISC" to "1"
+
+test eq 2 [[
+	ipush 0
+	ipush 6
+	eqi
+]] transform "Run -> CISC" to "0"
+
+test eq 3 [[
+	ipush -7
+	ipush -7
+	eqi
+]] transform "Run -> CISC" to "1"
+
+
+
+test or 1 [[
+	ipush 6
+	ipush 6
+	ori
+]] transform "Run -> CISC" to "6"
+
+test or 2 [[
+	ipush 0
+	ipush 6
+	ori
+]] transform "Run -> CISC" to "6"
+
+test or 3 [[
+	ipush -7
+	ipush 1
+	ori
+]] transform "Run -> CISC" to "-7"
+
+
+
+test xor 1 [[
+	ipush 6
+	ipush 6
+	xori
+]] transform "Run -> CISC" to "0"
+
+test xor 2 [[
+	ipush 0
+	ipush 6
+	xori
+]] transform "Run -> CISC" to "6"
+
+test xor 3 [[
+	ipush -7
+	ipush 1
+	xori
+]] transform "Run -> CISC" to "-8"
+
+
+
+test and 1 [[
+	ipush 6
+	ipush 6
+	andi
+]] transform "Run -> CISC" to "6"
+
+test and 2 [[
+	ipush 0
+	ipush 6
+	andi
+]] transform "Run -> CISC" to "0"
+
+test and 3 [[
+	ipush -7
+	ipush 1
+	andi
+]] transform "Run -> CISC" to "1"

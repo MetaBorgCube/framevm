@@ -29,8 +29,17 @@ rules
 	// For each operation, calculate the change in stack size
 	stack-delta: FVM_IPush(_) -> 1
 	stack-delta: FVM_IAdd()   -> -1
+	stack-delta: FVM_IMul()   -> -1
+	stack-delta: FVM_ISub()   -> -1
+	stack-delta: FVM_IDiv()   -> -1
+	stack-delta: FVM_IMod()   -> -1
+	
 	stack-delta: FVM_IEq()    -> -1
 	stack-delta: FVM_ILt()    -> -1
+	stack-delta: FVM_IGt()    -> -1
+	stack-delta: FVM_IOr()    -> -1
+	stack-delta: FVM_IXor()   -> -1
+	stack-delta: FVM_IAnd()   -> -1
   
 	stack-delta: FVM_New()    -> 1
 	stack-delta: FVM_Pop()    -> -1
