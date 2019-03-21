@@ -20,7 +20,46 @@ rules
 	  	(env1, IntV(e1)) := <stack-pop-int(|env)>;
 	  	(env2, IntV(e2)) := <stack-pop-int(|env1)>;
 	  	env3 := <stack-push(|env2)> IntV(<addS>(e1, e2))
+
+	// FVM_IMul/0
+	// Takes two integers from the stack, multiplies them
+	// Pushes the result on the stack
+	eval: (FVM_IMul(), env) -> env3
+	  where
+	  	(env1, IntV(e1)) := <stack-pop-int(|env)>;
+	  	(env2, IntV(e2)) := <stack-pop-int(|env1)>;
+	  	env3 := <stack-push(|env2)> IntV(<mulS>(e1, e2))
 	  	
+	// FVM_ISub/0
+	// Takes two integers from the stack, subtracts them
+	// Pushes the result on the stack
+	eval: (FVM_ISub(), env) -> env3
+	  where
+	  	(env1, IntV(e2)) := <stack-pop-int(|env)>;
+	  	(env2, IntV(e1)) := <stack-pop-int(|env1)>;
+	  	env3 := <stack-push(|env2)> IntV(<subtS>(e1, e2))
+	  	
+	// FVM_IDiv/0
+	// Takes two integers from the stack, divides them
+	// Pushes the result on the stack
+	eval: (FVM_IDiv(), env) -> env3
+	  where
+	  	(env1, IntV(e2)) := <stack-pop-int(|env)>;
+	  	(env2, IntV(e1)) := <stack-pop-int(|env1)>;
+	  	env3 := <stack-push(|env2)> IntV(<divS>(e1, e2))
+	  	
+	// FVM_Imod/0
+	// Takes two integers from the stack, divides them
+	// Pushes the remainder on the stack	  	
+	eval: (FVM_IMod(), env) -> env3
+	  where
+	  	(env1, IntV(e2)) := <stack-pop-int(|env)>;
+	  	(env2, IntV(e1)) := <stack-pop-int(|env1)>;
+	  	env3 := <stack-push(|env2)> IntV(<modS>(e1, e2))
+
+
+
+
 	// FVM_IEq/0
 	// Takes two integers from the stack, checks if they are equal
 	// and pushes the result on the stack
@@ -38,49 +77,53 @@ rules
 	  	(env1, IntV(e1)) := <stack-pop-int(|env)>;
 	  	(env2, IntV(e2)) := <stack-pop-int(|env1)>;
 	  	env3 := <stack-push(|env2)> <eval-lt> (e2, e1)
+	  	
+	// FVM_IGt/0
+	// Takes two integers from the stack, checks if the second is bigger than the first
+	// and pushes the result on the stack
+  	eval: (FVM_IGt(), env) -> env3
+	  where
+	  	(env1, IntV(e1)) := <stack-pop-int(|env)>;
+	  	(env2, IntV(e2)) := <stack-pop-int(|env1)>;
+	  	env3 := <stack-push(|env2)> <eval-lt> (e1, e2)
+	  	
+	// FVM_IOr/0
+	// Takes two integers from the stack, calculates bitwise or
+	// and pushes the result on the stack
+  	eval: (FVM_IOr(), env) -> env3
+	  where
+	  	(env1, IntV(e1)) := <stack-pop-int(|env)>;
+	  	(env2, IntV(e2)) := <stack-pop-int(|env1)>;
+	  	env3 := <stack-push(|env2)> IntV(<int-to-string> <iori> (<string-to-int> e1, <string-to-int> e2))
 
-	// FVM_SwapN/1
-	// Swaps the value on top of the stack with the one in (n+1)th position
-	eval: (FVM_SwapN(n), env1) -> env4
+	// FVM_IXor/0
+	// Takes two integers from the stack, calculates bitwise or
+	// and pushes the result on the stack
+  	eval: (FVM_IXor(), env) -> env3
 	  where
-	  	(env2, e1) := <stack-pop-any(|env1)>;
-	  	v := <string-to-int> n;
-	  	(env3, e2) := <eval-swap(|env2)> (v, e1);
-	  	env4 := <stack-push(|env3)> e2
-	  	
-	eval-swap(|env1): (1, e1) -> (env3, e2)
-	  where
-	  	(env2, e2) := <stack-pop-any(|env1)>;
-	  	env3 := <stack-push(|env2)> e1
-	  	
-	eval-swap(|env1): (n, e1) -> (env4, e2)
-	  where
-	  	_ := <geq>(n, 2);
-	  	(env2, tmp) := <stack-pop-any(|env1)>;
-	  	(env3, e2) := <eval-swap(|env2)> (<dec> n, e1);
-	  	env4 := <stack-push(|env3)> tmp
-	  	
-	// FVM_Swap/0
-	// Takes two values from the stack
-	// Pushes them on the stack in reverse order
-	eval: (FVM_Swap(), env) -> env4
-	  where
-	  	(env1, e1) := <stack-pop-any(|env)>;
-	  	(env2, e2) := <stack-pop-any(|env1)>;
-	  	env3 := <stack-push(|env2)> e1;
-	  	env4 := <stack-push(|env3)> e2
+	  	(env1, IntV(e1)) := <stack-pop-int(|env)>;
+	  	(env2, IntV(e2)) := <stack-pop-int(|env1)>;
+	  	env3 := <stack-push(|env2)> IntV(<int-to-string> <xori> (<string-to-int> e1, <string-to-int> e2))
 	
+	
+	// FVM_IAnd/0
+	// Takes two integers from the stack, calculates bitwise and
+	// and pushes the result on the stack
+  	eval: (FVM_IAnd(), env) -> env3
+	  where
+	  	(env1, IntV(e1)) := <stack-pop-int(|env)>;
+	  	(env2, IntV(e2)) := <stack-pop-int(|env1)>;
+	  	env3 := <stack-push(|env2)> <int-to-string> <andi> (<string-to-int> e1, <string-to-int> e2)
+
+
 	// Check if the to given values are equal
-	// TODO: This should return a boolean when these are implemented
 	eval-eq: (e1, e2) -> IntV("1")
 	  where
 	  	_ := <equal> (e1, e2)
 	eval-eq: _ -> IntV("0")	
 	
 	// Check if the to given values are equal
-	// TODO: This should return a boolean when these are implemented
 	eval-lt: (e1, e2) -> IntV("1")
 	  where
 	  	_ := <lt> (e1, e2)
 	eval-lt: _ -> IntV("0")	
-

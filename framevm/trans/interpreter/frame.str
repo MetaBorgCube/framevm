@@ -6,40 +6,6 @@ imports
 	interpreter/external
 
 rules
-	// FVM_Pop/0
-	// Discards the top element on the stack
-	eval: (FVM_Pop(), env1) -> env2
-	  where
-	  	(env2, _) := <stack-pop-any(|env1)>
-	  	
-	// FVM_Dup/0
-	// Duplicates the element on top of the stack
-	eval: (FVM_Dup(), env1) -> env4
-	  where
-	  	(env2, val) := <stack-pop-any(|env1)>;	// pop once
-	  	env3 := <stack-push(|env2)> val;	//
-	  	env4 := <stack-push(|env3)> val		// push twice
-	  	
-	// FVM_DupN/1
-	// Duplicates the n-th element on top of the stack
-	eval: (FVM_DupN(n), env1) -> env3
-	  where
-	  	(env2, val) := <eval-dup(|env1)> <string-to-int> n;
-	  	env3 := <stack-push(|env2)> val
-	 
-	eval-dup(|env1): 1 -> (env3, val)
-	  where
-	  	(env2, val) := <stack-pop-any(|env1)>;
-	  	env3 := <stack-push(|env2)> val
-	  	
-	eval-dup(|env1): n -> (env4, val)
-	  where
-	  	_ := <geq>(n, 2);
-	  	(env2, tmp) := <stack-pop-any(|env1)>;
-	  	(env3, val) := <eval-dup(|env2)> <dec> n;
-	  	env4 := <stack-push(|env3)> tmp
-	 
-	 
 	// FVM_New
 	// pushes an empty frame on the stack
   	eval: (FVM_New(), env1) -> env3

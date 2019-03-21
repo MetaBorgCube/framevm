@@ -29,10 +29,20 @@ sorts Block context-free syntax
   
 sorts Instr context-free syntax
   
-  Instr.FVM_IAdd 	 = <addi>					// Consumes two ints from stack and adds them, result is stored on stack
-  Instr.FVM_IEq 	 = <eqi>					// Consumes two ints from stack and equals them, result is stored on stack
-  Instr.FVM_ILt 	 = <lti>					// Consumes two ints from stack and performs < on them, result is stored on stack
-  Instr.FVM_IPush 	 = <ipush <INT>>			// Push int value to stack
+  Instr = IntInstr
+  IntInstr.FVM_IPush  = <ipush <INT>>			// Push int value to stack
+  IntInstr.FVM_IAdd   = <addi>					// Consumes two ints from stack and adds them, result is stored on stack
+  IntInstr.FVM_IMul   = <muli>					// Consumes two ints from stack and multilpies them, result is stored on stack
+  IntInstr.FVM_ISub   = <subi>					// Consumes two ints from stack and subtracts them, result is stored on stack
+  IntInstr.FVM_IDiv   = <divi>					// Consumes two ints from stack and divides them, result is stored on stack
+  IntInstr.FVM_IMod   = <modi>					// Consumes two ints from stack and mods them, result is stored on stack
+  
+  IntInstr.FVM_IEq 	  = <eqi>					// Consumes two ints from stack and equals them, result is stored on stack
+  IntInstr.FVM_ILt 	  = <lti>					// Consumes two ints from stack and performs < on them, result is stored on stack
+  IntInstr.FVM_IGt    = <gti>					// Consumes two ints from stack and performs > on them, result is stored on stack
+  IntInstr.FVM_IOr    = <ori>					// Consumes two ints from stack and performs binary or on them, result is stored on stack
+  IntInstr.FVM_IXor   = <xori>					// Consumes two ints from stack and performs binary xor on them, result is stored on stack
+  IntInstr.FVM_IAnd   = <andi>					// Consumes two ints from stack and performs binary and on them, result is stored on stack
   
   Instr.FVM_Pop      = <pop>					// Discards the top value on the stack
   Instr.FVM_Dup      = <dup>					// Duplicates the value on the stack
