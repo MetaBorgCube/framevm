@@ -1,0 +1,111 @@
+module interpreter_frame
+
+language framevm
+
+fixture [[MAIN:
+	[[...]]
+	print
+	ipush 0
+	return
+]]
+
+test new [[
+	new
+]] transform "Run -> CISC" to "frame_1"
+
+test link 1 [[
+	new
+	dup
+	link [] P
+	getr [P]
+]] transform "Run -> CISC" to "frame_0"
+
+test link 2 [[
+	new
+	dup
+	link [] P
+	new
+	dup
+	swap 2
+	linkr Q
+	dup
+	print
+	getr [Q, P]
+]] transform "Run -> CISC" to "frame_2
+frame_0"
+
+
+test get self [[
+	get []
+]] transform "Run -> CISC" to "frame_0"
+
+test get slot 0 [[
+	ipush 42
+	set [0]
+	get [0]
+]] transform "Run -> CISC" to "42"
+
+test get slot multiple [[
+	ipush 42
+	set [0]
+	ipush 13
+	set [1]
+	get [1]
+	print
+	get [0]
+]] transform "Run -> CISC" to "13
+42"
+
+
+test getr self [[
+	new
+	getr []
+]] transform "Run -> CISC" to "frame_1"
+
+test getr slot 0 [[
+	new
+	dup
+	ipush 42
+	setr [0]
+	getr [0]
+]] transform "Run -> CISC" to "42"
+
+test getr slot multiple [[
+	new
+	dup
+	ipush 42
+	setr [0]
+	
+	dup
+	ipush 13
+	setr [1]
+	
+	dup
+	getr [1]
+	print
+	getr [0]
+]] transform "Run -> CISC" to "13
+42"
+
+
+test getr slot multiple 2 [[
+	new
+	dup
+	ipush 0
+	ipush 42
+	setr
+	
+	dup
+	ipush 1
+	ipush 13
+	setr
+	
+	dup
+	ipush 1
+	getr
+	print
+	ipush 0
+	getr
+]] transform "Run -> CISC" to "13
+42"
+

@@ -22,7 +22,7 @@ rules
 	  	env5 := <cont-call(|env4)> (callFrame, block)			// call the function
 	  	
 	// FVM_Call/1
-	// Call the block at arg1 using the continuation at the top of the stack
+	// Call the continuation at the top of the stack with return to block
 	eval: (FVM_Call(FVM_Label(block)), env1) -> env5
 	  where
 	  	(env2, Continuation(frame, lbl)) := <stack-pop-cont(|env1)>;// get the function continuation

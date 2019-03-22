@@ -1,0 +1,273 @@
+module interpreter_jump
+
+language framevm
+
+fixture [[MAIN:
+	[[...]]
+
+LBL1:
+	ipush 1
+	print
+	ipush 0
+	return
+	
+LBL2:
+	ipush 2
+	print
+	ipush 0
+	return
+]]
+
+test CISC unconditional jump 1 [[
+	jump LBL1
+]] transform "Run -> CISC" to "1"
+
+test CISC unconditional jump 2 [[
+	jump LBL2
+]] transform "Run -> CISC" to "2"
+
+
+test CISC conditional jump 1 [[
+	ipush 0
+	jumpz LBL1 LBL2
+]] transform "Run -> CISC" to "1"
+
+test CISC conditional jump 2 [[
+	ipush 1
+	jumpz LBL1 LBL2
+]] transform "Run -> CISC" to "2"
+
+
+test CISC call/2 1 [[
+	new
+	dup
+	link [] P
+	call LBL1 LBL2
+]] transform "Run -> CISC" to "1
+2"
+
+test CISC call/2 2 [[
+	new
+	dup
+	link [] P
+	call LBL2 LBL1
+]] transform "Run -> CISC" to "2
+1"
+
+
+test CISC call/1 1 [[
+	new
+	cnewr LBL1
+	call LBL2
+]] transform "Run -> CISC" to "1
+2"
+
+test CISC call/1 2 [[
+	new
+	cnewr LBL2
+	call LBL1
+]] transform "Run -> CISC" to "2
+1"
+
+test CISC return [[
+	new
+	cnewr LBL2
+	call LBL3
+LBL3:
+	get [r]
+	print
+	ipush 0
+	return
+]] transform "Run -> CISC" to "2
+0"
+
+test CISC scopedown 1 [[
+	new
+	scopedown LBL1
+]] transform "Run -> CISC" to "1"
+
+test CISC scopedown 2 [[
+	new
+	scopedown LBL2
+]] transform "Run -> CISC" to "2"
+
+test CISC scopedown 1 [[
+	new
+	dup
+	link [] P
+	scopedown LBL3
+	
+LBL3:
+	scopeup [P] LBL4
+	
+LBL4:
+	get []
+	print
+	jump LBL1
+]] transform "Run -> CISC" to "frame_0
+1"
+
+test CISC scopeup 2 [[
+	new
+	dup
+	link [] P
+	new
+	dup
+	swap 2
+	linkr P
+	scopedown LBL3
+	
+LBL3:
+	scopeup [P, P] LBL4
+	
+LBL4:
+	get []
+	print
+	jump LBL2
+]] transform "Run -> CISC" to "frame_0
+2"
+
+test CISC scopedown [[
+	new
+	dup
+	link [] P
+	new
+	dup
+	swap 2
+	linkr P
+	scopedown LBL4
+	
+LBL3:
+	scopeup [P, P] LBL4
+	
+LBL4:
+	get []
+	print
+	ipush 0
+	return
+]] transform "Run -> CISC" to "frame_2"
+
+
+
+
+
+test RISC unconditional jump 1 [[
+	jump LBL1
+]] transform "Run -> RISC" to "1"
+
+test RISC unconditional jump 2 [[
+	jump LBL2
+]] transform "Run -> RISC" to "2"
+
+
+test RISC conditional jump 1 [[
+	ipush 0
+	jumpz LBL1 LBL2
+]] transform "Run -> RISC" to "1"
+
+test RISC conditional jump 2 [[
+	ipush 1
+	jumpz LBL1 LBL2
+]] transform "Run -> RISC" to "2"
+
+
+test RISC call/2 1 [[
+	new
+	dup
+	link [] P
+	call LBL1 LBL2
+]] transform "Run -> RISC" to "1
+2"
+
+test RISC call/2 2 [[
+	new
+	dup
+	link [] P
+	call LBL2 LBL1
+]] transform "Run -> RISC" to "2
+1"
+
+
+test RISC call/1 1 [[
+	new
+	cnewr LBL1
+	call LBL2
+]] transform "Run -> RISC" to "1
+2"
+
+test RISC call/1 2 [[
+	new
+	cnewr LBL2
+	call LBL1
+]] transform "Run -> RISC" to "2
+1"
+
+test RISC return [[
+	new
+	cnewr LBL2
+	call LBL3
+LBL3:
+	get [r]
+	print
+	ipush 0
+	return
+]] transform "Run -> RISC" to "2
+0"
+
+
+
+test RISC scopedown 1 [[
+	new
+	dup
+	link [] P
+	scopedown LBL3
+	
+LBL3:
+	scopeup [P] LBL4
+	
+LBL4:
+	get []
+	print
+	jump LBL1
+]] transform "Run -> RISC" to "frame_0
+1"
+
+test RISC scopeup 2 [[
+	new
+	dup
+	link [] P
+	new
+	dup
+	swap 2
+	linkr P
+	scopedown LBL3
+	
+LBL3:
+	scopeup [P, P] LBL4
+	
+LBL4:
+	get []
+	print
+	jump LBL2
+]] transform "Run -> RISC" to "frame_0
+2"
+
+test RISC scopedown [[
+	new
+	dup
+	link [] P
+	new
+	dup
+	swap 2
+	linkr P
+	scopedown LBL4
+	
+LBL3:
+	scopeup [P, P] LBL4
+	
+LBL4:
+	get []
+	print
+	ipush 0
+	return
+]] transform "Run -> RISC" to "frame_2"
