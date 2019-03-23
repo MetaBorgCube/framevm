@@ -102,13 +102,13 @@ rules
 	// FVM_Link/2
 	// Link the frame on top of the stack to the frame pointed to by arg1
 	// using label arg2
-	eval: (FVM_Link(FVM_Self(), lbl), env1) -> env3
+	eval: (FVM_Link(FVM_Self(), FVM_Link(lbl)), env1) -> env3
 	  where
 	  	frame_to_id := <frame-this(|env1)>;
 	  	(env2, FrameRef(frame_from_id)) := <stack-pop-frame(|env1)>;
 	  	env3 := <frame-link(|env2)> (frame_from_id, frame_to_id, lbl)
 	  	
-	eval: (FVM_Link(FVM_Path(path), lbl), env1) -> env3
+	eval: (FVM_Link(FVM_Path(path), FVM_Link(lbl)), env1) -> env3
 	  where
 	  	(frame_id, slot_id) := <resolve> (path, FrameRef(<frame-this(|env1)>), env1);
 	  	FrameRef(frame_to_id) := <frame-get> (env1, frame_id, slot_id);
@@ -117,7 +117,7 @@ rules
 	  	
 	// FVM_LinkR/1
 	// Link the frame on 2nd position to the frame on top of the stack
-	eval: (FVM_LinkR(lbl), env1) -> env4
+	eval: (FVM_LinkR(FVM_Link(lbl)), env1) -> env4
 	  where
 	  	(env2, FrameRef(frame_to_id)) := <stack-pop-frame(|env1)>;
 	  	(env3, FrameRef(frame_from_id)) := <stack-pop-frame(|env2)>;

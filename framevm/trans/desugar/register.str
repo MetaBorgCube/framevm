@@ -49,10 +49,10 @@ rules
 	instr-get-ids: FVM_SetR(path) -> <instr-get-ids> path
 	instr-apply-ids(|ids): FVM_SetR(path) -> FVM_SetR(<instr-apply-ids(|ids)> path)
 	
-	instr-get-ids: FVM_LinkR(lbl) -> ([lbl], [])
+	instr-get-ids: FVM_LinkR(lbl) -> <path-get-ids> (lbl, ([], []))
 	instr-apply-ids(|ids): FVM_LinkR(lbl) -> FVM_LinkR(<apply-ids(|ids)> lbl)
 	
-	instr-get-ids: FVM_Link(path, lbl) -> ([lbl | links], conts)
+	instr-get-ids: FVM_Link(path, lbl) -> <path-get-ids> (lbl, (links, conts))
 	  where
 	  	(links, conts) := <instr-get-ids> path
 	instr-apply-ids(|ids): FVM_Link(path, lbl) -> FVM_Link(<instr-apply-ids(|ids)> path, <apply-ids(|ids)> lbl)
@@ -61,13 +61,22 @@ rules
 	instr-apply-ids(|ids): FVM_ScopeUp(path, lbl) -> FVM_ScopeUp(<instr-apply-ids(|ids)> path, lbl)
 
 	apply-ids(|ids): FVM_Slot(n) -> FVM_Slot(n)
-	apply-ids(|ids): FVM_Link(n) -> FVM_Link(<apply-ids(|ids)> n)
-	apply-ids(|ids): FVM_Cont(n) -> FVM_Cont(<apply-ids(|ids)> n)
+	apply-ids(|ids): FVM_SlotR() -> FVM_SlotR()
 	
-	apply-ids(|ids): term -> (<debug>term, idx)
+	apply-ids(|ids): FVM_Link(n) -> FVM_Link(<apply-ids(|ids)> n)
+	apply-ids(|ids): FVM_LinkIdx("0") -> FVM_Link(("P", 0))
+	apply-ids(|ids): FVM_LinkIdx("1") -> FVM_Link(("I", 1))
+	apply-ids(|ids): FVM_LinkIdx(n) -> FVM_Link(($[l[n]], <string-to-int> n))
+	
+	apply-ids(|ids): FVM_Cont(n) -> FVM_Cont(<apply-ids(|ids)> n)
+	apply-ids(|ids): FVM_ContIdx("0") -> FVM_Cont(("c", 0))
+	apply-ids(|ids): FVM_ContIdx("1") -> FVM_Cont(("x", 1))
+	apply-ids(|ids): FVM_ContIdx(n) -> FVM_Cont(($[c[n]], <string-to-int> n))
+	
+	apply-ids(|ids): term -> (term, idx)
 	  where
-	  	(links, consts) := <debug>ids;
-	  	idx := <debug><dec> <get-index> (term, links) 
+	  	(links, consts) := ids;
+	  	idx := <dec> <get-index> (term, links) 
 	apply-ids(|ids): term -> (term, idx)
 	  where
 	  	(links, consts) := ids;
@@ -77,8 +86,11 @@ rules
 	instr-apply-ids(|ids): FVM_Path(list) -> FVM_Path(<map(apply-ids(|ids))> list)
 	
 	path-get-ids: (FVM_Link(name), (links, conts)) -> (<concat> [links, [name]], conts)
+	path-get-ids: (FVM_LinkIdx(idx), (links, conts)) -> (links, conts)
 	path-get-ids: (FVM_Cont(name), (links, conts)) -> (links, <concat> [conts, [name]])
+	path-get-ids: (FVM_ContIdx(name), (links, conts)) -> (links, conts)
 	path-get-ids: (FVM_Slot(_), (links, conts)) -> (links, conts)
+	path-get-ids: (FVM_SlotR(), (links, conts)) -> (links, conts)
 	
 	instr-get-ids:   e -> ([], [])
 	instr-apply-ids(|ids): e -> e

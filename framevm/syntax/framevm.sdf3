@@ -55,8 +55,8 @@ sorts Instr context-free syntax
   
   Instr = FrameInstr
   FrameInstr.FVM_New    = <new>					// Create new frame and push pointer on stack
-  FrameInstr.FVM_Link   = <link <Path> <LABEL>> // Link frame on stack to given location (Empty path is current frame)
-  FrameInstr.FVM_LinkR	= <linkr <LABEL>>		// Link frame on second position on the stack to the frame on top
+  FrameInstr.FVM_Link   = <link <Path> <LinkRef>> // Link frame on stack to given location (Empty path is current frame)
+  FrameInstr.FVM_LinkR	= <linkr <LinkRef>>		// Link frame on second position on the stack to the frame on top
   FrameInstr.FVM_Set    = <set>					// Store value on top of stack in slot on second position of the current frame
   FrameInstr.FVM_Set    = <set <Path>>			// Set value on the stack at path location
   FrameInstr.FVM_SetR   = <setr>				// Store value on top of stack in slot on second position of frame on third position
@@ -92,12 +92,20 @@ sorts Instr context-free syntax
   Path.FVM_Self  = <[]>
   Path.FVM_Path  = <[<PathTerminal>]>
   Path.FVM_Path  = <[<{PathRef ","}+>, <PathTerminal>]>
-  PathRef.FVM_Slot = INTLEZ
-  PathRef.FVM_SlotR = "r"
-  PathRef.FVM_Link = LABEL
+  
+  PathRef = SlotRef
+  PathRef = LinkRef
+  
+  SlotRef.FVM_Slot = INTLEZ
+  SlotRef.FVM_SlotR = <r>
+  LinkRef.FVM_Link = LABEL
+  LinkRef.FVM_LinkIdx = <l<INTLEZ>>
   
   PathTerminal = PathRef
-  PathTerminal.FVM_Cont = CONTSLOT		// The continuation slots can never be a frame, so cannot be a path intermediate
+  PathTerminal = ContRef
+  
+  ContRef.FVM_Cont = CONTSLOT		// The continuation slots can never be a frame, so cannot be a path intermediate
+  ContRef.FVM_ContIdx = <c<INTLEZ>>
   
 
   
