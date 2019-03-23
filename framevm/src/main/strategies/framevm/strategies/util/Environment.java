@@ -20,8 +20,12 @@ public class Environment {
 	
 	/**
 	 * Constructor for a new environment.
+	 * @param link_size 
+	 * 		The size of the link registers
+	 * @param cont_size 
+	 * 		The size of the continuation registers
 	 */
-	public Environment() {
+	public Environment(int link_size, int cont_size) {
 		this.heap = new HashMap<>();
 		this.blocks = new HashMap<>();
 		this.stdout = new StringBuilder();

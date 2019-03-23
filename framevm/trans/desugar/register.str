@@ -7,7 +7,7 @@ imports
 rules
 	register-convert-all = register-link-all
 	
-	register-link-all: FVM_Program(blocks) -> FVM_Program(link-blocks)
+	register-link-all: FVM_Program(blocks) -> (FVM_Program(link-blocks), (<length> link_labels, <length> cont_labels))
 	  where
 	  	(link_labels, cont_labels) := <foldl(discover-link-ids)> (blocks, (["P", "I"], ["c", "x"]));
 	  	link-blocks := <map(apply-link-ids(|(link_labels, cont_labels)))> blocks
