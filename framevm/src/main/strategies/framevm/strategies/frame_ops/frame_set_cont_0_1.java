@@ -38,8 +38,16 @@ public class frame_set_cont_0_1 extends FVMStrategy {
 			if (cont == null) {
 				frame.getOperandStack().setContinuation(contIdx, new Continuation(contId, value));
 			} else if (!cont.id.equals(contId)) {
-				io.printError("ID mismatch, expected " + contId + " but found " + cont.id);
-				return null;
+				if (cont.id.startsWith("c")) {
+					cont.id = contId;	// Update to better name
+					cont.update(value);
+				} else if (contId.startsWith("c")) {
+					// Ignore less descriptive name
+					cont.update(value);
+				} else {
+					io.printError("ID mismatch, expected " + contId + " but found " + cont.id);
+					return null;
+				}
 			} else {
 				cont.update(value);
 			}

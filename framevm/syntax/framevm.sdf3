@@ -99,13 +99,13 @@ sorts Instr context-free syntax
   SlotRef.FVM_Slot = INTLEZ
   SlotRef.FVM_SlotR = <r>
   LinkRef.FVM_Link = LABEL
-  LinkRef.FVM_LinkIdx = <l<INTLEZ>>
+  LinkRef.FVM_LinkIdx = <_l<INTLEZ>>
   
   PathTerminal = PathRef
   PathTerminal = ContRef
   
   ContRef.FVM_Cont = CONTSLOT		// The continuation slots can never be a frame, so cannot be a path intermediate
-  ContRef.FVM_ContIdx = <c<INTLEZ>>
+  ContRef.FVM_ContIdx = <_c<INTLEZ>>
   
 
   
