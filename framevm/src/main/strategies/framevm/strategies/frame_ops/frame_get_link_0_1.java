@@ -32,7 +32,7 @@ public class frame_get_link_0_1 extends FVMStrategy {
 			io.printError("A link with index " + linkIdx + " does not exist");
 			return null;
 		}
-		if (!link.linkId.equals(linkId)) {
+		if (!link.linkId.equals(linkId) && !link.linkId.startsWith("l") && ! linkId.startsWith("l")) {
 			io.printError("Link lable mismatch, requested " + linkId + ", but foud " + link.linkId);
 			return null;
 		}

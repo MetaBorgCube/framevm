@@ -37,7 +37,7 @@ public class frame_get_cont_0_1 extends FVMStrategy {
 			io.printError(frame.getOperandStack().getContinuations().toString());
 			io.printError("Continuation does not exist: " + contId);
 			return null;
-		} else if (!cont.id.equals(contId)) {
+		} else if (!cont.id.equals(contId) && !cont.id.startsWith("c") && ! contId.startsWith("c")) {
 			io.printError("Continuation label mismatch, found " + cont.id + " required " + contId);
 			return null;
 		} else {
