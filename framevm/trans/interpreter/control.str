@@ -38,7 +38,7 @@ rules
 	  where
 	  	(env2, val) := <stack-pop-any(|env1)>;
 	  	Continuation(frame, lbl) := <cont-get-cc(|env2)> <frame-this(|env2)>;
-	  	env3 := <frame-set(|env2)> (frame, "r", val);
+	  	env3 := <frame-set(|env2)> (frame, FVM_SlotR(), val);
 	  	env4 := <cont-call(|env3)> (frame, lbl)
 	
 	// FVM_Jump/1

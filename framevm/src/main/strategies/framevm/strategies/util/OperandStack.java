@@ -1,6 +1,7 @@
 package framevm.strategies.util;
 
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Stack;
 
 import org.spoofax.interpreter.terms.IStrategoTerm;
@@ -13,7 +14,7 @@ public class OperandStack {
 	private Block block;
 	private int instr_count;
 	private Stack<IStrategoTerm> stack;
-	private HashMap<String, Slot> continuations;
+	private List<Continuation> continuations;
 	private Slot returnValue;
 	
 	/**
@@ -21,7 +22,7 @@ public class OperandStack {
 	 */
 	public OperandStack() {
 		this.block = null;
-		this.continuations = new HashMap<>();
+		this.continuations = new ArrayList<>();
 		
 		this.instr_count = 0;
 		this.stack = new Stack<>(); //TODO: pre-allocate block.max-stack
@@ -105,12 +106,16 @@ public class OperandStack {
 	}
 	
 	/**
-	 * @param slotId 
+	 * Get the continuation from the specified slot.
+	 * 
+	 * @param slotIdx
+	 * 		The index of the continuation slot 
 	 * @return
 	 * 		The current continuation
 	 */
-	public Slot getContinuation(String id) {
-		return this.continuations.get(id);
+	public Continuation getContinuation(int idx) {
+		if (idx >= this.continuations.size()) return null;
+		return this.continuations.get(idx);
 	}
 	
 	public Block getBlock() {
@@ -125,8 +130,11 @@ public class OperandStack {
 		return stack;
 	}
 
-	public void setContinuation(String id, IStrategoTerm continuation) {
-		this.continuations.put(id,  new Slot(continuation));
+	public void setContinuation(int idx, Continuation continuation) {
+		for (int i = this.continuations.size() - 1; i < idx; i++) {
+			this.continuations.add(null);
+		}
+		this.continuations.set(idx, continuation);
 	}
 
 	public OperandStack copy() {
@@ -135,20 +143,18 @@ public class OperandStack {
 		if (getReturnValue() != null) {
 			copy.setReturnValue(getReturnValue().value);
 		}
-		for (String continuation : continuations.keySet()) {
-			copy.setContinuation(continuation, getContinuation(continuation).value);
+		for (int i = 0; i < continuations.size(); i++) {
+			Continuation continuation = continuations.get(i);
+			copy.setContinuation(i, continuation);
 		}
 		
 		@SuppressWarnings("unchecked")
 		Stack<IStrategoTerm> stack = (Stack<IStrategoTerm>) this.stack.clone();
 		copy.stack = stack;
-//		while (!stack.isEmpty()) {
-//			copy.push(stack.pop());
-//		}
 		return copy;
 	}
 
-	public HashMap<String, Slot> getContinuations() {
+	public List<Continuation> getContinuations() {
 		return continuations;
 	}
 }

@@ -37,18 +37,19 @@ rules
   	  where
   	  	(env2, value) := <stack-pop-any(|env1)>;
   	  	(env3, IntV(slot)) := <stack-pop-int(|env2)>;
-  	  	env4 := <frame-set(|env3)> (<frame-this(|env3)>, slot, value)
+  	  	env4 := <frame-set(|env3)> (<frame-this(|env3)>, FVM_Slot(slot), value)
   	  	
 	// FVM_Set/1
 	// Store the value on top of the stack at the location found by traversing arg1 
   	eval: (FVM_Set(FVM_Path(p)), env1) -> env3
   	  where
-  	  	(frame, FVM_Slot(slot)) := <resolve> (p, FrameRef(<frame-this(|env1)>), env1);
+  	  	(frame, slot) := <resolve> (p, FrameRef(<frame-this(|env1)>), env1);
   	  	(env2, value) := <stack-pop-any(|env1)>;
   	  	env3 := <frame-set(|env2)> (frame, slot, value)
   	  	
   	// FVM_GetR/0
   	// Get index on top of stack in frame on second position
+  	eval: (FVM_GetR(FVM_Self()), env1) -> env1  	// This connamd litterally does nothing
   	eval: (FVM_GetR(), env1) -> env4
   	  where
   	  	(env2, IntV(slot)) := <stack-pop-int(|env1)>;
@@ -71,7 +72,7 @@ rules
   	  	(env2, value) := <stack-pop-any(|env1)>;
   	  	(env3, IntV(slot)) := <stack-pop-int(|env2)>;
   	  	(env4, FrameRef(frame)) := <stack-pop-frame(|env3)>;
-  	  	env5 := <frame-set(|env4)> (frame, slot, value)
+  	  	env5 := <frame-set(|env4)> (frame, FVM_Slot(slot), value)
   	
 	// FVM_Setr/1
   	// Store the value on top of the stack at 
@@ -80,7 +81,7 @@ rules
   	  where
   	  	(env2, value) := <stack-pop-any(|env1)>;
   	  	(env3, frame_init) := <stack-pop-frame(|env2)>;
-  	  	(frame, FVM_Slot(slot)) := <resolve> (p, frame_init, env1);
+  	  	(frame, slot) := <resolve> (p, frame_init, env1);
   	  	env4 := <frame-set(|env3)> (frame, slot, value)
 
 	// FVM_Copy/0
@@ -132,16 +133,15 @@ rules
 		env2 := <cont-call(|env1)> (<frame-get-link(|env1)> (frame_id, link_id), lbl)
 	
 	// Get a Slot or Link with the given id and frame
-	frame-get: (env, frame_id, FVM_Link(link_id)) -> FrameRef(<frame-get-link(|env)> (frame_id, link_id))
-	frame-get: (env, frame_id, FVM_Slot(slot_id)) -> <frame-get-slot(|env)> (frame_id, slot_id)				// Normal slots
-	frame-get: (env, frame_id, FVM_SlotR())       -> <frame-get-slot(|env)> (frame_id, "r")					// Slot 'r'
-	frame-get: (env, frame_id, FVM_Cont(name))    -> <frame-get-slot(|env)> (frame_id, name)				// Continuation slots
+	frame-get: (env, frame_id, FVM_Link(link_id))     -> FrameRef(<frame-get-link(|env)> (frame_id, link_id))
+	frame-get: (env, frame_id, FVM_Slot(slot_id))     -> <frame-get-slot(|env)> (frame_id, slot_id)				// Normal slots
+	frame-get: (env, frame_id, FVM_SlotR())           -> <frame-get-slot(|env)> (frame_id, "r")					// Slot 'r'
+	frame-get: (env, frame_id, FVM_Cont((name, idx))) -> <frame-get-cont(|env)> (frame_id, (name, idx))			// Continuation slots
 	
 	// Resolve a path
 	// returns the frame_id and slot/link of the location pointed to
-	resolve: ([FVM_SlotR()], FrameRef(frame_id), env)    -> (frame_id, FVM_Slot("r"))
-	resolve: ([FVM_Cont(name)], FrameRef(frame_id), env) -> (frame_id, FVM_Slot(name))
-  	resolve: ([slot], FrameRef(frame_id), env)           -> (frame_id, slot) 
-  	resolve: ([h|t], FrameRef(frame_id), env)            -> <resolve> (t, <frame-get> (env, frame_id, h), env)
+	resolve: ([FVM_SlotR()], FrameRef(frame_id), env) -> (frame_id, FVM_Slot("r"))
+  	resolve: ([slot], FrameRef(frame_id), env)        -> (frame_id, slot) 
+  	resolve: ([h|t], FrameRef(frame_id), env)         -> <resolve> (t, <frame-get> (env, frame_id, h), env)
   	
   	

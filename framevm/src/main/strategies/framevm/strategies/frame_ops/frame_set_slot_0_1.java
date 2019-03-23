@@ -12,8 +12,8 @@ import framevm.strategies.util.Frame;
 import framevm.strategies.util.Slot;
 import mb.nabl2.stratego.StrategoBlob;
 
-public class frame_set_0_1 extends FVMStrategy {
-	public static frame_set_0_1 instance = new frame_set_0_1();
+public class frame_set_slot_0_1 extends FVMStrategy {
+	public static frame_set_slot_0_1 instance = new frame_set_slot_0_1();
 
 	@Override
 	// env| (frame_id, slot, val) -> env'
@@ -35,7 +35,8 @@ public class frame_set_0_1 extends FVMStrategy {
 			if ("r".equals(slotId)) {
 				frame.getOperandStack().setReturnValue(value);
 			} else {
-				frame.getOperandStack().setContinuation(slotId, value);
+				io.printError("Invalid slot " + slotId + ". It probably is a continuation you are looking for");
+				return null;
 			}
 		}
 		return new StrategoBlob(env);

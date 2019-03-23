@@ -1,0 +1,85 @@
+module register
+
+imports
+	signatures/framevm-sig
+	fvm-desugar
+
+rules
+	register-convert-all = register-link-all
+	
+	register-link-all: FVM_Program(blocks) -> FVM_Program(link-blocks)
+	  where
+	  	(link_labels, cont_labels) := <foldl(discover-link-ids)> (blocks, (["P", "I"], ["c", "x"]));
+	  	link-blocks := <map(apply-link-ids(|(link_labels, cont_labels)))> blocks
+	  	
+	discover-link-ids: (FVM_Block(name, FVM_Seq(instrs)), ids) -> ids2
+	  where
+	  	ids2 := <foldl(discover-link-ids)> (instrs, ids)
+	  	
+	apply-link-ids(|ids): FVM_Block(name, FVM_Seq(instrs)) -> FVM_Block(name, FVM_Seq(instrs2))
+	  where
+	  	instrs2 := <map(instr-apply-ids(|ids))> instrs
+	  	
+	discover-link-ids: (instr, (link_ids, cont_ids)) -> (link_ids2, cont_ids2)
+	  where
+		(links, conts) := <instr-get-ids> instr;
+		link_ids2 := <set-add-all> (link_ids, links);
+		cont_ids2 := <set-add-all> (cont_ids, conts)
+		
+	set-add-all: (set, []) -> set
+	set-add-all: (set, [h | t]) -> set2
+	  where
+	  	_ := <elem> (h, set);
+	  	set2 := <set-add-all> (set, t)
+	  	
+	set-add-all: (set, [h | t]) -> set2
+	  where
+	  	set2 := <set-add-all> (<concat>[set, [h]], t)
+	  	
+	  
+	instr-get-ids: FVM_Get(path) -> <instr-get-ids> path
+	instr-apply-ids(|ids): FVM_Get(path) -> FVM_Get(<instr-apply-ids(|ids)> path)
+	
+	instr-get-ids: FVM_GetR(path) -> <instr-get-ids> path
+	instr-apply-ids(|ids): FVM_GetR(path) -> FVM_GetR(<instr-apply-ids(|ids)> path)
+	
+	instr-get-ids: FVM_Set(path) -> <instr-get-ids> path
+	instr-apply-ids(|ids): FVM_Set(path) -> FVM_Set(<instr-apply-ids(|ids)> path)
+	
+	instr-get-ids: FVM_SetR(path) -> <instr-get-ids> path
+	instr-apply-ids(|ids): FVM_SetR(path) -> FVM_SetR(<instr-apply-ids(|ids)> path)
+	
+	instr-get-ids: FVM_LinkR(lbl) -> ([lbl], [])
+	instr-apply-ids(|ids): FVM_LinkR(lbl) -> FVM_LinkR(<apply-ids(|ids)> lbl)
+	
+	instr-get-ids: FVM_Link(path, lbl) -> ([lbl | links], conts)
+	  where
+	  	(links, conts) := <instr-get-ids> path
+	instr-apply-ids(|ids): FVM_Link(path, lbl) -> FVM_Link(<instr-apply-ids(|ids)> path, <apply-ids(|ids)> lbl)
+	
+	instr-get-ids: FVM_ScopeUp(path, lbl) -> <instr-get-ids> path
+	instr-apply-ids(|ids): FVM_ScopeUp(path, lbl) -> FVM_ScopeUp(<instr-apply-ids(|ids)> path, lbl)
+
+	apply-ids(|ids): FVM_Slot(n) -> FVM_Slot(n)
+	apply-ids(|ids): FVM_Link(n) -> FVM_Link(<apply-ids(|ids)> n)
+	apply-ids(|ids): FVM_Cont(n) -> FVM_Cont(<apply-ids(|ids)> n)
+	
+	apply-ids(|ids): term -> (<debug>term, idx)
+	  where
+	  	(links, consts) := <debug>ids;
+	  	idx := <debug><dec> <get-index> (term, links) 
+	apply-ids(|ids): term -> (term, idx)
+	  where
+	  	(links, consts) := ids;
+	  	idx := <dec> <get-index> (term, consts) 
+	  
+	instr-get-ids:   FVM_Path(list) -> <foldl(path-get-ids)> (list, ([], []))
+	instr-apply-ids(|ids): FVM_Path(list) -> FVM_Path(<map(apply-ids(|ids))> list)
+	
+	path-get-ids: (FVM_Link(name), (links, conts)) -> (<concat> [links, [name]], conts)
+	path-get-ids: (FVM_Cont(name), (links, conts)) -> (links, <concat> [conts, [name]])
+	path-get-ids: (FVM_Slot(_), (links, conts)) -> (links, conts)
+	
+	instr-get-ids:   e -> ([], [])
+	instr-apply-ids(|ids): e -> e
+		

@@ -19,11 +19,13 @@ rules
 	
 	external frame-get-block(|env)	// env| frame_id -> lbl
 	external frame-get-slot(|env)	// env| (frame_id, slot) -> val
-	external frame-get-link(|env)	// env| (frame_id, link) -> frame_id
-	external frame-set(|env)		// env| (frame_id, slot, val) -> env'
+	external frame-get-link(|env)	// env| (frame_id, (link_id, idx)) -> frame_id
+	external frame-get-cont(|env)	// env| (frame_id, (cont_id, idx)) -> frame_id
+	external frame-set-slot(|env)	// env| (frame_id, slot, val) -> env'
+	external frame-set-cont(|env)	// env| (frame_id, (contId, contIdx), val) -> env'
 	external frame-new(|env)		// env| -> (env', frame_id)
 	external frame-this(|env)		// env| -> frame_id
-	external frame-link(|env)		// env| (frame_id, frame_id, lbl) -> env'
+	external frame-link(|env)		// env| (frame_id, frame_id, (lbl, idx)) -> env'
 	external frame-copy(|env)		// env| frame_id -> (env', frame_id)
 
 	external vm-print(|env)			// env| val -> env'
@@ -32,8 +34,13 @@ rules
 	external cont-call(|env)	    // env| (frame_id, lbl) -> env'
 	
 rules
-	ex-set-cx(|env):   (frame, ex)   -> <frame-set(|env)> (frame, "x", ex)
-	cont-set-cc(|env): (frame, cont) -> <frame-set(|env)> (frame, "c", cont)
+	ex-set-cx(|env):   (frame, ex)   -> <frame-set-cont(|env)> (frame, ("x", 1), ex)
+	cont-set-cc(|env): (frame, cont) -> <frame-set-cont(|env)> (frame, ("c", 0), cont)
 	
-	ex-get-cx(|env):   frame -> <frame-get-slot(|env)> (frame, "x")
-	cont-get-cc(|env): frame -> <frame-get-slot(|env)> (frame, "c")
+	ex-get-cx(|env):   frame -> <frame-get-cont(|env)> (frame, ("x", 1))
+	cont-get-cc(|env): frame -> <frame-get-cont(|env)> (frame, ("c", 0))
+	
+	frame-set(|env): (frame, FVM_Slot(slot), value) -> <frame-set-slot(|env)> (frame, slot, value)
+	frame-set(|env): (frame, FVM_SlotR(), value) ->    <frame-set-slot(|env)> (frame, "r", value)
+	frame-set(|env): (frame, FVM_Cont(cont), value) -> <frame-set-cont(|env)> (frame, cont, value)
+	

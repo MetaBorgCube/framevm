@@ -36,7 +36,8 @@ public class frame_get_slot_0_1 extends FVMStrategy {
 			if ("r".equals(slotId)) {
 				return frame.getOperandStack().getReturnValue().value;
 			} else {
-				return frame.getOperandStack().getContinuation(slotId).value;
+				io.printError("Invalid slot " + slotId + ". It probably is a continuation you are looking for");
+				return null;
 			}
 		}
 	}

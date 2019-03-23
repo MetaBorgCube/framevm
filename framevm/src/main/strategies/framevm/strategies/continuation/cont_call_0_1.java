@@ -1,15 +1,20 @@
 package framevm.strategies.continuation;
 
 
+import java.util.List;
+
 import org.spoofax.interpreter.library.IOAgent;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermFactory;
 import org.spoofax.terms.StrategoString;
 import org.spoofax.terms.StrategoTuple;
+
+
 import framevm.strategies.util.Environment;
 import framevm.strategies.util.Frame;
 import framevm.strategies.FVMStrategy;
 import framevm.strategies.util.Block;
+import framevm.strategies.util.Continuation;
 import mb.nabl2.stratego.StrategoBlob;
 
 public class cont_call_0_1 extends FVMStrategy {
@@ -30,9 +35,10 @@ public class cont_call_0_1 extends FVMStrategy {
 			return null;
 		}
 		if (!target.getId().equals("_exit") && !target.getId().equals("_catch")) {
-			for (String continuation : env.currentFrame.getOperandStack().getContinuations().keySet()) {
-				if (target.getOperandStack().getContinuation(continuation) == null) {
-					io.printError("Warning: Continuation '" + continuation + "' not set for " + target.getId());
+			List<Continuation> continuations = env.currentFrame.getOperandStack().getContinuations();
+			for (int i = 0; i < continuations.size(); i++) {
+				if (target.getOperandStack().getContinuation(i) == null && continuations.get(i) != null) {
+					io.printError("Warning: Continuation '" + continuations.get(i).value + "' not set for " + target.getId());
 				}
 			}
 		}

@@ -9,6 +9,7 @@ import framevm.strategies.util.Environment;
 import framevm.strategies.util.Frame;
 import framevm.strategies.FVMStrategy;
 import framevm.strategies.util.Block;
+import framevm.strategies.util.Continuation;
 import mb.nabl2.stratego.StrategoBlob;
 
 
@@ -29,8 +30,8 @@ public class vm_start_0_1 extends FVMStrategy {
 
 		env.currentFrame.setExecutable();
 		env.currentFrame.getOperandStack().jump(block);
-		env.currentFrame.getOperandStack().setContinuation("c", tuple.get(0));
-		env.currentFrame.getOperandStack().setContinuation("x", tuple.get(1));
+		env.currentFrame.getOperandStack().setContinuation(0, new Continuation("c", tuple.get(0)));
+		env.currentFrame.getOperandStack().setContinuation(1, new Continuation("x", tuple.get(1)));
 		
 		Frame exit = new Frame("_exit");
 		exit.setExecutable();

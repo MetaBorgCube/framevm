@@ -6,6 +6,7 @@ imports fvm-pp
 imports fvm-analysis
 imports fvm-interpreter
 imports fvm-desugar
+imports desugar/register
 
 rules // Debugging
   
@@ -33,20 +34,20 @@ rules // Debugging
     (node, _, _, path, project-path) -> (filename, result)
     with
       filename := <guarantee-extension(|"value")> path
-    ; result   := <eval> <desugar> node
+    ; result   := <eval> <register-convert-all> <desugar> node
     
   run-program-risc:
     (node, _, _, path, project-path) -> (filename, result)
     with
       filename := <guarantee-extension(|"value")> path
-    ; result   := <eval> <debug><desugar-full> node
+    ; result   := <eval> <register-convert-all> <debug><desugar-full> node
     
   run-program-compare:
     (node, _, _, path, project-path) -> (filename, out)
     with
       filename := <guarantee-extension(|"value")> path
-    ; result1  := <eval> <desugar> node
-    ; result2  := <eval> <desugar-full> node
+    ; result1  := <eval> <register-convert-all> <desugar> node
+    ; result2  := <eval> <register-convert-all> <desugar-full> node
     ; out      := <compare-output> (result1, result2)
     
   compare-output = equal < !"Yes" + !"No"

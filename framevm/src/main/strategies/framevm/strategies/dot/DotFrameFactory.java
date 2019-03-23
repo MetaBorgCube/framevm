@@ -49,6 +49,7 @@ public class DotFrameFactory extends DotFactory {
 		
 		// Add all the links
 		for( Link link : frame.links()) {
+			if (link == null) continue;
 			links.add(link(name + ":id", frame(link.target) + ":id", link.linkId));
 		}
 		

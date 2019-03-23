@@ -5,6 +5,7 @@ import java.util.Stack;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.terms.StrategoString;
 
+import framevm.strategies.util.Continuation;
 import framevm.strategies.util.Frame;
 import framevm.strategies.util.OperandStack;
 
@@ -39,17 +40,20 @@ public class DotOperandStackFactory extends DotFactory {
 		// Link the continuations
 		String contSlots = "";
 		String contIds = "";
-		for (String cont_id : opstack.getContinuations().keySet()) {
-			String target_id = ((StrategoString) opstack.getContinuation(cont_id).value.getSubterm(0)).stringValue();
-			contSlots += " | " + cont_id;
+		List<Continuation> continuations = opstack.getContinuations();
+		for (int i = 0; i < continuations.size(); i++) {
+			Continuation cont = continuations.get(i);
+			if (cont == null) continue;
+			String target_id = ((StrategoString) cont.value.getSubterm(0)).stringValue();
+			contSlots += " | " + cont.id;
 			
-			contIds += " | <cont_" + cont_id + ">";
+			contIds += " | <cont_" + cont.id + ">";
 			if ("_exit".equals(target_id)) {
-				links.add(continuationLink(name, "finish", cont_id));
+				links.add(continuationLink(name, "finish", cont.id));
 			} else if ("_catch".equals(target_id)) {
-				links.add(continuationLink(name, "exception", cont_id));
+				links.add(continuationLink(name, "exception", cont.id));
 			} else {
-				links.add(continuationLink(name, frame(target_id) + ":id", cont_id));
+				links.add(continuationLink(name, frame(target_id) + ":id", cont.id));
 			}
 		}
 		if (contSlots.length() == 0) {

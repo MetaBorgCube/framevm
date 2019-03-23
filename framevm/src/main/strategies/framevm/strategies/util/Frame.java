@@ -1,8 +1,6 @@
 package framevm.strategies.util;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 
 import org.spoofax.interpreter.terms.IStrategoTerm;
@@ -14,7 +12,7 @@ import org.spoofax.interpreter.terms.IStrategoTerm;
 public class Frame {
 	private OperandStack operandStack;
 	private List<Slot> slots;
-	private HashMap<String, Link> links;
+	private List<Link> links;
 	private String id;
 
 	/**
@@ -26,7 +24,7 @@ public class Frame {
 	public Frame(String id) {
 		this.operandStack = null;
 		this.slots = new ArrayList<>();
-		this.links = new HashMap<>();
+		this.links = new ArrayList<>();
 		this.id = id;
 	}
 	
@@ -40,9 +38,9 @@ public class Frame {
 		for (Slot slot : original.getSlots()) {
 			slots.add(new Slot(slot.value));
 		}
-		this.links = new HashMap<>();
+		this.links = new ArrayList<>();
 		for (Link link : original.links()) {
-			links.put(link.linkId, new Link(link.linkId, link.target));
+			links.add(new Link(link.linkId, link.target));
 		}
 		this.id = id;
 	}
@@ -55,8 +53,11 @@ public class Frame {
 	 * @param parent
 	 * 		The {@link Frame} to link to
 	 */
-	public void link(String label, Frame parent) {
-		links.put(label, new Link(label, parent));
+	public void link(int idx, String label, Frame parent) {
+		for (int i = this.links.size()-1; i < idx; i++) {
+			this.links.add(null);
+		}
+		links.set(idx, new Link(label, parent));
 	}
 	
 	/**
@@ -72,7 +73,7 @@ public class Frame {
 		if (id + 1 < slots.size()) {	// Slot exists
 			slots.get(id).value = value;
 		} else {						// Expand frame
-			slots.add(id, new Slot(value));
+			slots.set(id, new Slot(value));
 		}
 	}
 	
@@ -132,15 +133,16 @@ public class Frame {
 	}
 
 	/**
-	 * Get the {@link Link} with the given id.
+	 * Get the {@link Link} with the given index.
 	 * 
 	 * @param linkId
-	 * 		The id of the requested link
+	 * 		The index of the requested link
 	 * @return
 	 * 		The requested link
 	 */
-	public Link getLink(String linkId) {
-		return links.get(linkId);
+	public Link getLink(int linkIdx) {
+		if (linkIdx >= links.size()) return null;
+		return links.get(linkIdx);
 	}
 	
 	/**
@@ -164,7 +166,7 @@ public class Frame {
 		return slots;
 	}
 
-	public Collection<Link> links() {
-		return this.links.values();
+	public List<Link> links() {
+		return this.links;
 	}
 }

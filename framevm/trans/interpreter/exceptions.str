@@ -54,7 +54,7 @@ rules
 	  where
 	  	(env2, throwable) := <stack-pop-any(|env1)>;
 	  	Continuation(handle_frame, handle_block) := <ex-get-cx(|env2)> <frame-this(|env2)>;
-	  	env3 := <frame-set(|env2)> (handle_frame, "r", throwable);
+	  	env3 := <frame-set(|env2)> (handle_frame, FVM_SlotR(), throwable);
 	  	env4 := <cont-call(|env3)> (handle_frame, handle_block)
 	  	
 	  	

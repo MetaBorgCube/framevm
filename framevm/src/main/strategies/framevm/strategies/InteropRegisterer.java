@@ -5,11 +5,13 @@ import org.strategoxt.lang.Strategy;
 
 import framevm.strategies.continuation.cont_call_0_1;
 import framevm.strategies.frame_ops.frame_copy_0_1;
+import framevm.strategies.frame_ops.frame_get_cont_0_1;
 import framevm.strategies.frame_ops.frame_get_link_0_1;
 import framevm.strategies.frame_ops.frame_get_slot_0_1;
 import framevm.strategies.frame_ops.frame_link_0_1;
 import framevm.strategies.frame_ops.frame_new_0_1;
-import framevm.strategies.frame_ops.frame_set_0_1;
+import framevm.strategies.frame_ops.frame_set_cont_0_1;
+import framevm.strategies.frame_ops.frame_set_slot_0_1;
 import framevm.strategies.frame_ops.frame_this_0_1;
 import framevm.strategies.stack_ops.stack_pop_any_0_1;
 import framevm.strategies.stack_ops.stack_pop_cont_0_1;
@@ -48,7 +50,9 @@ public class InteropRegisterer extends JavaInteropRegisterer {
 				frame_new_0_1.instance,
 				frame_get_link_0_1.instance,
 				frame_get_slot_0_1.instance,
-				frame_set_0_1.instance,
+				frame_get_cont_0_1.instance,
+				frame_set_slot_0_1.instance,
+				frame_set_cont_0_1.instance,
 				frame_link_0_1.instance,
 				frame_this_0_1.instance,
 				frame_copy_0_1.instance,
