@@ -25,9 +25,9 @@ public class frame_get_slot_0_1 extends FVMStrategy {
 		Frame frame = env.getFrame(frame_id.stringValue());
 		try {
 			int idx = Integer.valueOf(slotId);
-			Slot slot = frame.getSlot(idx, false);
+			Slot slot = frame.getSlot(idx);
 			if (slot == null) {
-				io.printError("Slot " + idx + " does not exist!");
+				io.printError("Slot " + idx + " does not exist, or is still empty!");
 				return null;
 			} else {
 				return slot.value;

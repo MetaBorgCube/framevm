@@ -1,7 +1,5 @@
 package framevm.strategies.util;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Stack;
 
 import org.spoofax.interpreter.terms.IStrategoTerm;
@@ -14,15 +12,15 @@ public class OperandStack {
 	private Block block;
 	private int instr_count;
 	private Stack<IStrategoTerm> stack;
-	private List<Continuation> continuations;
+	private Continuation[] continuations;
 	private Slot returnValue;
 	
 	/**
 	 * Create an operand stack.
 	 */
-	public OperandStack() {
+	public OperandStack(int contSize) {
 		this.block = null;
-		this.continuations = new ArrayList<>();
+		this.continuations = new Continuation[contSize];
 		
 		this.instr_count = 0;
 		this.stack = new Stack<>(); //TODO: pre-allocate block.max-stack
@@ -114,8 +112,8 @@ public class OperandStack {
 	 * 		The current continuation
 	 */
 	public Continuation getContinuation(int idx) {
-		if (idx >= this.continuations.size()) return null;
-		return this.continuations.get(idx);
+		if (idx >= this.continuations.length) return null;
+		return this.continuations[idx];
 	}
 	
 	public Block getBlock() {
@@ -131,20 +129,17 @@ public class OperandStack {
 	}
 
 	public void setContinuation(int idx, Continuation continuation) {
-		for (int i = this.continuations.size() - 1; i < idx; i++) {
-			this.continuations.add(null);
-		}
-		this.continuations.set(idx, continuation);
+		this.continuations[idx] = continuation;
 	}
 
 	public OperandStack copy() {
-		OperandStack copy = new OperandStack();
+		OperandStack copy = new OperandStack(continuations.length);
 		copy.jump(block, instr_count);
 		if (getReturnValue() != null) {
 			copy.setReturnValue(getReturnValue().value);
 		}
-		for (int i = 0; i < continuations.size(); i++) {
-			Continuation continuation = continuations.get(i);
+		for (int i = 0; i < continuations.length; i++) {
+			Continuation continuation = continuations[i];
 			copy.setContinuation(i, continuation);
 		}
 		
@@ -154,7 +149,16 @@ public class OperandStack {
 		return copy;
 	}
 
-	public List<Continuation> getContinuations() {
-		return continuations;
+	public IStrategoTerm[] getContinuations() {
+		IStrategoTerm[] out = new IStrategoTerm[continuations.length];
+		for (int i = 0; i < this.continuations.length; i++) {
+			Continuation cont = this.continuations[i];
+			if (cont == null) {
+				out[i] = null;
+			} else {
+				out[i] = cont.value;
+			}
+		}
+		return out;
 	}
 }

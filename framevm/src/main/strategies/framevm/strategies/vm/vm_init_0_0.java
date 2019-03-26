@@ -14,16 +14,17 @@ public class vm_init_0_0 extends Strategy {
 	public static vm_init_0_0 instance = new vm_init_0_0();
 
 	@Override
-	// -> env
+	// (links, conts, slots) -> env
 	// Set up the vm by making a new environment
 	public IStrategoTerm invoke(Context context, IStrategoTerm arg) {
 		StrategoTuple tuple = (StrategoTuple) arg;
 		int link_size = ((StrategoInt) tuple.get(0)).intValue();
 		int cont_size = ((StrategoInt) tuple.get(1)).intValue();
+		int slot_size = ((StrategoInt) tuple.get(2)).intValue();
 		Environment env = new Environment(link_size, cont_size);
-		env.currentFrame = env.getFrame(env.newFrame());
+		env.currentFrame = env.getFrame(env.newFrame(slot_size));
 
-		context.getIOAgent().printError("FrameVM initialized " + env.currentFrame.getId());
+		context.getIOAgent().printError("FrameVM initialized " + env.currentFrame.getId() + " (" + slot_size + ")");
 		context.getIOAgent().printError("Register size = (" + link_size + ", " + cont_size + ")");
 		return new StrategoBlob(env);
 	}

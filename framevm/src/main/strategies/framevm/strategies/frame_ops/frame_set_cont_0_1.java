@@ -29,7 +29,7 @@ public class frame_set_cont_0_1 extends FVMStrategy {
 		String contId = ((StrategoString) contTuple.get(0)).stringValue();
 		int contIdx = ((StrategoInt) contTuple.get(1)).intValue();
 		
-		if (frame.getOperandStack() == null) frame.setExecutable();
+		if (frame.getOperandStack() == null) frame.setExecutable(env.getContSize());
 		if ("r".equals(contId)) {
 			io.printError("Slot r can never be a continuation slot");
 			return null;

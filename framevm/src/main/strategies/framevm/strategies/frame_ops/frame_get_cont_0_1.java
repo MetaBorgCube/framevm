@@ -1,6 +1,8 @@
 package framevm.strategies.frame_ops;
 
 
+import java.util.Arrays;
+
 import org.spoofax.interpreter.library.IOAgent;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermFactory;
@@ -34,7 +36,7 @@ public class frame_get_cont_0_1 extends FVMStrategy {
 		}
 		Continuation cont = frame.getOperandStack().getContinuation(contIdx);
 		if (cont == null) {
-			io.printError(frame.getOperandStack().getContinuations().toString());
+			io.printError(Arrays.toString(frame.getOperandStack().getContinuations()));
 			io.printError("Continuation does not exist: " + contId);
 			return null;
 		} else if (!cont.id.equals(contId)) {

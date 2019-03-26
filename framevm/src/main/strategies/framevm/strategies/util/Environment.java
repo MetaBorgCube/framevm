@@ -17,6 +17,8 @@ public class Environment {
 	public String debug;	
 	
 	private int count;		// Used for generating unique frame ids
+	private int linkSize;
+	private int contSize;
 	
 	/**
 	 * Constructor for a new environment.
@@ -30,6 +32,9 @@ public class Environment {
 		this.blocks = new HashMap<>();
 		this.stdout = new StringBuilder();
 		this.debug = "";
+		
+		this.linkSize = link_size;
+		this.contSize = cont_size;
 		
 		this.count = 0;
 	}
@@ -61,12 +66,14 @@ public class Environment {
 	/**
 	 * Create a new frame and put it on the heap.
 	 * 
+	 * @param size
+	 * 		The amount of slots for the new frame
 	 * @return
 	 * 		The id of the new frame
 	 */
-	public String newFrame() {
+	public String newFrame(int size) {
 		String id = "frame_" + count++;
-		heap.put(id, new Frame(id));
+		heap.put(id, new Frame(id, size, linkSize));
 		return id;
 	}
 
@@ -104,5 +111,13 @@ public class Environment {
 	 */
 	public void setDebug(String debug) {
 		this.debug = debug;
+	}
+
+	public int getContSize() {
+		return contSize;
+	}
+
+	public int getLinkSize() {
+		return linkSize;
 	}
 }

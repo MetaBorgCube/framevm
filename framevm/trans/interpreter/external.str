@@ -23,7 +23,7 @@ rules
 	external frame-get-cont(|env)	// env| (frame_id, (cont_id, idx)) -> frame_id
 	external frame-set-slot(|env)	// env| (frame_id, slot, val) -> env'
 	external frame-set-cont(|env)	// env| (frame_id, (contId, contIdx), val) -> env'
-	external frame-new(|env)		// env| -> (env', frame_id)
+	external frame-new(|env)		// env| size -> (env', frame_id)
 	external frame-this(|env)		// env| -> frame_id
 	external frame-link(|env)		// env| (frame_id, frame_id, (lbl, idx)) -> env'
 	external frame-copy(|env)		// env| frame_id -> (env', frame_id)

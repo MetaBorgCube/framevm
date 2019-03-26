@@ -18,6 +18,7 @@ public class vm_execute_1_1 extends Strategy {
 		while (env.currentFrame.getOperandStack().hasNextInstruction()) {
 			IStrategoTerm instruction = env.currentFrame.getOperandStack().nextInstruction();
 			IStrategoTerm tuple = context.getFactory().makeTuple(instruction, new StrategoBlob(env));
+			
 			if (eval.invoke(context, tuple) == null) break;
 		}
 		return new StrategoBlob(env);

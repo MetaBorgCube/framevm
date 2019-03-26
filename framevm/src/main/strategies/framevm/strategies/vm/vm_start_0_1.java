@@ -28,17 +28,17 @@ public class vm_start_0_1 extends FVMStrategy {
 			return null;
 		}
 
-		env.currentFrame.setExecutable();
+		env.currentFrame.setExecutable(2);
 		env.currentFrame.getOperandStack().jump(block);
 		env.currentFrame.getOperandStack().setContinuation(0, new Continuation("c", tuple.get(0)));
 		env.currentFrame.getOperandStack().setContinuation(1, new Continuation("x", tuple.get(1)));
 		
-		Frame exit = new Frame("_exit");
-		exit.setExecutable();
+		Frame exit = new Frame("_exit", 0, 0);
+		exit.setExecutable(0);
 		env.heap.put("_exit", exit);
 		
-		Frame catsh = new Frame("_catch");
-		catsh.setExecutable();
+		Frame catsh = new Frame("_catch", 0, 0);
+		catsh.setExecutable(0);
 		env.heap.put("_catch", catsh);
 
 		io.printError("FrameVM started: " + block.getName());

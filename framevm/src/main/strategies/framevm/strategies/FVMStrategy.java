@@ -22,7 +22,18 @@ public abstract class FVMStrategy extends Strategy {
 		//TODO: The environment is now passed around by reference, 
 		// making that a pop in a failed branch in Stratego still propagates the pop
 		// We might want to make this use a deep copy instead
-		return this.invoke(context.getIOAgent(), context.getFactory(), environment, current);
+		try {
+			return this.invoke(context.getIOAgent(), context.getFactory(), environment, current);
+		} catch (Exception ex) {
+			context.getIOAgent().printError("Uncaught exception '" + ex.getMessage() + "'");
+			
+			StackTraceElement[] trace = ex.getStackTrace();
+			for (int i = 0; i < 7; i++) {
+				context.getIOAgent().printError(trace[i].toString());
+			}
+			//TODO: Call exception continuation of current frame
+		}
+		return null;
 	}
 
 	/**

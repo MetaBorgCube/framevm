@@ -20,31 +20,36 @@ public class vm_stop_0_1 extends FVMStrategy {
 	// env -> string
 	// Return the output that was written to 'console'
 	protected IStrategoTerm invoke(IOAgent io, ITermFactory factory, Environment env, IStrategoTerm arg) {
-		Slot returnVal = env.currentFrame.getOperandStack().getReturnValue();
-		if (returnVal != null) {
-			String exitObj = returnVal.value.toString();
-			if (env.currentFrame.getId().equals("_exit")) {
-				Matcher match = PATTERN.matcher(exitObj);
-				if (match.matches()) {
-					int exitcode = Integer.valueOf(match.group(1));
-					if (exitcode == 0) {
-						io.printError("Execution terminated sucessfully");
+		if (env.currentFrame.getId().equals("_exit") || env.currentFrame.getId().equals("_catch")) {
+			Slot returnVal = env.currentFrame.getOperandStack().getReturnValue();
+			if (returnVal != null) {
+				String exitObj = returnVal.value.toString();
+				if (env.currentFrame.getId().equals("_exit")) {
+					Matcher match = PATTERN.matcher(exitObj);
+					if (match.matches()) {
+						int exitcode = Integer.valueOf(match.group(1));
+						if (exitcode == 0) {
+							io.printError("Execution terminated sucessfully");
+						} else {
+							io.printError("Execution terminated with errors: " + exitcode);
+						}
 					} else {
-						io.printError("Execution terminated with errors: " + exitcode);
+						return null;	// Exitcode is not an intV 
 					}
-				} else {
-					return null;	// Exitcode is not an intV 
+				} else if (env.currentFrame.getId().equals("_catch")) {
+					io.printError("Uncought exception: " + exitObj);
 				}
-			} else if (env.currentFrame.getId().equals("_catch")) {
-				io.printError("Uncought exception: " + exitObj);
 			}
-		}
-		if (env.debug.length() > 0) {
-			io.printError("Printing debug info, all output is discarded");
-			return factory.makeString(env.debug.trim());
+			if (env.debug.length() > 0) {
+				io.printError("Printing debug info, all output is discarded");
+				return factory.makeString(env.debug.trim());
+			} else {
+				String out = env.stdout.toString().trim();
+				return factory.makeString(out);
+			}
 		} else {
-			String out = env.stdout.toString().trim();
-			return factory.makeString(out);
+			io.printError("Execution terminated in non-terminal state");
+			return factory.makeString("FAIL");
 		}
 	}
 }

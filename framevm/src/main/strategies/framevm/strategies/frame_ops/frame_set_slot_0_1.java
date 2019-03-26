@@ -28,10 +28,14 @@ public class frame_set_slot_0_1 extends FVMStrategy {
 			int slotIdx = Integer.valueOf(slotId);
 
 			Slot slot;
-			slot = frame.getSlot(slotIdx, true);
-			slot.update(value);
+			slot = frame.getSlot(slotIdx);
+			if (slot == null) {
+				frame.set(slotIdx, value);
+			} else {
+				slot.update(value);
+			}
 		} catch (NumberFormatException ex) {
-			if (frame.getOperandStack() == null) frame.setExecutable();
+			if (frame.getOperandStack() == null) frame.setExecutable(env.getContSize());
 			if ("r".equals(slotId)) {
 				frame.getOperandStack().setReturnValue(value);
 			} else {

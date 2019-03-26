@@ -1,8 +1,5 @@
 package framevm.strategies.util;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.spoofax.interpreter.terms.IStrategoTerm;
 
 /**
@@ -11,8 +8,8 @@ import org.spoofax.interpreter.terms.IStrategoTerm;
  */
 public class Frame {
 	private OperandStack operandStack;
-	private List<Slot> slots;
-	private List<Link> links;
+	private Slot[] slots;
+	private Link[] links;
 	private String id;
 
 	/**
@@ -21,10 +18,10 @@ public class Frame {
 	 * @param id
 	 * 		The id of this frame
 	 */
-	public Frame(String id) {
+	public Frame(String id, int slots, int links) {
 		this.operandStack = null;
-		this.slots = new ArrayList<>();
-		this.links = new ArrayList<>();
+		this.slots = new Slot[slots];
+		this.links = new Link[links];
 		this.id = id;
 	}
 	
@@ -34,13 +31,15 @@ public class Frame {
 		} else {
 			this.operandStack = original.getOperandStack().copy();
 		}
-		this.slots = new ArrayList<>();
-		for (Slot slot : original.getSlots()) {
-			slots.add(new Slot(slot.value));
+		this.slots = new Slot[original.slots.length];
+		for (int i = 0; i < this.slots.length; i++) {
+			Slot slot = original.slots[i];
+			slots[i] = new Slot(slot.value);
 		}
-		this.links = new ArrayList<>();
-		for (Link link : original.links()) {
-			links.add(new Link(link.linkId, link.target));
+		this.links = new Link[original.links.length];
+		for (int i = 0; i < this.links.length; i++) {
+			Link link = original.links[i];
+			links[i] = new Link(link.linkId, link.target);
 		}
 		this.id = id;
 	}
@@ -54,10 +53,7 @@ public class Frame {
 	 * 		The {@link Frame} to link to
 	 */
 	public void link(int idx, String label, Frame parent) {
-		for (int i = this.links.size()-1; i < idx; i++) {
-			this.links.add(null);
-		}
-		links.set(idx, new Link(label, parent));
+		links[idx] = new Link(label, parent);
 	}
 	
 	/**
@@ -70,18 +66,14 @@ public class Frame {
 	 * 		The value to store in the {@link Slot}
 	 */
 	public void set(int id, IStrategoTerm value) {
-		if (id + 1 < slots.size()) {	// Slot exists
-			slots.get(id).value = value;
-		} else {						// Expand frame
-			slots.set(id, new Slot(value));
-		}
+		slots[id] = new Slot(value);
 	}
 	
 	/**
 	 * Mark this frame as executable by setting up its {@link OperandStack}.
 	 */
-	public void setExecutable() {
-		this.operandStack = new OperandStack();
+	public void setExecutable(int contSize) {
+		this.operandStack = new OperandStack(contSize);
 	}
 
 	/**
@@ -118,17 +110,11 @@ public class Frame {
 	 * @return
 	 * 		The {@link Slot}, or <code>null</code> if not found
 	 */
-	public Slot getSlot(int id, boolean create) {
-		if (id < slots.size()) {
-			return slots.get(id);
+	public Slot getSlot(int id) {
+		if (id < slots.length) {
+			return slots[id];
 		} else {
-			if (create) {
-				Slot slot = new Slot(null);
-				slots.add(id, slot);
-				return slot;
-			} else {
-				return null;
-			}
+			return null;
 		}
 	}
 
@@ -141,8 +127,8 @@ public class Frame {
 	 * 		The requested link
 	 */
 	public Link getLink(int linkIdx) {
-		if (linkIdx >= links.size()) return null;
-		return links.get(linkIdx);
+		if (linkIdx >= links.length) return null;
+		return links[linkIdx];
 	}
 	
 	/**
@@ -160,13 +146,5 @@ public class Frame {
 		String links = "Links: " + this.links.toString();
 		String slots = "Slots: " + this.slots.toString();
 		return "Frame(\n\t\t" + id + ",\n\t\t" + stack + ",\n\t\t" + links + ",\n\t\t" + slots + "\n\t)";
-	}
-
-	public List<Slot> getSlots() {
-		return slots;
-	}
-
-	public List<Link> links() {
-		return this.links;
 	}
 }
