@@ -15,14 +15,15 @@ rules
     desugar-full = desugar; to-RISC-all
     desugar = remove-pseudo; fix-seq; fix-paths-all
   
-    remove-pseudo: FVM_Program(blocks) -> FVM_Program(<foldr(![], remove-pseudo)> blocks)
+    remove-pseudo: FVM_Program(Some(InitSize(n)), blocks) -> FVM_Program(<string-to-int> n, <foldr(![], remove-pseudo)> blocks)
+    remove-pseudo: FVM_Program(None(), blocks) -> FVM_Program(0, <foldr(![], remove-pseudo)> blocks)
     remove-pseudo: (FVM_Block(lbl, body), list) -> ([FVM_Block(lbl, body) | list])
     remove-pseudo: (FVM_PseudoCode(body), list) -> (list)
 
 	resugar = resugar-seq; unfix-paths-all
 	
 
-    resugar-seq: FVM_Program(blocks) -> FVM_Program(<map(resugar-seq)> blocks)
+    resugar-seq: FVM_Program(s, blocks) -> FVM_Program(s, <map(resugar-seq)> blocks)
     resugar-seq: FVM_Block(lbl, FVM_Seq(body)) -> FVM_Block(lbl, FVM_SeqJump(body2, last))
       where
       	(body2, last) := <split-init-last> body 

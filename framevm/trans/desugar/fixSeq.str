@@ -6,6 +6,6 @@ imports
     
 rules //
 
-  fix-seq: FVM_Program(blocks) -> FVM_Program(<map(fix-seq)> blocks)
+  fix-seq: FVM_Program(s, blocks) -> FVM_Program(s, <map(fix-seq)> blocks)
   fix-seq: FVM_Block(lbl, body) -> FVM_Block(lbl, <fix-seq> body)
   fix-seq: FVM_SeqJump(body, jump) -> FVM_Seq(<concat> [body, [jump]])

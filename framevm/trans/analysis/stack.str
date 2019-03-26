@@ -6,7 +6,7 @@ imports
 
 rules
 	// check stack sizes of blocks
-	stack-calc: FVM_Program(blocks) -> FVM_Program(out_blocks)
+	stack-calc: FVM_Program(s, blocks) -> FVM_Program(s, out_blocks)
 	  where
     	(errors, out_blocks) := <unzip><mapconcat(stack-calc)> blocks
   

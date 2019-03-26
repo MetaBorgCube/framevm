@@ -23,7 +23,7 @@ rules
 
   init ^ (s) := new s.
   
-  [[FVM_Program(blocks) ^(s)]] :=
+  [[FVM_Program(size, blocks) ^(s)]] :=
   	Map1(block)[[blocks ^(s)]].
   	
   block[[FVM_Block(FVM_Label(name), FVM_Seq(body), size) ^(s)]] :=
