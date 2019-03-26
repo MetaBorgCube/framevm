@@ -5,10 +5,10 @@ imports
 	fvm-desugar
 
 rules
-	to-RISC-all: FVM_Program(blocks) -> FVM_Program(<map(to-RISC-all)> blocks)
+	to-RISC-all: FVM_Program(s, blocks) -> FVM_Program(s, <map(to-RISC-all)> blocks)
 	to-RISC-all: FVM_Block(lbl, FVM_Seq(body)) -> FVM_Block(lbl, FVM_Seq(body_risc))
 	  where
-		body_risc := <to-RISC(r-dupswap)><to-RISC(r-sget)><to-RISC(r-relative)><to-RISC(r-link)><to-RISC(r-cont)> body
+		body_risc := <to-RISC(r-dupswap)><to-RISC(r-sget)><to-RISC(r-relative)><to-RISC(r-new)><to-RISC(r-link)><to-RISC(r-cont)> body
   
     // Boilerplate to make the desugaring step simpler
   	to-RISC(s): x -> <foldr(![], (fpr(s) <+ idf))> x 
@@ -17,6 +17,9 @@ rules
   	
   	// Link -> LinkR
 	r-link: FVM_Link(path, lbl)  -> [FVM_Get(path),  FVM_LinkR(lbl)]
+	
+	// New/0 -> New/1
+	r-new: FVM_New() -> [FVM_New("0")]
 
 	// Implicit FVM_Continuations to explicit FVM_Continuations
 	r-cont: FVM_Return() -> 
@@ -85,6 +88,7 @@ rules
 	
 	// Reduce relative gets and sets of slots to getR/0 and setR/0
 	// I don't know why you would want to do this, but you can if you really want to
+	r-sget: FVM_New(n) -> [FVM_IPush(n), FVM_NewR()]
 	r-sget: FVM_GetR(FVM_Path([FVM_Slot(slot_id)])) -> [FVM_IPush(slot_id), FVM_GetR()]
 	r-sget: FVM_SetR(FVM_Path([FVM_Slot(slot_id)])) -> [FVM_IPush(slot_id), FVM_Swap(), FVM_SetR()]
 	

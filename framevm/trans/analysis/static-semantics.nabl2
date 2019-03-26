@@ -66,7 +66,10 @@ instr[[FVM_Print() ^(s)]].
 instr[[FVM_Debug() ^(s)]].
   
 
+instr[[FVM_New(_) ^(s)]].
 instr[[FVM_New() ^(s)]].
+instr[[FVM_NewR() ^(s)]].
+
 instr[[FVM_Set() ^(s)]].
 instr[[FVM_Set(_) ^(s)]].
 instr[[FVM_SetR() ^(s)]].

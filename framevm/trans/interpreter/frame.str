@@ -6,12 +6,28 @@ imports
 	interpreter/external
 
 rules
-	// FVM_New
-	// pushes an empty frame on the stack
+	// FVM_New/0
+	// pushes an empty frame with 0 slots on the stack
   	eval: (FVM_New(), env1) -> env3
   	  where
-  	  	(env2, frame_id) := <frame-new(|env1)>;
+  	  	(env2, frame_id) := <frame-new(|env1)> 0;
   	  	env3 := <stack-push(|env2)> FrameRef(frame_id)
+  	  	
+	// FVM_New/1
+	// pushes an empty frame with n slots on the stack
+  	eval: (FVM_New(n), env1) -> env3
+  	  where
+  	  	(env2, frame_id) := <frame-new(|env1)> <string-to-int> n;
+  	  	env3 := <stack-push(|env2)> FrameRef(frame_id)
+  	  	
+   
+	// FVM_NewR/0
+	// pushes an empty frame with n slots on the stack
+  	eval: (FVM_NewR(), env1) -> env4
+  	  where
+  	  	(env2, IntV(n)) := <stack-pop-int(|env1)>;
+  	  	(env3, frame_id) := <frame-new(|env2)> <string-to-int> n;
+  	  	env4 := <stack-push(|env3)> FrameRef(frame_id)
   	
   	// FVM_Get/0
   	// Get index on top of stack of the current frame

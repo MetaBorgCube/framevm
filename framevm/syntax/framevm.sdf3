@@ -55,7 +55,10 @@ sorts Instr context-free syntax
   
   
   Instr = FrameInstr
-  FrameInstr.FVM_New    = <new>					// Create new frame and push pointer on stack
+  FrameInstr.FVM_New    = <new>					// Create new frame with 0 slots and push pointer on stack
+  FrameInstr.FVM_NewR   = <newr>				// Create new frame number of slots on top of the stackand push pointer on stack
+  FrameInstr.FVM_New    = <new <INTLEZ>>		// Create new frame with given amount of slots and push pointer on stack
+  
   FrameInstr.FVM_Link   = <link <Path> <LinkRef>> // Link frame on stack to given location (Empty path is current frame)
   FrameInstr.FVM_LinkR	= <linkr <LinkRef>>		// Link frame on second position on the stack to the frame on top
   FrameInstr.FVM_Set    = <set>					// Store value on top of stack in slot on second position of the current frame

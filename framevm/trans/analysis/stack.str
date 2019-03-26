@@ -42,7 +42,10 @@ rules
 	stack-delta: FVM_IXor()   -> -1
 	stack-delta: FVM_IAnd()   -> -1
   
+	stack-delta: FVM_New(_)   -> 1
 	stack-delta: FVM_New()    -> 1
+	stack-delta: FVM_NewR()   -> 0
+	
 	stack-delta: FVM_Pop()    -> -1
 	stack-delta: FVM_Dup()    -> 1
 	stack-delta: FVM_DupN(_)  -> 1
