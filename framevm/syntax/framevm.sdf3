@@ -31,6 +31,7 @@ sorts Instr context-free syntax
   
   Instr = IntInstr
   IntInstr.FVM_IPush  = <ipush <INT>>			// Push int value to stack
+  IntInstr.FVM_INeg   = <negi>					// Negates the integer on top of the stack
   IntInstr.FVM_IAdd   = <addi>					// Consumes two ints from stack and adds them, result is stored on stack
   IntInstr.FVM_IMul   = <muli>					// Consumes two ints from stack and multilpies them, result is stored on stack
   IntInstr.FVM_ISub   = <subi>					// Consumes two ints from stack and subtracts them, result is stored on stack

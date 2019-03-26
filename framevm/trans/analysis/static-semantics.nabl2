@@ -41,6 +41,7 @@ rules
   	
   	
 instr[[FVM_IPush(_) ^(s)]].
+instr[[FVM_INeg() ^(s)]].
 instr[[FVM_IAdd() ^(s)]].
 instr[[FVM_ISub() ^(s)]].
 instr[[FVM_IMul() ^(s)]].

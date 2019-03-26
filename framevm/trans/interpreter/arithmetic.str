@@ -12,6 +12,14 @@ rules
 	  where
 	  	env2 := <stack-push(|env1)> IntV(i)
 	
+	// FVM_INeg/0
+	// Takes an integer from the stack and negates it
+	// Pushes the result on the stack
+	eval: (FVM_INeg(), env) -> env3
+	  where
+	  	(env1, IntV(e1)) := <stack-pop-int(|env)>;
+	  	env3 := <stack-push(|env1)> IntV(<subtS>("0", e1))
+	  	
 	// FVM_IAdd/0
 	// Takes two integers from the stack, adds them together
 	// Pushes the result on the stack
