@@ -3,11 +3,15 @@ module smoke_routineres
 language framevm
 
 test Routine resolution example RISC [[MAIN:
+	new 2
+	scopedown MAIN2
+
+MAIN2:
 	new
 	dup
 	link [] P
 	set [0]
-	new
+	new 1
 	dup
 	link [0] P
 	dup
@@ -35,7 +39,7 @@ FUNC_THEN:
 	return
 	
 FUNC_ELSE:	
-	new
+	new 1
 	dup
 	new
 	dup
@@ -55,11 +59,15 @@ FUNC_END:
 	
 
 test Routine resolution example CISC [[MAIN:
+	new 2
+	scopedown MAIN2
+
+MAIN2:
 	new
 	dup
 	link [] P
 	set [0]
-	new
+	new 1
 	dup
 	link [0] P
 	dup
@@ -87,7 +95,7 @@ FUNC_THEN:
 	return
 	
 FUNC_ELSE:	
-	new
+	new 1
 	dup
 	new
 	dup

@@ -7,7 +7,7 @@ test Exception trace example RISC [[MAIN:
 	dup
 	link [] P
 	cnewr MAIN_TRY
-	new
+	new 1
 	dup
 	link [] P
 	cnewr MAIN_CATCH
@@ -30,7 +30,7 @@ FUNC1_END:
 	return
 	
 FUNC2:
-	new
+	new 2
 	dup
 	get []
 	setr [0]
@@ -67,7 +67,7 @@ test Exception trace example CISC [[MAIN:
 	dup
 	link [] P
 	cnewr MAIN_TRY
-	new
+	new 1
 	dup
 	link [] P
 	cnewr MAIN_CATCH
@@ -90,7 +90,7 @@ FUNC1_END:
 	return
 	
 FUNC2:
-	new
+	new 2
 	dup
 	get []
 	setr [0]

@@ -3,6 +3,10 @@ module smoke_jump
 language framevm
 
 test Jump example RISC [[MAIN:
+	new 2
+	scopedown MAIN2
+
+MAIN2:
 	jump START
   
 START :
@@ -13,7 +17,7 @@ START :
 	jump MORE
   
 MORE:
-	new
+	new 1
 	dup
 	link [] P
 	set [1]
@@ -31,6 +35,10 @@ FOO:
 ]] transform "Run -> RISC" to "6" 
 
 test Jump example CISC [[MAIN:
+	new 2
+	scopedown MAIN2
+
+MAIN2:
 	jump START
   
 START :
@@ -41,7 +49,7 @@ START :
 	jump MORE
   
 MORE:
-	new
+	new 1
 	dup
 	link [] P
 	set [1]

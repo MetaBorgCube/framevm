@@ -3,7 +3,10 @@ module smoke_array
 language framevm
 
 test Array example RISC [[MAIN:
-	new
+	new 2
+	scopedown MAIN2
+MAIN2:
+	new 4
 	dup
 	ipush 5
 	setr [0]
@@ -32,7 +35,10 @@ test Array example RISC [[MAIN:
 	
 
 test Array example CISC [[MAIN:
-	new
+	new 2
+	scopedown MAIN2
+MAIN2:
+	new 4
 	dup
 	ipush 5
 	setr [0]

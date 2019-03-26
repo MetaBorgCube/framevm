@@ -3,9 +3,13 @@ module smoke_loops
 language framevm
 
 test Loops example [[MAIN:
+	new 1
+	scopedown MAIN2
+
+MAIN2:
 	ipush 0
 	set [0]
-	new
+	new 2
 	dup
 	link [] P
 	scopedown FOR_INIT
@@ -80,9 +84,13 @@ MAIN_END:
 9"
 
 test Loops example CISC [[MAIN:
+	new 1
+	scopedown MAIN2
+
+MAIN2:
 	ipush 0
 	set [0]
-	new
+	new 2
 	dup
 	link [] P
 	scopedown FOR_INIT

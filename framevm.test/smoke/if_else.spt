@@ -3,6 +3,10 @@ module smoke_if_else
 language framevm
 
 test if else example RISC [[MAIN:
+	new 2
+	scopedown MAIN2
+
+MAIN2:
 	ipush 1
 	set [0]
 	ipush 2
@@ -31,6 +35,10 @@ CONT:
 
 
 test if else example CISC [[MAIN:
+	new 2
+	scopedown MAIN2
+
+MAIN2:
 	ipush 1
 	set [0]
 	ipush 2

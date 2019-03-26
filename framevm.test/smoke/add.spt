@@ -9,9 +9,13 @@ test Add example RISC [[ADD:
   	return
 
 MAIN:
+	new 1
+	scopedown MAIN2
+	
+MAIN2:
 	ipush 10
 	set [0]
-	new
+	new 2
 	dup
 	link [] P
 	dup
@@ -36,9 +40,13 @@ test Add example CISC [[ADD:
   	return
 
 MAIN:
+	new 1
+	scopedown MAIN2
+	
+MAIN2:
 	ipush 10
 	set [0]
-	new
+	new 2
 	dup
 	link [] P
 	dup

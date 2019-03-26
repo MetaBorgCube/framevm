@@ -1,3 +1,4 @@
+#init 2
 {
 	rec A ={
 		i: int
@@ -20,7 +21,7 @@ START :
 	jump MORE		//
   
 MORE:
-	new				// new A
+	new	1			// new A
 	dup				//
 	link [] P		// Link the scope to the current frame
 	set [1]			// store rec in b

@@ -14,7 +14,7 @@ test Simple exception example RISC [[MAIN:
 	try
 	
 MAIN_TRY:
-	new
+	new 1
 	dup
 	link [P] P
 	dup
@@ -47,7 +47,7 @@ test Simple exception example CISC [[MAIN:
 	try
 	
 MAIN_TRY:
-	new
+	new 1
 	dup
 	link [P] P
 	dup

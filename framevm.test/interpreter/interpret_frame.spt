@@ -40,12 +40,18 @@ test get self [[
 ]] transform "Run -> CISC" to "frame_0"
 
 test get slot 0 [[
+	new 1
+	scopedown LBL1
+LBL1:
 	ipush 42
 	set [0]
 	get [0]
 ]] transform "Run -> CISC" to "42"
 
 test get slot multiple [[
+	new 2
+	scopedown LBL1
+LBL1:
 	ipush 42
 	set [0]
 	ipush 13
@@ -63,7 +69,7 @@ test getr self [[
 ]] transform "Run -> CISC" to "frame_1"
 
 test getr slot 0 [[
-	new
+	new 1
 	dup
 	ipush 42
 	setr [0]
@@ -71,7 +77,7 @@ test getr slot 0 [[
 ]] transform "Run -> CISC" to "42"
 
 test getr slot multiple [[
-	new
+	new 2
 	dup
 	ipush 42
 	setr [0]
@@ -89,7 +95,7 @@ test getr slot multiple [[
 
 
 test getr slot multiple 2 [[
-	new
+	new 2
 	dup
 	ipush 0
 	ipush 42

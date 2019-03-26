@@ -3,7 +3,7 @@ module smoke_with
 language framevm
 
 test with example RISC [[MAIN:
-	new
+	new 2
 	dup
 	link [] P
 	scopedown WITH_I_1
@@ -38,7 +38,7 @@ WITH_I_3:
 	jump WITH_I_BODY
 	
 WITH_I_BODY:
-	new
+	new 2
 	dup
 	link [] P
 	scopedown WITH_J_1
@@ -96,7 +96,7 @@ WITH_J_END:
 2"
 
 test with example CISC [[MAIN:
-	new
+	new 2
 	dup
 	link [] P
 	scopedown WITH_I_1
@@ -131,7 +131,7 @@ WITH_I_3:
 	jump WITH_I_BODY
 	
 WITH_I_BODY:
-	new
+	new 2
 	dup
 	link [] P
 	scopedown WITH_J_1

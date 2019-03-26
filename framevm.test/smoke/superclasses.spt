@@ -3,16 +3,20 @@ module smoke_superclasses
 language framevm
 
 test Superclasses example RISC [[MAIN:
+	new 1
+	scopedown MAIN2
+
+MAIN2:
 	new
 	dup
-	new
+	new 1
 	dup
 	link [] P
 	linkr P
 	set [0]
 	ipush 1
 	set [0, P, 0]
-	new
+	new 1
 	dup
 	link [0] P
 	dup
@@ -22,7 +26,7 @@ test Superclasses example RISC [[MAIN:
 	call FUNC_2 MAIN_CONT
 	
 MAIN_CONT:	
-	new
+	new 2
 	dup
 	link [0, P] P
 	
@@ -52,7 +56,7 @@ FUNC_2:
 	return
 	
 FUNC_1:
-	new
+	new 2
 	dup
 	link [P,P] P
 	dup
@@ -68,16 +72,20 @@ FUNC_1:
 4"
 
 test Superclasses example CISC[[MAIN:
+	new 1
+	scopedown MAIN2
+
+MAIN2:
 	new
 	dup
-	new
+	new 1
 	dup
 	link [] P
 	linkr P
 	set [0]
 	ipush 1
 	set [0, P, 0]
-	new
+	new 1
 	dup
 	link [0] P
 	dup
@@ -87,7 +95,7 @@ test Superclasses example CISC[[MAIN:
 	call FUNC_2 MAIN_CONT
 	
 MAIN_CONT:	
-	new
+	new 2
 	dup
 	link [0, P] P
 	
@@ -117,7 +125,7 @@ FUNC_2:
 	return
 	
 FUNC_1:
-	new
+	new 2
 	dup
 	link [P,P] P
 	dup

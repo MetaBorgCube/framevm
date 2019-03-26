@@ -3,7 +3,7 @@ module smoke_sum_to
 language framevm
 
 test Sum to example RISC [[MAIN:
-	new
+	new 1
 	dup
 	link [] P
 	dup
@@ -22,7 +22,7 @@ SUMTO_THEN:
 	return
 	
 SUMTO_ELSE:
-	new
+	new 1
 	dup
 	link [P] P
 	
@@ -48,7 +48,7 @@ MAIN_END:
 ]] transform "Run -> RISC" to "903"
 
 test Sum to example CISC [[MAIN:
-	new
+	new 1
 	dup
 	link [] P
 	dup
@@ -67,7 +67,7 @@ SUMTO_THEN:
 	return
 	
 SUMTO_ELSE:
-	new
+	new 1
 	dup
 	link [P] P
 	

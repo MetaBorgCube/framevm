@@ -13,7 +13,7 @@ MAIN_END:
 	return
 	
 FOR_INIT:
-	new
+	new 1
 	dup
 	link [] P
 	new
@@ -41,7 +41,7 @@ FOR_END:
 	scopeup [P] MAIN_END
 	
 FUNC_1:
-	new
+	new 2
 	dup
 	ipush 1
 	setr [0]
@@ -51,7 +51,7 @@ FUNC_1:
 	return
 	
 FUNC_2:
-	new
+	new 2
 	dup
 	ipush 2
 	setr [0]
@@ -61,7 +61,7 @@ FUNC_2:
 	return
 	
 FUNC_3:
-	new
+	new 2
 	dup
 	ipush 3
 	setr [0]
@@ -89,7 +89,7 @@ MAIN_END:
 	return
 	
 FOR_INIT:
-	new
+	new 1
 	dup
 	link [] P
 	new
@@ -117,7 +117,7 @@ FOR_END:
 	scopeup [P] MAIN_END
 	
 FUNC_1:
-	new
+	new 2
 	dup
 	ipush 1
 	setr [0]
@@ -127,7 +127,7 @@ FUNC_1:
 	return
 	
 FUNC_2:
-	new
+	new 2
 	dup
 	ipush 2
 	setr [0]
@@ -137,7 +137,7 @@ FUNC_2:
 	return
 	
 FUNC_3:
-	new
+	new 2
 	dup
 	ipush 3
 	setr [0]
