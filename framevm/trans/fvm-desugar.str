@@ -15,8 +15,8 @@ rules
     desugar-full = desugar; to-RISC-all
     desugar = remove-pseudo; fix-seq; fix-paths-all
   
-    remove-pseudo: FVM_Program(Some(InitSize(n)), blocks) -> FVM_Program(<string-to-int> n, <foldr(![], remove-pseudo)> blocks)
-    remove-pseudo: FVM_Program(None(), blocks) -> FVM_Program(0, <foldr(![], remove-pseudo)> blocks)
+    remove-pseudo: FVM_Program(FVM_InitSize(n), blocks) -> FVM_Program(<string-to-int> n, <foldr(![], remove-pseudo)> blocks)
+    remove-pseudo: FVM_ProgramNoInit(blocks) -> FVM_Program(0, <foldr(![], remove-pseudo)> blocks)
     remove-pseudo: (FVM_Block(lbl, body), list) -> ([FVM_Block(lbl, body) | list])
     remove-pseudo: (FVM_PseudoCode(body), list) -> (list)
 

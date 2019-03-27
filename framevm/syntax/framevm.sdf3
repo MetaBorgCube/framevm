@@ -5,11 +5,16 @@ imports Common pseudo
 context-free start-symbols Program
 
 sorts Program context-free syntax
-  Program.FVM_Program = InitSize? body:Block*	{ layout (align-list body) }
+  Program.FVM_Program = <<InitSize> 
+  
+<body:Block*>
+>	{ layout (align-list body) }
+  
+  Program.FVM_ProgramNoInit = <<body:Block*>>	{ layout (align-list body) }
   
   Label.FVM_Label = LABEL
   
-  InitSize.InitSize = <#init <INTLEZ>>
+  InitSize.FVM_InitSize = <#init <INTLEZ>>
   
 sorts Block context-free syntax
 
