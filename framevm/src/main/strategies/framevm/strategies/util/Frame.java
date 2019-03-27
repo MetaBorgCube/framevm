@@ -34,11 +34,13 @@ public class Frame {
 		this.slots = new Slot[original.slots.length];
 		for (int i = 0; i < this.slots.length; i++) {
 			Slot slot = original.slots[i];
+			if (slot == null) continue;
 			slots[i] = new Slot(slot.value);
 		}
 		this.links = new Link[original.links.length];
 		for (int i = 0; i < this.links.length; i++) {
 			Link link = original.links[i];
+			if (link == null) continue;
 			links[i] = new Link(link.linkId, link.target);
 		}
 		this.id = id;
@@ -137,6 +139,22 @@ public class Frame {
 	 */
 	public String getId() {
 		return id;
+	}
+
+	/**
+	 * @return
+	 * 		the slots of this frame
+	 */
+	public Slot[] getSlots() {
+		return slots;
+	}
+
+	/**
+	 * @return
+	 * 		the links of this frame
+	 */
+	public Link[] getLinks() {
+		return links;
 	}
 
 	@Override

@@ -40,9 +40,9 @@ public class DotOperandStackFactory extends DotFactory {
 		// Link the continuations
 		String contSlots = "";
 		String contIds = "";
-		List<Continuation> continuations = opstack.getContinuations();
-		for (int i = 0; i < continuations.size(); i++) {
-			Continuation cont = continuations.get(i);
+		Continuation[] continuations = opstack.getContinuations();
+		for (int i = 0; i < continuations.length; i++) {
+			Continuation cont = continuations[i];
 			if (cont == null) continue;
 			String target_id = ((StrategoString) cont.value.getSubterm(0)).stringValue();
 			contSlots += " | " + cont.id;

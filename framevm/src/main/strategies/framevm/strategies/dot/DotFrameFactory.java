@@ -28,16 +28,16 @@ public class DotFrameFactory extends DotFactory {
 		// Get the representation of slots
 		// Starts with the column with ids
 		String slotsString = "{{X";
-		List<Slot> slots = frame.getSlots();
-		for (int i = 0; i < slots.size(); i++) {
+		Slot[] slots = frame.getSlots();
+		for (int i = 0; i < slots.length; i++) {
 			slotsString += "|" + i;
 		}
 
 		// Than does the actual values
 		slotsString += "}|{<opstack>";
 		
-		for (int i = 0; i < slots.size(); i++) {
-			Slot slot = slots.get(i);
+		for (int i = 0; i < slots.length; i++) {
+			Slot slot = slots[i];
 			slotsString += "|<" + i + ">" + slotToString(slot, links, name + ":" + i);
 		}
 		slotsString += "}}";
@@ -48,7 +48,9 @@ public class DotFrameFactory extends DotFactory {
 		}
 		
 		// Add all the links
-		for( Link link : frame.links()) {
+		Link[] frameLinks = frame.getLinks();
+		for (int i = 0; i < frameLinks.length; i++) {
+			Link link = frameLinks[i];
 			if (link == null) continue;
 			links.add(link(name + ":id", frame(link.target) + ":id", link.linkId));
 		}

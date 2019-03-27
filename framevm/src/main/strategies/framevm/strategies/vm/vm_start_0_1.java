@@ -28,7 +28,7 @@ public class vm_start_0_1 extends FVMStrategy {
 			return null;
 		}
 
-		env.currentFrame.setExecutable(2);
+		env.currentFrame.setExecutable(env.getContSize());
 		env.currentFrame.getOperandStack().jump(block);
 		env.currentFrame.getOperandStack().setContinuation(0, new Continuation("c", tuple.get(0)));
 		env.currentFrame.getOperandStack().setContinuation(1, new Continuation("x", tuple.get(1)));

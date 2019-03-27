@@ -149,16 +149,7 @@ public class OperandStack {
 		return copy;
 	}
 
-	public IStrategoTerm[] getContinuations() {
-		IStrategoTerm[] out = new IStrategoTerm[continuations.length];
-		for (int i = 0; i < this.continuations.length; i++) {
-			Continuation cont = this.continuations[i];
-			if (cont == null) {
-				out[i] = null;
-			} else {
-				out[i] = cont.value;
-			}
-		}
-		return out;
+	public Continuation[] getContinuations() {
+		return this.continuations;
 	}
 }
