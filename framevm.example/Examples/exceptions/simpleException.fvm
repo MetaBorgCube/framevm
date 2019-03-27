@@ -20,7 +20,7 @@ MAIN:
 	try						//
 	
 MAIN_TRY:
-	new						// New A() frame
+	new	1					// New A() frame
 	dup						//
 	link [P] P				//
 							//

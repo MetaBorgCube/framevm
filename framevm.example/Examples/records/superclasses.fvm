@@ -1,3 +1,4 @@
+#init 2
 {
 	rec A = {
 		a: int
@@ -27,7 +28,7 @@
 MAIN:
 	new 					// B frame
 	dup						//
-	new						// B superframe
+	new	1					// B superframe
 	dup						//
 	link [] P				// link super to main
 	linkr P					// link B to super
@@ -36,7 +37,7 @@ MAIN:
 	ipush 1					//
 	set [0, P, 0]			// a.a := 1
 							//
-	new 					// function call frame
+	new 1					// function call frame
 	dup						//
 	link [0] P				// Link function scope to function of object in a
 							//
@@ -47,7 +48,7 @@ MAIN:
 	call FUNC_2 MAIN_CONT
 	
 MAIN_CONT:	
-	new						// call frame func
+	new	2					// call frame func
 	dup						//
 	link [0, P] P			// Link function to B's super
 	
@@ -81,7 +82,7 @@ FUNC_2:
 	return					//
 	
 FUNC_1:
-	new						// New C
+	new	2					// New C
 	dup						//
 	link [P,P] P			// link to main
 							//

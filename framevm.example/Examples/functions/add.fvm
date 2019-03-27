@@ -1,3 +1,4 @@
+#init 2
 {  
 	add (i, j) = { 
   		return i + j
@@ -16,7 +17,7 @@ ADD:
 MAIN:
 	ipush 10		//
 	set [0] 		// value of x in current frame
-	new 			// create new call frame
+	new 2			// create new call frame
 	dup				//	
 	link [] P		// Link function scope to local scope
 	dup 			// duplicate ref to call frame

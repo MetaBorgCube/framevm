@@ -1,3 +1,4 @@
+#init 1
 { 
   rec Point = {
   	x : Int // [0] 
@@ -10,7 +11,7 @@
 }
 
 MAIN:
-	new				// Frame for Point
+	new	2			// Frame for Point
 	dup				//
 	link [] P		// Link to main
 	set [0]			// store in p

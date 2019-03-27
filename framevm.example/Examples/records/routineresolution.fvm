@@ -1,3 +1,4 @@
+#init 2
 {
 	rec A = {
 		func (i) = { 
@@ -19,7 +20,7 @@ MAIN:
 	link [] P			// Link to root
 	set [0]				// x := new A()
 						//
-	new					// Func callframe
+	new	1				// Func callframe
 	dup					//
 	link [0] P			// Link to A
 						//
@@ -49,7 +50,7 @@ FUNC_THEN:
 	return				// return 42
 	
 FUNC_ELSE:	
-	new 				// func call frame
+	new 1				// func call frame
 	dup					//
 						//
 	new					// New A

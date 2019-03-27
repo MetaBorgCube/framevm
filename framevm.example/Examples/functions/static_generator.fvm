@@ -28,11 +28,11 @@ MAIN_2:
 	cunpack				// Get corresponding frame
 						//
 	dup					//
-	xget				//
-	xsetr				// Update the exception handler to the new position
+	get [x]				//
+	setr [x]			// Update the exception handler to the new position
 						//
 	cnew MAIN_3			//
-	csetr				// Update the continuation of function frame
+	setr [c]			// Update the continuation of function frame
 	ccall				// Call the function again
 	
 MAIN_3:
@@ -45,11 +45,11 @@ MAIN_3:
 	cunpack				// Get corresponding frame
 						//
 	dup					//
-	xget				//
-	xsetr				// Update the exception handler to the new position
+	get [x]				//
+	setr [x]			// Update the exception handler to the new position
 						//
 	cnew MAIN_4			//
-	csetr				// Update the continuation of function frame
+	setr [c]			// Update the continuation of function frame
 	ccall				// Call the function again
 	
 	
@@ -62,7 +62,7 @@ MAIN_4:
 	return				// exit
 	
 FUNC_1:
-	new					// Return object frame
+	new	2				// Return object frame
 	dup					//
 	ipush 1				//
 	setr [0]			// Result = 1
@@ -74,7 +74,7 @@ FUNC_1:
 	return				//
 	
 FUNC_2:
-	new					// Return object frame
+	new	2				// Return object frame
 	dup					//
 	ipush 2				//
 	setr [0]			// Result = 1
@@ -86,7 +86,7 @@ FUNC_2:
 	return				//
 	
 FUNC_3:
-	new					// Return object frame
+	new	2				// Return object frame
 	dup					//
 	ipush 3				//
 	setr [0]			// Result = 1

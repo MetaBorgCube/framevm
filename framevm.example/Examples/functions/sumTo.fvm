@@ -10,7 +10,7 @@
 }
 	
 MAIN:
-	new 			// create new call frame
+	new 1			// create new call frame
 	dup				//	
 	link [] P		// Link function scope to local scope
 	dup 			// duplicate ref to call frame
@@ -30,7 +30,7 @@ SUMTO_THEN:
 	return			// return 0
 	
 SUMTO_ELSE:
-	new				// Call frame for recursion
+	new	1			// Call frame for recursion
 	dup				//
 	link [P] P		// Link it to parent
 	

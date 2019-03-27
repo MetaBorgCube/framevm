@@ -23,7 +23,7 @@ MAIN:
 	link [] P				//
 	cnewr MAIN_TRY			//
 							//
-	new						// Catch frame
+	new	1					// Catch frame
 	dup						//
 	link [] P				//
 	cnewr MAIN_CATCH		//
@@ -48,7 +48,7 @@ FUNC1_END:
 	return					// This should not be executed
 	
 FUNC2:
-	new						// exception frame
+	new	2					// exception frame
 	dup						//
 	get []					// Current frame for the stacktrace
 	setr [0]				// 
