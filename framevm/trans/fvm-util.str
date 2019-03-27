@@ -11,14 +11,20 @@ rules
 	// Convert a flat list of instructions to a VM program
 	// Blocks are separated by labels instead of actual blocks
 	// Sugar is re-added to make it printable
-	framevm-from-flat: [n | body] -> <resugar> FVM_Program(FVM_InitSize(n), blocks)
+	framevm-from-flat: [n | body] -> <resugar> FVM_Program(<string-to-int> n, aliasses, blocks)
 	  where
 	  	_ := <is-string> n;
-		(blocks, []) := <foldr(!([], []), from-flat-fold)> [FVM_Label("MAIN") | body]
+	  	(aliasses, d_body) := <get-aliasses> body;
+		(blocks, []) := <foldr(!([], []), from-flat-fold)> [FVM_Label("MAIN") | d_body]
 		
-	framevm-from-flat: body -> <resugar> FVM_Program(FVM_InitSize("0"), blocks)
+	framevm-from-flat: body -> <resugar> FVM_Program(0, aliasses, blocks)
 	  where
-		(blocks, []) := <foldr(!([], []), from-flat-fold)> [FVM_Label("MAIN") | body]
+	  	(aliasses, d_body) := <get-aliasses> body;
+		(blocks, []) := <foldr(!([], []), from-flat-fold)> [FVM_Label("MAIN") | d_body]
+    
+    get-aliasses: [FVM_LinkAlias(from, to) | body] -> ([FVM_LinkAlias(from, to)|aliasses], body) where (aliasses, body) := <get-aliasses> body
+    get-aliasses: [FVM_ContAlias(from, to) | body] -> ([FVM_ContAlias(from, to)|aliasses], body) where (aliasses, body) := <get-aliasses> body
+    get-aliasses: body -> ([], body)
     
     
     // Convert the path from an nabl2 lookup to one that can be interpreted by the VM  
