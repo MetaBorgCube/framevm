@@ -38,7 +38,11 @@ public class DotFrameFactory extends DotFactory {
 		
 		for (int i = 0; i < slots.length; i++) {
 			Slot slot = slots[i];
-			slotsString += "|<" + i + ">" + slotToString(slot, links, name + ":" + i);
+			if (slot == null) {
+				slotsString += "| null";
+			} else {
+				slotsString += "|<" + i + ">" + slotToString(slot, links, name + ":" + i);
+			}
 		}
 		slotsString += "}}";
 

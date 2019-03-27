@@ -43,17 +43,21 @@ public class DotOperandStackFactory extends DotFactory {
 		Continuation[] continuations = opstack.getContinuations();
 		for (int i = 0; i < continuations.length; i++) {
 			Continuation cont = continuations[i];
-			if (cont == null) continue;
-			String target_id = ((StrategoString) cont.value.getSubterm(0)).stringValue();
-			contSlots += " | " + cont.id;
-			
-			contIds += " | <cont_" + cont.id + ">";
-			if ("_exit".equals(target_id)) {
-				links.add(continuationLink(name, "finish", cont.id));
-			} else if ("_catch".equals(target_id)) {
-				links.add(continuationLink(name, "exception", cont.id));
+			if (cont == null) {
+				contSlots += " | c" + i;
+				contIds += " | null";
 			} else {
-				links.add(continuationLink(name, frame(target_id) + ":id", cont.id));
+				String target_id = ((StrategoString) cont.value.getSubterm(0)).stringValue();
+				contSlots += " | " + cont.id;
+				
+				contIds += " | <cont_" + cont.id + ">";
+				if ("_exit".equals(target_id)) {
+					links.add(continuationLink(name, "finish", cont.id));
+				} else if ("_catch".equals(target_id)) {
+					links.add(continuationLink(name, "exception", cont.id));
+				} else {
+					links.add(continuationLink(name, frame(target_id) + ":id", cont.id));
+				}
 			}
 		}
 		if (contSlots.length() == 0) {
