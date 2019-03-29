@@ -1,15 +1,16 @@
 #init 1
 {
 	rec A = {
-		i: int
-		j: bool
+		int: i
+		int: j
 	}
-	a := new A()
+	
+	var a := new A(1, 1)
 	a.i := 1 + 1
 	a.j := 12
 	
 	if (a.j - 12) == 0:
-		print(10)
+		print(42)
 	else:
 		print(11)
 }
@@ -36,7 +37,7 @@ MAIN:
 	jumpz THEN ELSE
 	
 THEN:
-	ipush 10		//
+	ipush 42		//
 	print			// print(10)
 					//
 	ipush 0			// load exitcode 0

@@ -1,14 +1,14 @@
 #init 1
 {
-	count := 0
+	var count := 0
 	for i = 0 -> 3:
-		j := i
+		var j := i
 		while j != 4:
 			j := j + 1
 			print (j)
 			count := count + 1
 		print(j)
-	// print(j)				// should not work (scoping)
+//	print(j)				// should not work (scoping)
 	print(count)			// print(9)
 }
 

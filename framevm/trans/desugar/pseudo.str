@@ -47,7 +47,19 @@ rules
       	(d_body, _) := <foldl(pseudo-desugar-bind)> (instrs, ([], 0));
       	fields := <filter(is-field-decl)> d_body;
       	methods := <filter(is-method-decl)> d_body
+      	
+    pseudo-desugar-bind: (PsdFor(var, from, to, Seq(instrs)), (body, idx)) -> (<concat> [body, [PsdFor(Bind(var, 0), from, to, Seq(d_instrs))]], idx)
+      where
+      	(d_instrs, _) := <foldl(pseudo-desugar-bind)> (instrs, ([], 1))
     
+    pseudo-desugar-bind: (PsdWithFrom(var, from, instrs), (body, idx)) -> (<concat> [body, [PsdWithFrom(Bind(var, 0), from, d_instrs)]], idx)
+      where
+      	(d_instrs, _) := <foldl(pseudo-desugar-bind)> (instrs, ([], 1))
+    
+    pseudo-desugar-bind: (PsdWhile(cond, Seq(instrs)), (body, idx)) -> (<concat> [body, [PsdWhile(cond, Seq(d_instrs))]], idx)
+      where
+      	(d_instrs, _) := <foldl(pseudo-desugar-bind)> (instrs, ([], 0))
+      	
     is-field-decl: f@PsdField(_) -> f 
     is-method-decl: f@PsdFuncDef(_, _, _, _) -> f 
     is-define: f@PsdDefine(_, _) -> f 

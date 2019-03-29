@@ -1,13 +1,13 @@
 #init 2
 {
 	rec A ={
-		i: int
+		int:i
 	}
 	var a := 1 + 2
-	b := new A()
+	var b := new A(0)
 	
 	b.i := a + 3
-	print(b.i)		// 6
+	print(b.i)	// 6
 }
 
 MAIN:

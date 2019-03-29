@@ -7,61 +7,61 @@ imports
 rules
   pseudoExp [[PsdAdd(e1, e2) ^(s) : IntT()]] :=
   	pseudoExp [[e1 ^(s) : ty1]],
-  	ty1 == IntT() | error $[Addition requires an integer, not a [ty1]],
+  	ty1 == IntT() | error $[Addition requires an integer, not a [ty1]] @e1,
   	pseudoExp [[e2 ^(s) : ty2]],
-  	ty2 == IntT() | error $[Addition requires an integer, not a [ty2]].
+  	ty2 == IntT() | error $[Addition requires an integer, not a [ty2]] @e2.
   	
   pseudoExp [[PsdMul(e1, e2) ^(s) : IntT()]] :=
   	pseudoExp [[e1 ^(s) : ty1]],
-  	ty1 == IntT() | error $[Multiplication requires an integer, not a [ty1]],
+  	ty1 == IntT() | error $[Multiplication requires an integer, not a [ty1]] @e1,
   	pseudoExp [[e2 ^(s) : ty2]],
-  	ty2 == IntT() | error $[Multiplication requires an integer, not a [ty2]].
+  	ty2 == IntT() | error $[Multiplication requires an integer, not a [ty2]] @e2.
   	
   pseudoExp [[PsdSub(e1, e2) ^(s) : IntT()]] :=
   	pseudoExp [[e1 ^(s) : ty1]],
-  	ty1 == IntT() | error $[Subtraction requires an integer, not a [ty1]],
+  	ty1 == IntT() | error $[Subtraction requires an integer, not a [ty1]] @e1,
   	pseudoExp [[e2 ^(s) : ty2]],
-  	ty2 == IntT() | error $[Subtraction requires an integer, not a [ty2]].
+  	ty2 == IntT() | error $[Subtraction requires an integer, not a [ty2]] @e2.
   	
   pseudoExp [[PsdDiv(e1, e2) ^(s) : IntT()]] :=
   	pseudoExp [[e1 ^(s) : ty1]],
-  	ty1 == IntT() | error $[Division requires an integer, not a [ty1]],
+  	ty1 == IntT() | error $[Division requires an integer, not a [ty1]] @e1,
   	pseudoExp [[e2 ^(s) : ty2]],
-  	ty2 == IntT() | error $[Division requires an integer, not a [ty2]].
+  	ty2 == IntT() | error $[Division requires an integer, not a [ty2]] @e2.
   	
   pseudoExp [[PsdLt(e1, e2) ^(s) : BoolT()]] :=
   	pseudoExp [[e1 ^(s) : ty1]],
-  	ty1 == IntT() | error $[Comparison requires an integer, not a [ty1]],
+  	ty1 == IntT() | error $[Comparison requires an integer, not a [ty1]] @e1,
   	pseudoExp [[e2 ^(s) : ty2]],
-  	ty2 == IntT() | error $[Comparison requires an integer, not a [ty2]].
+  	ty2 == IntT() | error $[Comparison requires an integer, not a [ty2]] @e2.
   	
   pseudoExp [[PsdGt(e1, e2) ^(s) : BoolT()]] :=
   	pseudoExp [[e1 ^(s) : ty1]],
-  	ty1 == IntT() | error $[Comparison requires an integer, not a [ty1]],
+  	ty1 == IntT() | error $[Comparison requires an integer, not a [ty1]] @e1,
   	pseudoExp [[e2 ^(s) : ty2]],
-  	ty2 == IntT() | error $[Comparison requires an integer, not a [ty2]].
+  	ty2 == IntT() | error $[Comparison requires an integer, not a [ty2]] @e2.
   	
   pseudoExp [[PsdEq(e1, e2) ^(s) : BoolT()]] :=
   	pseudoExp [[e1 ^(s) : ty1]],
-  	ty1 == IntT() | error $[Comparison requires an integer, not a [ty1]],
+  	ty1 == IntT() | error $[Comparison requires an integer, not a [ty1]] @e1,
   	pseudoExp [[e2 ^(s) : ty2]],
-  	ty2 == IntT() | error $[Comparison requires an integer, not a [ty2]].
+  	ty2 == IntT() | error $[Comparison requires an integer, not a [ty2]] @e2.
   
   pseudoExp [[PsdNeq(e1, e2) ^(s) : BoolT()]] :=
   	pseudoExp [[e1 ^(s) : ty1]],
-  	ty1 == IntT() | error $[Comparison requires an integer, not a [ty1]],
+  	ty1 == IntT() | error $[Comparison requires an integer, not a [ty1]] @e1,
   	pseudoExp [[e2 ^(s) : ty2]],
-  	ty2 == IntT() | error $[Comparison requires an integer, not a [ty2]].
+  	ty2 == IntT() | error $[Comparison requires an integer, not a [ty2]] @e2.
   	
   pseudoExp [[PsdSubScript(arr, idx) ^(s) : arrty]] :=
-  	pseudoExp [[e1 ^(s) : ty1]],
-  	ty1 == ArrayT(arrty) | error $[Array lookups require an array, not a [ty1]],
+  	pseudoExp [[arr ^(s) : ty1]],
+  	ty1 == ArrayT(arrty) | error $[Array lookups require an array, not a [ty1]] @arr,
   	pseudoExp [[idx ^(s) : ty2]],
-  	ty2 == IntT() | error $[Index requires an integer, not a [ty2]].
+  	ty2 == IntT() | error $[Index requires an integer, not a [ty2]] @idx.
   	
   pseudoExp [[PsdNew(recName, args) ^(s) : ty]] :=
   	PsdRec{recName} -> s,
-  	PsdRec{recName} |-> d | error $[Record not defined [recName]],
+  	PsdRec{recName} |-> d | error $[Record not defined [recName]] @recName,
   	d : recTy,
   	ty == recTy,
   	recTy == RecT(rec, argtys),
@@ -79,18 +79,18 @@ rules
   
   pseudoFuncRef [[PsdID(ref) ^(s) : ty]] :=
   	PsdFunc{ref} -> s,
-  	PsdFunc{ref} |-> d | error $[Function [ref] not found],
+  	PsdFunc{ref} |-> d | error $[Function [ref] not found] @ref,
   	d : ty!.
   	
   pseudoFuncRef [[PsdRef(PsdID(ref), tail) ^(s) : ty]] :=
   	PsdVar{ref} -> s,
-  	PsdVar{ref} |-> d | error $[Object [ref] not found],
+  	PsdVar{ref} |-> d | error $[Object [ref] not found] @ref,
   	PsdVar{ref} <=== as,
   	pseudoFuncRef [[tail ^(as) : ty]].
   	
   pseudoExp [[PsdRef(PsdID(ref), tail) ^(s) : ty]] :=
   	PsdVar{ref} -> s,
-  	PsdVar{ref} |-> d | error $[Object [ref] not found],
+  	PsdVar{ref} |-> d | error $[Object [ref] not found] @ref,
   	d : RecT(occ, _),
   	occ ?===> as,
   	new reci, reci ---> as,
@@ -98,17 +98,23 @@ rules
   	
   pseudoExp[[PsdID(name) ^(s) : ty]] :=
   	PsdVar{name} -> s,
-  	PsdVar{name} |-> d | error $[Variable [name] not defined],
+  	PsdVar{name} |-> d | error $[Variable [name] not defined] @name,
   	d : ty!.
+    	
+  pseudoExp[[PsdList(l) ^(s) : ArrayT(ty)]] := pseudoList[[l ^(s) : ty]].
   
+  pseudoList[[ [] ^(s) : _]].
+  pseudoList[[ [e1 | etail] ^(s) : ty]] :=
+  	pseudoExp[[ e1 ^(s) : ety]], ety == ty| error $[Lists must have a single type] @e1,
+  	pseudoList[[etail ^(s) : ty]].
+  	
   pseudoType [[Int()  ^(s) : IntT()]].
   pseudoType [[Bool() ^(s) : BoolT()]].
   pseudoType [[Class(name) ^(s) : ty]] :=
   	PsdRec{name} -> s,
-  	PsdRec{name} |-> d | error $[Rec [name] not defined],
+  	PsdRec{name} |-> d | error $[Rec [name] not defined] @name,
   	d : ty!.
   	
   	
-//  PsdExp.PsdFunApp = <<PsdExp>(<{PsdExp ","}*>)>	{left}
 //  PsdExp.PsdList = <[<{PsdExp ","}*>]>
 //  PsdExp.PsdRef = <<PsdExp>.<PsdExp>>				{left}

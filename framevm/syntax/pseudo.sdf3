@@ -38,8 +38,10 @@ else:
   PsdInstr.PsdDefine = <var <PsdExp> := <PsdExp>>
   PsdInstr.PsdAssign = <<PsdExp> := <PsdExp>>
   PsdInstr.PsdReturn = <return <PsdExp>>
-  PsdInstr.PsdYield = <yield <PsdExp>>
-  PsdInstr.PsdThrow = <throw <PsdExp>>
+  PsdInstr.PsdYield  = <yield <PsdExp>>
+  PsdInstr.PsdThrow  = <throw <PsdExp>>
+  PsdInstr.PsdPrint  = <print(<PsdExp>)>	{prefer}
+  PsdInstr.PsdAssert = <assert(<PsdExp>)>	{prefer}
   
   PsdInstr = FuncDef 
   
@@ -47,7 +49,7 @@ else:
     <fields:PsdInstr*>
 }>				 				{ layout (indent name fields && align name "}" && align-list fields) }
   
-  FuncDef.PsdGenDef = <gen <ID>(<PsdArgList>) = {
+  FuncDef.PsdGenDef = <gen <ID>(<PsdArgList>):<Type> = {
     <fields:PsdInstr*>
 }>				 				{ layout (indent "gen" fields && align "gen" "}" && align-list fields) }
 
@@ -57,7 +59,7 @@ else:
 
 PsdInstr.PsdTryCatch = <try:
     <try:PsdInstr*>
-catch <ID>:
+catch <Type> as <ID>:
 	<catch:PsdInstr*>
 >				 				{ layout (indent "try:" try && align "try:" "catch" && align-list try && indent "catch" catch && align-list catch) }
 

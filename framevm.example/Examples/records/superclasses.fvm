@@ -1,14 +1,14 @@
 #init 2
 {
 	rec A = {
-		a: int
-		func (i, j) = { 
+		int: a
+		func (int:i, int:j):C = { 
   			return new C(i, j + a)
 		}
 	}
 	
 	rec B:A = {
-		func2 (i) = { 
+		func2 (int:i):int = { 
   			return i + 1
   		}
 	}

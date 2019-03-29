@@ -1,6 +1,7 @@
-// Not sure in which language this would work this way, but it works
+// Not sure in which language this would work this way, but it works for the VM
+// Though I'm not compiling this shit
 {
-	gen func () = {
+	gen func ():int = {
 		yield 1
 		yield 2
 		yield 3

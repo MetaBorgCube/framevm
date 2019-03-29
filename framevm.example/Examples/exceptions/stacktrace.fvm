@@ -1,15 +1,15 @@
 {
-	func1 () = {
-		func2()
+	func2():int = {
+		throw 1
 	}
 	
-	func2() = {
-		throw 1
+	func1 ():int = {
+		func2()
 	}
 	
 	try:
 		func1()
-	catch e:
+	catch int as e:
 		print(e.m)
 		trace := e.trace
 		print(trace)

@@ -1,7 +1,11 @@
 {
+	rec A ={
+		int:m
+	}
+	
 	try:
 		throw new A(1)
-	catch e:
+	catch A as e:
 		print(e.m)	// print 1
 	print(0)		// print 0
 }

@@ -1,16 +1,16 @@
 #init 1
 {
 	rec A = {
-		x:int
+		int:x
 	}
 	
-	func(i) = {
-		j := new A(i)
-		k := 3
+	func(int:i):int = {
+		var j := new A(i)
+		var k := 3
 		
 		return j.x + k
 	}
-	x := func(2)
+	var x := func(2)
 	print(x)				// print(5)
 }
 

@@ -1,7 +1,7 @@
 #init 2
 {
 	rec A = {
-		func (i) = { 
+		func (int:i):int = { 
 			if (i) == 0:
 				return 42
 			else:
@@ -9,8 +9,8 @@
 		}
 	}
 	
-	x := new A()
-	y := x.func(2)
+	var x := new A()
+	var y := x.func(2)
 	print(y)  			// print 42	
 }
 
