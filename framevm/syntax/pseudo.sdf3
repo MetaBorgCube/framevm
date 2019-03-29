@@ -12,39 +12,38 @@ sorts Psdbody context-free syntax
   
 sorts PsdInstr context-free syntax
 
-  PsdInstr.Exp = PsdExp
-  PsdInstr.If = <if <PsdExp>: 
+  PsdInstr.PsdExp = PsdExp
+  PsdInstr.PsdIf = <if <PsdExp>: 
     <body:PsdBody>
 >								{ layout (indent "if" body) }
 
-  PsdInstr.IfElse = <if <PsdExp>:
+  PsdInstr.PsdIfElse = <if <PsdExp>:
     <then:PsdBody>
 else:
     <else:PsdBody>
 >								{ layout (indent "if" then && align "if" "else:" && indent "else:" else) }
 
-  PsdInstr.For = <for <ID> = <PsdExp> -\> <PsdExp>:
+  PsdInstr.PsdFor = <for <ID> = <PsdExp> -\> <PsdExp>:
     <body:PsdBody>
 >								{ layout (indent "for" body && indent "for" body) }
 
-  PsdInstr.ForIter = <for <ID> in <PsdExp>:
+  PsdInstr.PsdForIter = <for <ID> in <PsdExp>:
     <body:PsdBody>
 >								{ layout (indent "for" body && indent "for" body) }
 
-  PsdInstr.While = <while <PsdExp>:
+  PsdInstr.PsdWhile = <while <PsdExp>:
     <body:PsdBody>
 >								{ layout (indent "while" body && indent "while" body) }
 
-  PsdInstr.Assign = <<PsdExp> := <PsdExp>>
-  PsdInstr.AssignVar = <var <PsdExp> := <PsdExp>>
-  PsdInstr.Return = <return <PsdExp>>
-  PsdInstr.FieldDef = <var <ID> : <PsdType>> 
-  PsdInstr.Yield = <yield <PsdExp>>
-  PsdInstr.Throw = <throw <PsdExp>>
+  PsdInstr.PsdDefine = <var <PsdExp> := <PsdExp>>
+  PsdInstr.PsdAssign = <<PsdExp> := <PsdExp>>
+  PsdInstr.PsdReturn = <return <PsdExp>>
+  PsdInstr.PsdYield = <yield <PsdExp>>
+  PsdInstr.PsdThrow = <throw <PsdExp>>
   
   PsdInstr = FuncDef 
   
-  FuncDef.PsdFuncDef = <<name:ID>(<PsdArgList>) = {
+  FuncDef.PsdFuncDef = <<name:ID>(<PsdArgList>):<Type> = {
     <fields:PsdInstr*>
 }>				 				{ layout (indent name fields && align name "}" && align-list fields) }
   
@@ -70,26 +69,41 @@ catch <ID>:
     <body:PsdInstr*>
 >				 				{ layout (indent "with" body && align-list body) }
   
-  PsdRecField.PsdField = <<ID> : <PsdType>>
+  PsdRecField.PsdField = PsdField
   PsdRecField.PsdMethod = FuncDef
-  PsdType = ID
   
-  PsdArgList.PsdArgList = {ID ","}+
-  PsdArgList.PsdNoArgs = <>
+  PsdArgList.PsdArgList = {PsdField ","}*
     
+  PsdField.Field = <<Type>:<ID>>
+  Type.Int = <int>			{prefer}
+  Type.Bool = <bool>  		{prefer}
+  Type.Array = <<Type>[]>
+  Type.Class = <<ID>>
   
+context-free priorities
+	{PsdExp.PsdRef}                              >
+	{left: PsdExp.PsdSubScript PsdExp.PsdFunApp} >
+    {left: PsdExp.PsdMul PsdExp.PsdDiv}          >
+    {left: PsdExp.PsdAdd PsdExp.PsdSub}          >
+    {left: PsdExp.PsdLt PsdExp.PsdGt}            >
+    {left: PsdExp.PsdEq PsdExp.PsdNeq}
+    
 sorts PsdExp context-free syntax
 
-  PsdExp = <(<PsdExp>)> 						{bracket}
-  PsdExp.PsdSubScript = <<PsdExp>[<PsdExp>]>
-  PsdExp.PsdAdd  = <<PsdExp> + <PsdExp>>
-  PsdExp.PsdSub  = <<PsdExp> - <PsdExp>>
-  PsdExp.PsdEq   = <<PsdExp> == <PsdExp>>
-  PsdExp.PsdNeq  = <<PsdExp> != <PsdExp>>
+  PsdExp = <(<PsdExp>)> 							{bracket}
+  PsdExp.PsdSubScript = <<PsdExp>[<PsdExp>]>		{right}
+  PsdExp.PsdMul  = <<PsdExp> * <PsdExp>>			{left}
+  PsdExp.PsdDiv  = <<PsdExp> / <PsdExp>>			{left}
+  PsdExp.PsdAdd  = <<PsdExp> + <PsdExp>>			{left}
+  PsdExp.PsdSub  = <<PsdExp> - <PsdExp>>			{left}
+  PsdExp.PsdLt   = <<PsdExp> \< <PsdExp>>			{non-assoc}
+  PsdExp.PsdGt   = <<PsdExp> \> <PsdExp>>			{non-assoc}
+  PsdExp.PsdEq   = <<PsdExp> == <PsdExp>>			{left}
+  PsdExp.PsdNeq  = <<PsdExp> != <PsdExp>>			{left}
   PsdExp.PsdInt  = <<INT>>
   PsdExp.PsdID   = <<ID>>
   PsdExp.PsdBool = BOOL
-  PsdExp.PsdFunApp = <<PsdExp>(<{PsdExp ","}*>)>
+  PsdExp.PsdFunApp = <<PsdExp>(<{PsdExp ","}*>)>	{left}
   PsdExp.PsdNew = <new <ID>(<{PsdExp ","}*>)>
   PsdExp.PsdList = <[<{PsdExp ","}*>]>
   PsdExp.PsdRef = <<PsdExp>.<PsdExp>>				{left}

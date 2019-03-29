@@ -3,6 +3,7 @@ module analysis/static-semantics
 imports
 
   signatures/-
+  analysis/pseudo
   
 signature
 	namespaces Var
@@ -25,6 +26,10 @@ rules
   
   [[FVM_Program(size, blocks) ^(s)]] :=
   	Map1(block)[[blocks ^(s)]].
+  
+  block[[FVM_PseudoCode(body) ^(s)]] :=
+  	new pseudo, pseudo ---> s,
+  	pseudo [[body ^(pseudo)]]. 
   	
   block[[FVM_Block(FVM_Label(name), FVM_Seq(body), size) ^(s)]] :=
   	new block, 

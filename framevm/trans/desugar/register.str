@@ -11,11 +11,13 @@ rules
 	  where
 	  	(link_labels, cont_labels) := <foldl(discover-link-ids)> (blocks, (["P", "I"], ["c", "x"]));
 	  	link-blocks := <map(apply-link-ids(|(link_labels, cont_labels)))> blocks
-	  	
+	
+	discover-link-ids: (FVM_PseudoCode(body), ids) -> ids
 	discover-link-ids: (FVM_Block(name, FVM_Seq(instrs)), ids) -> ids2
 	  where
 	  	ids2 := <foldl(discover-link-ids)> (instrs, ids)
 	  	
+	apply-link-ids(|ids): FVM_PseudoCode(body) -> FVM_PseudoCode(body)
 	apply-link-ids(|ids): FVM_Block(name, FVM_Seq(instrs)) -> FVM_Block(name, FVM_Seq(instrs2))
 	  where
 	  	instrs2 := <map(instr-apply-ids(|ids))> instrs

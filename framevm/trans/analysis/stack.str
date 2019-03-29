@@ -10,8 +10,8 @@ rules
 	  where
     	(errors, out_blocks) := <unzip><mapconcat(stack-calc)> blocks
   
-	stack-calc: FVM_PseudoCode(_) -> []
-    		
+	stack-calc: f@FVM_PseudoCode(body) -> [([], f)]
+
   	stack-calc: FVM_Block(FVM_Label(lbl), FVM_Seq(body)) -> [(errors, FVM_Block(FVM_Label(lbl), FVM_Seq(body), size))]
   	  where
   		(size, errors) := <foldl(stack-update)>(body, (0, []))

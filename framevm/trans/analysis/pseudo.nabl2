@@ -1,0 +1,147 @@
+module analysis/pseudo
+
+imports
+
+  signatures/-
+  analysis/pseudoExp
+  
+signature
+	namespaces PsdVar PsdRec PsdFunc
+	
+signature
+  constructors
+    RecT : occurrence * list(Type) -> Type
+    FunT : list(Type) * Type -> Type
+    ArrayT: Type -> Type
+    IntT : Type
+    BoolT : Type
+
+name resolution
+  labels
+    P I
+
+  order
+    D < P,
+    D < I,
+	I < P
+
+  well-formedness
+	P* I*
+
+rules
+  
+  pseudo[[body ^(s)]] :=
+  	pseudoInstr[[body ^(s)]].
+  	  	
+  pseudoInstr[[ [] ^(s)]].
+  pseudoInstr[[ [PsdExp(exp) | tail ] ^(s)]] :=
+  	pseudoExp[[exp ^(s) : _]],
+  	pseudoInstr[[tail ^(s)]].
+  	
+  pseudoInstr [[ [PsdRecDef(name, methods, fields) | tail] ^(p)]] :=
+    new ps, ps ---> p,
+    PsdRec{name} <- ps,
+    PsdRec{name}: RecT(PsdRec{name}, fieldtys)!,
+    PsdRec{name}.size := size,
+    
+    new rec, rec ---> ps,
+    PsdRec{name} ===> rec,
+    Map1(pseudoInstr)[[methods ^(rec)]],
+    Map1T(pseudoField) [[fields ^(rec) : fieldtys]],
+    
+  	pseudoInstr[[tail ^(ps)]].
+  	
+  pseudoField [[PsdField(Field(type, Bind(var, idx))) ^(s) : ty]] :=
+  	pseudoType [[type ^(s) : ty]],
+  	PsdVar{var} <- s,
+  	PsdVar{var}.index := idx,
+  	PsdVar{var}: ty!.
+  
+  pseudoInstr [[ [PsdIf(cond, then) | tail] ^(s) ]] :=
+    pseudoExp[[cond ^(s) : ty]],
+    ty == BoolT() | error $[The condition must have a boolean result, found [ty]],
+    new t, t ---> s,
+    pseudo[[then ^(t)]],
+  	pseudoInstr[[tail ^(s)]].
+  	
+  
+  pseudoInstr [[ [PsdIfElse(cond, then, else) | tail] ^(s) ]] :=
+    pseudoExp[[cond ^(s) : ty]],
+    ty == BoolT() | error $[The condition must have a boolean result, found [ty]],
+    new t, t ---> s,
+    pseudo[[then ^(t)]],
+    new e, e ---> s,
+    pseudo[[else ^(e)]],
+  	pseudoInstr[[tail ^(s)]].
+    
+  pseudoInstr [[ [PsdDefine(Bind(var, idx), exp) | tail] ^(p) ]] :=
+    pseudoExp[[exp ^(p) : ty]],
+    
+    new ps, ps ---> p,
+    PsdVar{var} <- ps,
+    PsdVar{var}.index := idx,
+    PsdVar{var}: ty!,
+  	pseudoInstr[[tail ^(ps)]].
+  	
+  pseudoInstr [[ [PsdField(Bind(var, idx)) | tail] ^(p) ]] :=    
+    PsdVar{var} <- p,
+    PsdVar{var}.index := idx,
+  	pseudoInstr[[tail ^(p)]].
+    
+  pseudoInstr [[ [PsdAssign(PsdID(var), exp) | tail] ^(s) ]] :=
+    pseudoExp[[exp ^(s) : ty1]],
+    
+    PsdVar{var} -> s,
+    PsdVar{var} |-> d | error $[Variable [var] not defined],
+    d : ty2,
+    ty1 == ty2 | error $[Incompatible types [ty1] and [ty2]],
+  	pseudoInstr[[tail ^(s)]].
+  	
+  pseudoInstr [[ [ PsdFuncDef(name, args, body, size, type) | tail] ^(p)]] :=
+    new ps, ps ---> p,
+    new fun, fun ---> ps,
+  	pseudoType[[type ^(p) : rty]],
+    pseudoInstr[[body ^(fun)]],
+    Map1T(pseudoBind) [[args ^(fun) : argtys]],
+    
+    PsdFunc{name} <- ps,
+    PsdFunc{name}: FunT(argtys, rty)!,
+    PsdFunc{name}.size := size,
+    PsdFunc{name} ===> fun,
+    PsdVar{"$return"} <- fun,
+    PsdVar{"$return"}: rty!,
+    
+  	pseudoInstr[[tail ^(ps)]].
+  	
+  pseudoInstr [[ [t@PsdReturn(exp) | tail ] ^(ps)]] :=
+  	pseudoExp[[exp ^(ps) : ty]],
+  	PsdVar{"$return"} -> ps,
+  	PsdVar{"$return"} |-> d | error $[Not inside a function!],
+  	d : rty,
+  	ty == rty | error $[Unexpected return type [ty], expected [rty]],
+  	tail == [] | error $[Dead code after return] @t.
+  	
+  
+  	
+  pseudoBind [[Field(type, bind) ^(s) : ty]] :=
+  	pseudoBind[[bind ^(s) : ty]],
+  	pseudoType[[type ^(s) : ty]].
+ 
+  pseudoBind [[Bind(name, idx) ^(s) : ty]] :=
+  	PsdVar{name} <- s,
+  	PsdVar{name}.index := idx,
+  	PsdVar{name}: ty!.
+  	
+  pseudoType [[Int() ^(s) : IntT()]].
+  pseudoType [[Bool() ^(s) : BoolT()]].
+  
+//  PsdInstr.PsdFor = <for <ID> = <PsdExp> -\> <PsdExp>:<body:PsdBody>
+//  PsdInstr.PsdForIter = <for <ID> in <PsdExp>:<body:PsdBody>
+//  PsdInstr.PsdWhile = <while <PsdExp>: <body:PsdBody>
+//  PsdInstr.PsdYield = <yield <PsdExp>>
+//  PsdInstr.PsdThrow = <throw <PsdExp>>
+//  
+//  FuncDef.PsdGenDef = <gen <ID>(<PsdArgList>) = {<fields:PsdInstr*>
+//PsdInstr.PsdTryCatch = <try:<try:PsdInstr*><catch:PsdInstr*>
+//  PsdInstr.PsdRecExtDef = <rec <ID>:<ID> = { <fields:PsdRecField*>
+//  PsdInstr.PsdWithFrom = <with <ID> from <PsdExp>:<body:PsdInstr*>
