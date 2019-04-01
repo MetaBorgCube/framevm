@@ -61,7 +61,11 @@ menus
     action: "CISC"    = run-program-cisc (source)
     action: "RISC"    = run-program-risc (source)
     action: "Compare" = run-program-compare (source)
-
+    
+  menu: "Pseudocode" (openeditor)
+  
+    action: "Compile" = compile-pseudocode
+    
 views
   
   outline view: editor-outline (source)

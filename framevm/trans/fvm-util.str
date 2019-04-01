@@ -28,7 +28,7 @@ rules
     
     
     // Convert the path from an nabl2 lookup to one that can be interpreted by the VM  
-    framevm-path-from-nabl2: (name, namespace, property) -> fvm_path
+    framevm-path-from-nabl2: (name, namespace, property) -> FVM_Path(fvm_path)
       where
     	a            := <nabl2-get-ast-analysis> name;
 		ref-occ      := <nabl2-mk-occurrence(|namespace)> name;
@@ -37,7 +37,8 @@ rules
 		(path_body, path_end) := <split-init-last> path;
 		
 //		TODO: Do something with the path
-		fvm_path     := FVM_Path(<concat>[<map(from-nabl2-path)> path_body, [FVM_Slot(<int-to-string> idx)]])
+		fvm_path     := <concat>[<map(from-nabl2-path)> path_body, [FVM_Slot(<int-to-string> idx)]]
+    
     
     from-nabl2-path: E(scope, lbl) -> FVM_Link(<get-constructor> lbl)
     

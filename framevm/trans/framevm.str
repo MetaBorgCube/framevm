@@ -7,6 +7,7 @@ imports fvm-analysis
 imports fvm-interpreter
 imports fvm-desugar
 imports desugar/register
+imports codegen/compile-pseudo
 
 rules // Debugging
   
@@ -49,6 +50,13 @@ rules // Debugging
     ; result1  := <eval> <register-convert-all> <desugar> node
     ; result2  := <eval> <register-convert-all> <desugar-full> node
     ; out      := <compare-output> (result1, result2)
+    
+  compile-pseudocode:
+    (node, _, _, path, project-path) -> (filename, out)
+    with
+      ext      := <get-extension> path
+    ; filename := <guarantee-extension(|$[gen.[ext]])> path
+    ; out      := <pp-framevm> <compile-pseudo> node
     
   compare-output = equal < !"Yes" + !"No"
     
