@@ -1,5 +1,3 @@
-*.gen.fvm
-
 /.cache
 /bin
 /src-gen

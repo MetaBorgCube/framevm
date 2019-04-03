@@ -12,4 +12,5 @@
 *.value
 *.out
 *.pp.fvm
-
+*.gen.fvm
+*.dot
