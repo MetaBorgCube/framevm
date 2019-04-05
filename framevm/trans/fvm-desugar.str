@@ -15,8 +15,7 @@ signature
     
 rules  
     desugar-full = desugar; to-RISC-all
-//    desugar = apply-aliasses; remove-pseudo; fix-seq; fix-paths-all
-    desugar = apply-aliasses; fix-seq; fix-paths-all; desugar-pseudo-all
+    desugar = apply-aliasses; fix-seq; desugar-pseudo-all
   
     remove-pseudo: FVM_Program(n, blocks) -> FVM_Program(n, <foldr(![], remove-pseudo)> blocks)
     remove-pseudo: (FVM_Block(lbl, body), list) -> ([FVM_Block(lbl, body) | list])
@@ -30,7 +29,7 @@ rules
 	apply-alias(|alias): FVM_Cont(from) -> FVM_Cont(to) where FVM_ContAlias(FVM_Cont(from), FVM_Cont(to)) := alias
 	
 	 
-	resugar = resugar-seq; unfix-paths-all; resugar-pseudo-all
+	resugar = resugar-seq; resugar-pseudo-all
 	
 
     resugar-seq: FVM_Program(s, blocks) -> FVM_Program(FVM_InitSize(<int-to-string> s), [], <map(resugar-seq)> blocks)
@@ -39,15 +38,5 @@ rules
     resugar-seq: FVM_Block(lbl, FVM_Seq(body)) -> FVM_Block(lbl, FVM_SeqJump(body2, last))
       where
       	(body2, last) := <split-init-last> body 
-
-    fix-paths-all = bottomup(try(fix-paths))
-    fix-paths: FVM_Path(path, term) -> FVM_Path(<concat> [path, [term]])
-    fix-paths: FVM_Path(slot) -> FVM_Path([slot])
-    
-    
-    unfix-paths-all = bottomup(try(unfix-paths))
-    unfix-paths: FVM_Path([slot]) -> FVM_Path(slot)
-    unfix-paths: FVM_Path(full_path) -> FVM_Path(path, term)
-      where
-      	(path, term) := <split-init-last> full_path;
-      	_ := <geq> (<length> path, 1)
+   
+   

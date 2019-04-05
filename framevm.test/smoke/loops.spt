@@ -4,7 +4,7 @@ language framevm
 
 test Loops example [[MAIN:
 	new 1
-	scopedown MAIN2
+	newscope MAIN2
 
 MAIN2:
 	ipush 0
@@ -12,7 +12,7 @@ MAIN2:
 	new 2
 	dup
 	link [] P
-	scopedown FOR_INIT
+	newscope FOR_INIT
 	
 FOR_INIT:
 	ipush 0
@@ -32,7 +32,7 @@ FOR_BODY:
 	new
 	dup
 	link [] P
-	scopedown WHILE
+	newscope WHILE
 
 WHILE:
 	get [P, 1]
@@ -54,7 +54,7 @@ WHILE_BODY:
 	jump WHILE
 	
 WHILE_END:
-	scopeup [P] FOR_INC
+	exitscope [P] FOR_INC
 	
 FOR_INC:
 	get [0]
@@ -65,7 +65,7 @@ FOR_INC:
 	
 	
 FOR_END:
-	scopeup [P]	MAIN_END
+	exitscope [P] MAIN_END
 
 MAIN_END:
 	get[0]
@@ -85,7 +85,7 @@ MAIN_END:
 
 test Loops example CISC [[MAIN:
 	new 1
-	scopedown MAIN2
+	newscope MAIN2
 
 MAIN2:
 	ipush 0
@@ -93,7 +93,7 @@ MAIN2:
 	new 2
 	dup
 	link [] P
-	scopedown FOR_INIT
+	newscope FOR_INIT
 	
 FOR_INIT:
 	ipush 0
@@ -113,7 +113,7 @@ FOR_BODY:
 	new
 	dup
 	link [] P
-	scopedown WHILE
+	newscope WHILE
 
 WHILE:
 	get [P, 1]
@@ -135,7 +135,7 @@ WHILE_BODY:
 	jump WHILE
 	
 WHILE_END:
-	scopeup [P] FOR_INC
+	exitscope [P] FOR_INC
 	
 FOR_INC:
 	get [0]
@@ -146,7 +146,7 @@ FOR_INC:
 	
 	
 FOR_END:
-	scopeup [P]	MAIN_END
+	exitscope [P] MAIN_END
 
 MAIN_END:
 	get[0]

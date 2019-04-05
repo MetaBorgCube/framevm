@@ -6,9 +6,9 @@ import org.spoofax.interpreter.terms.ITermFactory;
 import org.spoofax.terms.StrategoList;
 import org.spoofax.terms.StrategoString;
 import org.spoofax.terms.StrategoTuple;
-import framevm.strategies.util.Environment;
 import framevm.strategies.FVMStrategy;
 import framevm.strategies.util.Block;
+import framevm.strategies.util.MachineState;
 import mb.nabl2.stratego.StrategoBlob;
 
 public class vm_store_block_0_1 extends FVMStrategy {
@@ -17,7 +17,7 @@ public class vm_store_block_0_1 extends FVMStrategy {
 	@Override
 	// (env, (lbl, [instr])) -> env' 
 	// Store a list of instructions as a block with given label
-	protected IStrategoTerm invoke(IOAgent io, ITermFactory factory, Environment env, IStrategoTerm arg) {
+	protected IStrategoTerm invoke(IOAgent io, ITermFactory factory, MachineState env, IStrategoTerm arg) {
 		StrategoTuple tuple = (StrategoTuple) arg;
 		StrategoString lbl  = (StrategoString) tuple.get(0);
 		StrategoList instrs = (StrategoList)   tuple.get(1);
@@ -28,8 +28,8 @@ public class vm_store_block_0_1 extends FVMStrategy {
 			data[idx++] = instr;
 		}
 		String name = lbl.stringValue();
-		io.printError("Added block " + name + " with " + instrs.size() + " instructions");
 		env.blocks.put(name, new Block(name, data));
+		io.printError("Added block " + name + " with " + instrs.size() + " instructions");
 		return new StrategoBlob(env);
 	}
 }

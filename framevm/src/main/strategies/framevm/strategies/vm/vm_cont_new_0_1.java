@@ -1,36 +1,32 @@
-package framevm.strategies.frame_ops;
-
+package framevm.strategies.vm;
 
 import org.spoofax.interpreter.library.IOAgent;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermFactory;
 import org.spoofax.terms.StrategoString;
 import org.spoofax.terms.StrategoTuple;
+
 import framevm.strategies.FVMStrategy;
+import framevm.strategies.util.Block;
+import framevm.strategies.util.ControlFrame;
 import framevm.strategies.util.Frame;
 import framevm.strategies.util.MachineState;
-import framevm.strategies.util.Slot;
 import mb.nabl2.stratego.StrategoBlob;
 
-public class frame_set_slot_0_1 extends FVMStrategy {
-	public static frame_set_slot_0_1 instance = new frame_set_slot_0_1();
+
+public class vm_cont_new_0_1 extends FVMStrategy {
+	public static vm_cont_new_0_1 instance = new vm_cont_new_0_1();
 
 	@Override
-	// env| (frame, slot, val) -> env'
-	// Set the value in the given slot of the given frame
+	// env| (frame, lbl) -> (env', cont)
 	protected IStrategoTerm invoke(IOAgent io, ITermFactory factory, MachineState env, IStrategoTerm arg) {
 		StrategoTuple tuple = (StrategoTuple) arg;
 		
+		Block block = env.getBlock(((StrategoString) tuple.get(1)).stringValue());
 		Frame frame = (Frame) ((StrategoBlob) tuple.get(0)).value();
-		IStrategoTerm value = tuple.get(2);
-		int slotIdx = Integer.valueOf(((StrategoString) tuple.get(1)).stringValue());
 		
-		Slot slot = frame.getSlot(slotIdx);
-		if (slot == null) {
-			frame.set(slotIdx, value);
-		} else {
-			slot.update(value);
-		}
-		return new StrategoBlob(env);
+		ControlFrame cont = new ControlFrame(env.getContSize(), block);
+		cont.setCurrentFrame(frame);
+		return factory.makeTuple(new StrategoBlob(env), new StrategoBlob(cont));
 	}
 }

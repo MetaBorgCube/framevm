@@ -23,9 +23,10 @@ MAIN_TRY:
 	throw
 	
 MAIN_CATCH:
-	get [r, 0]
+	rget
+	getr [0]
 	print
-	scopeup [P] MAIN_END
+	exitscope [P] MAIN_END
 	
 MAIN_END:
 	ipush 0
@@ -56,9 +57,10 @@ MAIN_TRY:
 	throw
 	
 MAIN_CATCH:
-	get [r, 0]
+	rget
+	getr [0]
 	print
-	scopeup [P] MAIN_END
+	exitscope [P] MAIN_END
 	
 MAIN_END:
 	ipush 0

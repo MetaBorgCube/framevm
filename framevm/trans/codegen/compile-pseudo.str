@@ -21,7 +21,8 @@ rules
       where
       	exp_instr := <compile-pseudo-exp> exp;
 	  	cont_lbl := FVM_Label($[CONT_[<next-counter> "cont"]]);
-      	set_instr := [FVM_New("1"), FVM_Dup(), FVM_Link(FVM_Self(), FVM_Link("P")), FVM_Dup(), FVM_SetR(FVM_Path([FVM_Slot(<int-to-string> idx)])), FVM_ScopeDown(cont_lbl), cont_lbl]
+	  	set_instr := []
+//      	set_instr := [FVM_New("1"), FVM_Dup(), FVM_Link(FVM_Self(), FVM_Link("P")), FVM_Dup(), FVM_SetR(FVM_Path([FVM_Slot(<int-to-string> idx)])), FVM_ScopeDown(cont_lbl), cont_lbl]
       	
    compile-pseudo-instr: PsdAssign(ref, exp) -> <concat> [exp_instr, set_instr]
       where

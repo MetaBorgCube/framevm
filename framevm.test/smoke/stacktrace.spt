@@ -26,7 +26,7 @@ FUNC1:
 	call FUNC2 FUNC1_END
 	
 FUNC1_END:
-	get [r]
+	rget
 	return
 	
 FUNC2:
@@ -40,9 +40,11 @@ FUNC2:
 	throw
 	
 MAIN_CATCH:
-	get [r, 1]
+	rget
+	dup
+	getr [1]
 	print
-	get [r, 0]
+	getr [0]
 	dup
 	set [0]
 	dup
@@ -52,7 +54,7 @@ MAIN_CATCH:
 	print
 	getr [P, P]
 	print
-	scopeup [P] MAIN_END
+	exitscope [P] MAIN_END
 	
 MAIN_END:
 	ipush 0
@@ -86,7 +88,7 @@ FUNC1:
 	call FUNC2 FUNC1_END
 	
 FUNC1_END:
-	get [r]
+	rget
 	return
 	
 FUNC2:
@@ -100,9 +102,11 @@ FUNC2:
 	throw
 	
 MAIN_CATCH:
-	get [r, 1]
+	rget
+	dup
+	getr [1]
 	print
-	get [r, 0]
+	getr [0]
 	dup
 	set [0]
 	dup
@@ -112,7 +116,7 @@ MAIN_CATCH:
 	print
 	getr [P, P]
 	print
-	scopeup [P] MAIN_END
+	exitscope [P] MAIN_END
 	
 MAIN_END:
 	ipush 0

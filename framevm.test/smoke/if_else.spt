@@ -4,7 +4,7 @@ language framevm
 
 test if else example RISC [[MAIN:
 	new 2
-	scopedown MAIN2
+	newscope MAIN2
 
 MAIN2:
 	ipush 1
@@ -36,7 +36,7 @@ CONT:
 
 test if else example CISC [[MAIN:
 	new 2
-	scopedown MAIN2
+	newscope MAIN2
 
 MAIN2:
 	ipush 1

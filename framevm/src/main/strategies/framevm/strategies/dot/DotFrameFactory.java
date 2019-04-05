@@ -45,11 +45,6 @@ public class DotFrameFactory extends DotFactory {
 			}
 		}
 		slotsString += "}}";
-
-		// If the frame is executable, link to its opstack
-		if (frame.getOperandStack() != null) {
-			links.add(opstackLink(name, operandStack(frame)));
-		}
 		
 		// Add all the links
 		Link[] frameLinks = frame.getLinks();

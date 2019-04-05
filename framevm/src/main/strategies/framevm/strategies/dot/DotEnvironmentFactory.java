@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import framevm.strategies.util.Block;
-import framevm.strategies.util.Environment;
 import framevm.strategies.util.Frame;
+import framevm.strategies.util.MachineState;
 
 /**
  * Factory for creating a dotfile representing an {@link Environment}.
@@ -21,30 +21,31 @@ public class DotEnvironmentFactory extends DotFactory {
 	 * @return
 	 * 		A string containing the dot representation
 	 */
-	public static String build(Environment env) {
+	public static String build(MachineState env) {
 		List<String> nodeList = new ArrayList<>();
 		List<String> linkList = new ArrayList<>();
-		String currentFrame = frame(env.currentFrame);
+		String currentFrame = "";
+//		String currentFrame = frame(env.currentControlFrame);
 		
-		// Add all frames
-		for (Frame frame : env.heap.values()) {
-			if (frame.getId().equals("_exit") || frame.getId().equals("_catch")) continue;
-			
-			nodeList.add(DotFrameFactory.build(frame, linkList));
-			
-			if (frame.getOperandStack() != null) {
-				nodeList.add(DotOperandStackFactory.build(frame, linkList));
-			}
-		}
-		
-		nodeList.add(""); 	// Spacing
-		
-		// Add all code blocks
-		for (Block block : env.blocks.values()) {
-			if (block.getName().equals("_exit") || block.getName().equals("_catch")) continue;
-			
-			nodeList.add(DotBlockFactory.build(block, linkList));
-		}
+//		// Add all frames
+//		for (Frame frame : env.heap.values()) {
+//			if (frame.getId().equals("_exit") || frame.getId().equals("_catch")) continue;
+//			
+//			nodeList.add(DotFrameFactory.build(frame, linkList));
+//			
+//			if (frame.getOperandStack() != null) {
+//				nodeList.add(DotOperandStackFactory.build(frame, linkList));
+//			}
+//		}
+//		
+//		nodeList.add(""); 	// Spacing
+//		
+//		// Add all code blocks
+//		for (Block block : env.blocks.values()) {
+//			if (block.getName().equals("_exit") || block.getName().equals("_catch")) continue;
+//			
+//			nodeList.add(DotBlockFactory.build(block, linkList));
+//		}
 
 		// Generate output string
 		String nodes = toString(nodeList);

@@ -10,7 +10,7 @@ test Add example RISC [[ADD:
 
 MAIN:
 	new 1
-	scopedown MAIN2
+	newscope MAIN2
 	
 MAIN2:
 	ipush 10
@@ -27,7 +27,7 @@ MAIN2:
 	call ADD CONT2
 	
 CONT2:
-	get [r]
+	rget
 	print
 	ipush 0
 	return
@@ -41,7 +41,7 @@ test Add example CISC [[ADD:
 
 MAIN:
 	new 1
-	scopedown MAIN2
+	newscope MAIN2
 	
 MAIN2:
 	ipush 10
@@ -58,7 +58,7 @@ MAIN2:
 	call ADD CONT2
 	
 CONT2:
-	get [r]
+	rget
 	print
 	ipush 0
 	return

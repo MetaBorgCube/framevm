@@ -7,22 +7,22 @@ import org.spoofax.interpreter.terms.ITermFactory;
 import org.spoofax.terms.StrategoString;
 import org.spoofax.terms.StrategoTuple;
 import framevm.strategies.FVMStrategy;
-import framevm.strategies.util.Environment;
 import framevm.strategies.util.Frame;
+import framevm.strategies.util.MachineState;
 import framevm.strategies.util.Slot;
+import mb.nabl2.stratego.StrategoBlob;
 
 public class frame_get_slot_0_1 extends FVMStrategy {
 	public static frame_get_slot_0_1 instance = new frame_get_slot_0_1();
 
 	@Override
-	// env| (frame_id, slot) -> val
+	// env| (frame, slot) -> val
 	// get the value from a slot with given id from the given frame
-	protected IStrategoTerm invoke(IOAgent io, ITermFactory factory, Environment env, IStrategoTerm arg) {
+	protected IStrategoTerm invoke(IOAgent io, ITermFactory factory, MachineState env, IStrategoTerm arg) {
 		StrategoTuple tuple = (StrategoTuple) arg;
-		StrategoString frame_id = (StrategoString) tuple.get(0);
+		Frame frame = (Frame) ((StrategoBlob) tuple.get(0)).value();
 		String slotId = ((StrategoString) tuple.get(1)).stringValue();
 
-		Frame frame = env.getFrame(frame_id.stringValue());
 		try {
 			int idx = Integer.valueOf(slotId);
 			Slot slot = frame.getSlot(idx);
@@ -33,12 +33,8 @@ public class frame_get_slot_0_1 extends FVMStrategy {
 				return slot.value;
 			}
 		} catch (NumberFormatException ex) {
-			if ("r".equals(slotId)) {
-				return frame.getOperandStack().getReturnValue().value;
-			} else {
-				io.printError("Invalid slot " + slotId + ". It probably is a continuation you are looking for");
-				return null;
-			}
+			io.printError("Invalid slot " + slotId + ". It probably is a continuation you are looking for");
+			return null;
 		}
 	}
 }

@@ -6,7 +6,9 @@ import org.spoofax.terms.StrategoTuple;
 import org.strategoxt.lang.Context;
 import org.strategoxt.lang.Strategy;
 
-import framevm.strategies.util.Environment;
+import framevm.strategies.util.ControlFrame;
+import framevm.strategies.util.MachineState;
+import framevm.strategies.util.MachineThread;
 import mb.nabl2.stratego.StrategoBlob;
 
 
@@ -21,10 +23,13 @@ public class vm_init_0_0 extends Strategy {
 		int link_size = ((StrategoInt) tuple.get(0)).intValue();
 		int cont_size = ((StrategoInt) tuple.get(1)).intValue();
 		int slot_size = ((StrategoInt) tuple.get(2)).intValue();
-		Environment env = new Environment(link_size, cont_size);
-		env.currentFrame = env.getFrame(env.newFrame(slot_size));
+		MachineState env = new MachineState(link_size, cont_size);
+		ControlFrame controlFrame = new ControlFrame(cont_size, null);
+		controlFrame.setCurrentFrame(env.getFrame(env.newFrame(slot_size)));
+		env.addThread(new MachineThread(controlFrame, env));
+		
 
-		context.getIOAgent().printError("FrameVM initialized " + env.currentFrame.getId() + " (" + slot_size + ")");
+		context.getIOAgent().printError("FrameVM initialized " + controlFrame.getCurrentFrame().getId() + " (" + slot_size + ")");
 		context.getIOAgent().printError("Register size = (" + link_size + ", " + cont_size + ")");
 		return new StrategoBlob(env);
 	}

@@ -7,10 +7,10 @@ import org.spoofax.terms.StrategoString;
 
 import framevm.strategies.util.Continuation;
 import framevm.strategies.util.Frame;
-import framevm.strategies.util.OperandStack;
+import framevm.strategies.util.ControlFrame;
 
 /**
- * Factory for creating a dotfile representing an {@link OperandStack}.
+ * Factory for creating a dotfile representing an {@link ControlFrame}.
  * @see <a href="https://en.wikipedia.org/wiki/DOT_(graph_description_language)">DOT (graph descriptionlanguage)</a>
  */
 public class DotOperandStackFactory extends DotFactory {
@@ -27,7 +27,7 @@ public class DotOperandStackFactory extends DotFactory {
 	 */
 	public static String build(Frame frame, List<String> links) {
 		String name = operandStack(frame);
-		OperandStack opstack = frame.getOperandStack();
+		ControlFrame opstack = null;
 		int count = opstack.getInstr_count();
 
 		// Add links to the executing instruction and the stack
@@ -47,7 +47,7 @@ public class DotOperandStackFactory extends DotFactory {
 				contSlots += " | c" + i;
 				contIds += " | null";
 			} else {
-				String target_id = ((StrategoString) cont.value.getSubterm(0)).stringValue();
+				String target_id = cont.value().getCurrentFrame().getId();
 				contSlots += " | " + cont.id;
 				
 				contIds += " | <cont_" + cont.id + ">";

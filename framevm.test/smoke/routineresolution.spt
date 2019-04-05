@@ -2,11 +2,8 @@ module smoke_routineres
 
 language framevm
 
-test Routine resolution example RISC [[MAIN:
-	new 2
-	scopedown MAIN2
-
-MAIN2:
+test Routine resolution example RISC [[#init2
+MAIN:
 	new
 	dup
 	link [] P
@@ -21,7 +18,7 @@ MAIN2:
 	call FUNC MAIN_CONT
 	
 MAIN_CONT:
-	get [r]
+	rget
 	set [1]
 	get [1]
 	print
@@ -53,16 +50,13 @@ FUNC_ELSE:
 	call FUNC_THEN FUNC_END
 	
 FUNC_END:
-	get [r]
+	rget
 	return
 ]] transform "Run -> RISC" to "42"
 	
 
-test Routine resolution example CISC [[MAIN:
-	new 2
-	scopedown MAIN2
-
-MAIN2:
+test Routine resolution example CISC [[#init2
+MAIN:
 	new
 	dup
 	link [] P
@@ -77,7 +71,7 @@ MAIN2:
 	call FUNC MAIN_CONT
 	
 MAIN_CONT:
-	get [r]
+	rget
 	set [1]
 	get [1]
 	print
@@ -109,7 +103,7 @@ FUNC_ELSE:
 	call FUNC_THEN FUNC_END
 	
 FUNC_END:
-	get [r]
+	rget
 	return
 ]] transform "Run -> CISC" to "42"
 	

@@ -6,13 +6,13 @@ imports
 	fvm-desugar
     
 rules
-  	eval : (FVM_Program(s, blocks), (links, conts)) -> out
+  	eval-program: (FVM_Program(s, blocks), (links, conts)) -> out
       where 
     	env1 := <vm-init> (links, conts, s);
       	env2 := <foldl(store-block)> (blocks, env1);
       	env3 := <store-block> (FVM_Block(FVM_Label("_exit"), FVM_Seq([])), env2);
       	env4 := <store-block> (FVM_Block(FVM_Label("_catch"), FVM_Seq([])), env3);
-      	env5 := <vm-start(|env4)> (Continuation("_exit", "_exit"), Continuation("_catch", "_catch")) ;
+      	env5 := <vm-start(|env4)>;
     	env6 := <execute(|env5)>;
     	out  := <vm-stop(|env6)>
     	

@@ -27,7 +27,7 @@ rules // Debugging
     (node, _, ast, path, project-path) -> (filename, result)
     with
       ext      := <get-extension> path
-    ; filename := <guarantee-extension(|$[pp.[ext]])> path
+    ; filename := <guarantee-extension(|$[risc.[ext]])> path
     ; result   := <pp-debug> <resugar> <desugar-full> node
     
   
@@ -35,20 +35,20 @@ rules // Debugging
     (node, _, _, path, project-path) -> (filename, result)
     with
       filename := <guarantee-extension(|"value")> path
-    ; result   := <eval> <register-convert-all> <desugar> node
+    ; result   := <eval-program> <register-convert-all> <desugar> node
     
   run-program-risc:
     (node, _, _, path, project-path) -> (filename, result)
     with
       filename := <guarantee-extension(|"value")> path
-    ; result   := <eval> <register-convert-all> <debug><desugar-full> node
+    ; result   := <eval-program> <register-convert-all> <debug><desugar-full> node
     
   run-program-compare:
     (node, _, _, path, project-path) -> (filename, out)
     with
       filename := <guarantee-extension(|"value")> path
-    ; result1  := <eval> <register-convert-all> <desugar> node
-    ; result2  := <eval> <register-convert-all> <desugar-full> node
+    ; result1  := <eval-program> <register-convert-all> <desugar> node
+    ; result2  := <eval-program> <register-convert-all> <desugar-full> node
     ; out      := <compare-output> (result1, result2)
     
   compile-pseudocode:

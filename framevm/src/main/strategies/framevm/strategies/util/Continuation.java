@@ -1,20 +1,20 @@
 package framevm.strategies.util;
 
-import org.spoofax.interpreter.terms.IStrategoTerm;
-
 public class Continuation {
 
+	private ControlFrame controlFrame;
 	public String id;
-	public IStrategoTerm value;
-
-	public Continuation(String id, IStrategoTerm value) {
+	
+	public Continuation(String id, ControlFrame frame) {
+		this.controlFrame = frame;
 		this.id = id;
-		this.value = value;
 	}
 	
-	public IStrategoTerm update(IStrategoTerm newVal) {
-		IStrategoTerm oldVal = this.value;
-		this.value = newVal;
-		return oldVal;
+	public ControlFrame value() {
+		return this.controlFrame;
+	}
+
+	public void update(ControlFrame newFrame) {
+		this.controlFrame = newFrame;
 	}
 }

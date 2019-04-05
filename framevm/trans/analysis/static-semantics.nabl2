@@ -84,10 +84,24 @@ instr[[FVM_Get(_) ^(s)]].
 instr[[FVM_GetR() ^(s)]].
 instr[[FVM_GetR(_) ^(s)]].
 
+instr[[FVM_ContSet() ^(s)]].
+instr[[FVM_ContSet(_) ^(s)]].
+instr[[FVM_ContSetR() ^(s)]].
+instr[[FVM_ContSetR(_) ^(s)]].
+instr[[FVM_ContGet() ^(s)]].
+instr[[FVM_ContGet(_) ^(s)]].
+instr[[FVM_ContGetR() ^(s)]].
+instr[[FVM_ContGetR(_) ^(s)]].
+
+instr[[FVM_ContTransfer(n) ^(s)]].
+instr[[FVM_ContTransfer(n, _) ^(s)]].
+
+instr[[FVM_ContRGetN(n) ^(s)]].
+instr[[FVM_ContRGet() ^(s)]].
+	
 instr[[FVM_ContNew() ^(s)]].
 instr[[FVM_ContUnpack() ^(s)]].
 instr[[FVM_Return() ^(s)]].
-instr[[FVM_ContCall() ^(s)]].
 instr[[FVM_Try() ^(s)]].
 instr[[FVM_Throw() ^(s)]].
 
@@ -98,8 +112,10 @@ instr[[FVM_Copy() ^(s)]].
 instr[[FVM_CopyR() ^(s)]].
 
 
-	instr[[FVM_ContNew(lbl) ^(s)]]  := lbl[[lbl ^(s)]].
+	instr[[FVM_ContNew() ^(s)]].
 	instr[[FVM_ContNewR(lbl) ^(s)]] := lbl[[lbl ^(s)]].
+	instr[[FVM_ContReturn(_) ^(s)]].
+	instr[[FVM_ContReturn() ^(s)]].
 	
 	instr[[FVM_Jump(lbl) ^(s)]]  := lbl[[lbl ^(s)]].
 	instr[[FVM_JumpZ(lbl1, lbl2) ^(s)]]  := lbl[[lbl1 ^(s)]], lbl[[lbl2 ^(s)]].
@@ -107,5 +123,7 @@ instr[[FVM_CopyR() ^(s)]].
 	instr[[FVM_Call(lbl1, lbl2) ^(s)]]  := lbl[[lbl1 ^(s)]], lbl[[lbl2 ^(s)]].
 	instr[[FVM_Try(lbl1, lbl2) ^(s)]]  := lbl[[lbl1 ^(s)]], lbl[[lbl2 ^(s)]].
 	
-	instr[[FVM_ScopeUp(_, lbl) ^(s)]]  := lbl[[lbl ^(s)]].
-	instr[[FVM_ScopeDown(lbl) ^(s)]]  := lbl[[lbl ^(s)]].
+	instr[[FVM_ScopeNew(lbl) ^(s)]]  := lbl[[lbl ^(s)]].
+	instr[[FVM_ScopeNew() ^(s)]].
+	instr[[FVM_ScopeExit(_, lbl) ^(s)]]  := lbl[[lbl ^(s)]].
+	instr[[FVM_ScopeExit(_) ^(s)]].

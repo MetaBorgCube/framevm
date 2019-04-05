@@ -19,7 +19,7 @@ MAIN:
 	new	2					// For frame
 	dup						//
 	link [] P				//
-	scopedown FOR_INIT		// move execution to new frame
+	newscope FOR_INIT		// move execution to new frame
 	
 FOR_INIT:
 	ipush 0					//
@@ -39,7 +39,7 @@ FOR_BODY:
 	new						// while frame
 	dup						//
 	link [] P				//
-	scopedown WHILE			// enter while loop
+	newscope WHILE			// enter while loop
 
 WHILE:
 	get [P, 1]				// j
@@ -62,7 +62,7 @@ WHILE_BODY:
 	jump WHILE				//
 	
 WHILE_END:
-	scopeup [P] FOR_INC		// exit while loop
+	exitscope [P] FOR_INC		// exit while loop
 	
 FOR_INC:
 	get [0]					//
@@ -73,7 +73,7 @@ FOR_INC:
 	
 	
 FOR_END:
-	scopeup [P]	MAIN_END	// break for loop, continue in outer scope
+	exitscope [P] MAIN_END	// break for loop, continue in outer scope
 
 MAIN_END:
 	get[0]					// count

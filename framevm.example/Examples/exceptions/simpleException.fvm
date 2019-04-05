@@ -32,11 +32,12 @@ MAIN_TRY:
 	ipush 1					//
 	setr [0]				// new A().m := 1
 	throw					// Throw A
-	
+
 MAIN_CATCH:
-	get [r, 0]				// Get ex.m
+	rget
+	getr [0]				// Get ex.m
 	print					//
-	scopeup [P] MAIN_END	// Exit catch block
+	exitscope [P] MAIN_END	// Exit catch block
 	
 MAIN_END:
 	ipush 0					//

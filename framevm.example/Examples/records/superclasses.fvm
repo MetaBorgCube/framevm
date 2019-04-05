@@ -48,6 +48,7 @@ MAIN:
 	call FUNC_2 MAIN_CONT
 	
 MAIN_CONT:	
+	rget
 	new	2					// call frame func
 	dup						//
 	link [0, P] P			// Link function to B's super
@@ -57,13 +58,13 @@ MAIN_CONT:
 	setr [0]				// assign
 	
 	dup						// func arg 2
-	get [r]					//
+	swap 2					//
 	setr [1]				// assign
 							//
 	call FUNC_1 MAIN_CONT2	//
 	
 MAIN_CONT2:
-	get [r]					//
+	rget					//
 	set [0]					// Store ans in b
 							//
 	get [0, 0]				// print b.i

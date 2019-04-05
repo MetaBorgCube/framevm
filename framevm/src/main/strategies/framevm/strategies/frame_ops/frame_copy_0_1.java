@@ -2,26 +2,23 @@ package framevm.strategies.frame_ops;
 
 
 import org.spoofax.interpreter.library.IOAgent;
-import org.spoofax.interpreter.terms.IStrategoString;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermFactory;
-import org.spoofax.terms.StrategoString;
-
 import framevm.strategies.FVMStrategy;
-import framevm.strategies.util.Environment;
+import framevm.strategies.util.Frame;
+import framevm.strategies.util.MachineState;
 import mb.nabl2.stratego.StrategoBlob;
 
 public class frame_copy_0_1 extends FVMStrategy {
 	public static frame_copy_0_1 instance = new frame_copy_0_1();
 
 	@Override
-	// env| frame_id -> (env', frame_id)
+	// env| frame -> (env', frame)
 	// Copy the given frame and return the id of the copied frame
-	protected IStrategoTerm invoke(IOAgent io, ITermFactory factory, Environment env, IStrategoTerm arg) {
-		String frame_id = ((StrategoString) arg).stringValue();
-		String frameId = env.newFrameFrom(env.getFrame(frame_id));
-		IStrategoString val = factory.makeString(frameId);
+	protected IStrategoTerm invoke(IOAgent io, ITermFactory factory, MachineState env, IStrategoTerm arg) {
+		Frame oldFrame = (Frame) ((StrategoBlob) arg).value();
+		Frame newFrame = env.newFrameFrom(oldFrame);
 
-		return factory.makeTuple(new StrategoBlob(env), val);
+		return factory.makeTuple(new StrategoBlob(env), new StrategoBlob(newFrame));
 	}
 }

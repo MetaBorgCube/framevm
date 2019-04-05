@@ -43,13 +43,13 @@ SUMTO_ELSE:
 	call SUMTO SUMTO_RETURN
 
 SUMTO_RETURN:
-	get [r]			// get result	
+	rget			// get result	
 	get [0]			// i
 	addi			//
 	return			//
 	
 MAIN_END:
-	get [r]			// Get return value
+	rget			// Get return value
 	print			// print sumto(1)
 					//
 	ipush 0			// load exitcode 0

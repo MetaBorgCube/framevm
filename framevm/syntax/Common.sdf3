@@ -5,7 +5,6 @@ lexical syntax
   ID             = [a-zA-Z\_] [a-zA-Z0-9\_]*
   LABEL          = [A-Z\_] [A-Z0-9\_]* 
   CONTSLOT       = [a-z\_] [a-z0-9\_]* 
-  CONTSLOT       = "r" {reject}
   MAIN			 = "MAIN"
   LABEL          = MAIN
   INT            = "-"? [0-9]+ 

@@ -29,7 +29,7 @@ MAIN:
 	call ADD CONT2	// create operand stack with frame ref on top of stack and run INC
 					// Returns to CONT
 CONT2:
-	get [r]			// Get return value
+	rget
 	print			//
 					//
 	ipush 0			// load exitcode 0

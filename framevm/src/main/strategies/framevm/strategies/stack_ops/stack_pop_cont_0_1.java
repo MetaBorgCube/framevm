@@ -5,11 +5,11 @@ public class stack_pop_cont_0_1 extends stack_pop {
 
 	@Override
 	protected boolean accepted(String name) {
-		return "Continuation".equals(name);
+		return "ControlFrame".equals(name);
 	}
 
 	@Override
 	protected String accepted() {
-		return "Continuation";
+		return "ControlFrame";
 	}
 }

@@ -6,7 +6,7 @@ test with example RISC [[MAIN:
 	new 2
 	dup
 	link [] P
-	scopedown WITH_I_1
+	newscope WITH_I_1
 	
 MAIN_END:
 	ipush 0
@@ -41,14 +41,14 @@ WITH_I_BODY:
 	new 2
 	dup
 	link [] P
-	scopedown WITH_J_1
+	newscope WITH_J_1
 	
 WITH_I_END:
 	get [0]
 	ccall
 	
 WITH_I_EXIT:
-	scopeup [P] MAIN_END
+	exitscope [P] MAIN_END
 	
 WITH_J_1:
 	cnew WITH_J_2
@@ -89,7 +89,7 @@ WITH_J_BODY2:
 	ccall
 	
 WITH_J_END:
-	scopeup [P] WITH_I_END
+	exitscope [P] WITH_I_END
 ]] transform "Run -> RISC" to "6
 3
 7
@@ -99,7 +99,7 @@ test with example CISC [[MAIN:
 	new 2
 	dup
 	link [] P
-	scopedown WITH_I_1
+	newscope WITH_I_1
 	
 MAIN_END:
 	ipush 0
@@ -134,14 +134,14 @@ WITH_I_BODY:
 	new 2
 	dup
 	link [] P
-	scopedown WITH_J_1
+	newscope WITH_J_1
 	
 WITH_I_END:
 	get [0]
 	ccall
 	
 WITH_I_EXIT:
-	scopeup [P] MAIN_END
+	exitscope [P] MAIN_END
 	
 WITH_J_1:
 	cnew WITH_J_2
@@ -182,7 +182,7 @@ WITH_J_BODY2:
 	ccall
 	
 WITH_J_END:
-	scopeup [P] WITH_I_END
+	exitscope [P] WITH_I_END
 ]] transform "Run -> CISC" to "6
 3
 7

@@ -4,7 +4,7 @@ language framevm
 
 test Object in function example RISC [[MAIN:
 	new 1
-	scopedown MAIN2
+	newscope MAIN2
 
 MAIN2:
 	new 3
@@ -31,7 +31,7 @@ FUNC:
 	return
 	
 MAIN_END:
-	get [r]
+	rget
 	dup
 	set [0]
 	print
@@ -41,7 +41,7 @@ MAIN_END:
 
 test Object in function example CISC [[MAIN:
 	new 1
-	scopedown MAIN2
+	newscope MAIN2
 
 MAIN2:
 	new 3
@@ -68,7 +68,7 @@ FUNC:
 	return
 	
 MAIN_END:
-	get [r]
+	rget
 	dup
 	set[0]
 	print

@@ -2,11 +2,8 @@ module smoke_superclasses
 
 language framevm
 
-test Superclasses example RISC [[MAIN:
-	new 1
-	scopedown MAIN2
-
-MAIN2:
+test Superclasses example RISC [[#init1
+MAIN:
 	new
 	dup
 	new 1
@@ -26,6 +23,7 @@ MAIN2:
 	call FUNC_2 MAIN_CONT
 	
 MAIN_CONT:	
+	rget	
 	new 2
 	dup
 	link [0, P] P
@@ -35,12 +33,12 @@ MAIN_CONT:
 	setr [0]
 	
 	dup
-	get [r]
+	swap 2
 	setr [1]
 	call FUNC_1 MAIN_CONT2
 	
 MAIN_CONT2:
-	get [r]
+	rget
 	set [0]
 	get [0, 0]
 	print
@@ -71,11 +69,8 @@ FUNC_1:
 ]] transform "Run -> RISC" to "1
 4"
 
-test Superclasses example CISC[[MAIN:
-	new 1
-	scopedown MAIN2
-
-MAIN2:
+test Superclasses example CISC[[#init1
+MAIN:
 	new
 	dup
 	new 1
@@ -95,6 +90,7 @@ MAIN2:
 	call FUNC_2 MAIN_CONT
 	
 MAIN_CONT:	
+	rget	
 	new 2
 	dup
 	link [0, P] P
@@ -104,12 +100,12 @@ MAIN_CONT:
 	setr [0]
 	
 	dup
-	get [r]
+	swap 2
 	setr [1]
 	call FUNC_1 MAIN_CONT2
 	
 MAIN_CONT2:
-	get [r]
+	rget
 	set [0]
 	get [0, 0]
 	print

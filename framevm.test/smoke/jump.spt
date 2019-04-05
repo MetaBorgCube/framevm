@@ -4,7 +4,7 @@ language framevm
 
 test Jump example RISC [[MAIN:
 	new 2
-	scopedown MAIN2
+	newscope MAIN2
 
 MAIN2:
 	jump START
@@ -36,7 +36,7 @@ FOO:
 
 test Jump example CISC [[MAIN:
 	new 2
-	scopedown MAIN2
+	newscope MAIN2
 
 MAIN2:
 	jump START

@@ -1,4 +1,4 @@
-package framevm.strategies.stack_ops;
+package framevm.strategies.continuation;
 
 
 import org.spoofax.interpreter.library.IOAgent;
@@ -8,14 +8,13 @@ import framevm.strategies.FVMStrategy;
 import framevm.strategies.util.MachineState;
 import mb.nabl2.stratego.StrategoBlob;
 
-public class stack_push_0_1 extends FVMStrategy {
-	public static stack_push_0_1 instance = new stack_push_0_1();
+public class cont_this_0_1 extends FVMStrategy {
+	public static cont_this_0_1 instance = new cont_this_0_1();
 
 	@Override
-	// env| val -> env'
-	// Push the given value to the stack
+	// env| (cont, (slot, idx)) -> continuation
+	// Get the content of the given continuation register in the given frame
 	protected IStrategoTerm invoke(IOAgent io, ITermFactory factory, MachineState env, IStrategoTerm arg) {
-		env.currentThread.getControlFrame().push(arg);
-		return new StrategoBlob(env);
+		return new StrategoBlob(env.currentThread.getControlFrame());
 	}
 }

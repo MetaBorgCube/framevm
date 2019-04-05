@@ -24,8 +24,6 @@ rules	// Other instructions
 rules	// Util
 	// Convert a value to a displayable string 
 	val-to-string: IntV(v) -> v
-	val-to-string: FrameRef(v) -> v
-	val-to-string: Continuation(frame, block) -> $[Continuation([frame], [block])]
-	
+	val-to-string: FrameRef(v) -> v	
 	
 	

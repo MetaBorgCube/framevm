@@ -31,7 +31,7 @@ MAIN:
 	call FUNC MAIN_CONT
 	
 MAIN_CONT:
-	get [r]				// get result
+	rget				// get result
 	set [1]				// y := result
 	get [1]				//
 	print				// print(y)
@@ -66,7 +66,7 @@ FUNC_ELSE:
 	call FUNC_THEN FUNC_END
 	
 FUNC_END:
-	get [r]				//
+	rget				//
 	return				// fallthrough return
 	
 	

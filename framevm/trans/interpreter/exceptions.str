@@ -11,51 +11,50 @@ rules
 	// Moves execution to the try-block with the catch block as exception handler
 	eval: (FVM_Try(FVM_Label(lbl_try), FVM_Label(lbl_catch)), env1) -> env8
 	  where
-	  	cont := <cont-get-cc(|env1)> <frame-this(|env1)>;
-	  	ex   := <ex-get-cx(|env1)>   <frame-this(|env1)>;
+	  	cont := <cont-get-cc(|env1)> <cont-this(|env1)>;
+	  	ex   := <ex-get-cx(|env1)>   <cont-this(|env1)>;
 	  	
 	  	(env2, FrameRef(frame_catch)) := <stack-pop-frame(|env1)>;
 	  	(env3, FrameRef(frame_try))   := <stack-pop-frame(|env2)>;
 	  	
-	  	catch := Continuation(frame_catch, lbl_catch);
+	  	(env4, catch) := <vm-cont-new(|env3)> (frame_catch, lbl_catch);
+	  	(env5, try)   := <vm-cont-new(|env4)> (frame_try,   lbl_try);
 	  	
-	  	env4 := <cont-set-cc(|env3)> (frame_try, cont);
-	  	env5 := <ex-set-cx(|env4)>   (frame_try, catch);
+	  	env6 := <cont-set-cc(|env5)> (try, cont);
+	  	env7 := <ex-set-cx(|env6)>   (try, catch);
 	  	
-	  	env6 := <cont-set-cc(|env5)> (frame_catch, cont);
-	  	env7 := <ex-set-cx(|env6)>   (frame_catch, ex);
+	  	env8 := <cont-set-cc(|env7)> (catch, cont);
+	  	env9 := <ex-set-cx(|env8)>   (catch, ex);
 	  	
-	  	env8 := <cont-call(|env7)> (frame_try, lbl_try) 
+	  	env10 := <cont-call(|env9)> try
 	  	
 	// FVM_Try/0
 	// Takes two continuation from the stack and sets them up to be a try-catch block
 	// Moves execution to the try-block with the catch block as exception handler
 	eval: (FVM_Try(), env1) -> env8
 	  where
-	  	cont := <cont-get-cc(|env1)> <frame-this(|env1)>;
-	  	ex   := <ex-get-cx(|env1)>   <frame-this(|env1)>;
+	  	cont := <cont-get-cc(|env1)> <cont-this(|env1)>;
+	  	ex   := <ex-get-cx(|env1)>   <cont-this(|env1)>;
 	  	
-	  	(env2, Continuation(frame_catch, lbl_catch)) := <stack-pop-cont(|env1)>;
-	  	(env3, Continuation(frame_try, lbl_try))     := <stack-pop-cont(|env2)>;
+	  	(env2, catch) := <stack-pop-cont(|env1)>;
+	  	(env3, try)   := <stack-pop-cont(|env2)>;
+	  		  	
+	  	env4 := <cont-set-cc(|env3)> (try, cont);
+	  	env5 := <ex-set-cx(|env4)>   (try, catch);
 	  	
-	  	catch := Continuation(frame_catch, lbl_catch);
+	  	env6 := <cont-set-cc(|env5)> (catch, cont);
+	  	env7 := <ex-set-cx(|env6)>   (catch, ex);
 	  	
-	  	env4 := <cont-set-cc(|env3)> (frame_try, cont);
-	  	env5 := <ex-set-cx(|env4)>   (frame_try, catch);
-	  	
-	  	env6 := <cont-set-cc(|env5)> (frame_catch, cont);
-	  	env7 := <ex-set-cx(|env6)>   (frame_catch, ex);
-	  	
-	  	env8 := <cont-call(|env7)> (frame_try, lbl_try) 
+	  	env8 := <cont-call(|env7)> try 
 	
 	// FVM_Throw/0
 	// Throw the element on top of the stack to the current exception handler
 	eval: (FVM_Throw(), env1) -> env4
 	  where
 	  	(env2, throwable) := <stack-pop-any(|env1)>;
-	  	Continuation(handle_frame, handle_block) := <ex-get-cx(|env2)> <frame-this(|env2)>;
-	  	env3 := <frame-set(|env2)> (handle_frame, FVM_SlotR(), throwable);
-	  	env4 := <cont-call(|env3)> (handle_frame, handle_block)
+	  	handler := <ex-get-cx(|env2)> <cont-this(|env2)>;
+	  	env3 := <cont-transfer(|env2)> (handler, [throwable]);
+	  	env4 := <cont-call(|env3)> handler
 	  	
 	  	
 	

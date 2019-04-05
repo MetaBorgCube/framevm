@@ -12,5 +12,6 @@
 *.value
 *.out
 *.pp.fvm
+*.risc.fvm
 *.gen.fvm
 *.dot

@@ -4,7 +4,7 @@ language framevm
 
 test Array example RISC [[MAIN:
 	new 2
-	scopedown MAIN2
+	newscope MAIN2
 MAIN2:
 	new 4
 	dup
@@ -36,7 +36,7 @@ MAIN2:
 
 test Array example CISC [[MAIN:
 	new 2
-	scopedown MAIN2
+	newscope MAIN2
 MAIN2:
 	new 4
 	dup

@@ -8,24 +8,35 @@ import org.spoofax.interpreter.terms.IStrategoTerm;
  * Operand stack that gets attached to a {@link Frame} when it becomes executable.
  * This opstack holds the stack, instruction counter and return addresses.
  */
-public class OperandStack {
+public class ControlFrame {
 	private Block block;
 	private int instr_count;
 	private Stack<IStrategoTerm> stack;
 	private Continuation[] continuations;
 	private Slot returnValue;
+	private Frame currentFrame;
 	
 	/**
 	 * Create an operand stack.
 	 */
-	public OperandStack(int contSize) {
-		this.block = null;
+	public ControlFrame(int contSize, Block block) {
+		this.block = block;
 		this.continuations = new Continuation[contSize];
 		
 		this.instr_count = 0;
 		this.stack = new Stack<>(); //TODO: pre-allocate block.max-stack
+		this.currentFrame = null;
 	}
 	
+	public ControlFrame(int contSize, Frame frame, Block block) {
+		this.block = block;
+		this.continuations = new Continuation[contSize];
+		
+		this.instr_count = 0;
+		this.stack = new Stack<>(); //TODO: pre-allocate block.max-stack
+		this.currentFrame = frame;
+	}
+
 	/**
 	 * @return
 	 * 		The next instruction
@@ -39,7 +50,7 @@ public class OperandStack {
 	 * 		True if there is a next instruction, false otherwise
 	 */
 	public boolean hasNextInstruction() {
-		return null != block.getInstr(instr_count);
+		return block != null && null != block.getInstr(instr_count);
 	}
 	
 	/**
@@ -132,8 +143,8 @@ public class OperandStack {
 		this.continuations[idx] = continuation;
 	}
 
-	public OperandStack copy() {
-		OperandStack copy = new OperandStack(continuations.length);
+	public ControlFrame copy() {
+		ControlFrame copy = new ControlFrame(continuations.length, block);
 		copy.jump(block, instr_count);
 		if (getReturnValue() != null) {
 			copy.setReturnValue(getReturnValue().value);
@@ -151,5 +162,13 @@ public class OperandStack {
 
 	public Continuation[] getContinuations() {
 		return this.continuations;
+	}
+
+	public Frame getCurrentFrame() {
+		return currentFrame;
+	}
+
+	public void setCurrentFrame(Frame frame) {
+		this.currentFrame = frame;
 	}
 }

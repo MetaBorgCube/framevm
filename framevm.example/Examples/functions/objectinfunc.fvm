@@ -44,7 +44,7 @@ FUNC:
 	return				//
 	
 MAIN_END:
-	get [r]				//
+	rget				//
 	dup					//
 	set[0]				// x := returnVal
 	print				// print(x)

@@ -9,7 +9,8 @@ fixture [[MAIN:
 
 
 test return  [[return]]     parse succeeds
-test ccall   [[ccall]]      parse succeeds
+test ccall   [[ccall LBL1]] parse succeeds
+test cret    [[cret]]       parse succeeds
 test try     [[try]]        parse succeeds
 test throw   [[throw]]      parse succeeds
 
@@ -98,35 +99,35 @@ test try lbl2 x            [[try P x]]      parse fails
 test try lbl2 char         [[try P 'x']]    parse fails
 
 
-test scopedown no label         [[scopedown]]         parse fails
+test newscope no label         [[newscope]]         parse fails
 
-test scopedown single simple    [[scopedown P]]       parse succeeds
-test scopedown single simple2   [[scopedown G]]       parse succeeds
-test scopedown single number    [[scopedown 0]]       parse fails
-test scopedown single lower     [[scopedown e]]       parse fails
-test scopedown single r         [[scopedown r]]       parse fails
-test scopedown single c         [[scopedown c]]       parse fails
-test scopedown single x         [[scopedown x]]       parse fails
-test scopedown single char      [[scopedown 'x']]     parse fails
+test newscope single simple    [[newscope P]]       parse succeeds
+test newscope single simple2   [[newscope G]]       parse succeeds
+test newscope single number    [[newscope 0]]       parse fails
+test newscope single lower     [[newscope e]]       parse fails
+test newscope single r         [[newscope r]]       parse fails
+test newscope single c         [[newscope c]]       parse fails
+test newscope single x         [[newscope x]]       parse fails
+test newscope single char      [[newscope 'x']]     parse fails
 
 
 
-test scopeup simple         [[scopeup [] P]]          parse succeeds
-test scopeup path single    [[scopeup [P] P]]         parse succeeds
-test scopeup path multiple  [[scopeup [C, 0] G]]      parse succeeds
-test scopeup path multiple2 [[scopeup [I, 0, L] Q]]   parse succeeds
+test exitscope simple         [[exitscope [] P]]          parse succeeds
+test exitscope path single    [[exitscope [P] P]]         parse succeeds
+test exitscope path multiple  [[exitscope [C, 0] G]]      parse succeeds
+test exitscope path multiple2 [[exitscope [I, 0, L] Q]]   parse succeeds
 
-test scopeup path lower     [[scopeup [e, P] P]]   parse fails
-test scopeup path r         [[scopeup [r] P]]   parse succeeds
-test scopeup path x         [[scopeup [x] P]]   parse succeeds
-test scopeup path c         [[scopeup [c] P]]   parse succeeds
-test scopeup path negative  [[scopeup [-1] P]]  parse fails
-test scopeup no path        [[scopeup P]]       parse fails
+test exitscope path lower     [[exitscope [e, P] P]]   parse fails
+test exitscope path r         [[exitscope [r] P]]   parse fails
+test exitscope path x         [[exitscope [x] P]]   parse fails
+test exitscope path c         [[exitscope [c] P]]   parse fails
+test exitscope path negative  [[exitscope [-1] P]]  parse fails
+test exitscope no path        [[exitscope P]]       parse fails
 
-test scopeup lbl number     [[scopeup [] 0]]    parse fails
-test scopeup lbl lower      [[scopeup [] e]]    parse fails
-test scopeup lbl r          [[scopeup [] r]]    parse fails
-test scopeup lbl c          [[scopeup [] c]]    parse fails
-test scopeup lbl x          [[scopeup [] x]]    parse fails
-test scopeup lbl char       [[scopeup [] 'x']]  parse fails
-test scopeup no lbl         [[scopeup [] ]]     parse fails
+test exitscope lbl number     [[exitscope [] 0]]    parse fails
+test exitscope lbl lower      [[exitscope [] e]]    parse fails
+test exitscope lbl r          [[exitscope [] r]]    parse fails
+test exitscope lbl c          [[exitscope [] c]]    parse fails
+test exitscope lbl x          [[exitscope [] x]]    parse fails
+test exitscope lbl char       [[exitscope [] 'x']]  parse fails
+test exitscope no lbl         [[exitscope [] ]]     parse fails

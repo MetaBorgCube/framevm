@@ -8,8 +8,8 @@ import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermFactory;
 
 import framevm.strategies.FVMStrategy;
-import framevm.strategies.util.Environment;
-import framevm.strategies.util.Slot;
+import framevm.strategies.util.Frame;
+import framevm.strategies.util.MachineState;
 
 
 public class vm_stop_0_1 extends FVMStrategy {
@@ -19,12 +19,13 @@ public class vm_stop_0_1 extends FVMStrategy {
 	@Override
 	// env -> string
 	// Return the output that was written to 'console'
-	protected IStrategoTerm invoke(IOAgent io, ITermFactory factory, Environment env, IStrategoTerm arg) {
-		if (env.currentFrame.getId().equals("_exit") || env.currentFrame.getId().equals("_catch")) {
-			Slot returnVal = env.currentFrame.getOperandStack().getReturnValue();
+	protected IStrategoTerm invoke(IOAgent io, ITermFactory factory, MachineState env, IStrategoTerm arg) {
+		Frame currentFrame = env.currentThread.getControlFrame().getCurrentFrame();
+		if (currentFrame.getId().equals("_exit") || currentFrame.getId().equals("_catch")) {
+			IStrategoTerm returnVal = env.currentThread.getControlFrame().pop();
 			if (returnVal != null) {
-				String exitObj = returnVal.value.toString();
-				if (env.currentFrame.getId().equals("_exit")) {
+				String exitObj = returnVal.toString();
+				if (currentFrame.getId().equals("_exit")) {
 					Matcher match = PATTERN.matcher(exitObj);
 					if (match.matches()) {
 						int exitcode = Integer.valueOf(match.group(1));
@@ -36,9 +37,12 @@ public class vm_stop_0_1 extends FVMStrategy {
 					} else {
 						return null;	// Exitcode is not an intV 
 					}
-				} else if (env.currentFrame.getId().equals("_catch")) {
+				} else if (currentFrame.getId().equals("_catch")) {
 					io.printError("Uncought exception: " + exitObj);
 				}
+			} else {
+				io.printError("Execution terminated in terminal state without exitcode");
+				return factory.makeString("FAIL");
 			}
 			if (env.debug.length() > 0) {
 				io.printError("Printing debug info, all output is discarded");

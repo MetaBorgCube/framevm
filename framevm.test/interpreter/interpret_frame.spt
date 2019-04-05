@@ -41,7 +41,7 @@ test get self [[
 
 test get slot 0 [[
 	new 1
-	scopedown LBL1
+	newscope LBL1
 LBL1:
 	ipush 42
 	set [0]
@@ -50,7 +50,7 @@ LBL1:
 
 test get slot multiple [[
 	new 2
-	scopedown LBL1
+	newscope LBL1
 LBL1:
 	ipush 42
 	set [0]

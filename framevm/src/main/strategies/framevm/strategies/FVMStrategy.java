@@ -6,7 +6,7 @@ import org.spoofax.interpreter.terms.ITermFactory;
 import org.strategoxt.lang.Context;
 import org.strategoxt.lang.Strategy;
 
-import framevm.strategies.util.Environment;
+import framevm.strategies.util.MachineState;
 import mb.nabl2.stratego.StrategoBlob;
 
 /**
@@ -17,7 +17,7 @@ public abstract class FVMStrategy extends Strategy {
 	@Override
 	 // env| args -> env'
 	 public IStrategoTerm invoke(Context context, IStrategoTerm current, IStrategoTerm env) {
-		Environment environment = (Environment) ((StrategoBlob) env).value();
+		MachineState environment = ((MachineState) ((StrategoBlob) env).value());
 		
 		//TODO: The environment is now passed around by reference, 
 		// making that a pop in a failed branch in Stratego still propagates the pop
@@ -43,12 +43,13 @@ public abstract class FVMStrategy extends Strategy {
 	 * 		The {@link IOAgent} to use
 	 * @param factory
 	 * 		The {@link ITermFactory} to use
-	 * @param env
-	 * 		The {@link Environment} to use
+	 * @param environment
+	 * 		The {@link MachineState} to use
 	 * @param arg
 	 * 		The arguments of the strategy
 	 * @return
 	 * 		The values returned by this strategy
 	 */
-	protected abstract IStrategoTerm invoke(IOAgent io, ITermFactory factory, Environment env, IStrategoTerm arg);
+	protected abstract IStrategoTerm invoke(IOAgent io, ITermFactory factory, MachineState environment, IStrategoTerm arg);
+	
 }

@@ -44,7 +44,7 @@ FUNC1:
 	call FUNC2 FUNC1_END	//	Call func 1
 	
 FUNC1_END:
-	get [r]					// Pass along the return
+	rget					// Pass along the return
 	return					// This should not be executed
 	
 FUNC2:
@@ -59,9 +59,11 @@ FUNC2:
 	throw					//
 	
 MAIN_CATCH:
-	get [r, 1]				// Get ex.m
+	rget
+	dup
+	getr [1]				// Get ex.m
 	print					//
-	get [r, 0]				// Get the trace start pointer
+	getr [0]				// Get the trace start pointer
 	dup						//
 	set [0]					//
 							//
@@ -75,7 +77,7 @@ MAIN_CATCH:
 	getr [P, P]				// Print next
 	print					//
 							//
-	scopeup [P] MAIN_END	// Exit catch block
+	exitscope [P] MAIN_END	// Exit catch block
 	
 MAIN_END:
 	ipush 0					//

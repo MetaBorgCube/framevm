@@ -64,9 +64,26 @@ rules
 	stack-delta: FVM_Set(path)  -> -1
 	stack-delta: FVM_SetR()     -> -3
 	stack-delta: FVM_SetR(path) -> -2
+	
+	stack-delta: FVM_ContSet()      -> -2
+	stack-delta: FVM_ContSet(cont)  -> -1
+	stack-delta: FVM_ContSetR()     -> -3
+	stack-delta: FVM_ContSetR(path) -> -2
+	
+	stack-delta: FVM_ContGet()      -> 0
+	stack-delta: FVM_ContGet(path)  -> 1
+	stack-delta: FVM_ContGetR()     -> -1
+	stack-delta: FVM_ContGetR(path) -> 0
+	
+	stack-delta: FVM_ContTransfer(n)    -> <dec> <subti> (0, <string-to-int> n)
+	stack-delta: FVM_ContTransfer(n, _) -> <subti> (0, <string-to-int> n)
+	
+	stack-delta: FVM_ContRGetN(n) -> <string-to-int> n
+	stack-delta: FVM_ContRGet()   -> 1
   
 	stack-delta: FVM_Print()  -> -1
 	stack-delta: FVM_Return() -> -1
+	stack-delta: FVM_ReturnN(n) -> <string-to-int> n
   
 	stack-delta: FVM_Copy()  -> 1
 	stack-delta: FVM_CopyR() -> 0
@@ -76,15 +93,20 @@ rules
 	stack-delta: FVM_Call(lbl1, lbl2) -> -1
 	stack-delta: FVM_Call(lbl) -> -1
 	
-	stack-delta: FVM_ScopeUp(path, lbl) -> 0
-	stack-delta: FVM_ScopeDown(lbl) -> -1
 	
 	stack-delta: FVM_ContNew() -> 1
-	stack-delta: FVM_ContNew(lbl) -> 1
 	stack-delta: FVM_ContNewR(lbl) -> 0
 	
 	stack-delta: FVM_ContUnpack() -> 0
-	stack-delta: FVM_ContCall() -> -1
+	stack-delta: FVM_ContCall(_) -> -1
+	stack-delta: FVM_ContReturn() -> -1
+	stack-delta: FVM_ContReturn(_) -> 0
+	
+	stack-delta: FVM_ScopeNew(lbl) -> -1
+	stack-delta: FVM_ScopeNew()    -> -1
+	
+	stack-delta: FVM_ScopeExit(path) -> 0
+	stack-delta: FVM_ScopeExit(path, lbl) -> 0
 	
 	stack-delta: FVM_Try(_, _) -> -2
 	stack-delta: FVM_Try() -> -2

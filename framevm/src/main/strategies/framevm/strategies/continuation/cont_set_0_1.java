@@ -1,4 +1,4 @@
-package framevm.strategies.frame_ops;
+package framevm.strategies.continuation;
 
 
 import org.spoofax.interpreter.library.IOAgent;
@@ -9,47 +9,46 @@ import org.spoofax.terms.StrategoString;
 import org.spoofax.terms.StrategoTuple;
 import framevm.strategies.FVMStrategy;
 import framevm.strategies.util.Continuation;
-import framevm.strategies.util.Environment;
-import framevm.strategies.util.Frame;
+import framevm.strategies.util.ControlFrame;
+import framevm.strategies.util.MachineState;
 import mb.nabl2.stratego.StrategoBlob;
 
-public class frame_set_cont_0_1 extends FVMStrategy {
-	public static frame_set_cont_0_1 instance = new frame_set_cont_0_1();
+public class cont_set_0_1 extends FVMStrategy {
+	public static cont_set_0_1 instance = new cont_set_0_1();
 
 	@Override
-	// env| (frame_id, (contId, contIdx), cont) -> env'
+	// env| (cont, (contId, contIdx), cont) -> env'
 	// Set the value in the given slot of the given frame
-	protected IStrategoTerm invoke(IOAgent io, ITermFactory factory, Environment env, IStrategoTerm arg) {
+	protected IStrategoTerm invoke(IOAgent io, ITermFactory factory, MachineState env, IStrategoTerm arg) {
 		StrategoTuple tuple = (StrategoTuple) arg;
 		
-		Frame frame = env.getFrame(((StrategoString) tuple.get(0)).stringValue());
-		IStrategoTerm value = tuple.get(2);
-		
+		ControlFrame controlFrame = (ControlFrame) ((StrategoBlob) tuple.get(0)).value();
 		StrategoTuple contTuple = (StrategoTuple) tuple.get(1);
 		String contId = ((StrategoString) contTuple.get(0)).stringValue();
 		int contIdx = ((StrategoInt) contTuple.get(1)).intValue();
-		
-		if (frame.getOperandStack() == null) frame.setExecutable(env.getContSize());
+		ControlFrame continuationFrame = (ControlFrame) ((StrategoBlob) tuple.get(2)).value();
+					
 		if ("r".equals(contId)) {
 			io.printError("Slot r can never be a continuation slot");
 			return null;
 		} else {
-			Continuation cont = frame.getOperandStack().getContinuation(contIdx);
+			
+			Continuation cont = controlFrame.getContinuation(contIdx);
 			if (cont == null) {
-				frame.getOperandStack().setContinuation(contIdx, new Continuation(contId, value));
+				controlFrame.setContinuation(contIdx, new Continuation(contId, continuationFrame));
 			} else if (!cont.id.equals(contId)) {
 				if (cont.id.startsWith("c")) {
 					cont.id = contId;	// Update to better name
-					cont.update(value);
+					cont.update(continuationFrame);
 				} else if (contId.startsWith("c")) {
 					// Ignore less descriptive name
-					cont.update(value);
+					cont.update(continuationFrame);
 				} else {
 					io.printError("ID mismatch, expected " + contId + " but found " + cont.id);
 					return null;
 				}
 			} else {
-				cont.update(value);
+				cont.update(continuationFrame);
 			}
 		}
 		return new StrategoBlob(env);
