@@ -21,14 +21,14 @@ MAIN:
 	new						// Try frame
 	dup						//
 	link [] P				//
-	cnewr MAIN_TRY			//
+	cnew MAIN_TRY 2			//
 							//
 	new	1					// Catch frame
 	dup						//
 	link [] P				//
-	cnewr MAIN_CATCH		//
+	cnew MAIN_CATCH	2		//
 							//
-	try						//
+	try	MAIN_END			//
 	
 MAIN_TRY:
 	new						// New func1 frame

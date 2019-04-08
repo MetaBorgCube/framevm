@@ -57,21 +57,21 @@ test CISC call/2 2 [[
 
 test CISC call/1 1 [[
 	new
-	cnewr LBL1
+	cnew LBL1 2
 	call LBL2
 ]] transform "Run -> CISC" to "1
 2"
 
 test CISC call/1 2 [[
 	new
-	cnewr LBL2
+	cnew LBL2 2
 	call LBL1
 ]] transform "Run -> CISC" to "2
 1"
 
 test CISC return [[
 	new
-	cnewr LBL2
+	cnew LBL2 2
 	call LBL3
 LBL3:
 	rget
@@ -190,21 +190,21 @@ test RISC call/2 2 [[
 
 test RISC call/1 1 [[
 	new
-	cnewr LBL1
+	cnew LBL1 2
 	call LBL2
 ]] transform "Run -> RISC" to "1
 2"
 
 test RISC call/1 2 [[
 	new
-	cnewr LBL2
+	cnew LBL2 2
 	call LBL1
 ]] transform "Run -> RISC" to "2
 1"
 
 test RISC return [[
 	new
-	cnewr LBL2
+	cnew LBL2 2
 	call LBL3
 LBL3:
 	rget

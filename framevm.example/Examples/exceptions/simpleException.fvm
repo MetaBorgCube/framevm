@@ -14,14 +14,14 @@ MAIN:
 	new						// Try frame
 	dup						//
 	link [] P				//
-	cnewr MAIN_TRY			//
+	cnew MAIN_TRY 2			//
 							//
 	new						// Catch frame
 	dup						//
 	link [] P				//
-	cnewr MAIN_CATCH		//
+	cnew MAIN_CATCH 2		//
 							//
-	try						//
+	try	MAIN_END			//
 	
 MAIN_TRY:
 	new	1					// New A() frame

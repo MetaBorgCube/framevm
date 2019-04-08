@@ -42,8 +42,6 @@ test swapn large    [[swap 123]]   parse succeeds
 
 
 test new     [[new]]     parse succeeds
-test cnew    [[cnew]]    parse succeeds
-test new     [[new]]     parse succeeds
 test set     [[set]]     parse succeeds
 test setr    [[setr]]    parse succeeds
 test get     [[get]]     parse succeeds
@@ -130,10 +128,8 @@ test getr path c         [[getr [c] ]]     parse fails
 test getr path negative  [[getr [-1] ]]    parse fails
 
 
-test cnew simple     [[cnew]]      parse succeeds
-test cnew number     [[cnew 0]]    parse fails
-test cnew Label      [[cnew LBL]]  parse fails
-
-test cnewr simple    [[cnewr LBL]] parse succeeds
-test cnewr number    [[cnewr 0]]   parse fails
-test cnewr empty     [[cnewr]]     parse fails
+test cnewr simple      [[cnew LBL 0]]  parse succeeds
+test cnewr negative    [[cnew LBL -1]] parse fails
+test cnewr only label  [[cnew LBL]]    parse fails
+test cnewr only number [[cnew 0]]      parse fails
+test cnewr empty       [[cnew]]        parse fails

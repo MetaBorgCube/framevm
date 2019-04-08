@@ -13,7 +13,7 @@ signature
     PsdFuncDef: PsdID * [PsdField] * [PsdInstr] * INT * Type -> S
     
 rules
-	desugar-pseudo-all: FVM_Program(n, blocks) -> FVM_Program(n, <map(desugar-pseudo-all)> blocks)
+	desugar-pseudo-all: FVM_Program(n, blocks, l) -> FVM_Program(n, <map(desugar-pseudo-all)> blocks, l)
 	desugar-pseudo-all: FVM_Block(name, body) -> FVM_Block(name, body)
 	desugar-pseudo-all: FVM_PseudoCode(Seq(body)) -> <desugar-pseudo> FVM_PseudoCode(body)
 	

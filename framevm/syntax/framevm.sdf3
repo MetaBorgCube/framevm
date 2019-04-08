@@ -18,8 +18,8 @@ sorts Program context-free syntax
   Label.FVM_Label = LABEL
   
   InitSize.FVM_InitSize = <#init <INTLEZ>>
-  Alias.FVM_LinkAlias = <#alias <LinkRef> -\> <LinkRef>>
-  Alias.FVM_ContAlias = <#alias <ContRef> -\> <ContRef>>
+  Alias.FVM_LinkAlias = <#link <LinkRef> -\> <INTLEZ>>
+  Alias.FVM_ContAlias = <#cont <ContRef> -\> <INTLEZ>>
   
 sorts Block context-free syntax
 
@@ -89,9 +89,9 @@ sorts Instr context-free syntax
   
   
   Instr = ContInstr
-  ContInstr.FVM_ContNew    = <cnew>  			// Create a new continuation for the current execution point
-  ContInstr.FVM_ContNewR   = <cnewr <Label>>  	// Create a continuation for a frame on the stack at a new execution point
-  ContInstr.FVM_ContUnpack = <cunpack>			// Get the execution frame from a continuation
+  ContInstr.FVM_ContThis   = <cthis>  			// Create a new continuation for the current execution point
+  ContInstr.FVM_ContNew    = <cnew <Label> <INTLEZ>>  	// Create a continuation for a frame on the stack at a new execution point
+  ContInstr.FVM_ContUnpack = <cunpack>			// Get the data frame from a continuation
   ContInstr.FVM_ContSet    = <cset>
   ContInstr.FVM_ContSet    = <cset [<ContRef>]>
   ContInstr.FVM_ContSetR   = <csetr>
@@ -117,8 +117,8 @@ sorts Instr context-free syntax
   ControlInstr.FVM_ContReturn   = <cret [<ContRef>]>		// Call the given continuation
   ControlInstr.FVM_ContReturn   = <cret>					// Call the continuation on top of the stack
   
-  ControlInstr.FVM_Try       = <try <Label> <Label>>	// Execute the frame on second position on the stack and set the first frame as exception handler
-  ControlInstr.FVM_Try       = <try>					// Execute the continuation on second position on the stack and set the first continuation as exception handler
+  ControlInstr.FVM_Try       = <try <Label> <Label> <Label>>	// Execute the frame on second position on the stack and set the first frame as exception handler
+  ControlInstr.FVM_Try       = <try <Label>>					// Execute the continuation on second position on the stack and set the first continuation as exception handler
   ControlInstr.FVM_Throw     = <throw>					// Throw the element on top of the stack to the exception handler
   
   FrameInstr.FVM_ScopeExit = <exitscope <Path>>

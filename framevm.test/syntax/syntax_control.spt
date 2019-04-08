@@ -11,7 +11,7 @@ fixture [[MAIN:
 test return  [[return]]     parse succeeds
 test ccall   [[ccall LBL1]] parse succeeds
 test cret    [[cret]]       parse succeeds
-test try     [[try]]        parse succeeds
+test try     [[try LBL]]    parse succeeds
 test throw   [[throw]]      parse succeeds
 
 
@@ -78,25 +78,30 @@ test call lbl2 char        [[call P 'x']]   parse fails
 
 
 
-test try single label      [[try P]]        parse fails
+test try lbl1 simple       [[try P P P]]    parse succeeds
+test try lbl1 simple2      [[try G P Q]]    parse succeeds
+test try lbl1 number       [[try 0 P P]]    parse fails
+test try lbl1 lower        [[try e P P]]    parse fails
+test try lbl1 r            [[try r P P]]    parse fails
+test try lbl1 c            [[try c P P]]    parse fails
+test try lbl1 x            [[try x P P]]    parse fails
+test try lbl1 char         [[try 'x' P P]]  parse fails
 
-test try lbl1 simple       [[try P P]]      parse succeeds
-test try lbl1 simple2      [[try G P]]      parse succeeds
-test try lbl1 number       [[try 0 P]]      parse fails
-test try lbl1 lower        [[try e P]]      parse fails
-test try lbl1 r            [[try r P]]      parse fails
-test try lbl1 c            [[try c P]]      parse fails
-test try lbl1 x            [[try x P]]      parse fails
-test try lbl1 char         [[try 'x' P]]    parse fails
+test try lbl2 simple2      [[try P G P]]    parse succeeds
+test try lbl2 number       [[try P 0 P]]    parse fails
+test try lbl2 lower        [[try P e P]]    parse fails
+test try lbl2 r            [[try P r P]]    parse fails
+test try lbl2 c            [[try P c P]]    parse fails
+test try lbl2 x            [[try P x P]]    parse fails
+test try lbl2 char         [[try P 'x' P]]  parse fails
 
-test try lbl2 simple       [[try P P]]      parse succeeds
-test try lbl2 simple2      [[try P G]]      parse succeeds
-test try lbl2 number       [[try P 0]]      parse fails
-test try lbl2 lower        [[try P e]]      parse fails
-test try lbl2 r            [[try P r]]      parse fails
-test try lbl2 c            [[try P c]]      parse fails
-test try lbl2 x            [[try P x]]      parse fails
-test try lbl2 char         [[try P 'x']]    parse fails
+test try lbl2 simple2      [[try P P G]]    parse succeeds
+test try lbl2 number       [[try P P 0]]    parse fails
+test try lbl2 lower        [[try P P e]]    parse fails
+test try lbl2 r            [[try P P r]]    parse fails
+test try lbl2 c            [[try P P c]]    parse fails
+test try lbl2 x            [[try P P x]]    parse fails
+test try lbl2 char         [[try P P 'x']]  parse fails
 
 
 test newscope no label         [[newscope]]         parse fails

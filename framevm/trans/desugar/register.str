@@ -5,111 +5,70 @@ imports
 	fvm-desugar
 
 rules
-	register-convert-all = register-link-all
-	
-	register-link-all: FVM_Program(s, blocks) -> (FVM_Program(s, link-blocks), (<length> link_labels, <length> cont_labels))
+    apply-aliasses: FVM_ProgramNoInit(aliasses, blocks) -> <apply-aliasses> FVM_Program(FVM_InitSize("0"), aliasses, blocks)
+	apply-aliasses: FVM_Program(FVM_InitSize(n), aliasses, blocks) -> FVM_Program(<string-to-int> n, bound_blocks, <length> link_addresses)
 	  where
-	  	(link_labels, cont_labels) := <foldl(discover-link-ids)> (blocks, (["P", "I"], ["c", "x"]));
-	  	link-blocks := <map(apply-link-ids(|(link_labels, cont_labels)))> blocks
-	
-	discover-link-ids: (FVM_PseudoCode(body), ids) -> ids
-	discover-link-ids: (FVM_Block(name, FVM_Seq(instrs)), ids) -> ids2
-	  where
-	  	ids2 := <foldl(discover-link-ids)> (instrs, ids)
-	  	
-	apply-link-ids(|ids): FVM_PseudoCode(body) -> FVM_PseudoCode(body)
-	apply-link-ids(|ids): FVM_Block(name, FVM_Seq(instrs)) -> FVM_Block(name, FVM_Seq(instrs2))
-	  where
-	  	instrs2 := <map(instr-apply-ids(|ids))> instrs
-	  	
-	discover-link-ids: (instr, (link_ids, cont_ids)) -> (link_ids2, cont_ids2)
-	  where
-		(links, conts) := <instr-get-ids> instr;
-		link_ids2 := <set-add-all> (link_ids, links);
-		cont_ids2 := <set-add-all> (cont_ids, conts)
-		
-	set-add-all: (set, []) -> set
-	set-add-all: (set, [h | t]) -> set2
-	  where
-	  	_ := <elem> (h, set);
-	  	set2 := <set-add-all> (set, t)
-	  	
-	set-add-all: (set, [h | t]) -> set2
-	  where
-	  	set2 := <set-add-all> (<concat>[set, [h]], t)
-	  	
-	  
-	instr-get-ids: FVM_Get(path) -> <instr-get-ids> path
-	instr-apply-ids(|ids): FVM_Get(path) -> FVM_Get(<instr-apply-ids(|ids)> path)
-	
-	instr-get-ids: FVM_GetR(path) -> <instr-get-ids> path
-	instr-apply-ids(|ids): FVM_GetR(path) -> FVM_GetR(<instr-apply-ids(|ids)> path)
-	
-	instr-get-ids: FVM_Set(path) -> <instr-get-ids> path
-	instr-apply-ids(|ids): FVM_Set(path) -> FVM_Set(<instr-apply-ids(|ids)> path)
-	
-	instr-get-ids: FVM_SetR(path) -> <instr-get-ids> path
-	instr-apply-ids(|ids): FVM_SetR(path) -> FVM_SetR(<instr-apply-ids(|ids)> path)
-	
-	
-	instr-get-ids: FVM_ContGet(cont) -> <path-get-ids> (cont, ([], []))
-	instr-apply-ids(|ids): FVM_ContGet(cont) -> FVM_ContGet(<apply-ids(|ids)> cont)
-	
-	instr-get-ids: FVM_ContGetR(cont) -> <path-get-ids> (cont, ([], []))
-	instr-apply-ids(|ids): FVM_ContGetR(cont) -> FVM_ContGetR(<apply-ids(|ids)> cont)
-	
-	instr-get-ids: FVM_ContSet(cont) -> <path-get-ids> (cont, ([], []))
-	instr-apply-ids(|ids): FVM_ContSet(cont) -> FVM_ContSet(<apply-ids(|ids)> cont)
-	
-	instr-get-ids: FVM_ContSetR(cont) -> <path-get-ids> (cont, ([], []))
-	instr-apply-ids(|ids): FVM_ContSetR(cont) -> FVM_ContSetR(<apply-ids(|ids)> cont)
-	
-	instr-get-ids: FVM_ContTransfer(_, cont) -> <path-get-ids> (cont, ([], []))
-	instr-apply-ids(|ids): FVM_ContTransfer(n, cont) -> FVM_ContTransfer(n, <apply-ids(|ids)> cont)
-	
-	instr-get-ids: FVM_LinkR(lbl) -> <path-get-ids> (lbl, ([], []))
-	instr-apply-ids(|ids): FVM_LinkR(lbl) -> FVM_LinkR(<apply-ids(|ids)> lbl)
-	
-	instr-get-ids: FVM_Link(path, lbl) -> <path-get-ids> (lbl, (links, conts))
-	  where
-	  	(links, conts) := <instr-get-ids> path
-	instr-apply-ids(|ids): FVM_Link(path, lbl) -> FVM_Link(<instr-apply-ids(|ids)> path, <apply-ids(|ids)> lbl)
-	
-	instr-get-ids: FVM_ScopeExit(path, lbl) -> <instr-get-ids> path
-	instr-get-ids: FVM_ScopeExit(path)      -> <instr-get-ids> path
-	instr-apply-ids(|ids): FVM_ScopeExit(path, lbl) -> FVM_ScopeExit(<instr-apply-ids(|ids)> path, lbl)
-	instr-apply-ids(|ids): FVM_ScopeExit(path)      -> FVM_ScopeExit(<instr-apply-ids(|ids)> path)
+	    all_aliasses := <insert-standards> aliasses;
+	    link_addresses := <foldl(extract-links)> (all_aliasses, []);
+	  	bound_blocks := <fix-missing-aliasses> <foldl(apply-aliasses)> (all_aliasses, blocks)
 
-	apply-ids(|ids): FVM_Slot(n) -> FVM_Slot(n)
-	
-	apply-ids(|ids): FVM_Link(n) -> FVM_Link(<apply-ids(|ids)> n)
-	apply-ids(|ids): FVM_LinkIdx("0") -> FVM_Link(("P", 0))
-	apply-ids(|ids): FVM_LinkIdx("1") -> FVM_Link(("I", 1))
-	apply-ids(|ids): FVM_LinkIdx(n) -> FVM_Link(($[_l[n]], <string-to-int> n))
-	
-	apply-ids(|ids): FVM_Cont(n) -> FVM_Cont(<apply-ids(|ids)> n)
-	apply-ids(|ids): FVM_ContIdx("0") -> FVM_Cont(("c", 0))
-	apply-ids(|ids): FVM_ContIdx("1") -> FVM_Cont(("x", 1))
-	apply-ids(|ids): FVM_ContIdx(n) -> FVM_Cont(($[_c[n]], <string-to-int> n))
-	
-	apply-ids(|ids): term -> (term, idx)
+	extract-links: (FVM_LinkAlias(FVM_Link(name), _), links) -> [name | links]
 	  where
-	  	(links, consts) := ids;
-	  	idx := <dec> <get-index> (term, links) 
-	apply-ids(|ids): term -> (term, idx)
+	  	_ := <not(elem)> (name, links)
+	  	
+	extract-links: (_, links) -> links
+	  	
+	insert-standards: aliasses -> p_i_c_x
 	  where
-	  	(links, consts) := ids;
-	  	idx := <dec> <get-index> (term, consts) 
-	  
-	instr-get-ids:   FVM_Path(list) -> <foldl(path-get-ids)> (list, ([], []))
-	instr-apply-ids(|ids): FVM_Path(list) -> FVM_Path(<map(apply-ids(|ids))> list)
+	  	p       := <try(insert-standard-alias(|FVM_LinkAlias(FVM_Link("P"), "0")))> aliasses;
+	  	p_i     := <try(insert-standard-alias(|FVM_LinkAlias(FVM_Link("I"), "1")))> p;
+	  	p_i_c   := <try(insert-standard-alias(|FVM_ContAlias(FVM_Cont("c"), "0")))> p_i;
+	  	p_i_c_x := <try(insert-standard-alias(|FVM_ContAlias(FVM_Cont("x"), "1")))> p_i_c
+
+	insert-standard-alias(|alias): aliasses -> [alias | aliasses]
+	  where
+	    FVM_LinkAlias(FVM_Link(name), _) := alias;
+	    _ := <not(in-aliasses)> (name, aliasses)
+	    
+	insert-standard-alias(|alias): aliasses -> [alias | aliasses]
+	  where
+	    FVM_ContAlias(FVM_Cont(name), _) := alias;
+	    _ := <not(in-aliasses)> (name, aliasses)
+	    
+	in-aliasses: (name, aliasses) -> names
+	  where
+	  	names := <map(extract-alias-name)> aliasses;
+	  	_ := <elem> (name, names)
+	  	
+	extract-alias-name: FVM_ContAlias(FVM_Cont(name), _) -> name
+	extract-alias-name: FVM_LinkAlias(FVM_Link(name), _) -> name
 	
-	path-get-ids: (FVM_Link(name), (links, conts)) -> (<concat> [links, [name]], conts)
-	path-get-ids: (FVM_LinkIdx(idx), (links, conts)) -> (links, conts)
-	path-get-ids: (FVM_Cont(name), (links, conts)) -> (links, <concat> [conts, [name]])
-	path-get-ids: (FVM_ContIdx(name), (links, conts)) -> (links, conts)
-	path-get-ids: (FVM_Slot(_), (links, conts)) -> (links, conts)
 	
-	instr-get-ids:   e -> ([], [])
-	instr-apply-ids(|ids): e -> e
-		
+	fix-missing-aliasses: blocks -> <topdown(try(fix-missing-alias))> blocks
+	fix-missing-alias: FVM_Link(name) -> FVM_Link(Bind(name, -1)) where _ := <is-string> name
+	fix-missing-alias: FVM_Cont(name) -> FVM_Cont(Bind(name, -1)) where _ := <is-string> name  
+	
+	apply-aliasses: (alias, blocks) -> <topdown(try(apply-alias(|alias)))> blocks
+	apply-alias(|alias): FVM_Link(name) -> FVM_Link(Bind(name, <string-to-int> idx)) where FVM_LinkAlias(FVM_Link(name), idx) := alias 
+	apply-alias(|alias): FVM_Cont(name) -> FVM_Cont(Bind(name, <string-to-int> idx)) where FVM_ContAlias(FVM_Cont(name), idx) := alias
+	
+	
+	resugar-aliasses: FVM_Program(n, [], bound_blocks) -> FVM_Program(n, aliasses, blocks)
+	  where
+	  	blocks := <topdown(try(resugar-alias))> bound_blocks;
+	  	(aliasses, _) := <foldl(resugar-alias)>(<collect-all(is-alias)> bound_blocks, ([], []))
+	
+	is-alias: f@FVM_Link(Bind(name, idx)) -> f
+	is-alias: f@FVM_Cont(Bind(name, idx)) -> f
+	
+	resugar-alias: FVM_Link(Bind(name, idx)) -> FVM_Link(name)
+	resugar-alias: FVM_Cont(Bind(name, idx)) -> FVM_Cont(name)
+	
+	resugar-alias: (FVM_Link(Bind(name, idx)), (aliasses, ids)) -> ([FVM_LinkAlias(FVM_Link(name), <int-to-string> idx)|aliasses], [name|ids])
+	  where
+	  	_ := <not(elem)> (name, ids)
+	resugar-alias: (FVM_Cont(Bind(name, idx)), (aliasses, ids)) -> ([FVM_ContAlias(FVM_Cont(name), <int-to-string> idx)|aliasses], [name|ids])
+	  where
+	  	_ := <not(elem)> (name, ids)
+	
+	

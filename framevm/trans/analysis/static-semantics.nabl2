@@ -24,7 +24,7 @@ rules
 
   init ^ (s) := new s.
   
-  [[FVM_Program(size, blocks) ^(s)]] :=
+  [[FVM_Program(size, blocks, _) ^(s)]] :=
   	Map1(block)[[blocks ^(s)]].
   
   block[[FVM_PseudoCode(body) ^(s)]] :=
@@ -99,10 +99,8 @@ instr[[FVM_ContTransfer(n, _) ^(s)]].
 instr[[FVM_ContRGetN(n) ^(s)]].
 instr[[FVM_ContRGet() ^(s)]].
 	
-instr[[FVM_ContNew() ^(s)]].
 instr[[FVM_ContUnpack() ^(s)]].
 instr[[FVM_Return() ^(s)]].
-instr[[FVM_Try() ^(s)]].
 instr[[FVM_Throw() ^(s)]].
 
 instr[[FVM_Link(_, _) ^(s)]].
@@ -112,8 +110,10 @@ instr[[FVM_Copy() ^(s)]].
 instr[[FVM_CopyR() ^(s)]].
 
 
-	instr[[FVM_ContNew() ^(s)]].
-	instr[[FVM_ContNewR(lbl) ^(s)]] := lbl[[lbl ^(s)]].
+	instr[[FVM_ContThis() ^(s)]].
+	instr[[FVM_ContNew(lbl, _) ^(s)]] := lbl[[lbl ^(s)]].
+	instr[[FVM_ContCall(lbl) ^(s)]] := lbl[[lbl ^(s)]].
+	instr[[FVM_ContCall(_, lbl) ^(s)]] := lbl[[lbl ^(s)]].
 	instr[[FVM_ContReturn(_) ^(s)]].
 	instr[[FVM_ContReturn() ^(s)]].
 	
@@ -121,7 +121,8 @@ instr[[FVM_CopyR() ^(s)]].
 	instr[[FVM_JumpZ(lbl1, lbl2) ^(s)]]  := lbl[[lbl1 ^(s)]], lbl[[lbl2 ^(s)]].
 	instr[[FVM_Call(lbl) ^(s)]]  := lbl[[lbl ^(s)]].
 	instr[[FVM_Call(lbl1, lbl2) ^(s)]]  := lbl[[lbl1 ^(s)]], lbl[[lbl2 ^(s)]].
-	instr[[FVM_Try(lbl1, lbl2) ^(s)]]  := lbl[[lbl1 ^(s)]], lbl[[lbl2 ^(s)]].
+	instr[[FVM_Try(lbl1, lbl2, lbl3) ^(s)]]  := lbl[[lbl1 ^(s)]], lbl[[lbl2 ^(s)]], lbl[[lbl3 ^(s)]].
+	instr[[FVM_Try(lbl) ^(s)]] := lbl[[lbl ^(s)]].
 	
 	instr[[FVM_ScopeNew(lbl) ^(s)]]  := lbl[[lbl ^(s)]].
 	instr[[FVM_ScopeNew() ^(s)]].

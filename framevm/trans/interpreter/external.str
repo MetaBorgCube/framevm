@@ -28,8 +28,8 @@ rules
 	external frame-set-current(|env2) // env| (cont, frame) -> env'
 
 	external vm-print(|env)			// env| val -> env'
-	external vm-jump(|env)			// env| (frame_id, lbl) -> env'
-	external vm-cont-new(|env)		// env| (frame, lbl) -> (env', cont)
+	external vm-jump(|env)			// env| lbl -> env'
+	external vm-cont-new(|env)		// env| (frame, lbl, size) -> (env', cont)
 
 	external cont-call(|env)	    // env| cont -> env'
 	external cont-set(|env)		    // env| (cont, (contId, contIdx), cont) -> env'

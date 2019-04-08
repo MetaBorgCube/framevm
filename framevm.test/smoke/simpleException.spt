@@ -6,12 +6,12 @@ test Simple exception example RISC [[MAIN:
 	new
 	dup
 	link [] P
-	cnewr MAIN_TRY
+	cnew MAIN_TRY 2
 	new
 	dup
 	link [] P
-	cnewr MAIN_CATCH
-	try
+	cnew MAIN_CATCH 2
+	try MAIN_END
 	
 MAIN_TRY:
 	new 1
@@ -40,12 +40,12 @@ test Simple exception example CISC [[MAIN:
 	new
 	dup
 	link [] P
-	cnewr MAIN_TRY
+	cnew MAIN_TRY 2
 	new
 	dup
 	link [] P
-	cnewr MAIN_CATCH
-	try
+	cnew MAIN_CATCH 2
+	try MAIN_END
 	
 MAIN_TRY:
 	new 1

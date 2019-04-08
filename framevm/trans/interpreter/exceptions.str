@@ -6,10 +6,10 @@ imports
 	interpreter/external
 	
 rules	
-	// FVM_Try/2
+	// FVM_Try/3
 	// Takes two frames from the stack and sets them up to be a try-catch block
 	// Moves execution to the try-block with the catch block as exception handler
-	eval: (FVM_Try(FVM_Label(lbl_try), FVM_Label(lbl_catch)), env1) -> env8
+	eval: (FVM_Try(FVM_Label(lbl_try), FVM_Label(lbl_catch), FVM_Label(lbl_cont)), env1) -> env11
 	  where
 	  	cont := <cont-get-cc(|env1)> <cont-this(|env1)>;
 	  	ex   := <ex-get-cx(|env1)>   <cont-this(|env1)>;
@@ -17,8 +17,8 @@ rules
 	  	(env2, FrameRef(frame_catch)) := <stack-pop-frame(|env1)>;
 	  	(env3, FrameRef(frame_try))   := <stack-pop-frame(|env2)>;
 	  	
-	  	(env4, catch) := <vm-cont-new(|env3)> (frame_catch, lbl_catch);
-	  	(env5, try)   := <vm-cont-new(|env4)> (frame_try,   lbl_try);
+	  	(env4, catch) := <vm-cont-new(|env3)> (frame_catch, lbl_catch, 2);
+	  	(env5, try)   := <vm-cont-new(|env4)> (frame_try,   lbl_try, 2);
 	  	
 	  	env6 := <cont-set-cc(|env5)> (try, cont);
 	  	env7 := <ex-set-cx(|env6)>   (try, catch);
@@ -26,12 +26,13 @@ rules
 	  	env8 := <cont-set-cc(|env7)> (catch, cont);
 	  	env9 := <ex-set-cx(|env8)>   (catch, ex);
 	  	
-	  	env10 := <cont-call(|env9)> try
+	  	env10 := <vm-jump(|env9)> lbl_cont;
+	  	env11 := <cont-call(|env10)> try
 	  	
-	// FVM_Try/0
+	// FVM_Try/1
 	// Takes two continuation from the stack and sets them up to be a try-catch block
 	// Moves execution to the try-block with the catch block as exception handler
-	eval: (FVM_Try(), env1) -> env8
+	eval: (FVM_Try(FVM_Label(lbl_cont)), env1) -> env8
 	  where
 	  	cont := <cont-get-cc(|env1)> <cont-this(|env1)>;
 	  	ex   := <ex-get-cx(|env1)>   <cont-this(|env1)>;
@@ -45,7 +46,8 @@ rules
 	  	env6 := <cont-set-cc(|env5)> (catch, cont);
 	  	env7 := <ex-set-cx(|env6)>   (catch, ex);
 	  	
-	  	env8 := <cont-call(|env7)> try 
+	  	env8 := <vm-jump(|env7)> lbl_cont;
+	  	env9 := <cont-call(|env8)> try 
 	
 	// FVM_Throw/0
 	// Throw the element on top of the stack to the current exception handler

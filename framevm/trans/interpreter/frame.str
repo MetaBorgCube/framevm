@@ -118,26 +118,26 @@ rules
 	// FVM_Link/2
 	// Link the frame on top of the stack to the frame pointed to by arg1
 	// using label arg2
-	eval: (FVM_Link(FVM_Self(), FVM_Link(lbl)), env1) -> env3
+	eval: (FVM_Link(FVM_Self(), FVM_Link(Bind(lbl, idx))), env1) -> env3
 	  where
 	  	frame_to_id := <frame-this(|env1)>;
 	  	(env2, FrameRef(frame_from_id)) := <stack-pop-frame(|env1)>;
-	  	env3 := <frame-link(|env2)> (frame_from_id, frame_to_id, lbl)
+	  	env3 := <frame-link(|env2)> (frame_from_id, frame_to_id, (lbl, idx))
 	  	
-	eval: (FVM_Link(FVM_Path(path), FVM_Link(lbl)), env1) -> env3
+	eval: (FVM_Link(FVM_Path(path), FVM_Link(Bind(lbl, idx))), env1) -> env3
 	  where
 	  	(frame_id, slot_id) := <resolve> (path, FrameRef(<frame-this(|env1)>), env1);
 	  	FrameRef(frame_to_id) := <frame-get> (env1, frame_id, slot_id);
 	  	(env2, FrameRef(frame_from_id)) := <stack-pop-frame(|env1)>;
-	  	env3 := <frame-link(|env2)> (frame_from_id, frame_to_id, lbl)
+	  	env3 := <frame-link(|env2)> (frame_from_id, frame_to_id, (lbl, idx))
 	  	
 	// FVM_LinkR/1
 	// Link the frame on 2nd position to the frame on top of the stack
-	eval: (FVM_LinkR(FVM_Link(lbl)), env1) -> env4
+	eval: (FVM_LinkR(FVM_Link(Bind(lbl, idx))), env1) -> env4
 	  where
 	  	(env2, FrameRef(frame_to_id)) := <stack-pop-frame(|env1)>;
 	  	(env3, FrameRef(frame_from_id)) := <stack-pop-frame(|env2)>;
-	  	env4 := <frame-link(|env3)> (frame_from_id, frame_to_id, lbl)
+	  	env4 := <frame-link(|env3)> (frame_from_id, frame_to_id, (lbl, idx))
 	  
 	// FVM_ScopeExit/2
 	// Move execution to a parent scope without actually returning
@@ -145,8 +145,8 @@ rules
 	// Breaks to the scpoe at the provided path and move execution to the given block
 	eval: (FVM_ScopeExit(FVM_Path(path), FVM_Label(lbl)), env1) -> env2
 	  where
-		(frame, FVM_Link(link_id)) := <resolve> (path, FrameRef(<frame-this(|env1)>), env1);
-		env2 := <frame-set-current(|env1)> (<cont-this(|env1)>, <frame-get-link(|env1)> (frame, link_id));
+		(frame, FVM_Link(Bind(link_id, idx))) := <resolve> (path, FrameRef(<frame-this(|env1)>), env1);
+		env2 := <frame-set-current(|env1)> (<cont-this(|env1)>, <frame-get-link(|env1)> (frame, (link_id, idx)));
 		env3 := <vm-jump(|env2)> lbl
 	 
 	// FVM_ScopeExit/1
@@ -158,13 +158,13 @@ rules
 		env2 := <frame-set-current(|env1)> (<cont-this(|env1)>, <frame-get-link(|env1)> (frame, link_id))
 		
 	// Get a Slot or Link with the given id and frame
-	frame-get: (env, frame, FVM_Link(link_id))     -> FrameRef(<frame-get-link(|env)> (frame, link_id))
-	frame-get: (env, frame, FVM_Slot(slot_id))     -> <frame-get-slot(|env)> (frame, slot_id)				// Normal slots
-	frame-get: (env, frame, FVM_Cont((name, idx))) -> <cont-get(|env)> (frame, (name, idx))				// Continuation slots
+	frame-get: (env, frame, FVM_Link(Bind(link_id, idx))) -> FrameRef(<frame-get-link(|env)> (frame, (link_id, idx)))
+	frame-get: (env, frame, FVM_Slot(slot_id))            -> <frame-get-slot(|env)> (frame, slot_id)				// Normal slots
+	frame-get: (env, frame, FVM_Cont(Bind(name, idx)))    -> <cont-get(|env)> (frame, (name, idx))				// Continuation slots
 	
 	// Resolve a path
 	// returns the frame_id and slot/link of the location pointed to
-  	resolve: ([slot], FrameRef(frame), env)        -> (frame, slot) 
-  	resolve: ([h|t], FrameRef(frame), env)      -> <resolve> (t, <frame-get> (env, frame, h), env)
+  	resolve: ([slot], FrameRef(frame), env) -> (frame, slot) 
+  	resolve: ([h|t], FrameRef(frame), env)  -> <resolve> (t, <frame-get> (env, frame, h), env)
   	
   	

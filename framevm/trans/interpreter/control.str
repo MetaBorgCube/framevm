@@ -14,7 +14,7 @@ rules
 	eval: (FVM_Call(FVM_Label(block), FVM_Label(returnAddr)), env1) -> env5
 	  where
 	  	(env2, FrameRef(callFrame)) := <stack-pop-frame(|env1)>;	// get the function frame
-	  	(env3, func) := <vm-cont-new(|env2)> (callFrame, block);
+	  	(env3, func) := <vm-cont-new(|env2)> (callFrame, block, 2);
 	  	
 	  	cont_this := <cont-this(|env3)>;
 	  	env4 := <cont-set-cc(|env2)> (func, cont_this);	// Set the return address

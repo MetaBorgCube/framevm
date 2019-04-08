@@ -23,14 +23,14 @@ public class vm_init_0_0 extends Strategy {
 		int link_size = ((StrategoInt) tuple.get(0)).intValue();
 		int cont_size = ((StrategoInt) tuple.get(1)).intValue();
 		int slot_size = ((StrategoInt) tuple.get(2)).intValue();
-		MachineState env = new MachineState(link_size, cont_size);
+		MachineState env = new MachineState(link_size);
 		ControlFrame controlFrame = new ControlFrame(cont_size, null);
 		controlFrame.setCurrentFrame(env.getFrame(env.newFrame(slot_size)));
 		env.addThread(new MachineThread(controlFrame, env));
 		
 
 		context.getIOAgent().printError("FrameVM initialized " + controlFrame.getCurrentFrame().getId() + " (" + slot_size + ")");
-		context.getIOAgent().printError("Register size = (" + link_size + ", " + cont_size + ")");
+		context.getIOAgent().printError("Link registers = " + link_size);
 		return new StrategoBlob(env);
 	}
 }

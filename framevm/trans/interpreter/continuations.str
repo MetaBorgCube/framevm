@@ -7,18 +7,18 @@ imports
 	interpreter/util
 	
 rules
-	// FVM_ContNew/0
+	// FVM_ContThis/0
 	// Push a continuation on the stack of the current execution point
-	eval: (FVM_ContNew(), env1) -> env2
+	eval: (FVM_ContThis(), env1) -> env2
 	  where
 	  	env2 := <stack-push(|env1)> <cont-this(|env1)>
 	  	
-	// FVM_ContNewR/1
+	// FVM_ContNew/2
 	// Push a continuation on the stack of the execution frame on the stack after a jump to label
-	eval: (FVM_ContNewR(FVM_Label(lbl)), env1) -> env4
+	eval: (FVM_ContNew(FVM_Label(lbl), size), env1) -> env4
 	  where
 	  	(env2, FrameRef(frame)) := <stack-pop-frame(|env1)>;
-	  	(env3, cont) := <vm-cont-new(|env2)> (frame, lbl);
+	  	(env3, cont) := <vm-cont-new(|env2)> (frame, lbl, <string-to-int> size);
 	  	env4 := <stack-push(|env3)> cont
 	
 	// FVM_ContUnpack/0
@@ -109,13 +109,13 @@ rules
 	  	(env3, vals) := <pop-list(|env2)> <string-to-int> n;
 	  	env4 := <cont-transfer(|env3)> (cont, vals)
 	  	
-	eval: (FVM_ContCall(lbl), env1) -> env4
+	eval: (FVM_ContCall(FVM_Label(lbl)), env1) -> env4
 	  where
 	  	(env2, cont) := <stack-pop-cont(|env1)>;
 	  	env3 := <vm-jump(|env2)> lbl;
 	  	env4 := <cont-call(|env3)> cont
 	  	
-	eval: (FVM_ContCall(p, lbl), env1) -> env3
+	eval: (FVM_ContCall(p, FVM_Label(lbl)), env1) -> env3
 	  where
 	  	cont := <cont-get(|env1)> (<cont-this(|env1)>, <cont-resolve> p);
 	  	env2 := <vm-jump(|env1)> lbl;

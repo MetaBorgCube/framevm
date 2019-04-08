@@ -2,7 +2,8 @@ module interpreter_frame
 
 language framevm
 
-fixture [[MAIN:
+fixture [[#link Q -> 1
+MAIN:
 	[[...]]
 	print
 	ipush 0

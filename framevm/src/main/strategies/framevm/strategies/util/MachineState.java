@@ -18,24 +18,20 @@ public class MachineState {
 	
 	private int count;		// Used for generating unique frame ids
 	private int linkSize;
-	private int contSize;
 	public MachineThread currentThread;
 	
 	/**
 	 * Constructor for a new environment.
 	 * @param link_size 
 	 * 		The size of the link registers
-	 * @param cont_size 
-	 * 		The size of the continuation registers
 	 */
-	public MachineState(int link_size, int cont_size) {
+	public MachineState(int link_size) {
 		this.heap = new HashMap<>();
 		this.blocks = new HashMap<>();
 		this.stdout = new StringBuilder();
 		this.debug = "";
 		
 		this.linkSize = link_size;
-		this.contSize = cont_size;
 		
 		this.count = 0;
 	}
@@ -100,10 +96,6 @@ public class MachineState {
 	 */
 	public void setDebug(String debug) {
 		this.debug = debug;
-	}
-
-	public int getContSize() {
-		return contSize;
 	}
 
 	public int getLinkSize() {

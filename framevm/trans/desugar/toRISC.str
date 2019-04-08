@@ -5,11 +5,11 @@ imports
 	fvm-desugar
 
 rules
-	to-RISC-all: FVM_Program(s, blocks) -> FVM_Program(s, <map(to-RISC-all)> blocks)
+	to-RISC-all: FVM_Program(s, blocks, l) -> FVM_Program(s, <map(to-RISC-all)> blocks, l)
 	to-RISC-all: FVM_PseudoCode(body) -> FVM_PseudoCode(body)
 	to-RISC-all: FVM_Block(lbl, FVM_Seq(body)) -> FVM_Block(lbl, FVM_Seq(body_risc))
 	  where
-		body_risc := <to-RISC(r-dupswap)><to-RISC(r-sget)><to-RISC(r-relative)><to-RISC(r-new)><to-RISC(r-link)><to-RISC(r-cont)> body
+		body_risc := <to-RISC(r-dupswap)><to-RISC(r-sget)><to-RISC(r-relative)><to-RISC(r-new)><to-RISC(r-link)><to-RISC(r-cont)><to-RISC(r-scope)> body
   
     // Boilerplate to make the desugaring step simpler
   	to-RISC(s): x -> <foldr(![], (fpr(s) <+ idf))> x 
