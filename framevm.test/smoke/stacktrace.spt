@@ -6,11 +6,11 @@ test Exception trace example RISC [[MAIN:
 	new
 	dup
 	link [] P
-	cnew MAIN_TRY 2
+	cnew MAIN_TRY 3
 	new 1
 	dup
 	link [] P
-	cnew MAIN_CATCH 2
+	cnew MAIN_CATCH 3
 	try MAIN_END
 	
 MAIN_TRY:
@@ -54,7 +54,8 @@ MAIN_CATCH:
 	print
 	getr [P, P]
 	print
-	exitscope [P] MAIN_END
+	
+	cret [n]
 	
 MAIN_END:
 	ipush 0
@@ -68,11 +69,11 @@ test Exception trace example CISC [[MAIN:
 	new
 	dup
 	link [] P
-	cnew MAIN_TRY 2
+	cnew MAIN_TRY 3
 	new 1
 	dup
 	link [] P
-	cnew MAIN_CATCH 2
+	cnew MAIN_CATCH 3
 	try MAIN_END
 	
 MAIN_TRY:
@@ -116,7 +117,8 @@ MAIN_CATCH:
 	print
 	getr [P, P]
 	print
-	exitscope [P] MAIN_END
+	
+	cret [n]
 	
 MAIN_END:
 	ipush 0

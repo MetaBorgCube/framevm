@@ -14,12 +14,12 @@ MAIN:
 	new						// Try frame
 	dup						//
 	link [] P				//
-	cnew MAIN_TRY 2			//
+	cnew MAIN_TRY 3			//
 							//
 	new						// Catch frame
 	dup						//
 	link [] P				//
-	cnew MAIN_CATCH 2		//
+	cnew MAIN_CATCH 3		//
 							//
 	try	MAIN_END			//
 	
@@ -37,7 +37,9 @@ MAIN_CATCH:
 	rget
 	getr [0]				// Get ex.m
 	print					//
-	exitscope [P] MAIN_END	// Exit catch block
+							//
+	cget [n]				//
+	cret					// Exit catch block
 	
 MAIN_END:
 	ipush 0					//

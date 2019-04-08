@@ -66,6 +66,9 @@ rules
 	r-cont: FVM_Try(lbl_try, lbl_catch, lbl_next) ->
 		[FVM_ContNew(lbl_catch, "3"),
 		 FVM_Dup(),
+		 FVM_ContThis(),
+		 FVM_ContSetR(FVM_Cont(Bind("n", 2))),
+		 FVM_Dup(),
 		 FVM_ContGet(FVM_Cont(Bind("x", 1))),
 		 FVM_ContSetR(FVM_Cont(Bind("x", 1))),
 		 FVM_Dup(),
@@ -76,17 +79,26 @@ rules
 		 
 		 FVM_ContNew(lbl_try, "3"),
 		 FVM_Dup(),
+		 FVM_ContThis(),
+		 FVM_ContSetR(FVM_Cont(Bind("n", 2))),
+		 FVM_Dup(),
 		 FVM_SwapN("2"),
 		 FVM_ContSetR(FVM_Cont(Bind("x", 1))),
 		 FVM_Dup(),
 		 FVM_ContGet(FVM_Cont(Bind("c", 0))),
 		 FVM_ContSetR(FVM_Cont(Bind("c", 0))),
-		 FVM_ContCall(lbl_next)				//TODO: This needs to be a ContCall(lbl3), but that does not exist!
+		 FVM_Dup(),
+		 FVM_ContThis(),
+		 FVM_ContSetR(FVM_Cont(Bind("n", 2))),
+		 FVM_ContCall(lbl_next)
 		]
 	
 	r-cont: FVM_Try(lbl) ->
 		[FVM_DupN("2"),
 		 FVM_Swap(),
+		 FVM_Dup(),
+		 FVM_ContThis(),
+		 FVM_ContSetR(FVM_Cont(Bind("n", 2))),
 		 FVM_Dup(),
 		 FVM_ContGet(FVM_Cont(Bind("x", 1))),
 		 FVM_ContSetR(FVM_Cont(Bind("x", 1))),
@@ -95,6 +107,9 @@ rules
 		 FVM_ContSetR(FVM_Cont(Bind("c", 0))),
 		 
 		 FVM_ContSetR(FVM_Cont(Bind("x", 1))),
+		 FVM_Dup(),
+		 FVM_ContThis(),
+		 FVM_ContSetR(FVM_Cont(Bind("n", 2))),
 		 FVM_Dup(),
 		 FVM_ContGet(FVM_Cont(Bind("c", 0))),
 		 FVM_ContSetR(FVM_Cont(Bind("c", 0))),

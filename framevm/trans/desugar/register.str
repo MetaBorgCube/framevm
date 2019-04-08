@@ -18,12 +18,13 @@ rules
 	  	
 	extract-links: (_, links) -> links
 	  	
-	insert-standards: aliasses -> p_i_c_x
+	insert-standards: aliasses -> p_i_c_x_n
 	  where
-	  	p       := <try(insert-standard-alias(|FVM_LinkAlias(FVM_Link("P"), "0")))> aliasses;
-	  	p_i     := <try(insert-standard-alias(|FVM_LinkAlias(FVM_Link("I"), "1")))> p;
-	  	p_i_c   := <try(insert-standard-alias(|FVM_ContAlias(FVM_Cont("c"), "0")))> p_i;
-	  	p_i_c_x := <try(insert-standard-alias(|FVM_ContAlias(FVM_Cont("x"), "1")))> p_i_c
+	  	p         := <try(insert-standard-alias(|FVM_LinkAlias(FVM_Link("P"), "0")))> aliasses;
+	  	p_i       := <try(insert-standard-alias(|FVM_LinkAlias(FVM_Link("I"), "1")))> p;
+	  	p_i_c     := <try(insert-standard-alias(|FVM_ContAlias(FVM_Cont("c"), "0")))> p_i;
+	  	p_i_c_x   := <try(insert-standard-alias(|FVM_ContAlias(FVM_Cont("x"), "1")))> p_i_c;
+	  	p_i_c_x_n := <try(insert-standard-alias(|FVM_ContAlias(FVM_Cont("n"), "2")))> p_i_c_x
 
 	insert-standard-alias(|alias): aliasses -> [alias | aliasses]
 	  where
