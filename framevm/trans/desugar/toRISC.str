@@ -24,51 +24,91 @@ rules
 
 	// Implicit FVM_Continuations to explicit FVM_Continuations
 	r-cont: FVM_Return() -> 
-		[FVM_ContTransfer("1", FVM_Cont("c")), 
-		 FVM_ContGet(FVM_Cont("c")), 
+		[FVM_ContTransfer("1", FVM_Cont(Bind("c", 0))), 
+		 FVM_ContGet(FVM_Cont(Bind("c", 0))), 
 		 FVM_ContReturn()
 		]
-//		
-//	r-cont: FVM_Call(FVM_Label(block), FVM_Label(returnAddr)) -> 
-//		[FVM_Dup(), FVM_ContNew(FVM_Label(returnAddr)), FVM_SetR(FVM_Path([FVM_Cont("c")])), 
-//		FVM_Dup(), FVM_Get(FVM_Path([FVM_Cont("x")])), FVM_SetR(FVM_Path([FVM_Cont("x")])), 
-//		FVM_ContNewR(FVM_Label(block)), FVM_ContCall()]
-//	
-//	r-cont: FVM_Call(FVM_Label(block)) -> 
-//		[FVM_Dup(), FVM_ContUnpack(), FVM_Dup(), FVM_Get(FVM_Path([FVM_Cont("x")])), 
-//		FVM_SetR(FVM_Path([FVM_Cont("x")])), FVM_ContNew(FVM_Label(block)), 
-//		FVM_SetR(FVM_Path([FVM_Cont("c")])), FVM_ContCall()]
-//	
-//	r-cont: FVM_ScopeDown(lbl) -> 
-//		[FVM_Dup(), FVM_Get(FVM_Path([FVM_Cont("c")])), FVM_SetR(FVM_Path([FVM_Cont("c")])), 
-//		FVM_Dup(), FVM_Get(FVM_Path([FVM_Cont("x")])), FVM_SetR(FVM_Path([FVM_Cont("x")])), 
-//		FVM_ContNewR(lbl), FVM_ContCall()]
-//	
-//	r-cont: FVM_ScopeUp(path, lbl) -> 
-//		[FVM_Get(path), FVM_ContNewR(lbl), FVM_ContCall()]
-//		
-//	r-cont: FVM_Try(lbl_try, lbl_catch) ->
-//		[FVM_Dup(), FVM_Get(FVM_Path([FVM_Cont("x")])), FVM_SetR(FVM_Path([FVM_Cont("x")])), 
-//		FVM_Dup(), FVM_Get(FVM_Path([FVM_Cont("c")])), FVM_SetR(FVM_Path([FVM_Cont("c")])), 
-//		FVM_ContNewR(lbl_catch), FVM_DupN("2"), FVM_Swap(), FVM_SetR(FVM_Path([FVM_Cont("x")])), 
-//		FVM_Dup(), FVM_Get(FVM_Path([FVM_Cont("c")])), FVM_SetR(FVM_Path([FVM_Cont("c")])), 
-//		FVM_ContNewR(lbl_try), FVM_ContCall()]
-//		
-//	r-cont: FVM_Try() ->
-//		[FVM_Dup(), FVM_ContUnpack(), FVM_Dup(), FVM_Get(FVM_Path([FVM_Cont("x")])), 
-//		FVM_SetR(FVM_Path([FVM_Cont("x")])), FVM_Get(FVM_Path([FVM_Cont("c")])), 
-//		FVM_SetR(FVM_Path([FVM_Cont("c")])), FVM_DupN("2"), FVM_ContUnpack(), FVM_Swap(), 
-//		FVM_SetR(FVM_Path([FVM_Cont("x")])), FVM_Dup(), FVM_ContUnpack(), 
-//		FVM_Get(FVM_Path([FVM_Cont("c")])), FVM_SetR(FVM_Path([FVM_Cont("c")])), FVM_ContCall()]
-//		
-//	r-cont: FVM_Throw() -> 
-//		[FVM_Get(FVM_Path([FVM_Cont("x")])), FVM_ContUnpack(), FVM_Swap(), 
-//		FVM_SetR(FVM_Path([FVM_SlotR()])), FVM_Get(FVM_Path([FVM_Cont("x")])), FVM_ContCall()]
-//	
+		
+	r-cont: FVM_Call(FVM_Label(block), FVM_Label(returnAddr)) -> 
+		[FVM_ContNew(FVM_Label(block), "2"), 
+		 FVM_Dup(),
+		 FVM_ContThis(),
+		 FVM_ContSetR(FVM_Cont(Bind("c", 0))),
+		 FVM_Dup(), 
+		 FVM_ContGet(FVM_Cont(Bind("x", 1))),
+		 FVM_ContSetR(FVM_Cont(Bind("x", 1))), 
+		 FVM_ContCall(FVM_Label(returnAddr))
+		]
+	
+	r-cont: FVM_Call(FVM_Label(return)) -> 
+		[FVM_Dup(), 
+		 FVM_ContGet(FVM_Cont(Bind("x", 1))), 
+		 FVM_ContSetR(FVM_Cont(Bind("x", 1))),
+		 FVM_Dup(),
+		 FVM_ContThis(), 
+		 FVM_ContSetR(FVM_Cont(Bind("c", 0))),
+		 FVM_ContCall(FVM_Label(return))
+		]
+		 
+	r-scope: FVM_ScopeNew(lbl) -> 
+		[FVM_ScopeNew(),
+		 FVM_Jump(lbl)]
+		 
+	r-scope: FVM_ScopeExit(path, lbl) -> 
+		[FVM_Get(path),
+		 FVM_ScopeExit(lbl)]
+		
+		
+	r-cont: FVM_ScopeExit(lbl) -> 
+		[FVM_ScopeNew(),
+		 FVM_Jump(lbl)]
+		 
+	r-cont: FVM_Try(lbl_try, lbl_catch, lbl_next) ->
+		[FVM_ContNew(lbl_catch, "3"),
+		 FVM_Dup(),
+		 FVM_ContGet(FVM_Cont(Bind("x", 1))),
+		 FVM_ContSetR(FVM_Cont(Bind("x", 1))),
+		 FVM_Dup(),
+		 FVM_ContGet(FVM_Cont(Bind("c", 0))),
+		 FVM_ContSetR(FVM_Cont(Bind("c", 0))),
+		 
+		 FVM_Swap(),
+		 
+		 FVM_ContNew(lbl_try, "3"),
+		 FVM_Dup(),
+		 FVM_SwapN("2"),
+		 FVM_ContSetR(FVM_Cont(Bind("x", 1))),
+		 FVM_Dup(),
+		 FVM_ContGet(FVM_Cont(Bind("c", 0))),
+		 FVM_ContSetR(FVM_Cont(Bind("c", 0))),
+		 FVM_ContCall(lbl_next)				//TODO: This needs to be a ContCall(lbl3), but that does not exist!
+		]
+	
+	r-cont: FVM_Try(lbl) ->
+		[FVM_DupN("2"),
+		 FVM_Swap(),
+		 FVM_Dup(),
+		 FVM_ContGet(FVM_Cont(Bind("x", 1))),
+		 FVM_ContSetR(FVM_Cont(Bind("x", 1))),
+		 FVM_Dup(),
+		 FVM_ContGet(FVM_Cont(Bind("c", 0))),
+		 FVM_ContSetR(FVM_Cont(Bind("c", 0))),
+		 
+		 FVM_ContSetR(FVM_Cont(Bind("x", 1))),
+		 FVM_Dup(),
+		 FVM_ContGet(FVM_Cont(Bind("c", 0))),
+		 FVM_ContSetR(FVM_Cont(Bind("c", 0))),
+		 FVM_ContCall(lbl)
+		]
+		
+	r-cont: FVM_Throw() -> 
+		[FVM_ContGet(FVM_Cont(Bind("x", 1))),
+		 FVM_ContTransfer("1"),
+		 FVM_ContGet(FVM_Cont(Bind("x", 1))),
+		 FVM_ContReturn()
+		]
 	
 	
-	// FVM_Continuations to relative FVM_Continuations
-//	r-relative: FVM_ContNew(lbl) -> [FVM_Get(FVM_Self()), FVM_ContNewR(lbl)]
 	
 	// FVM_Continuations to relative FVM_Continuations
 	r-relative: FVM_Copy() -> [FVM_Get(FVM_Self()), FVM_CopyR()]
