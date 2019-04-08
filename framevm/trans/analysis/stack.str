@@ -111,6 +111,7 @@ rules
 	stack-delta: FVM_Try(_, _, _) -> -2
 	stack-delta: FVM_Try(_) -> -2
 	stack-delta: FVM_Throw() -> -1
+	stack-delta: FVM_Yield(_) -> -1
 	
 	stack-delta: FVM_Debug() -> 0
   

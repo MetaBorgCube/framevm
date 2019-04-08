@@ -123,6 +123,14 @@ rules
 		 FVM_ContReturn()
 		]
 	
+	r-cont: FVM_Yield(lbl) -> 
+		[FVM_ContThis(),
+		 FVM_Swap(),
+		 FVM_ContGet(FVM_Cont(Bind("c", 0))),
+		 FVM_ContTransfer("2"),
+		 FVM_ContGet(FVM_Cont(Bind("c", 0))),
+		 FVM_ContCall(lbl)
+		]
 	
 	
 	// FVM_Continuations to relative FVM_Continuations

@@ -18,8 +18,8 @@ rules
 	  	(env2, FrameRef(frame_catch)) := <stack-pop-frame(|env1)>;
 	  	(env3, FrameRef(frame_try))   := <stack-pop-frame(|env2)>;
 	  	
-	  	(env4, catch) := <vm-cont-new(|env3)> (frame_catch, lbl_catch, 2);
-	  	(env5, try)   := <vm-cont-new(|env4)> (frame_try,   lbl_try, 2);
+	  	(env4, catch) := <vm-cont-new(|env3)> (frame_catch, lbl_catch, 3);
+	  	(env5, try)   := <vm-cont-new(|env4)> (frame_try,   lbl_try, 3);
 	  	
 	  	env6 := <cont-set-cc(|env5)> (try, cont);
 	  	env7 := <ex-set-cx(|env6)>   (try, catch);

@@ -35,7 +35,7 @@ rules
 	  	env5 := <vm-jump(|env4)> block;
 	  	env6 := <cont-call(|env5)> func								// call the function
 	 
-	 // FVM_Return/0
+	 // FVM_ReturnN/1
 	// Takes the value on top of the stack and returns to the caller frame
 	eval: (FVM_ReturnN(n), env1) -> env4
 	  where
@@ -44,13 +44,23 @@ rules
 	  	env3 := <cont-transfer(|env2)> (continuation, vals);
 	  	env4 := <cont-call(|env3)> continuation
 	  	
-	// FVM_ReturnN/1
+	// FVM_Return/0
 	eval: (FVM_Return(), env1) -> env4
 	  where
 	  	(env2, val) := <stack-pop-any(|env1)>;
 	  	continuation := <cont-get-cc(|env2)> <cont-this(|env2)>;
 	  	env3 := <cont-transfer(|env2)> (continuation, [val]);
 	  	env4 := <cont-call(|env3)> continuation
+	  	
+	// FVM_Yield/1
+	eval: (FVM_Yield(FVM_Label(lbl)), env1) -> env5
+	  where
+	  	this := <cont-this(|env1)>;
+	  	(env2, val) := <stack-pop-any(|env1)>;
+	  	continuation := <cont-get-cc(|env2)> this;
+	  	env3 := <cont-transfer(|env2)> (continuation, [val, this]);
+	  	env4 := <vm-jump(|env3)> lbl;
+	  	env5 := <cont-call(|env4)> continuation
 	
 	// FVM_Jump/1
 	// Unconditional jump to a new block ar arg1

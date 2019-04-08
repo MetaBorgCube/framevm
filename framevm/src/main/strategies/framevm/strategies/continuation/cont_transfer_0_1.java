@@ -21,10 +21,9 @@ public class cont_transfer_0_1 extends FVMStrategy {
 		StrategoTuple tuple = (StrategoTuple) arg;
 		ControlFrame frame = (ControlFrame) ((StrategoBlob) tuple.get(0)).value();
 		StrategoList values = (StrategoList) tuple.get(1);
-		
-		io.printError(values.toString());		
-		//TODO: Maybe reverse this?
-		for (IStrategoTerm value : values) {
+				
+		for (int i = values.size()-1; i >= 0; i--) {
+			IStrategoTerm value = values.get(i);
 			frame.push(value);
 		}
 		return new StrategoBlob(env);

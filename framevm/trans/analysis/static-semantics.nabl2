@@ -112,6 +112,7 @@ instr[[FVM_CopyR() ^(s)]].
 
 	instr[[FVM_ContThis() ^(s)]].
 	instr[[FVM_ContNew(lbl, _) ^(s)]] := lbl[[lbl ^(s)]].
+	instr[[FVM_Yield(lbl) ^(s)]] := lbl[[lbl ^(s)]].
 	instr[[FVM_ContCall(lbl) ^(s)]] := lbl[[lbl ^(s)]].
 	instr[[FVM_ContCall(_, lbl) ^(s)]] := lbl[[lbl ^(s)]].
 	instr[[FVM_ContReturn(_) ^(s)]].

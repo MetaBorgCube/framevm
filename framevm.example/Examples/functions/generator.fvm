@@ -14,82 +14,69 @@ MAIN:
 	dup						//
 	link [] P				//
 							//
-	scopedown FOR_INIT		// Enter for loop
+	newscope FOR_INIT		// Enter for loop
+	
+FOR_INIT:
+	new 0					// Try frame
+	dup						// Used for calling the generator in 
+	link [] P				//
+							//
+	new 0					// Catch frame
+	dup						// Used to catch the no more element exception
+	link [] P				//
+							//
+	try FOR_START FOR_TERM FOR_END
+	
+FOR_START:
+	new 0					// Func call frame
+	dup						//
+	link [] P				//
+							//
+	cnew FUNC 2				// Create new control frame
+	dup						//
+	cget [x]				// Copy over exception handler
+	csetr [x]				//
+	dup						//
+	cthis					// Set the return address
+	csetr [c]				//
+							//
+	jump FOR				// Start actual for loop
+	
+FOR:
+	ccall FOR_RET			// Call the function
+	
+FOR_RET:
+	rget 2					// Get result and continuation
+	print					// Print res
+	jump FOR				// Start the loop again
+	
+FOR_TERM:
+	cret [n]				// Return to the fallthrough continuation
+	
+FOR_END:
+	jump MAIN_END			// For loop is finished
+	
+FUNC:
+	cthis					// Yield a value and a continuation
+	ipush 1					// The value
+	cget [c]				// 
+	transfer 2				// Copy them over
+	cget [c]				//
+	ccall FUNC_1			// Yield
+	
+FUNC_1:
+	ipush 2					// Yield 2
+	yield FUNC_2			//
+	
+FUNC_2:
+	ipush 3					// Yield 3
+	yield FUNC_3			//
+	
+FUNC_3:	
+	ipush -1				// Throw -1
+	throw					//
 	
 MAIN_END:
 	ipush 0					//
 	return					// exitcode 0
-	
-FOR_INIT:
-	new	1					// Try frame
-	dup						//
-	link [] P				//
-							//
-	new						// Catch frame
-	dup						//
-	link [] P				//
-							//
-	try FOR_START FOR_END	// Create try-catch blocks and run
-	
-FOR_START:
-	new						// Call frame for generator
-	dup						//
-	link [] P				// Link it
-							//
-	call FUNC_1 FOR_BODY	// Start the generator with an initial call
-	
-FOR_BODY:
-	get [r]					// Get generator value
-	dup						//
-	getr [0]				// Get result value
-	set [0]					// Store in i
-							//
-	get [0]					//
-	print					// print i
-							//
-	getr [1]				// Get continuation
-	call FOR_BODY			// Call it
-
-FOR_END:
-	scopeup [P] MAIN_END	// just go back to the main
-	
-FUNC_1:
-	new	2					// Return object frame
-	dup						//
-	ipush 1					//
-	setr [0]				// Result = 1
-							//
-	dup						//
-	cnew FUNC_2				// Create continuation
-	setr [1]				// Store in return object
-							//
-	return					// yield
-	
-FUNC_2:
-	new	2					// Return object frame
-	dup						//
-	ipush 2					//
-	setr [0]				// Result = 1
-							//
-	dup						//
-	cnew FUNC_3				// Create continuation
-	setr [1]				// Store in return object
-							//
-	return					// yield
-	
-FUNC_3:
-	new	2					// Return object frame
-	dup						//
-	ipush 3					//
-	setr [0]				// Result = 1
-							//
-	dup						//
-	cnew FUNC_END			// Create continuation
-	setr [1]				// Store in return object
-							//
-	return					// yield
-	
-FUNC_END:
-	ipush -1				// No more elements
-	throw					// Therefore throw some exception (-1 in this case)
 	

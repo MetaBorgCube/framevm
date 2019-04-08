@@ -108,6 +108,7 @@ sorts Instr context-free syntax
   
   ControlInstr.FVM_Return    = <return>
   ControlInstr.FVM_ReturnN   = <return <INTLEZ>>  
+  ControlInstr.FVM_Yield     = <yield <Label>>
   ControlInstr.FVM_JumpZ     = <jumpz <Label> <Label>>	// Jump to first label if stack zero, else jump to other label
   ControlInstr.FVM_Jump      = <jump <Label>>			// Unconditional jump to LABEL
   ControlInstr.FVM_Call      = <call <Label> <Label>>	// Call block LABEL, using frame on the stack
