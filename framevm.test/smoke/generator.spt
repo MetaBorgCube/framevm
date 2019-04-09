@@ -6,73 +6,72 @@ test Generator example RISC [[MAIN:
 	new
 	dup
 	link [] P
+
 	newscope FOR_INIT
+	
+FOR_INIT:
+	new 0
+	dup
+	link [] P
+
+	new 0
+	dup
+	link [] P
+
+	try FOR_START FOR_TERM FOR_END
+	
+FOR_START:
+	new 0
+	dup
+	link [] P
+
+	cnew FUNC 2
+	dup
+	cget [x]
+	csetr [x]
+	dup
+	cthis
+	csetr [c]
+
+	jump FOR
+	
+FOR:
+	ccall FOR_RET
+	
+FOR_RET:
+	rget 2
+	print
+	jump FOR
+	
+FOR_TERM:
+	cret [n]
+	
+FOR_END:
+	jump MAIN_END
+	
+FUNC:
+	cthis
+	ipush 1
+	cget [c]
+	transfer 2
+	cget [c]
+	ccall FUNC_1
+	
+FUNC_1:
+	ipush 2
+	yield FUNC_2
+	
+FUNC_2:
+	ipush 3
+	yield FUNC_3
+	
+FUNC_3:	
+	ipush -1
+	throw
 	
 MAIN_END:
 	ipush 0
 	return
-	
-FOR_INIT:
-	new 1
-	dup
-	link [] P
-	new
-	dup
-	link [] P
-	try FOR_START FOR_END
-	
-FOR_START:
-	new
-	dup
-	link [] P
-	call FUNC_1 FOR_BODY
-	
-FOR_BODY:
-	rget
-	dup
-	getr [0]
-	set [0]
-	get [0]
-	print
-	getr [1]
-	call FOR_BODY
-
-FOR_END:
-	exitscope [P] MAIN_END
-	
-FUNC_1:
-	new 2
-	dup
-	ipush 1
-	setr [0]
-	dup
-	cnew FUNC_2
-	setr [1]
-	return
-	
-FUNC_2:
-	new 2
-	dup
-	ipush 2
-	setr [0]
-	dup
-	cnew FUNC_3
-	setr [1]
-	return
-	
-FUNC_3:
-	new 2
-	dup
-	ipush 3
-	setr [0]
-	dup
-	cnew FUNC_END
-	setr [1]
-	return
-	
-FUNC_END:
-	ipush -1
-	throw
 ]] transform "Run -> RISC" to "1
 2
 3"
@@ -82,73 +81,72 @@ test Generator example CISC [[MAIN:
 	new
 	dup
 	link [] P
+
 	newscope FOR_INIT
+	
+FOR_INIT:
+	new 0
+	dup
+	link [] P
+
+	new 0
+	dup
+	link [] P
+
+	try FOR_START FOR_TERM FOR_END
+	
+FOR_START:
+	new 0
+	dup
+	link [] P
+
+	cnew FUNC 2
+	dup
+	cget [x]
+	csetr [x]
+	dup
+	cthis
+	csetr [c]
+
+	jump FOR
+	
+FOR:
+	ccall FOR_RET
+	
+FOR_RET:
+	rget 2
+	print
+	jump FOR
+	
+FOR_TERM:
+	cret [n]
+	
+FOR_END:
+	jump MAIN_END
+	
+FUNC:
+	cthis
+	ipush 1
+	cget [c]
+	transfer 2
+	cget [c]
+	ccall FUNC_1
+	
+FUNC_1:
+	ipush 2
+	yield FUNC_2
+	
+FUNC_2:
+	ipush 3
+	yield FUNC_3
+	
+FUNC_3:	
+	ipush -1
+	throw
 	
 MAIN_END:
 	ipush 0
 	return
-	
-FOR_INIT:
-	new 1
-	dup
-	link [] P
-	new
-	dup
-	link [] P
-	try FOR_START FOR_END
-	
-FOR_START:
-	new
-	dup
-	link [] P
-	call FUNC_1 FOR_BODY
-	
-FOR_BODY:
-	rget
-	dup
-	getr [0]
-	set [0]
-	get [0]
-	print
-	getr [1]
-	call FOR_BODY
-
-FOR_END:
-	exitscope [P] MAIN_END
-	
-FUNC_1:
-	new 2
-	dup
-	ipush 1
-	setr [0]
-	dup
-	cnew FUNC_2
-	setr [1]
-	return
-	
-FUNC_2:
-	new 2
-	dup
-	ipush 2
-	setr [0]
-	dup
-	cnew FUNC_3
-	setr [1]
-	return
-	
-FUNC_3:
-	new 2
-	dup
-	ipush 3
-	setr [0]
-	dup
-	cnew FUNC_END
-	setr [1]
-	return
-	
-FUNC_END:
-	ipush -1
-	throw
 ]] transform "Run -> CISC" to "1
 2
 3"

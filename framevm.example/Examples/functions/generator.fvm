@@ -62,7 +62,7 @@ FUNC:
 	cget [c]				// 
 	transfer 2				// Copy them over
 	cget [c]				//
-	ccall FUNC_1			// Yield
+	ccall FUNC_1			// Yield 1
 	
 FUNC_1:
 	ipush 2					// Yield 2

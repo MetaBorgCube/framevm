@@ -3,186 +3,254 @@ module smoke_with
 language framevm
 
 test with example RISC [[MAIN:
-	new 2
+	new 3
 	dup
 	link [] P
-	newscope WITH_I_1
+
+	newscope WITH_I_INIT
+	
+WITH_I_INIT:
+	new 4
+
+	dup
+	ipush 4
+	setr [0]
+
+	dup
+	ipush 5
+	setr [1]
+
+	dup
+	ipush 6
+	setr [2]
+
+	dup
+	ipush 7
+	setr [3]
+	set [1]
+
+	ipush 1
+	set [2]
+	jump WITH_I
+	
+WITH_I:
+	get [2]
+	get [1, 0]
+	eqi
+	jumpz WITH_I_NEXT WITH_I_END
+	
+WITH_I_NEXT:
+	get [1]
+	get [2]
+	getr
+	set [0]
+
+	new 3
+	dup
+	link [] P
+	newscope WITH_J_INIT
+	
+WITH_I_INC:	
+	get [2]
+	ipush 1
+	addi
+	set [2]
+	jump WITH_I
+	
+WITH_I_END:
+	exitscope [P] MAIN_END
+	
+	
+WITH_J_INIT:
+	new 4
+
+	dup
+	ipush 4
+	setr [0]
+
+	dup
+	ipush 1
+	setr [1]
+
+	dup
+	ipush 2
+	setr [2]
+
+	dup
+	ipush 3
+	setr [3]
+	set [1]
+
+	ipush 1
+	set [2]
+	jump WITH_J
+	
+WITH_J:
+	get [2]
+	get [1, 0]
+	eqi
+	jumpz WITH_J_NEXT WITH_J_END
+	
+WITH_J_NEXT:
+	get [1]
+	get [2]
+	getr
+	set [0]
+
+	get [0]
+	get [P, 0]
+	addi
+	ipush 9
+	eqi
+	jumpz WITH_J_ASSERT_FALSE WITH_J_ASSERT_TRUE
+	
+WITH_J_ASSERT_TRUE:
+	get [P, 0]
+	print
+	get [0]
+	print
+	jump WITH_J_ASSERT_FALSE
+	
+WITH_J_ASSERT_FALSE:
+	get [2]
+	ipush 1
+	addi
+	set [2]
+	jump WITH_J
+	
+WITH_J_END:
+	exitscope [P] WITH_I_INC
 	
 MAIN_END:
 	ipush 0
 	return
-	
-ASSERT_FALSE:
-	get [0]
-	ccall
-	
-WITH_I_1:
-	cnew WITH_I_2
-	set [0]
-	ipush 5
-	set [1]
-	jump WITH_I_BODY
-		
-WITH_I_2:
-	cnew WITH_I_3
-	set [0]
-	ipush 6
-	set [1]
-	jump WITH_I_BODY
-		
-WITH_I_3:
-	cnew WITH_I_EXIT
-	set [0]
-	ipush 7
-	set [1]
-	jump WITH_I_BODY
-	
-WITH_I_BODY:
-	new 2
-	dup
-	link [] P
-	newscope WITH_J_1
-	
-WITH_I_END:
-	get [0]
-	ccall
-	
-WITH_I_EXIT:
-	exitscope [P] MAIN_END
-	
-WITH_J_1:
-	cnew WITH_J_2
-	set [0]
-	ipush 1
-	set [1]
-	jump WITH_J_BODY
-	
-WITH_J_2:
-	cnew WITH_J_3
-	set [0]
-	ipush 2
-	set [1]
-	jump WITH_J_BODY
-	
-	
-WITH_J_3:
-	cnew WITH_J_END
-	set [0]
-	ipush 3
-	set [1]
-	jump WITH_J_BODY
-	
-WITH_J_BODY:
-	get [1]
-	get [P, 1]
-	addi
-	ipush 9
-	eqi
-	jumpz ASSERT_FALSE WITH_J_BODY2
-	
-WITH_J_BODY2:
-	get [P, 1]
-	print
-	get [1]
-	print
-	get[0]
-	ccall
-	
-WITH_J_END:
-	exitscope [P] WITH_I_END
 ]] transform "Run -> RISC" to "6
 3
 7
 2"
 
 test with example CISC [[MAIN:
-	new 2
+	new 3
 	dup
 	link [] P
-	newscope WITH_I_1
+
+	newscope WITH_I_INIT
+	
+WITH_I_INIT:
+	new 4
+
+	dup
+	ipush 4
+	setr [0]
+
+	dup
+	ipush 5
+	setr [1]
+
+	dup
+	ipush 6
+	setr [2]
+
+	dup
+	ipush 7
+	setr [3]
+	set [1]
+
+	ipush 1
+	set [2]
+	jump WITH_I
+	
+WITH_I:
+	get [2]
+	get [1, 0]
+	eqi
+	jumpz WITH_I_NEXT WITH_I_END
+	
+WITH_I_NEXT:
+	get [1]
+	get [2]
+	getr
+	set [0]
+
+	new 3
+	dup
+	link [] P
+	newscope WITH_J_INIT
+	
+WITH_I_INC:	
+	get [2]
+	ipush 1
+	addi
+	set [2]
+	jump WITH_I
+	
+WITH_I_END:
+	exitscope [P] MAIN_END
+	
+	
+WITH_J_INIT:
+	new 4
+
+	dup
+	ipush 4
+	setr [0]
+
+	dup
+	ipush 1
+	setr [1]
+
+	dup
+	ipush 2
+	setr [2]
+
+	dup
+	ipush 3
+	setr [3]
+	set [1]
+
+	ipush 1
+	set [2]
+	jump WITH_J
+	
+WITH_J:
+	get [2]
+	get [1, 0]
+	eqi
+	jumpz WITH_J_NEXT WITH_J_END
+	
+WITH_J_NEXT:
+	get [1]
+	get [2]
+	getr
+	set [0]
+
+	get [0]
+	get [P, 0]
+	addi
+	ipush 9
+	eqi
+	jumpz WITH_J_ASSERT_FALSE WITH_J_ASSERT_TRUE
+	
+WITH_J_ASSERT_TRUE:
+	get [P, 0]
+	print
+	get [0]
+	print
+	jump WITH_J_ASSERT_FALSE
+	
+WITH_J_ASSERT_FALSE:
+	get [2]
+	ipush 1
+	addi
+	set [2]
+	jump WITH_J
+	
+WITH_J_END:
+	exitscope [P] WITH_I_INC
 	
 MAIN_END:
 	ipush 0
 	return
-	
-ASSERT_FALSE:
-	get [0]
-	ccall
-	
-WITH_I_1:
-	cnew WITH_I_2
-	set [0]
-	ipush 5
-	set [1]
-	jump WITH_I_BODY
-		
-WITH_I_2:
-	cnew WITH_I_3
-	set [0]
-	ipush 6
-	set [1]
-	jump WITH_I_BODY
-		
-WITH_I_3:
-	cnew WITH_I_EXIT
-	set [0]
-	ipush 7
-	set [1]
-	jump WITH_I_BODY
-	
-WITH_I_BODY:
-	new 2
-	dup
-	link [] P
-	newscope WITH_J_1
-	
-WITH_I_END:
-	get [0]
-	ccall
-	
-WITH_I_EXIT:
-	exitscope [P] MAIN_END
-	
-WITH_J_1:
-	cnew WITH_J_2
-	set [0]
-	ipush 1
-	set [1]
-	jump WITH_J_BODY
-	
-WITH_J_2:
-	cnew WITH_J_3
-	set [0]
-	ipush 2
-	set [1]
-	jump WITH_J_BODY
-	
-	
-WITH_J_3:
-	cnew WITH_J_END
-	set [0]
-	ipush 3
-	set [1]
-	jump WITH_J_BODY
-	
-WITH_J_BODY:
-	get [1]
-	get [P, 1]
-	addi
-	ipush 9
-	eqi
-	jumpz ASSERT_FALSE WITH_J_BODY2
-	
-WITH_J_BODY2:
-	get [P, 1]
-	print
-	get [1]
-	print
-	get[0]
-	ccall
-	
-WITH_J_END:
-	exitscope [P] WITH_I_END
 ]] transform "Run -> CISC" to "6
 3
 7

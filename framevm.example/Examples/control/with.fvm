@@ -10,104 +10,125 @@
 }
 
 MAIN:
-	new	 1					// New frame for the outer with
+	new 3					// With i frame
 	dup						//
 	link [] P				//
 							//
-	scopedown WITH_I_1		// Enter with scope
+	newscope WITH_I_INIT	//
+	
+WITH_I_INIT:
+	new 4					// Create array
+							//
+	dup						// Set length
+	ipush 4					//
+	setr [0]				//
+							//
+	dup						// First value
+	ipush 5					//
+	setr [1]				//
+							//
+	dup						// Second value
+	ipush 6					//
+	setr [2]				//
+							//
+	dup						// Third value
+	ipush 7					//
+	setr [3]				//
+	set [1]					// Store array
+							//
+	ipush 1					// Start index
+	set [2]					//
+	jump WITH_I				//
+	
+WITH_I:
+	get [2]					// Index
+	get [1, 0]				// list.length
+	eqi						// If all option checked
+	jumpz WITH_I_NEXT WITH_I_END
+	
+WITH_I_NEXT:
+	get [1]					// Array
+	get [2]					// Index
+	getr					// get A[i]
+	set [0]					// i := next i
+							//
+	new 3					// With j frame
+	dup						//
+	link [] P				//
+	newscope WITH_J_INIT	//
+	
+WITH_I_INC:	
+	get [2]					// Increment idx
+	ipush 1					//
+	addi					//
+	set [2]					//
+	jump WITH_I				// Goto next iteration
+	
+WITH_I_END:
+	exitscope [P] MAIN_END	// Exit With I
+	
+	
+WITH_J_INIT:
+	new 4					// Create array
+							//
+	dup						// Array.length
+	ipush 4					//
+	setr [0]				//
+							//
+	dup						// First value
+	ipush 1					//
+	setr [1]				//
+							//
+	dup						// Second value
+	ipush 2					//
+	setr [2]				//
+							//
+	dup						// Third value
+	ipush 3					//
+	setr [3]				//
+	set [1]					// Store array
+							//
+	ipush 1					// Index
+	set [2]					//
+	jump WITH_J				//
+	
+WITH_J:
+	get [2]					// Index
+	get [1, 0]				// list.length
+	eqi						// If all option checked
+	jumpz WITH_J_NEXT WITH_J_END
+	
+WITH_J_NEXT:
+	get [1]					// Array
+	get [2]					// Index
+	getr					// A[idx]
+	set [0]					// j := next j
+							//
+	get [0]					// j
+	get [P, 0]				// i
+	addi					//
+	ipush 9					//
+	eqi						// i + j == 9
+	jumpz WITH_J_ASSERT_FALSE WITH_J_ASSERT_TRUE
+	
+WITH_J_ASSERT_TRUE:
+	get [P, 0]				// i
+	print					//
+	get [0]					// j
+	print					//
+	jump WITH_J_ASSERT_FALSE
+	
+WITH_J_ASSERT_FALSE:
+	get [2]					// Increment idx
+	ipush 1					//
+	addi					//
+	set [2]					//
+	jump WITH_J				// Goto next
+	
+WITH_J_END:
+	exitscope [P] WITH_I_INC
 	
 MAIN_END:
 	ipush 0					// Exitcode 0
 	return					//
-	
-ASSERT_FALSE:
-	get [n]					// Call the continuation to the next option
-	ccall					//
-	
-WITH_I_1:
-	cnew WITH_I_2			// New continuation for next option
-	set [n]					//
-							//
-	ipush 5					//
-	set [0]					// i := 5
-	jump WITH_I_BODY		// Go to the body
-		
-WITH_I_2:
-	cnew WITH_I_3			// New continuation for next option
-	set [n]					//
-							//
-	ipush 6					// i := 6
-	set [0]					//	
-	jump WITH_I_BODY		// Execute body
-		
-WITH_I_3:
-	cnew WITH_I_EXIT		// New continuation for next option
-	set [n]					//
-							//
-	ipush 7					//
-	set [0]					// i := 7
-	jump WITH_I_BODY		// Execute body
-	
-WITH_I_BODY:
-	new	1					// Frame for inner with
-	dup						//
-	link [] P				//
-							//
-	scopedown WITH_J_1		// Enter inner with
-	
-WITH_I_END:
-	get [n]					// 
-	ccall					// 
-	
-WITH_I_EXIT:
-	scopeup [P] MAIN_END	// Exit the with loop
-	
-WITH_J_1:
-	cnew WITH_J_2			// Inner with next option
-	set [n]					//
-							//
-	ipush 1					//
-	set [0]					// j := 1
-	jump WITH_J_BODY		//
-	
-WITH_J_2:
-	cnew WITH_J_3			// Next option
-	set [n]					//
-							//
-	ipush 2					//
-	set [0]					// j := 2
-	jump WITH_J_BODY		//
-	
-	
-WITH_J_3:
-	cnew WITH_J_END			// Next option
-	set [n]					//
-							//
-	ipush 3					//
-	set [0]					// j := 3
-	jump WITH_J_BODY		//
-	
-WITH_J_BODY:
-	get [0]					// j
-	get [P, 0]				// i
-	addi					// i + j
-	ipush 9					//
-	eqi						// == 9
-							// Assert
-	jumpz ASSERT_FALSE WITH_J_BODY2
-	
-WITH_J_BODY2:
-	get [P, 0]				// i
-	print					//
-							//
-	get [0]					// j
-	print					//
-							//
-	get[n]					//
-	ccall					// Goto next
-	
-WITH_J_END:
-	scopeup [P] WITH_I_END	// Exit inner with
-	
-	
 	

@@ -29,6 +29,12 @@ rules
 		 FVM_ContReturn()
 		]
 		
+	r-cont: FVM_ReturnN(n) -> 
+		[FVM_ContTransfer(n, FVM_Cont(Bind("c", 0))), 
+		 FVM_ContGet(FVM_Cont(Bind("c", 0))), 
+		 FVM_ContReturn()
+		]
+		
 	r-cont: FVM_Call(FVM_Label(block), FVM_Label(returnAddr)) -> 
 		[FVM_ContNew(FVM_Label(block), "2"), 
 		 FVM_Dup(),
