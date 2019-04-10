@@ -8,9 +8,6 @@ import java.util.HashMap;
  * a pointer to the currently active frame and the console output.
  */
 public class MachineState {
-	//TODO: This heap shouldn't be needed in a full Java implementation as all frames are linked
-	// - `dup` instruction breaks stuff as you don't want to duplicate this, so the operandStacks stack might need a tiny local heap
-	public HashMap<String, Frame> heap;
 	public HashMap<String, Block> blocks;
 	public MachineThread thread;
 	public StringBuilder stdout;
@@ -26,7 +23,6 @@ public class MachineState {
 	 * 		The size of the link registers
 	 */
 	public MachineState(int link_size) {
-		this.heap = new HashMap<>();
 		this.blocks = new HashMap<>();
 		this.stdout = new StringBuilder();
 		this.debug = "";
@@ -47,31 +43,18 @@ public class MachineState {
 	public Block getBlock(String name) {
 		return blocks.get(name);
 	}
-	
+		
 	/**
-	 * Get the {@link Frame} with the given id.
-	 * 
-	 * @param id
-	 * 		The id of the frame
-	 * @return
-	 * 		The frame
-	 */
-	public Frame getFrame(String id) {
-		return heap.get(id);
-	}
-	
-	/**
-	 * Create a new frame and put it on the heap.
+	 * Create a new frame.
 	 * 
 	 * @param size
 	 * 		The amount of slots for the new frame
 	 * @return
-	 * 		The id of the new frame
+	 * 		The new frame
 	 */
-	public String newFrame(int size) {
+	public Frame newFrame(int size) {
 		String id = "frame_" + count++;
-		heap.put(id, new Frame(id, size, linkSize));
-		return id;
+		return new Frame(id, size, linkSize);
 	}
 
 	/**
@@ -84,8 +67,7 @@ public class MachineState {
 	 */
 	public Frame newFrameFrom(Frame old) {
 		String id = "frame_" + count++;
-		heap.put(id, new Frame(id, old));
-		return heap.get(id);
+		return new Frame(id, old);
 	}
 
 	/**

@@ -19,7 +19,7 @@ public class frame_new_0_1 extends FVMStrategy {
 	// create a new frame and return it
 	protected IStrategoTerm invoke(IOAgent io, ITermFactory factory, MachineState env, IStrategoTerm arg) {
 		int size = ((StrategoInt) arg).intValue();
-		Frame frame = env.getFrame(env.newFrame(size));
+		Frame frame = env.newFrame(size);
 
 		return factory.makeTuple(new StrategoBlob(env), new StrategoBlob(frame));
 	}
