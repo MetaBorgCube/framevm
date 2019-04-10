@@ -1,0 +1,164 @@
+#init 3
+#cont p -> 0
+
+MAIN:
+	new 3				// Create array containing the threads
+	dup					//
+	ipush 2				// Array length
+	setr [0]			//
+						//
+	dup					//
+	new					//
+	cnew THREAD1 1		// Thread 1
+	dup					//
+	cthis				//
+	csetr [p]			// Set pause/exit handler to the scheduler
+	setr [1]			// Store in array
+						//
+	dup					//
+	new					//
+	cnew THREAD2 1		// Thread 2
+	dup					//
+	cthis				//
+	csetr [p]			// Set pause/exit handler to the scheduler
+	setr [2]			// Store in array
+						//
+	set [0]				// Store array
+	ipush 0				//
+	set [1]				// Current index := 0
+	ipush 2				//
+	set [2]				// Live threads := 2
+						//
+	jump SCHEDULER_NEXT	// Start the actual scheduler
+
+SCHEDULER_NEXT_0:
+	rget 1				// The thread id is not important when it is just paused
+	pop					// Just pop it
+	jump SCHEDULER_NEXT // 
+	
+SCHEDULER_NEXT:
+	get [2]				// Live threads: if zero we are done
+	jumpz SCHEDULER_EXIT SCHEDULER_NEXT_2
+
+SCHEDULER_NEXT_2:
+	get [1]				// Index
+	get [0, 0]			// list.length
+	eqi					// If last thread in list
+	jumpz SCHEDULER_NEXT_INC SCHEDULER_NEXT_FIRST
+	
+SCHEDULER_AFTER_PAUSE:
+	rget 1				// Check if it was a PAUSE or EXIT
+	jumpz SCHEDULER_REMOVE SCHEDULER_NEXT_0
+	
+SCHEDULER_REMOVE:
+	rget 1				// Thread ID
+	get [0]				// Thread Array
+	swap				//
+	ipush 0				// Write 0 to signal a killed thread
+	setr				//
+						//
+	get [2]				//
+	ipush 1				//
+	subi				//
+	set [2]				// Decrement alive counter
+						//
+	jump SCHEDULER_NEXT	// Go to the next iteration
+	
+SCHEDULER_NEXT_FIRST:
+	ipush 0				// Set the index back to 0
+	set [1]				//
+	jump SCHEDULER_NEXT_INC
+		
+SCHEDULER_NEXT_INC:
+	get [1]				// Index
+	dup					// 
+	ipush 1				//
+	addi				// Increment
+	set [1]				// Store
+						//
+	get [0]				//
+	swap				//
+	ipush 1				//
+	addi				// Add 1 to the index (skip length slot)
+	getr				// Get A[i]
+	dup					//
+	cont?				// Check if the thread is alive (it's a 0 otherwise)
+	jumpz SCHEDULER_SKIP SCHEDULER_EXECUTE
+	
+SCHEDULER_SKIP:
+	pop					// Pop continuation from the stack if skipped (it's actually an integer)
+	jump SCHEDULER_NEXT_2
+	
+SCHEDULER_EXECUTE:
+	ccall SCHEDULER_AFTER_PAUSE
+	
+SCHEDULER_EXIT:
+	jump MAIN_END		// We are done
+	
+THREAD1:
+	ipush 0				// Store counter on stack
+	jump THREAD1_CONT	// Start main execution of the thread
+	
+THREAD1_CONT:
+    ipush 1				// Thread ID
+    print				//
+    					//
+    dup					// Dup counter
+    print				//
+    ipush 1				//
+    addi				// Increment counter
+    dup					//
+    ipush 9				//
+    eqi					// Check if we are done
+    jumpz THREAD1_NEXT THREAD1_EXIT
+
+THREAD1_NEXT:
+    ipush 1				// Thread ID
+    ipush 1				// PAUSE
+    transfer 2 [p]		//
+    cget [p]			//
+    ccall THREAD1_CONT	// Signal PAUSE
+
+THREAD1_EXIT:
+    pop					// Get rid of the counter
+    ipush 1				// Thread ID
+    ipush 0				// EXIT
+    transfer 2 [p]		//
+    cget [p]			//
+    cret				// Signal EXIT
+    
+THREAD2:
+	ipush 0				// Store counter on stack
+	jump THREAD2_CONT	// Start main execution of the thread
+	
+THREAD2_CONT:
+    ipush 2				// Thread ID
+    print				//
+    					//
+    dup					// Dup counter
+    print				//
+    ipush 1				//
+    addi				// Increment counter
+    dup					//
+    ipush 4				//
+    eqi					// Check if we are done
+    jumpz THREAD2_NEXT THREAD2_EXIT
+
+THREAD2_NEXT:
+    ipush 2				// Thread ID
+    ipush 1				// PAUSE
+    transfer 2 [p]		//
+    cget [p]			//
+    ccall THREAD2_CONT	// Signal PAUSE
+
+THREAD2_EXIT:
+    pop					// Get rid of the counter
+    ipush 2				// Thread ID
+    ipush 0				// EXIT
+    transfer 2 [p]		//
+    cget [p]			//
+    cret				// Signal EXIT
+    
+MAIN_END:
+	ipush 0				// Exitcode 0
+	return				//
