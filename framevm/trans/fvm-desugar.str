@@ -19,13 +19,5 @@ rules
     desugar-full = desugar; to-RISC-all
     desugar = apply-aliasses; fix-seq; desugar-pseudo-all
   	 
-	resugar = resugar-seq; resugar-pseudo-all; resugar-aliasses
-	
-
-    resugar-seq: FVM_Program(s, blocks, l) -> FVM_Program(FVM_InitSize(<int-to-string> s), [], <map(resugar-seq)> blocks)
-    resugar-seq: FVM_PseudoCode(body) -> FVM_PseudoCode(body)
-    resugar-seq: FVM_Block(lbl, FVM_Seq(body)) -> FVM_Block(lbl, FVM_SeqJump(body2, last))
-      where
-      	(body2, last) := <split-init-last> body 
-   
+	resugar = resugar-seq; resugar-pseudo-all; resugar-aliasses 
    

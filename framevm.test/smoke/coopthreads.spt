@@ -1,4 +1,4 @@
-module smoke_add
+module smoke_threads
 
 language framevm
 
@@ -15,7 +15,7 @@ MAIN:
 	new
 	cnew THREAD1 1
 	dup
-	cthis
+	cget []
 	csetr [p]
 	setr [1]
 
@@ -23,7 +23,7 @@ MAIN:
 	new
 	cnew THREAD2 1
 	dup
-	cthis
+	cget []
 	csetr [p]
 	setr [2]
 
@@ -206,7 +206,7 @@ MAIN:
 	new
 	cnew THREAD1 1
 	dup
-	cthis
+	cget []
 	csetr [p]
 	setr [1]
 
@@ -214,7 +214,7 @@ MAIN:
 	new
 	cnew THREAD2 1
 	dup
-	cthis
+	cget []
 	csetr [p]
 	setr [2]
 

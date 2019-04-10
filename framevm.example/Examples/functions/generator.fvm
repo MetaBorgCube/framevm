@@ -37,7 +37,7 @@ FOR_START:
 	cget [x]				// Copy over exception handler
 	csetr [x]				//
 	dup						//
-	cthis					// Set the return address
+	cget []					// Set the return address
 	csetr [c]				//
 							//
 	jump FOR				// Start actual for loop
@@ -57,7 +57,7 @@ FOR_END:
 	jump MAIN_END			// For loop is finished
 	
 FUNC:
-	cthis					// Yield a value and a continuation
+	cget []					// Yield a value and a continuation
 	ipush 1					// The value
 	cget [c]				// 
 	transfer 2				// Copy them over

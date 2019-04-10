@@ -30,7 +30,7 @@ FOR_START:
 	cget [x]
 	csetr [x]
 	dup
-	cthis
+	cget []
 	csetr [c]
 
 	jump FOR
@@ -50,7 +50,7 @@ FOR_END:
 	jump MAIN_END
 	
 FUNC:
-	cthis
+	cget []
 	ipush 1
 	cget [c]
 	transfer 2
@@ -105,7 +105,7 @@ FOR_START:
 	cget [x]
 	csetr [x]
 	dup
-	cthis
+	cget []
 	csetr [c]
 
 	jump FOR
@@ -125,7 +125,7 @@ FOR_END:
 	jump MAIN_END
 	
 FUNC:
-	cthis
+	cget []
 	ipush 1
 	cget [c]
 	transfer 2

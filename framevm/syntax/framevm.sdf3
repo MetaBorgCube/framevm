@@ -38,6 +38,11 @@ sorts Block context-free syntax
   Body.FVM_SeqJump = <<instr:Instr*> 
 <jump:ControlInstr>
 >			{ layout (align-list instr && align instr jump) }
+
+  Body.FVM_RetSeqJump = <<ret:OnReturnInstr>
+<instr:Instr*> 
+<jump:ControlInstr>
+>			{ layout (align-list instr && align instr jump && align ret instr) }
   
 sorts Instr context-free syntax
   Instr.FVM_Print    = <print>					// Prints value on the stack
@@ -101,8 +106,9 @@ sorts Instr context-free syntax
   ContInstr.FVM_ContNew      = <cnew <Label> <INTLEZ>>  		// Create a continuation for a frame on the stack at a new execution point
   ContInstr.FVM_ContTransfer = <transfer <INTLEZ> [<ContRef>]>	// Transfer n elements as returned values to the given continuation
   ContInstr.FVM_ContTransfer = <transfer <INTLEZ>>				// Transfer n elements as returned values to the continuation on top of the stack
-  ContInstr.FVM_ContRGetN    = <rget <INTLEZ>>					// Get n returned values onto the stack
-  ContInstr.FVM_ContRGet     = <rget>							// Get a return value on the stack
+  
+  OnReturnInstr.FVM_ContRGetN    = <rget <INTLEZ>>				// Get n returned values onto the stack
+  OnReturnInstr.FVM_ContRGet     = <rget>						// Get a return value on the stack
   
   ContInstr.FVM_ContSet      = <cset>							// Store the value on top of the stack in the slot with id on second position
   ContInstr.FVM_ContSet      = <cset [<ContRef>]>				// Store the value on top of the stack in the given slot
