@@ -40,6 +40,9 @@ sorts Block context-free syntax
 >			{ layout (align-list instr && align instr jump) }
   
 sorts Instr context-free syntax
+  Instr.FVM_Print    = <print>					// Prints value on the stack
+  Instr.FVM_Debug    = <debug>					// Prints the state of the vm
+  
   
   Instr = IntInstr
   IntInstr.FVM_IPush  = <ipush <INT>>			// Push int value to stack
@@ -57,18 +60,19 @@ sorts Instr context-free syntax
   IntInstr.FVM_IXor   = <xori>					// Consumes two ints from stack and performs binary xor on them, result is stored on stack
   IntInstr.FVM_IAnd   = <andi>					// Consumes two ints from stack and performs binary and on them, result is stored on stack
   
-  Instr.FVM_Pop      = <pop>					// Discards the top value on the stack
-  Instr.FVM_Dup      = <dup>					// Duplicates the value on the stack
-  Instr.FVM_DupN     = <dup <INTLZ>>			// Duplicates the n-th value on the stack
-  Instr.FVM_Swap     = <swap>					// Swaps two values on the stack
-  Instr.FVM_SwapN    = <swap <INTLZ>>			// Swaps the value on top of the stack with the one in (n+1)th position
-  Instr.FVM_Print    = <print>					// Prints value on the stack
-  Instr.FVM_Debug    = <debug>					// Prints the state of the vm
+  
+  Instr = StackInstr
+  StackInstr.FVM_Pop      = <pop>				// Discards the top value on the stack
+  StackInstr.FVM_Dup      = <dup>				// Duplicates the value on the stack
+  StackInstr.FVM_DupN     = <dup <INTLZ>>		// Duplicates the n-th value on the stack
+  StackInstr.FVM_Swap     = <swap>				// Swaps two values on the stack
+  StackInstr.FVM_SwapN    = <swap <INTLZ>>		// Swaps the value on top of the stack with the one in (n+1)th position
+  
   
   Instr = TypeInstr
-  TypeInstr.FVM_IsInt   = <int?>
-  TypeInstr.FVM_IsCont  = <cont?>
-  TypeInstr.FVM_IsFrame = <frame?>
+  TypeInstr.FVM_IsInt   = <int?>				// Check if the element on top of the stack is an integer
+  TypeInstr.FVM_IsCont  = <cont?>				// Check if the element on top of the stack is a continuation
+  TypeInstr.FVM_IsFrame = <frame?>				// Check if the element on top of the stack is a data frame
   
   Instr = FrameInstr
   FrameInstr.FVM_New    = <new>					// Create new frame with 0 slots and push pointer on stack
@@ -93,42 +97,43 @@ sorts Instr context-free syntax
   
   
   Instr = ContInstr
-  ContInstr.FVM_ContThis   = <cthis>  			// Create a new continuation for the current execution point
-  ContInstr.FVM_ContNew    = <cnew <Label> <INTLEZ>>  	// Create a continuation for a frame on the stack at a new execution point
-  ContInstr.FVM_ContSet    = <cset>
-  ContInstr.FVM_ContSet    = <cset [<ContRef>]>
-  ContInstr.FVM_ContSetR   = <csetr>
-  ContInstr.FVM_ContSetR   = <csetr [<ContRef>]>
-  ContInstr.FVM_ContGet    = <cget>
-  ContInstr.FVM_ContGet    = <cget [<ContRef>]>
-  ContInstr.FVM_ContGetR   = <cgetr>
-  ContInstr.FVM_ContGetR   = <cgetr [<ContRef>]>
-  ContInstr.FVM_ContTransfer = <transfer <INTLEZ> [<ContRef>]>
-  ContInstr.FVM_ContTransfer = <transfer <INTLEZ>>
-  ContInstr.FVM_ContRGetN  = <rget <INTLEZ>>
-  ContInstr.FVM_ContRGet   = <rget>
+  ContInstr.FVM_ContThis     = <cget []>  						// Create a new continuation for the current execution point
+  ContInstr.FVM_ContNew      = <cnew <Label> <INTLEZ>>  		// Create a continuation for a frame on the stack at a new execution point
+  ContInstr.FVM_ContTransfer = <transfer <INTLEZ> [<ContRef>]>	// Transfer n elements as returned values to the given continuation
+  ContInstr.FVM_ContTransfer = <transfer <INTLEZ>>				// Transfer n elements as returned values to the continuation on top of the stack
+  ContInstr.FVM_ContRGetN    = <rget <INTLEZ>>					// Get n returned values onto the stack
+  ContInstr.FVM_ContRGet     = <rget>							// Get a return value on the stack
+  
+  ContInstr.FVM_ContSet      = <cset>							// Store the value on top of the stack in the slot with id on second position
+  ContInstr.FVM_ContSet      = <cset [<ContRef>]>				// Store the value on top of the stack in the given slot
+  ContInstr.FVM_ContSetR     = <csetr>							// Store the value on top of the stack in the slot with id on second position of the continuarioin on third position
+  ContInstr.FVM_ContSetR     = <csetr [<ContRef>]>				// Store the value on top of the stack in the given slot of the continuarioin on second position
+  ContInstr.FVM_ContGet      = <cget>							// Get the continuation from the slot with id on top of the stack
+  ContInstr.FVM_ContGet      = <cget [<ContRef>]>				// Get the continuation from the given slot
+  ContInstr.FVM_ContGetR     = <cgetr>							// Get the continuation from the slot with id on top of the stack from the continuation on second position
+  ContInstr.FVM_ContGetR     = <cgetr [<ContRef>]>				// Get the continuation from the given slot from the continuation on top of the stack
   
   
-  ControlInstr.FVM_Return    = <return>
-  ControlInstr.FVM_ReturnN   = <return <INTLEZ>>  
-  ControlInstr.FVM_Yield     = <yield <Label>>
-  ControlInstr.FVM_JumpZ     = <jumpz <Label> <Label>>	// Jump to first label if stack zero, else jump to other label
-  ControlInstr.FVM_Jump      = <jump <Label>>			// Unconditional jump to LABEL
-  ControlInstr.FVM_Call      = <call <Label> <Label>>	// Call block LABEL, using frame on the stack
-  ControlInstr.FVM_Call      = <call <Label>>			// Call continuation on the stack with new block
-  ControlInstr.FVM_ContCall  = <ccall <Label>>					// Call a continuation
-  ControlInstr.FVM_ContCall  = <ccall [<ContRef>] <Label>>		// Call the given continuation
-  ControlInstr.FVM_ContReturn   = <cret [<ContRef>]>		// Call the given continuation
-  ControlInstr.FVM_ContReturn   = <cret>					// Call the continuation on top of the stack
+  ControlInstr.FVM_Return     = <return>						// Return the calue on top of the stack
+  ControlInstr.FVM_ReturnN    = <return <INTLEZ>>  				// Return n values
+  ControlInstr.FVM_Yield      = <yield <Label>>					// Yield a value and the current continuation
+  ControlInstr.FVM_JumpZ      = <jumpz <Label> <Label>>			// Jump to first label if stack zero, else jump to other label
+  ControlInstr.FVM_Jump       = <jump <Label>>					// Unconditional jump to LABEL
+  ControlInstr.FVM_Call       = <call <Label> <Label>>			// Call block LABEL, using frame on the stack
+  ControlInstr.FVM_Call       = <call <Label>>					// Call continuation on the stack with new block
+  ControlInstr.FVM_ContCall   = <ccall <Label>>					// Call a continuation
+  ControlInstr.FVM_ContCall   = <ccall [<ContRef>] <Label>>		// Call the given continuation
+  ControlInstr.FVM_ContReturn = <cret [<ContRef>]>				// Call the given continuation
+  ControlInstr.FVM_ContReturn = <cret>							// Call the continuation on top of the stack
   
   ControlInstr.FVM_Try       = <try <Label> <Label> <Label>>	// Execute the frame on second position on the stack and set the first frame as exception handler
   ControlInstr.FVM_Try       = <try <Label>>					// Execute the continuation on second position on the stack and set the first continuation as exception handler
-  ControlInstr.FVM_Throw     = <throw>					// Throw the element on top of the stack to the exception handler
+  ControlInstr.FVM_Throw     = <throw>							// Throw the element on top of the stack to the exception handler
   
-  FrameInstr.FVM_ScopeExit = <exitscope <Path>>
-  ControlInstr.FVM_ScopeExit = <exitscope <Path> <Label>>	// Break execution to a higher scope
-  FrameInstr.FVM_ScopeNew  = <newscope>
-  ControlInstr.FVM_ScopeNew  = <newscope <Label>>			// Move execution to another scope and copy over the current continuation
+  FrameInstr.FVM_ScopeExit   = <exitscope <Path>>				// Set the frame at path as the current frame
+  ControlInstr.FVM_ScopeExit = <exitscope <Path> <Label>>		// Break execution to a higher scope
+  FrameInstr.FVM_ScopeNew    = <newscope>						// Set the current frame
+  ControlInstr.FVM_ScopeNew  = <newscope <Label>>				// Move execution to another scope and copy over the current continuation
   
   Path.FVM_Self  = <[]>
   Path.FVM_Path  = <[<{PathRef ","}+>]>
