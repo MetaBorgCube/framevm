@@ -98,8 +98,7 @@ instr[[FVM_ContTransfer(n, _) ^(s)]].
 
 instr[[FVM_ContRGetN(n) ^(s)]].
 instr[[FVM_ContRGet() ^(s)]].
-	
-instr[[FVM_ContUnpack() ^(s)]].
+
 instr[[FVM_Return() ^(s)]].
 instr[[FVM_Throw() ^(s)]].
 

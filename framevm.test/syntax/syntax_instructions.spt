@@ -46,7 +46,6 @@ test set     [[set]]     parse succeeds
 test setr    [[setr]]    parse succeeds
 test get     [[get]]     parse succeeds
 test getr    [[getr]]    parse succeeds
-test cunpack [[cunpack]] parse succeeds
 
 test link simple         [[link [] P]]          parse succeeds
 test link path single    [[link [P] P]]         parse succeeds

@@ -95,7 +95,6 @@ sorts Instr context-free syntax
   Instr = ContInstr
   ContInstr.FVM_ContThis   = <cthis>  			// Create a new continuation for the current execution point
   ContInstr.FVM_ContNew    = <cnew <Label> <INTLEZ>>  	// Create a continuation for a frame on the stack at a new execution point
-  ContInstr.FVM_ContUnpack = <cunpack>			// Get the data frame from a continuation
   ContInstr.FVM_ContSet    = <cset>
   ContInstr.FVM_ContSet    = <cset [<ContRef>]>
   ContInstr.FVM_ContSetR   = <csetr>

@@ -97,7 +97,6 @@ rules
 	stack-delta: FVM_ContThis() -> 1
 	stack-delta: FVM_ContNew(lbl, _) -> 0
 	
-	stack-delta: FVM_ContUnpack() -> 0
 	stack-delta: FVM_ContCall(_) -> -1
 	stack-delta: FVM_ContReturn() -> -1
 	stack-delta: FVM_ContReturn(_) -> 0
