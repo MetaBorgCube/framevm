@@ -8,8 +8,10 @@ import java.util.regex.Pattern;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 
 import framevm.strategies.util.Block;
+import framevm.strategies.util.ControlFrame;
 import framevm.strategies.util.Frame;
 import framevm.strategies.util.Slot;
+import mb.nabl2.stratego.StrategoBlob;
 
 /**
  * Factory with helpers for creating DOT files.
@@ -17,11 +19,12 @@ import framevm.strategies.util.Slot;
  */
 public abstract class DotFactory {
 	private static final Pattern FRAME_PATTERN = Pattern.compile("FrameRef\\((.+)\\)");
-	private static final Pattern CONTINUATION_PATTERN = Pattern.compile("Continuation\\((.+),.+\\)");
-	private static final String[] COLORS = {"green", "purple", "burlywood", "dodgerblue4",
-											"chocolate4", "chocolate", "darkslategray", 
-											"goldenrod", "hotpink", "aquamarine", 
-											"yellowgreen", "khaki3", "indianred3"};
+	private static final Pattern CONTINUATION_PATTERN = Pattern.compile("Continuation\\((.+)\\)");
+	private static final String[] COLORS = {"green", "purple", "hotpink", 
+											"dodgerblue4", "chocolate4", 
+											"chocolate", "darkslategray", 
+											"aquamarine", "yellowgreen", 
+											"khaki3", "indianred3"};
 	private static HashMap<String, String> color_map = new HashMap<>();
 		
 	/**
@@ -45,7 +48,7 @@ public abstract class DotFactory {
 	 * 		The generated id
 	 */
 	public static String frame(String id) {
-		return "frame_"+ id;
+		return "dataFrame_"+ id;
 	}
 	
 	/**
@@ -73,15 +76,15 @@ public abstract class DotFactory {
 	}
 
 	/**
-	 * Generate the id used in the DOT file for the operandstack of the given frame.
+	 * Generate the id used in the DOT file for the controlframe of the given frame.
 	 * 
 	 * @param frame
-	 * 		The frame that holds the opstack
+	 * 		The controlframe
 	 * @return
 	 * 		The generated id
 	 */
-	public static String operandStack(Frame frame) {
-		return "opstack_"+ frame.getId();
+	public static String controlFrame(ControlFrame frame) {
+		return "controlFrame_"+ frame.getId();
 	}
 	
 	/**
@@ -92,7 +95,7 @@ public abstract class DotFactory {
 	 * @return
 	 * 		The generated id
 	 */
-	public static String stack(Frame frame) {
+	public static String stack(ControlFrame frame) {
 		return "stack_"+ frame.getId();
 	}
 	
@@ -110,6 +113,20 @@ public abstract class DotFactory {
 		return id + " [label=\"" + body + "\"];";
 	}
 
+	/**
+	 * Create a DOT link between the two DOT ids.
+	 * 
+	 * @param from
+	 * 		The from location of the link
+	 * @param to
+	 * 		The to location of the link
+	 * @return
+	 * 		A string containing the DOT link
+	 */
+	public static String link(String from, String to) {
+		return from + " -> " + to + ";";
+	}
+	
 	/**
 	 * Create a DOT link between the two DOT ids.
 	 * 
@@ -141,6 +158,20 @@ public abstract class DotFactory {
 	}
 	
 	/**
+	 * Create a DOT link representing a reference to a control frame.
+	 * 
+	 * @param from
+	 * 		The from location of the link
+	 * @param to
+	 * 		The to location of the link
+	 * @return
+	 * 		A string containing the DOT link
+	 */
+	public static String controlReferenceLink(String from, String to) {
+		return from + " -> " + to + " [color=goldenrod, style=dashed];";
+	}
+	
+	/**
 	 * Create a DOT link representing a reference to a stack.
 	 * 
 	 * @param from
@@ -164,8 +195,8 @@ public abstract class DotFactory {
 	 * @return
 	 * 		A string containing the DOT link
 	 */
-	public static String opstackLink(String from, String to) {
-		return from + ":opstack -> " + to + ":head [color=black, style=dashed];";
+	public static String dataFrameLink(String from, String to) {
+		return from + ":frame -> " + to + ":id [color=black, style=dashed];";
 	}
 
 	/**
@@ -197,6 +228,16 @@ public abstract class DotFactory {
 		return from + ":cont_" + id + " -> " + to + " [color=" + color + ", style=dashed];";
 	}
 
+	private static void addControlFrameRef(List<String> links, String slotRef, String frame_id) {
+		if (frame_id.equals("frame__exit")) {
+			links.add(controlReferenceLink(slotRef, "finish"));
+		} else if (frame_id.equals("frame__catch")) {
+			links.add(controlReferenceLink(slotRef, "exception"));
+		} else {
+			links.add(controlReferenceLink(slotRef, frame_id + ":id"));
+		}
+	}
+	
 	/**
 	 * Convert a slot to string.
 	 * When the slot contains a reference, this reference is added to the links.
@@ -210,8 +251,8 @@ public abstract class DotFactory {
 	 * @return
 	 * 		The value in the slot
 	 */
-	public static String slotToString(Slot slot, List<String> links, String slotRef) {
-		return termToString(slot.value, links, slotRef);
+	public static String slotToString(Slot slot, HashMap<String, String> nodes, List<String> links, String slotRef) {
+		return termToString(slot.value, nodes, links, slotRef);
 	}
 	
 	/**
@@ -227,44 +268,25 @@ public abstract class DotFactory {
 	 * @return
 	 * 		The value in the term
 	 */
-	public static String termToString(IStrategoTerm term, List<String> links, String slotRef) {
+	public static String termToString(IStrategoTerm term, HashMap<String, String> nodes, List<String> links, String slotRef) {
 		String value = term.toString().replace("\"", "");
 		Matcher matcher = FRAME_PATTERN.matcher(value);
 		
 		if (matcher.matches()) {	// If it is a reference
-			String frameRef = frame(matcher.group(1));
-			addFrameRef(links, slotRef, frameRef);
+			Frame frame = (Frame) ((StrategoBlob) term.getSubterm(0)).value();
+			String frameRef = frame(frame.getId());
+			DotFrameFactory.build(frame, nodes, links);
+			links.add(referenceLink(slotRef, frameRef + ":id"));
 		}
 		
 		matcher = CONTINUATION_PATTERN.matcher(value);
-		
 		if (matcher.matches()) {	// If it is a continuation
-			String frameRef = frame(matcher.group(1));
-			addFrameRef(links, slotRef, frameRef);
+			ControlFrame frame = (ControlFrame) ((StrategoBlob) term.getSubterm(0)).value();
+			String frameRef = controlFrame(frame);
+			DotControlFrameFactory.build(frame, nodes, links);
+			addControlFrameRef(links, slotRef, frameRef);
 		}
 		return value;
-	}
-
-	/**
-	 * Add a reference to a frame to the given set of links.
-	 * If this frame happens to be the _exit or _catch frame,
-	 * the links are correctly drawn to the end points.
-	 * 
-	 * @param links
-	 * 		a list of links to add to
-	 * @param slotRef
-	 * 		the current slot reference as starting point of the link
-	 * @param frame_id
-	 * 		the frame to link to
-	 */
-	private static void addFrameRef(List<String> links, String slotRef, String frame_id) {
-		if (frame_id.equals("frame__exit")) {
-			links.add(referenceLink(slotRef, "finish"));
-		} else if (frame_id.equals("frame__catch")) {
-			links.add(referenceLink(slotRef, "exception"));
-		} else {
-			links.add(referenceLink(slotRef, frame_id + ":id"));
-		}
 	}
 		
 	private static String getColor(String id) {

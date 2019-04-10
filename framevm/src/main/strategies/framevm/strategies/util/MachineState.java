@@ -1,6 +1,8 @@
 package framevm.strategies.util;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * The environment that is passed around.
@@ -13,9 +15,10 @@ public class MachineState {
 	public StringBuilder stdout;
 	public String debug;	
 	
-	private int count;		// Used for generating unique frame ids
+	private int frameCount;		// Used for generating unique frame ids
 	private int linkSize;
 	public MachineThread currentThread;
+	private int controlCount;
 	
 	/**
 	 * Constructor for a new environment.
@@ -28,8 +31,9 @@ public class MachineState {
 		this.debug = "";
 		
 		this.linkSize = link_size;
-		
-		this.count = 0;
+
+		this.frameCount = 0;
+		this.controlCount = 0;
 	}
 	
 	/**
@@ -53,7 +57,7 @@ public class MachineState {
 	 * 		The new frame
 	 */
 	public Frame newFrame(int size) {
-		String id = "frame_" + count++;
+		String id = "frame_" + frameCount++;
 		return new Frame(id, size, linkSize);
 	}
 
@@ -66,7 +70,7 @@ public class MachineState {
 	 * 		The id of the new frame
 	 */
 	public Frame newFrameFrom(Frame old) {
-		String id = "frame_" + count++;
+		String id = "frame_" + frameCount++;
 		return new Frame(id, old);
 	}
 
@@ -95,5 +99,21 @@ public class MachineState {
 		if (this.currentThread == null) {
 			this.currentThread = thread;
 		}
+	}
+
+	public List<MachineThread> getThreads() {
+		ArrayList<MachineThread> res = new ArrayList<>();
+		res.add(currentThread);
+		return res;
+	}
+
+	public ControlFrame newControlFrame(int contSize, Block block) {
+		String id = "controlFrame_" + controlCount++;
+		return new ControlFrame(contSize, block, id);
+	}
+
+	public ControlFrame newControlFrame(int contSize, Frame frame, Block block) {
+		String id = "controlFrame_" + controlCount++;
+		return new ControlFrame(contSize, frame, block, id);
 	}
 }

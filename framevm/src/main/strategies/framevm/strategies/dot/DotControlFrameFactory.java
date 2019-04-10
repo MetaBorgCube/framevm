@@ -1,19 +1,18 @@
 package framevm.strategies.dot;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Stack;
 import org.spoofax.interpreter.terms.IStrategoTerm;
-import org.spoofax.terms.StrategoString;
-
 import framevm.strategies.util.Continuation;
-import framevm.strategies.util.Frame;
 import framevm.strategies.util.ControlFrame;
+import framevm.strategies.util.Frame;
 
 /**
  * Factory for creating a dotfile representing an {@link ControlFrame}.
  * @see <a href="https://en.wikipedia.org/wiki/DOT_(graph_description_language)">DOT (graph descriptionlanguage)</a>
  */
-public class DotOperandStackFactory extends DotFactory {
+public class DotControlFrameFactory extends DotFactory {
 	
 	/**
 	 * Convert an operandStack to DOT representation.
@@ -25,14 +24,19 @@ public class DotOperandStackFactory extends DotFactory {
 	 * @return
 	 * 		A String containing a DOT node representing of the given opstack
 	 */
-	public static String build(Frame frame, List<String> links) {
-		String name = operandStack(frame);
-		ControlFrame opstack = null;
-		int count = opstack.getInstr_count();
+	public static String build(ControlFrame frame, HashMap<String, String> nodes, List<String> links) {
+		String name = controlFrame(frame);
+		if (nodes.containsKey(name)) {
+			return "";
+		} else {
+			nodes.put(name, "");	// Mark this as existing, eventhough we are not finished creating it (This prevents infinite looping)
+		}
+		
+		int count = frame.getInstr_count();
 
 		// Add links to the executing instruction and the stack
-		if (opstack.getBlock() != null) {
-			String target = block(opstack.getBlock()) + ":" + (Math.max(0, count - 1));
+		if (frame.getBlock() != null) {
+			String target = block(frame.getBlock()) + ":" + (Math.max(0, count - 1));
 			links.add(blockLink(name, target));
 		}
 		links.add(stackLink(name, DotFactory.stack(frame)));
@@ -40,14 +44,14 @@ public class DotOperandStackFactory extends DotFactory {
 		// Link the continuations
 		String contSlots = "";
 		String contIds = "";
-		Continuation[] continuations = opstack.getContinuations();
+		Continuation[] continuations = frame.getContinuations();
 		for (int i = 0; i < continuations.length; i++) {
 			Continuation cont = continuations[i];
 			if (cont == null) {
 				contSlots += " | c" + i;
 				contIds += " | null";
 			} else {
-				String target_id = cont.value().getCurrentFrame().getId();
+				String target_id = cont.value().getId();
 				contSlots += " | " + cont.id;
 				
 				contIds += " | <cont_" + cont.id + ">";
@@ -56,7 +60,11 @@ public class DotOperandStackFactory extends DotFactory {
 				} else if ("_catch".equals(target_id)) {
 					links.add(continuationLink(name, "exception", cont.id));
 				} else {
-					links.add(continuationLink(name, frame(target_id) + ":id", cont.id));
+					ControlFrame target = cont.value();
+					if (!nodes.containsKey(controlFrame(target))) {
+						DotControlFrameFactory.build(target, nodes, links);
+					}
+					links.add(continuationLink(name, controlFrame(target) + ":id", cont.id));
 				}
 			}
 		}
@@ -66,32 +74,33 @@ public class DotOperandStackFactory extends DotFactory {
 		if (contIds.length() == 0) {
 			contIds = " |";
 		}
-
-		// Get the value in the return (r) slot
-		String returnVal;
-		if (opstack.getReturnValue() == null) {
-			returnVal = "null";
-		} else {
-			returnVal = slotToString(opstack.getReturnValue(), links, name + ":r");
-		}
 		
 		// Generate main node
-		String dotString = node(name, "{<head>Opstack | {{R | Block" + contSlots + " | stack}| { <r>" + returnVal + " | <block>" + contIds + " | <stack>}}}");
+		String dotString = node(name, "{<id>" + frame.getId() + " | {{Block | Frame | Stack" + contSlots + "}| { <block> | <frame> | <stack>" + contIds + "}}}");
+		nodes.put(name, dotString);
 		
 		// Generate the node for the local stack
 		String stackString = "";
 		
 		// Copy the stack as we do a destructive read
 		@SuppressWarnings("unchecked")
-		Stack<IStrategoTerm> stack = (Stack<IStrategoTerm>) opstack.getStack().clone();
+		Stack<IStrategoTerm> stack = (Stack<IStrategoTerm>) frame.getStack().clone();
 		
 		count = 0;
-		name = stack(frame);
+		String stackName = stack(frame);
 		
 		while (!stack.isEmpty())  {
 			count++;
-			stackString += "|<" + count + ">" + termToString(stack.pop(), links, name + ":" + count);
+			stackString += "|<" + count + ">" + termToString(stack.pop(), nodes, links, stackName + ":" + count);
 		}
-		return dotString + "\n\t\t" + node(name, "{<head>" + stackString + "}");
+		nodes.put(stackName, node(stackName, "{<head>" + stackString + "}"));
+		
+		
+		if (frame.getCurrentFrame() != null) {
+			Frame dataFrame = frame.getCurrentFrame();
+			DotFrameFactory.build(dataFrame, nodes, links);
+			links.add(dataFrameLink(name, frame(dataFrame)));
+		}
+		return name;
 	}
 }

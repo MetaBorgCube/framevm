@@ -15,26 +15,29 @@ public class ControlFrame {
 	private Continuation[] continuations;
 	private Slot returnValue;
 	private Frame currentFrame;
+	private String id;
 	
 	/**
 	 * Create an operand stack.
 	 */
-	public ControlFrame(int contSize, Block block) {
+	public ControlFrame(int contSize, Block block, String id) {
 		this.block = block;
 		this.continuations = new Continuation[contSize];
 		
 		this.instr_count = 0;
 		this.stack = new Stack<>(); //TODO: pre-allocate block.max-stack
 		this.currentFrame = null;
+		this.id = id;
 	}
 	
-	public ControlFrame(int contSize, Frame frame, Block block) {
+	public ControlFrame(int contSize, Frame frame, Block block, String id) {
 		this.block = block;
 		this.continuations = new Continuation[contSize];
 		
 		this.instr_count = 0;
 		this.stack = new Stack<>(); //TODO: pre-allocate block.max-stack
 		this.currentFrame = frame;
+		this.id = id;
 	}
 
 	/**
@@ -143,8 +146,8 @@ public class ControlFrame {
 		this.continuations[idx] = continuation;
 	}
 
-	public ControlFrame copy() {
-		ControlFrame copy = new ControlFrame(continuations.length, block);
+	public ControlFrame copy(String id) {
+		ControlFrame copy = new ControlFrame(continuations.length, block, id);
 		copy.jump(block, instr_count);
 		if (getReturnValue() != null) {
 			copy.setReturnValue(getReturnValue().value);
@@ -170,5 +173,9 @@ public class ControlFrame {
 
 	public void setCurrentFrame(Frame frame) {
 		this.currentFrame = frame;
+	}
+
+	public String getId() {
+		return this.id;
 	}
 }

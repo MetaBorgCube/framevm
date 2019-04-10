@@ -1,5 +1,6 @@
 package framevm.strategies.dot;
 
+import java.util.HashMap;
 import java.util.List;
 
 import framevm.strategies.util.Frame;
@@ -22,26 +23,38 @@ public class DotFrameFactory extends DotFactory {
 	 * @return
 	 * 		A String containing a DOT node representing of the given frame
 	 */
-	public static String build(Frame frame, List<String> links) {
+	public static String build(Frame frame, HashMap<String, String> nodes, List<String> links) {
 		String name = frame(frame);
+		if (nodes.containsKey(name)) {
+			return name;
+		} else {
+			nodes.put(name, "");	// Mark this as existing, eventhough we are not finished creating it (This prevents infinite looping)
+		}
 		
 		// Get the representation of slots
 		// Starts with the column with ids
-		String slotsString = "{{X";
+		String slotsString = "{{";
 		Slot[] slots = frame.getSlots();
 		for (int i = 0; i < slots.length; i++) {
-			slotsString += "|" + i;
+			if (i == 0) {
+				slotsString += i;
+			} else {
+				slotsString += "|" + i;
+			}
 		}
 
-		// Than does the actual values
-		slotsString += "}|{<opstack>";
+		// Then does the actual values
+		slotsString += "}|{";
 		
 		for (int i = 0; i < slots.length; i++) {
 			Slot slot = slots[i];
 			if (slot == null) {
-				slotsString += "| null";
+				slotsString += " null ";
 			} else {
-				slotsString += "|<" + i + ">" + slotToString(slot, links, name + ":" + i);
+				slotsString += "<" + i + ">" + slotToString(slot, nodes, links, name + ":" + i);
+			}
+			if (i != slots.length - 1) {
+				slotsString += "|";
 			}
 		}
 		slotsString += "}}";
@@ -52,9 +65,11 @@ public class DotFrameFactory extends DotFactory {
 			Link link = frameLinks[i];
 			if (link == null) continue;
 			links.add(link(name + ":id", frame(link.target) + ":id", link.linkId));
+			DotFrameFactory.build(link.target, nodes, links);
 		}
 		
 		// Generate the final representation
-		return node(name, "{<id>" + frame.getId() + "|" + slotsString + "}");
+		nodes.put(name, node(name, "{<id>" + frame.getId() + "|" + slotsString + "}"));
+		return name;
 	}
 }

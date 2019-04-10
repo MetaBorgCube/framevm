@@ -27,7 +27,7 @@ public class vm_cont_new_0_1 extends FVMStrategy {
 		Block block = env.getBlock(((StrategoString) tuple.get(1)).stringValue());
 		int contSize = ((StrategoInt) tuple.get(2)).intValue();
 		
-		ControlFrame cont = new ControlFrame(contSize, block);
+		ControlFrame cont = env.newControlFrame(contSize, block);
 		cont.setCurrentFrame(frame);
 		return factory.makeTuple(new StrategoBlob(env), new StrategoBlob(cont));
 	}
