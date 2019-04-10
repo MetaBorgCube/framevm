@@ -20,7 +20,6 @@ rules
   	  	(env2, frame_id) := <frame-new(|env1)> <string-to-int> n;
   	  	env3 := <stack-push(|env2)> FrameRef(frame_id)
   	  	
-   
 	// FVM_NewR/0
 	// pushes an empty frame with n slots on the stack
   	eval: (FVM_NewR(), env1) -> env4

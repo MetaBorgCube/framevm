@@ -17,7 +17,7 @@ public class vm_start_0_1 extends FVMStrategy {
 	public static vm_start_0_1 instance = new vm_start_0_1();
 
 	@Override
-	// env| (continuation, continuation) -> env'
+	// env| -> env'
 	// Start the vm by setting the initial frame as executable and running the MAIN block
 	protected IStrategoTerm invoke(IOAgent io, ITermFactory factory, MachineState env, IStrategoTerm arg) {
 		Block block = env.getBlock("MAIN");

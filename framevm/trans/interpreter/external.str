@@ -3,9 +3,9 @@ module external
 imports signatures/framevm-sig
 
 rules 
-	external vm-init(|)				// (link_size, cont_size) -> env
+	external vm-init(|)				// (links, conts, slots) -> env
 	external vm-store-block(|env)   // env| (lbl, [instr]) -> env' 
-	external vm-start(|env)			// env| (continuation, continuation) -> env'
+	external vm-start(|env)			// env| env| -> env'
 	external vm-stop(|env)          // env| -> string
 	external vm-execute(eval|env)	// eval|env| -> env'
 	
@@ -16,8 +16,8 @@ rules
 	external stack-pop-int(|env)	// env| -> (env', int)
 	external stack-pop-cont(|env)	// env| -> (env', continuation)
 	external stack-pop-frame(|env)	// env| -> (env', frame)
+	external stack-size(|env)		// env| -> int
 	
-	external frame-get-block(|env)	// env| frame -> lbl
 	external frame-get-slot(|env)	// env| (frame, slot) -> val
 	external frame-get-link(|env)	// env| (frame, (link_id, idx)) -> frame
 	external frame-set-slot(|env)	// env| (frame, slot, val) -> env'

@@ -13,6 +13,7 @@ public class vm_execute_1_1 extends Strategy {
 	public static vm_execute_1_1 instance = new vm_execute_1_1();
 
 	@Override
+	// eval|env| -> env'
 	public IStrategoTerm invoke(Context context, IStrategoTerm current, Strategy eval, IStrategoTerm arg) {
 		MachineState env = (MachineState) ((StrategoBlob) arg).value();
 		

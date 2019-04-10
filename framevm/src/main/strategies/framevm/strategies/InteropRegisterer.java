@@ -21,6 +21,7 @@ import framevm.strategies.stack_ops.stack_pop_cont_0_1;
 import framevm.strategies.stack_ops.stack_pop_frame_0_1;
 import framevm.strategies.stack_ops.stack_pop_int_0_1;
 import framevm.strategies.stack_ops.stack_push_0_1;
+import framevm.strategies.stack_ops.stack_size_0_1;
 import framevm.strategies.vm.vm_cont_new_0_1;
 import framevm.strategies.vm.vm_debug_0_1;
 import framevm.strategies.vm.vm_execute_1_1;
@@ -49,6 +50,7 @@ public class InteropRegisterer extends JavaInteropRegisterer {
 				stack_pop_int_0_1.instance,
 				stack_pop_frame_0_1.instance,
 				stack_pop_cont_0_1.instance,
+				stack_size_0_1.instance,
 
 				frame_new_0_1.instance,
 				frame_get_link_0_1.instance,

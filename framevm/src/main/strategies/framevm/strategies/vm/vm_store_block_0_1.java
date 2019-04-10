@@ -15,7 +15,7 @@ public class vm_store_block_0_1 extends FVMStrategy {
 	public static vm_store_block_0_1 instance = new vm_store_block_0_1();
 
 	@Override
-	// (env, (lbl, [instr])) -> env' 
+	// env| (lbl, [instr]) -> env' 
 	// Store a list of instructions as a block with given label
 	protected IStrategoTerm invoke(IOAgent io, ITermFactory factory, MachineState env, IStrategoTerm arg) {
 		StrategoTuple tuple = (StrategoTuple) arg;

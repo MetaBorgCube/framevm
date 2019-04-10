@@ -6,8 +6,7 @@ imports
 
 signature
   sorts V
-  constructors    
+  constructors   
+    Continuation : ControlFrame -> V 
     FrameRef : String -> V
     IntV : Int -> V
-    
-    Continuation : ControlFrame -> V
