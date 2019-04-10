@@ -41,8 +41,8 @@ rules
 	  	cont := <cont-get-cc(|env1)> this;
 	  	ex   := <ex-get-cx(|env1)> this;
 	  	
-	  	(env2, catch) := <stack-pop-cont(|env1)>;
-	  	(env3, try)   := <stack-pop-cont(|env2)>;
+	  	(env2, Continuation(catch)) := <stack-pop-cont(|env1)>;
+	  	(env3, Continuation(try))   := <stack-pop-cont(|env2)>;
 	  		  	
 	  	env4 := <cont-set-cc(|env3)> (try, cont);
 	  	env5 := <ex-set-cx(|env4)>   (try, catch);

@@ -10,4 +10,4 @@ signature
     FrameRef : String -> V
     IntV : Int -> V
     
-    Continuation : FrameRef * Block -> V
+    Continuation : ControlFrame -> V

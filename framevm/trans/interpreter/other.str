@@ -24,6 +24,7 @@ rules	// Other instructions
 rules	// Util
 	// Convert a value to a displayable string 
 	val-to-string: IntV(v) -> v
-	val-to-string: e -> e
+	val-to-string: FrameRef(frame) -> frame
+	val-to-string: Continuation(cont) -> cont
 	
 	

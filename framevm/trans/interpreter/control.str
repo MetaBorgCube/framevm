@@ -27,7 +27,7 @@ rules
 	// Call the continuation at the top of the stack with return to block
 	eval: (FVM_Call(FVM_Label(block)), env1) -> env5
 	  where
-	  	(env2, func) := <stack-pop-cont(|env1)>;// get the function continuation
+	  	(env2, Continuation(func)) := <stack-pop-cont(|env1)>;// get the function continuation
 	  	cont_this := <cont-this(|env2)>;
 	  	env3 := <cont-set-cc(|env2)> (func, cont_this);			// Set the return address
 	  	ex := <ex-get-cx(|env3)> cont_this;
@@ -58,7 +58,7 @@ rules
 	  	this := <cont-this(|env1)>;
 	  	(env2, val) := <stack-pop-any(|env1)>;
 	  	continuation := <cont-get-cc(|env2)> this;
-	  	env3 := <cont-transfer(|env2)> (continuation, [val, this]);
+	  	env3 := <cont-transfer(|env2)> (continuation, [val, Continuation(this)]);
 	  	env4 := <vm-jump(|env3)> lbl;
 	  	env5 := <cont-call(|env4)> continuation
 	
