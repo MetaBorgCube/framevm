@@ -114,6 +114,10 @@ rules
 	stack-delta: FVM_Yield(_) -> -1
 	
 	stack-delta: FVM_Debug() -> 0
+	
+	stack-delta: FVM_IsInt()   -> 0
+	stack-delta: FVM_IsCont()  -> 0
+	stack-delta: FVM_IsFrame() -> 0
   
   	stack-delta: a -> 0
   	  where

@@ -97,4 +97,4 @@ rules
 	  	
 	// Resolve which label to pick
 	jump-eval: ("0", then, _) -> then
-	jump-eval: ("1", _, else) -> else	// We might want to make this catch all, like in C
+	jump-eval: (_, _, else) -> else		// Catch all other than 0

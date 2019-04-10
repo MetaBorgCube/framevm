@@ -109,6 +109,10 @@ instr[[FVM_LinkR(_) ^(s)]].
 instr[[FVM_Copy() ^(s)]].
 instr[[FVM_CopyR() ^(s)]].
 
+instr[[FVM_IsInt() ^(s)]].
+instr[[FVM_IsCont() ^(s)]].
+instr[[FVM_IsFrame() ^(s)]].
+
 
 	instr[[FVM_ContThis() ^(s)]].
 	instr[[FVM_ContNew(lbl, _) ^(s)]] := lbl[[lbl ^(s)]].

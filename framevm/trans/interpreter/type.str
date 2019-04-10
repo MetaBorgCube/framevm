@@ -1,0 +1,36 @@
+module type
+
+imports 
+	signatures/framevm-sig
+	interpreter/common
+	interpreter/external
+
+rules
+	// FVM_IsInt/0
+	eval: (FVM_IsInt(), env1) -> env3
+	  where
+	  	(env2, val) := <stack-pop-any(|env1)>;
+	  	env3 := <stack-push(|env2)> <is-intV> val
+	
+	is-intV: IntV(_) -> IntV("1")
+	is-intV: _       -> IntV("0")
+	
+	// FVM_IsFrame/0
+	eval: (FVM_IsFrame(), env1) -> env3
+	  where
+	  	(env2, val) := <stack-pop-any(|env1)>;
+	  	env3 := <stack-push(|env2)> <is-frame> val
+	
+	is-frame: e -> IntV("1") where "BLOB_Frame" := <get-constructor> e
+	is-frame: _ -> IntV("0")
+	
+	// FVM_IsCont/0
+	eval: (FVM_IsCont(), env1) -> env3
+	  where
+	  	(env2, val) := <stack-pop-any(|env1)>;
+	  	env3 := <stack-push(|env2)> <is-cont> val
+	
+	is-cont: e -> IntV("1") where "BLOB_ControlFrame" := <get-constructor> e
+	is-cont: _ -> IntV("0")
+	
+	
