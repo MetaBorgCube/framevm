@@ -1,5 +1,5 @@
 {
-	gen func () = {
+	gen func ():int = {
 		yield 1
 		throw 2
 		yield 3
@@ -8,7 +8,7 @@
 	for i in func():
 		print(i)	
 		
-	// print 1
+	print(1)
 	// uncought exception IntV(2)
 }
 
@@ -20,6 +20,8 @@ MAIN:
 	newscope FOR_INIT		// Enter for loop
 	
 MAIN_END:
+	ipush 1
+	print
 	ipush 0					//
 	return					// exitcode 0
 	
@@ -32,7 +34,7 @@ FOR_INIT:
 	dup						//
 	link [] P				//
 							//
-	try FOR_START FOR_END	// Create try-catch blocks and run
+	try FOR_START FOR_END MAIN_END	// Create try-catch blocks and run
 	
 FOR_START:
 	new						// Call frame for generator
@@ -42,7 +44,7 @@ FOR_START:
 	call FUNC_1 FOR_BODY	// Start the generator with an initial call
 	
 FOR_BODY:
-	get [r]					// Get generator value
+	rget					// Get generator value
 	dup						//
 	getr [0]				// Get result value
 	set [0]					// Store in i
@@ -54,16 +56,17 @@ FOR_BODY:
 	call FOR_BODY			// Call it
 
 FOR_END:
-	get [r]						//
+	rget						//
+	dup							//
 	ipush -1					//
 	eqi							// Check if exception value == -1 (generator empty)
 	jumpz FOR_THROW FOR_EXIT	// Else propagate the exception upwards
 	
 FOR_THROW:
-	get [r]					//
 	throw					// Propagate the exception
 	
 FOR_EXIT:
+	pop						// Pop exception dup
 	exitscope [P] MAIN_END	// just go back to the main
 	
 FUNC_1:
@@ -73,10 +76,12 @@ FUNC_1:
 	setr [0]				// Result = 1
 							//
 	dup						//
-	cnew FUNC_2				// Create continuation
+	cget []					// Create continuation
 	setr [1]				// Store in return object
 							//
-	return					// yield
+	transfer 1 [c]			// Yield
+	cget [c]				//
+	ccall FUNC_2			//
 	
 FUNC_2:
 	ipush 2					//
@@ -89,10 +94,12 @@ FUNC_3:
 	setr [0]				// Result = 1
 							//
 	dup						//
-	cnew FUNC_END			// Create continuation
+	cget []					// Create continuation
 	setr [1]				// Store in return object
 							//
-	return					// yield
+	transfer 1 [c]			// Yield
+	cget [c]				//
+	ccall FUNC_END			//
 	
 FUNC_END:
 	ipush -1				// No more elements

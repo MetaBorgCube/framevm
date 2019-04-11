@@ -27,7 +27,7 @@ rules
   
   	pseudo-resugar-binds = topdown(try(pseudo-resugar-bind))
   	pseudo-resugar-bind: Bind(name, idx) -> name
-  	pseudo-resugar-bind: PsdRecDef(name, stmts, size) -> PsdRecDef(name, stmts)
+  	pseudo-resugar-bind: PsdRecDef(name, methods, fields) -> PsdRecDef(name, <concat>[fields, methods])
   	pseudo-resugar-bind: PsdFuncDef(name, args, stmts, size, type) -> PsdFuncDef(name, PsdArgList(args), type, stmts)
   
    	pseudo-desugar-bind: FVM_PseudoCode(instrs) -> FVM_PseudoCode(d_instrs)
@@ -61,7 +61,7 @@ rules
       	(d_instrs, _) := <foldl(pseudo-desugar-bind)> (instrs, ([], 0))
       	
     is-field-decl: f@PsdField(_) -> f 
-    is-method-decl: f@PsdFuncDef(_, _, _, _) -> f 
+    is-method-decl: f@PsdMethod(_) -> f
     is-define: f@PsdDefine(_, _) -> f 
     
     pseudo-desugar-bind: (PsdField(Field(type, var)), (body, idx)) -> (<concat> [body, [PsdField(Field(type, Bind(var, idx)))]], <inc> idx)
