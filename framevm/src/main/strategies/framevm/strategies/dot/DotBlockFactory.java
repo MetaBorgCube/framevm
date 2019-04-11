@@ -11,11 +11,11 @@ import framevm.strategies.util.Block;
  * @see <a href="https://en.wikipedia.org/wiki/DOT_(graph_description_language)">DOT (graph descriptionlanguage)</a>
  */
 public class DotBlockFactory extends DotFactory {
-	private final static String[] REPLACE_FROM = {"Path(Self)"};
+	private final static String[] REPLACE_FROM = {"FVM_Self()"};
 	private final static String[] REPLACE_TO   = {"[]"        };
-
-	private final static String[] REGEX_UNPACK = {"\"([^\"]*)\"", "Path(Self)", "Link\\((\\w+)\\)", "Slot\\((\\w+)\\)", "Path\\((\\[\\w+\\])\\)", "Bind\\((\\w+),\\d+\\)"};
-	private final static Pattern PATTERN = Pattern.compile("Label\\(([\\w]+)\\)");
+ 
+	private final static String[] REGEX_UNPACK = {"\"([^\"]*)\"", "Bind\\((\\w+),\\d+\\)", "FVM_Link\\((\\w+)\\)", "FVM_Slot\\((\\w+)\\)", "FVM_Cont\\((\\w+)\\)", "FVM_Path\\((\\[.+\\])\\)"};
+	private final static Pattern PATTERN = Pattern.compile("FVM_Label\\(([\\w]+)\\)");
 	
 	/**
 	 * Convert a block to DOT representation.
@@ -65,6 +65,7 @@ public class DotBlockFactory extends DotFactory {
 		while (matcher.find()) {
 			String label = matcher.group(1);
 			links.add(link(block + ":" + idx, block(label) + ":head", label));
+			out = out.replaceFirst(PATTERN.pattern(), label);
 		}
 		return out;
 	}
