@@ -26,7 +26,7 @@ rules
   	eval: (FVM_ContGet(), env1) -> env3
   	  where
   	  	(env2, IntV(idx)) := <stack-pop-int(|env1)>;
-  	  	env3 := <stack-push(|env2)> Continuation(<cont-get(|env2)> (<cont-this(|env2)>, ($[_c[idx]], idx)))
+  	  	env3 := <stack-push(|env2)> Continuation(<cont-get(|env2)> (<cont-this(|env2)>, ($[_c[idx]], <string-to-int> idx)))
   	  	
   	// FVM_ContGet/1
   	// Get the continuation from the given slot
@@ -40,7 +40,7 @@ rules
   	  where
   	  	(env2, Continuation(value)) := <stack-pop-cont(|env1)>;
   	  	(env3, IntV(idx)) := <stack-pop-int(|env2)>;
-  	  	env4 := <cont-set(|env3)> (<cont-this(|env3)>, ($[_c[idx]], idx), value)
+  	  	env4 := <cont-set(|env3)> (<cont-this(|env3)>, ($[_c[idx]], <string-to-int> idx), value)
   	  	
 	// FVM_ContSet/1
 	// Store the continuation on top of the stack at the given locations
@@ -56,7 +56,7 @@ rules
   	  where
   	  	(env2, IntV(idx)) := <stack-pop-int(|env1)>;
   	  	(env3, Continuation(cont)) := <stack-pop-cont(|env2)>;
-  	  	env4 := <stack-push(|env3)> Continuation(<cont-get(|env3)> (cont, ($[_c[idx]], idx)))
+  	  	env4 := <stack-push(|env3)> Continuation(<cont-get(|env3)> (cont, ($[_c[idx]], <string-to-int> idx)))
   	
   	// FVM_ContGetR/1
   	// Get the given continuation slot for the continuation on top of the stack
@@ -72,7 +72,7 @@ rules
   	  	(env2, Continuation(value)) := <stack-pop-cont(|env1)>;
   	  	(env3, IntV(idx)) := <stack-pop-int(|env2)>;
   	  	(env4, Continuation(cont)) := <stack-pop-cont(|env3)>;
-  	  	env5 := <cont-set(|env4)> (cont, ($[_c[idx]], idx), value)
+  	  	env5 := <cont-set(|env4)> (cont, ($[_c[idx]], <string-to-int> idx), value)
   	
 	// FVM_ContSetr/1
 	// Set the continuation on top of the stack in the given slot of the continuation on second position
@@ -128,7 +128,7 @@ rules
 	  where
 	  	(env2, Continuation(cont)) := <stack-pop-cont(|env1)>;
 	  	env3 := <vm-jump(|env2)> lbl;
-	  	env4 := <cont-call(|env3)> <debug>cont
+	  	env4 := <cont-call(|env3)> cont
 	  	
 	// FVM_ContCall/2
 	// Call the given continuation

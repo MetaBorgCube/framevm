@@ -33,9 +33,9 @@ public class frame_get_link_0_1 extends FVMStrategy {
 			return null;
 		}
 		if (!link.linkId.equals(linkId)) {
-			if (link.linkId.startsWith("l")) {
+			if (link.linkId.startsWith("_l")) {
 				link.linkId = linkId;	// Update to better name
-			} else if (!linkId.startsWith("l")) {
+			} else if (!linkId.startsWith("_l")) {
 				io.printError("Link lable mismatch, requested " + linkId + ", but foud " + link.linkId);
 				return null;
 			}

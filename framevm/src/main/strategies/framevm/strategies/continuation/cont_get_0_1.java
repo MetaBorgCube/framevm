@@ -36,10 +36,13 @@ public class cont_get_0_1 extends FVMStrategy {
 			io.printError("Continuation does not exist: " + contId);
 			return null;
 		} else if (!cont.id.equals(contId)) {
-			io.printError("Continuation label mismatch, found " + cont.id + " required " + contId);
-			return null;
-		} else {
-			return new StrategoBlob(cont.value());
+			if (cont.id.startsWith("_c")) {
+				cont.id = contId;	// Update to better name
+			} else if (!contId.startsWith("_c")) {
+				io.printError("Continuation label mismatch, found " + cont.id + " required " + contId);
+				return null;
+			}
 		}
+		return new StrategoBlob(cont.value());
 	}
 }
