@@ -7,11 +7,10 @@ imports
 	interpreter/util
 	
 rules	
-	
 	// FVM_Call/2
 	// Call the block at arg1 using the frame at the top of the stack
 	// This function returns to arg2 when finished
-	eval: (FVM_Call(FVM_Label(block), FVM_Label(returnAddr)), env1) -> env5
+	eval: (FVM_Call(FVM_Label(block), FVM_Label(returnAddr)), env1) -> env7
 	  where
 	  	(env2, FrameRef(callFrame)) := <stack-pop-frame(|env1)>;	// get the function frame
 	  	(env3, func) := <vm-cont-new(|env2)> (callFrame, block, 2);
@@ -21,11 +20,11 @@ rules
 	  	ex := <ex-get-cx(|env3)> cont_this;
 	  	env5 := <ex-set-cx(|env3)> (func, ex);						// Copy over exception
 	  	env6 := <vm-jump(|env5)> returnAddr;
-	  	env7 := <cont-call(|env4)> func								// call the function
+	  	env7 := <cont-call(|env6)> func								// call the function
 	  	
 	// FVM_Call/1
 	// Call the continuation at the top of the stack with return address set to block
-	eval: (FVM_Call(FVM_Label(block)), env1) -> env5
+	eval: (FVM_Call(FVM_Label(block)), env1) -> env6
 	  where
 	  	(env2, Continuation(func)) := <stack-pop-cont(|env1)>;		// get the function continuation
 	  	cont_this := <cont-this(|env2)>;
@@ -34,6 +33,34 @@ rules
 	  	env4 := <ex-set-cx(|env3)> (func, ex);						// Copy over exception
 	  	env5 := <vm-jump(|env4)> block;
 	  	env6 := <cont-call(|env5)> func								// call the function
+	 
+	// FVM_TailCall/1
+	// Call the block at arg1 using the frame at the top of the stack
+	// Use tail call optimizations for this call
+	eval: (FVM_TailCall(FVM_Label(block)), env1) -> env6
+	  where
+	  	(env2, FrameRef(callFrame)) := <stack-pop-frame(|env1)>;	// get the function frame
+	  	(env3, func) := <vm-cont-new(|env2)> (callFrame, block, 2);
+	  	
+	  	cont_this := <cont-this(|env3)>;
+	  	return := <cont-get-cc(|env3)> cont_this;
+	  	env4 := <cont-set-cc(|env2)> (func, return);				// Set the return address
+	  	ex := <ex-get-cx(|env3)> cont_this;
+	  	env5 := <ex-set-cx(|env3)> (func, ex);						// Copy over exception
+	  	env6 := <cont-call(|env5)> func								// call the function
+	  	
+	// FVM_TailCall/0
+	// Call the continuation at the top of the stack
+	// Use tail call optimizations for this call
+	eval: (FVM_TailCall(), env1) -> env5
+	  where
+	  	(env2, Continuation(func)) := <stack-pop-cont(|env1)>;		// get the function continuation
+	  	cont_this := <cont-this(|env2)>;
+	  	return := <cont-get-cc(|env2)> cont_this;
+	  	env3 := <cont-set-cc(|env2)> (func, return);				// Set the return address
+	  	ex := <ex-get-cx(|env3)> cont_this;
+	  	env4 := <ex-set-cx(|env3)> (func, ex);						// Copy over exception
+	  	env5 := <cont-call(|env4)> func								// call the function
 	 
 	 // FVM_ReturnN/1
 	// Takes n values from the top of the stack and returns them to the caller

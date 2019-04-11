@@ -92,6 +92,8 @@ rules
 	stack-delta: FVM_Jump(lbl) -> 0
 	stack-delta: FVM_Call(lbl1, lbl2) -> -1
 	stack-delta: FVM_Call(lbl) -> -1
+	stack-delta: FVM_TailCall(lbl) -> -1
+	stack-delta: FVM_TailCall() -> -1
 	
 	
 	stack-delta: FVM_ContThis() -> 1

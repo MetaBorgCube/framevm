@@ -127,6 +127,8 @@ sorts Instr context-free syntax
   ControlInstr.FVM_Jump       = <jump <Label>>					// Unconditional jump to LABEL
   ControlInstr.FVM_Call       = <call <Label> <Label>>			// Call block LABEL, using frame on the stack
   ControlInstr.FVM_Call       = <call <Label>>					// Call continuation on the stack with new block
+  ControlInstr.FVM_TailCall   = <tailcall <Label>>				// Tail-call block LABEL, using frame on the stack
+  ControlInstr.FVM_TailCall   = <tailcall>						// Tail-call continuation on the stack
   ControlInstr.FVM_ContCall   = <ccall <Label>>					// Call a continuation
   ControlInstr.FVM_ContCall   = <ccall [<ContRef>] <Label>>		// Call the given continuation
   ControlInstr.FVM_ContReturn = <cret [<ContRef>]>				// Call the given continuation

@@ -127,6 +127,8 @@ instr[[FVM_IsFrame() ^(s)]].
 	instr[[FVM_Call(lbl1, lbl2) ^(s)]]  := lbl[[lbl1 ^(s)]], lbl[[lbl2 ^(s)]].
 	instr[[FVM_Try(lbl1, lbl2, lbl3) ^(s)]]  := lbl[[lbl1 ^(s)]], lbl[[lbl2 ^(s)]], lbl[[lbl3 ^(s)]].
 	instr[[FVM_Try(lbl) ^(s)]] := lbl[[lbl ^(s)]].
+	instr[[FVM_TailCall() ^(s)]].
+	instr[[FVM_TailCall(lbl) ^(s)]]  := lbl[[lbl ^(s)]].
 	
 	instr[[FVM_ScopeNew(lbl) ^(s)]]  := lbl[[lbl ^(s)]].
 	instr[[FVM_ScopeNew() ^(s)]].

@@ -55,6 +55,27 @@ rules
 		 FVM_ContSetR(FVM_Cont(Bind("c", 0))),
 		 FVM_ContCall(FVM_Label(return))
 		]
+		
+	r-cont: FVM_TailCall(FVM_Label(block)) -> 
+		[FVM_ContNew(FVM_Label(block), "2"), 
+		 FVM_Dup(),
+		 FVM_ContGet(FVM_Cont(Bind("c", 0))),
+		 FVM_ContSetR(FVM_Cont(Bind("c", 0))),
+		 FVM_Dup(), 
+		 FVM_ContGet(FVM_Cont(Bind("x", 1))),
+		 FVM_ContSetR(FVM_Cont(Bind("x", 1))), 
+		 FVM_ContReturn()
+		]
+		
+	r-cont: FVM_TailCall() -> 
+		[FVM_Dup(), 
+		 FVM_ContGet(FVM_Cont(Bind("x", 1))), 
+		 FVM_ContSetR(FVM_Cont(Bind("x", 1))),
+		 FVM_Dup(),
+		 FVM_ContGet(FVM_Cont(Bind("c", 0))), 
+		 FVM_ContSetR(FVM_Cont(Bind("c", 0))),
+		 FVM_ContReturn()
+		]
 		 
 	r-scope: FVM_ScopeNew(lbl) -> 
 		[FVM_ScopeNew(),
