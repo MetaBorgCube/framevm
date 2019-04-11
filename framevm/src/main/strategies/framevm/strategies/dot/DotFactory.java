@@ -210,7 +210,7 @@ public abstract class DotFactory {
 	 * 		A string containing the DOT link
 	 */
 	public static String blockLink(String from, String to) {
-		return from + ":block -> " + to + " [style=dotted];";
+		return from + ":pc -> " + to + " [style=dotted];";
 	}
 	
 	/**
@@ -228,14 +228,16 @@ public abstract class DotFactory {
 		return from + ":cont_" + id + " -> " + to + " [color=" + color + ", style=dashed];";
 	}
 
-	private static void addControlFrameRef(List<String> links, String slotRef, String frame_id) {
-		if (frame_id.equals("frame__exit")) {
+	private static boolean addControlFrameRef(List<String> links, String slotRef, String frame_id) {
+		if (frame_id.endsWith("__exit")) {
 			links.add(controlReferenceLink(slotRef, "finish"));
-		} else if (frame_id.equals("frame__catch")) {
+		} else if (frame_id.endsWith("__catch")) {
 			links.add(controlReferenceLink(slotRef, "exception"));
 		} else {
 			links.add(controlReferenceLink(slotRef, frame_id + ":id"));
+			return true;
 		}
+		return false;
 	}
 	
 	/**
@@ -277,14 +279,17 @@ public abstract class DotFactory {
 			String frameRef = frame(frame.getId());
 			DotFrameFactory.build(frame, nodes, links);
 			links.add(referenceLink(slotRef, frameRef + ":id"));
+			return "FrameRef(" + frame.getId() + ")";
 		}
 		
 		matcher = CONTINUATION_PATTERN.matcher(value);
 		if (matcher.matches()) {	// If it is a continuation
 			ControlFrame frame = (ControlFrame) ((StrategoBlob) term.getSubterm(0)).value();
 			String frameRef = controlFrame(frame);
-			DotControlFrameFactory.build(frame, nodes, links);
-			addControlFrameRef(links, slotRef, frameRef);
+			if (addControlFrameRef(links, slotRef, frameRef)) {
+				DotControlFrameFactory.build(frame, nodes, links);
+			}
+			return "Continuation(" + frame.getId() + ")";
 		}
 		return value;
 	}

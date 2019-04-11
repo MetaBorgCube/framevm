@@ -14,7 +14,7 @@ public class DotBlockFactory extends DotFactory {
 	private final static String[] REPLACE_FROM = {"Path(Self)"};
 	private final static String[] REPLACE_TO   = {"[]"        };
 
-	private final static String[] REGEX_UNPACK = {"\"([^\"]*)\"", "Path(Self)", "Link\\((\\w+)\\)", "Slot\\((\\w+)\\)", "Path\\((\\[\\w+\\])\\)"};
+	private final static String[] REGEX_UNPACK = {"\"([^\"]*)\"", "Path(Self)", "Link\\((\\w+)\\)", "Slot\\((\\w+)\\)", "Path\\((\\[\\w+\\])\\)", "Bind\\((\\w+),\\d+\\)"};
 	private final static Pattern PATTERN = Pattern.compile("Label\\(([\\w]+)\\)");
 	
 	/**
@@ -53,7 +53,7 @@ public class DotBlockFactory extends DotFactory {
 	 * 		The sanitized string representing the instruction
 	 */
 	private static String sanitize(String instr, int idx, String block, List<String> links) {
-		String out = instr;
+		String out = instr.substring(4);
 		for (int i = 0; i < REPLACE_FROM.length; i++) {
 			out = out.replaceAll(REPLACE_FROM[i], REPLACE_TO[i]);
 		}

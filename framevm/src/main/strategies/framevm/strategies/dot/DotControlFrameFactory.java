@@ -76,7 +76,7 @@ public class DotControlFrameFactory extends DotFactory {
 		}
 		
 		// Generate main node
-		String dotString = node(name, "{<id>" + frame.getId() + " | {{Block | Frame | Stack" + contSlots + "}| { <block> | <frame> | <stack>" + contIds + "}}}");
+		String dotString = node(name, "{<id>" + frame.getId() + " | {{PC | Frame | Stack" + contSlots + "}| { <pc> | <frame> | <stack>" + contIds + "}}}");
 		nodes.put(name, dotString);
 		
 		// Generate the node for the local stack
