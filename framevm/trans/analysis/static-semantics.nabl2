@@ -45,6 +45,22 @@ rules
   	Block{name} |-> d | error $[Unknown jump label [name]] @name.
   	
   	
+  bind[[Bind(name, idx) ^(s)]] :=
+  	idx != -1 | error $[Unbound identifier [name]] @name.
+  	
+  bind[[FVM_Path(path) ^(s)]] :=
+  	Map1(bind)[[path ^(s)]].
+ 
+  bind[[FVM_Self() ^(s)]].
+  bind[[FVM_Link(link) ^(s)]] :=
+  	bind[[link ^(s)]].
+  bind[[FVM_Cont(cont) ^(s)]] :=
+  	bind[[cont ^(s)]].
+  bind[[FVM_Slot(slot) ^(s)]] :=
+  	bind[[slot ^(s)]].
+  	
+  	
+  	
 instr[[FVM_IPush(_) ^(s)]].
 instr[[FVM_INeg() ^(s)]].
 instr[[FVM_IAdd() ^(s)]].
@@ -76,25 +92,25 @@ instr[[FVM_New() ^(s)]].
 instr[[FVM_NewR() ^(s)]].
 
 instr[[FVM_Set() ^(s)]].
-instr[[FVM_Set(_) ^(s)]].
+instr[[FVM_Set(path) ^(s)]] := bind[[path ^(s)]].
 instr[[FVM_SetR() ^(s)]].
-instr[[FVM_SetR(_) ^(s)]].
+instr[[FVM_SetR(path) ^(s)]] := bind[[path ^(s)]].
 instr[[FVM_Get() ^(s)]].
-instr[[FVM_Get(_) ^(s)]].
+instr[[FVM_Get(path) ^(s)]] := bind[[path ^(s)]].
 instr[[FVM_GetR() ^(s)]].
-instr[[FVM_GetR(_) ^(s)]].
+instr[[FVM_GetR(path) ^(s)]] := bind[[path ^(s)]].
 
 instr[[FVM_ContSet() ^(s)]].
-instr[[FVM_ContSet(_) ^(s)]].
+instr[[FVM_ContSet(path) ^(s)]] := bind[[path ^(s)]].
 instr[[FVM_ContSetR() ^(s)]].
-instr[[FVM_ContSetR(_) ^(s)]].
+instr[[FVM_ContSetR(path) ^(s)]] := bind[[path ^(s)]].
 instr[[FVM_ContGet() ^(s)]].
-instr[[FVM_ContGet(_) ^(s)]].
+instr[[FVM_ContGet(path) ^(s)]] := bind[[path ^(s)]].
 instr[[FVM_ContGetR() ^(s)]].
-instr[[FVM_ContGetR(_) ^(s)]].
+instr[[FVM_ContGetR(path) ^(s)]] := bind[[path ^(s)]].
 
 instr[[FVM_ContTransfer(n) ^(s)]].
-instr[[FVM_ContTransfer(n, _) ^(s)]].
+instr[[FVM_ContTransfer(n, path) ^(s)]] := bind[[path ^(s)]].
 
 instr[[FVM_ContRGetN(n) ^(s)]].
 instr[[FVM_ContRGet() ^(s)]].
@@ -102,8 +118,8 @@ instr[[FVM_ContRGet() ^(s)]].
 instr[[FVM_Return() ^(s)]].
 instr[[FVM_Throw() ^(s)]].
 
-instr[[FVM_Link(_, _) ^(s)]].
-instr[[FVM_LinkR(_) ^(s)]].
+instr[[FVM_Link(bind1, bind2) ^(s)]] := bind[[bind1 ^(s)]], bind[[bind2 ^(s)]].
+instr[[FVM_LinkR(bind) ^(s)]] := bind[[bind ^(s)]].
 
 instr[[FVM_Copy() ^(s)]].
 instr[[FVM_CopyR() ^(s)]].
@@ -117,8 +133,8 @@ instr[[FVM_IsFrame() ^(s)]].
 	instr[[FVM_ContNew(lbl, _) ^(s)]] := lbl[[lbl ^(s)]].
 	instr[[FVM_Yield(lbl) ^(s)]] := lbl[[lbl ^(s)]].
 	instr[[FVM_ContCall(lbl) ^(s)]] := lbl[[lbl ^(s)]].
-	instr[[FVM_ContCall(_, lbl) ^(s)]] := lbl[[lbl ^(s)]].
-	instr[[FVM_ContReturn(_) ^(s)]].
+	instr[[FVM_ContCall(path, lbl) ^(s)]] := lbl[[lbl ^(s)]], bind[[path ^(s)]].
+	instr[[FVM_ContReturn(path) ^(s)]] := bind[[path ^(s)]].
 	instr[[FVM_ContReturn() ^(s)]].
 	
 	instr[[FVM_Jump(lbl) ^(s)]]  := lbl[[lbl ^(s)]].
