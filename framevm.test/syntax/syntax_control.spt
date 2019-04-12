@@ -106,14 +106,14 @@ test try lbl2 char         [[try P P 'x']]  parse fails
 
 test newscope no label         [[newscope]]         parse fails
 
-test newscope single simple    [[newscope P]]       parse succeeds
-test newscope single simple2   [[newscope G]]       parse succeeds
-test newscope single number    [[newscope 0]]       parse fails
-test newscope single lower     [[newscope e]]       parse fails
-test newscope single r         [[newscope r]]       parse fails
-test newscope single c         [[newscope c]]       parse fails
-test newscope single x         [[newscope x]]       parse fails
-test newscope single char      [[newscope 'x']]     parse fails
+test newscope single simple    [[newscope P LBL]]       parse succeeds
+test newscope single simple2   [[newscope G LBL]]       parse succeeds
+test newscope single number    [[newscope 0 LBL]]       parse fails
+test newscope single lower     [[newscope e LBL]]       parse fails
+test newscope single r         [[newscope r LBL]]       parse fails
+test newscope single c         [[newscope c LBL]]       parse fails
+test newscope single x         [[newscope x LBL]]       parse fails
+test newscope invalid lbl      [[newscope x 0]]         parse fails
 
 
 

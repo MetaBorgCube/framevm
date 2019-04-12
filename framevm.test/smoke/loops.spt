@@ -2,17 +2,12 @@ module smoke_loops
 
 language framevm
 
-test Loops example [[MAIN:
-	new 1
-	newscope MAIN2
-
-MAIN2:
+test Loops example [[#init 1
+MAIN:
 	ipush 0
 	set [0]
 	new 2
-	dup
-	link [] P
-	newscope FOR_INIT
+	newscope P FOR_INIT
 	
 FOR_INIT:
 	ipush 0
@@ -30,9 +25,7 @@ FOR_BODY:
 	set [1]
 	
 	new
-	dup
-	link [] P
-	newscope WHILE
+	newscope P WHILE
 
 WHILE:
 	get [P, 1]
@@ -83,17 +76,12 @@ MAIN_END:
 3
 9"
 
-test Loops example CISC [[MAIN:
-	new 1
-	newscope MAIN2
-
-MAIN2:
+test Loops example CISC [[#init 1
+MAIN:
 	ipush 0
 	set [0]
 	new 2
-	dup
-	link [] P
-	newscope FOR_INIT
+	newscope P FOR_INIT
 	
 FOR_INIT:
 	ipush 0
@@ -111,9 +99,7 @@ FOR_BODY:
 	set [1]
 	
 	new
-	dup
-	link [] P
-	newscope WHILE
+	newscope P WHILE
 
 WHILE:
 	get [P, 1]

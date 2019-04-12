@@ -2,11 +2,8 @@ module smoke_jump
 
 language framevm
 
-test Jump example RISC [[MAIN:
-	new 2
-	newscope MAIN2
-
-MAIN2:
+test Jump example RISC [[#init 2
+MAIN:
 	jump START
   
 START :
@@ -34,11 +31,8 @@ FOO:
 	return
 ]] transform "Run -> RISC" to "6" 
 
-test Jump example CISC [[MAIN:
-	new 2
-	newscope MAIN2
-
-MAIN2:
+test Jump example CISC [[#init 2
+MAIN:
 	jump START
   
 START :

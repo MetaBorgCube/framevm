@@ -4,10 +4,7 @@ language framevm
 
 test Generator example RISC [[MAIN:
 	new
-	dup
-	link [] P
-
-	newscope FOR_INIT
+	newscope P FOR_INIT
 	
 FOR_INIT:
 	new 0
@@ -79,10 +76,7 @@ MAIN_END:
 
 test Generator example CISC [[MAIN:
 	new
-	dup
-	link [] P
-
-	newscope FOR_INIT
+	newscope P FOR_INIT
 	
 FOR_INIT:
 	new 0

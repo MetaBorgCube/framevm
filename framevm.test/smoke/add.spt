@@ -10,7 +10,7 @@ test Add example RISC [[ADD:
 
 MAIN:
 	new 1
-	newscope MAIN2
+	newscope P MAIN2
 	
 MAIN2:
 	ipush 10
@@ -41,7 +41,7 @@ test Add example CISC [[ADD:
 
 MAIN:
 	new 1
-	newscope MAIN2
+	newscope P MAIN2
 	
 MAIN2:
 	ipush 10

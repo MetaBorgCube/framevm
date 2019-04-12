@@ -4,10 +4,7 @@ language framevm
 
 test with example RISC [[MAIN:
 	new 3
-	dup
-	link [] P
-
-	newscope WITH_I_INIT
+	newscope P WITH_I_INIT
 	
 WITH_I_INIT:
 	new 4
@@ -46,9 +43,7 @@ WITH_I_NEXT:
 	set [0]
 
 	new 3
-	dup
-	link [] P
-	newscope WITH_J_INIT
+	newscope P WITH_J_INIT
 	
 WITH_I_INC:	
 	get [2]
@@ -131,10 +126,7 @@ MAIN_END:
 
 test with example CISC [[MAIN:
 	new 3
-	dup
-	link [] P
-
-	newscope WITH_I_INIT
+	newscope P WITH_I_INIT
 	
 WITH_I_INIT:
 	new 4
@@ -173,9 +165,7 @@ WITH_I_NEXT:
 	set [0]
 
 	new 3
-	dup
-	link [] P
-	newscope WITH_J_INIT
+	newscope P WITH_J_INIT
 	
 WITH_I_INC:	
 	get [2]

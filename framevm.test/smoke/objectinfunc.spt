@@ -2,11 +2,8 @@ module smoke_obj_in_func
 
 language framevm
 
-test Object in function example RISC [[MAIN:
-	new 1
-	newscope MAIN2
-
-MAIN2:
+test Object in function example RISC [[#init 1
+MAIN:
 	new 3
 	dup
 	link [] P
@@ -39,11 +36,8 @@ MAIN_END:
 	return
 ]] transform "Run -> RISC" to "5"
 
-test Object in function example CISC [[MAIN:
-	new 1
-	newscope MAIN2
-
-MAIN2:
+test Object in function example CISC [[#init 1
+MAIN:
 	new 3
 	dup
 	link [] P

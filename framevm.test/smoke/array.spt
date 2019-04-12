@@ -2,10 +2,8 @@ module smoke_array
 
 language framevm
 
-test Array example RISC [[MAIN:
-	new 2
-	newscope MAIN2
-MAIN2:
+test Array example RISC [[#init 2
+MAIN:
 	new 4
 	dup
 	ipush 5
@@ -34,10 +32,8 @@ MAIN2:
 ]] transform "Run -> RISC" to "6"
 	
 
-test Array example CISC [[MAIN:
-	new 2
-	newscope MAIN2
-MAIN2:
+test Array example CISC [[#init 2
+MAIN:
 	new 4
 	dup
 	ipush 5
