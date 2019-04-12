@@ -26,6 +26,6 @@ public class vm_print_0_1 extends FVMStrategy {
 			out = arg.toString();
 		}
 		env.stdout.append(out).append('\n');
-		return new StrategoBlob(env);
+		return factory.makeTuple(new StrategoBlob(env), factory.makeString(out));
 	}
 }

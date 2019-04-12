@@ -27,7 +27,7 @@ rules
 	external frame-copy(|env)		// env| frame -> (env', frame)
 	external frame-set-current(|env2) // env| (cont, frame) -> env'
 
-	external vm-print(|env)			// env| val -> env'
+	external vm-print(|env)			// env| val -> (env', string)
 	external vm-jump(|env)			// env| lbl -> env'
 	external vm-cont-new(|env)		// env| (frame, lbl, size) -> (env', cont)
 

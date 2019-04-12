@@ -11,8 +11,9 @@ rules	// Other instructions
 	// Print the value on top of the stack to the console
 	eval: (FVM_Print(), env1) -> env3
 	  where
-	  	(env2, out) := <stack-pop-any(|env1)>;
-	  	env3 := <vm-print(|env2)> <debug> <val-to-string> out
+	  	(env2, val) := <stack-pop-any(|env1)>;
+	  	(env3, out) := <vm-print(|env2)> <val-to-string> val;
+	  	_ := <debug> out
 	  	
 	// FVM_Debug/0
 	// Print the state of the vm to the console and terminate
