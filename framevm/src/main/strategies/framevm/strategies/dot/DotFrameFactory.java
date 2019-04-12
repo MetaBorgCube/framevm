@@ -33,31 +33,36 @@ public class DotFrameFactory extends DotFactory {
 		
 		// Get the representation of slots
 		// Starts with the column with ids
-		String slotsString = "{{";
+		String slotsString;
 		Slot[] slots = frame.getSlots();
-		for (int i = 0; i < slots.length; i++) {
-			if (i == 0) {
-				slotsString += i;
-			} else {
-				slotsString += "|" + i;
+		if (slots.length > 0) {
+			slotsString = "{{";
+			for (int i = 0; i < slots.length; i++) {
+				if (i == 0) {
+					slotsString += i;
+				} else {
+					slotsString += "|" + i;
+				}
 			}
+	
+			// Then does the actual values
+			slotsString += "}|{";
+			
+			for (int i = 0; i < slots.length; i++) {
+				Slot slot = slots[i];
+				if (slot == null) {
+					slotsString += " null ";
+				} else {
+					slotsString += "<" + i + ">" + slotToString(slot, nodes, links, name + ":" + i);
+				}
+				if (i != slots.length - 1) {
+					slotsString += "|";
+				}
+			}
+			slotsString += "}}";
+		} else {
+			slotsString = "";
 		}
-
-		// Then does the actual values
-		slotsString += "}|{";
-		
-		for (int i = 0; i < slots.length; i++) {
-			Slot slot = slots[i];
-			if (slot == null) {
-				slotsString += " null ";
-			} else {
-				slotsString += "<" + i + ">" + slotToString(slot, nodes, links, name + ":" + i);
-			}
-			if (i != slots.length - 1) {
-				slotsString += "|";
-			}
-		}
-		slotsString += "}}";
 		
 		// Add all the links
 		Link[] frameLinks = frame.getLinks();
