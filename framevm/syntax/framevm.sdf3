@@ -134,14 +134,15 @@ sorts Instr context-free syntax
   ControlInstr.FVM_ContReturn = <cret [<ContRef>]>				// Call the given continuation
   ControlInstr.FVM_ContReturn = <cret>							// Call the continuation on top of the stack
   
-  ControlInstr.FVM_Try       = <try <Label> <Label> <Label>>	// Execute the frame on second position on the stack and set the first frame as exception handler
-  ControlInstr.FVM_Try       = <try <Label>>					// Execute the continuation on second position on the stack and set the first continuation as exception handler
-  ControlInstr.FVM_Throw     = <throw>							// Throw the element on top of the stack to the exception handler
+  ControlInstr.FVM_Try        = <try <Label> <Label> <Label>>	// Execute the frame on second position on the stack and set the first frame as exception handler
+  ControlInstr.FVM_Try        = <try <Label>>					// Execute the continuation on second position on the stack and set the first continuation as exception handler
+  ControlInstr.FVM_Throw      = <throw>							// Throw the element on top of the stack to the exception handler
   
-  FrameInstr.FVM_ScopeExit   = <exitscope <Path>>				// Set the frame at path as the current frame
-  ControlInstr.FVM_ScopeExit = <exitscope <Path> <Label>>		// Break execution to a higher scope
-  FrameInstr.FVM_ScopeNew    = <newscope>						// Set the current frame
-  ControlInstr.FVM_ScopeNew  = <newscope <Label>>				// Move execution to another scope and copy over the current continuation
+  FrameInstr.FVM_ScopeExit    = <exitscope <Path>>				// Set the frame at path as the current frame
+  ControlInstr.FVM_ScopeExit  = <exitscope <Path> <Label>>		// Break execution to a higher scope
+  FrameInstr.FVM_ScopeNew     = <newscope <LinkRef>>			// Set the current frame
+  ControlInstr.FVM_ScopeNew   = <newscope <LinkRef> <Label>>	// Move execution to another scope and copy over the current continuation
+  FrameInstr.FVM_ScopeSetCurrent = <mkcurrent>					// Set the frame on top of the stack as the current dataframe
   
   Path.FVM_Self  = <[]>
   Path.FVM_Path  = <[<{PathRef ","}+>]>
@@ -149,11 +150,11 @@ sorts Instr context-free syntax
   PathRef = SlotRef
   PathRef = LinkRef
   
-  SlotRef.FVM_Slot = INTLEZ
-  LinkRef.FVM_Link = LABEL
+  SlotRef.FVM_Slot    = INTLEZ
+  LinkRef.FVM_Link    = LABEL
   LinkRef.FVM_LinkIdx = <_l<INTLEZ>>
     
-  ContRef.FVM_Cont = CONTSLOT
+  ContRef.FVM_Cont    = CONTSLOT
   ContRef.FVM_ContIdx = <_c<INTLEZ>>
   
 

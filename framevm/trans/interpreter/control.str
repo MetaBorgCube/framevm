@@ -6,6 +6,8 @@ imports
 	interpreter/external
 	interpreter/util
 	
+	fvm-desugar
+	
 rules	
 	// FVM_Call/2
 	// Call the block at arg1 using the frame at the top of the stack
@@ -109,18 +111,29 @@ rules
 	
 	// FVM_ScopeNew/1
 	// Move execution to a new scope, for example when entering a for loop
-	// Uses the frame on top of the stack as new execution frame (make sure its properly linked)
+	// Uses the frame on top of the stack as new execution frame
 	// Jumps the execution to the given block
-	eval: (FVM_ScopeNew(FVM_Label(lbl)), env1) -> env4
+	eval: (FVM_ScopeNew(FVM_Link(Bind(lbl, idx)), FVM_Label(block)), env1) -> env5
 	  where
+	    frame_this := <frame-this(|env1)>;
 	  	(env2, FrameRef(frame_to)) := <stack-pop-frame(|env1)>;
-	  	env3 := <frame-set-current(|env2)> (<cont-this(|env2)>, frame_to);
-	  	env4 := <vm-jump(|env3)> lbl
+	  	env3 := <frame-link(|env2)> (frame_to, frame_this, (lbl, idx));
+	  	env4 := <frame-set-current(|env3)> (<cont-this(|env2)>, frame_to);
+	  	env5 := <vm-jump(|env4)> block
 
 	// FVM_ScopeNew/0
 	// Move execution to a new scope, for example when entering a for loop
-	// Uses the frame on top of the stack as new execution frame (make sure its properly linked)
-	eval: (FVM_ScopeNew(), env1) -> env3
+	// Uses the frame on top of the stack as new execution frame
+	eval: (FVM_ScopeNew(FVM_Link(Bind(lbl, idx))), env1) -> env4
+	  where
+	  	frame_this := <frame-this(|env1)>;
+	  	(env2, FrameRef(frame_to)) := <stack-pop-frame(|env1)>;
+	  	env3 := <frame-link(|env2)> (frame_to, frame_this, (lbl, idx));
+	  	env4 := <frame-set-current(|env3)> (<cont-this(|env3)>, frame_to)
+	  	
+	// FVM_ScopeSetCurrent/0
+	// Set the frame on top of the stack as new execution frame (make sure its properly linked)
+	eval: (FVM_ScopeSetCurrent(), env1) -> env3
 	  where
 	  	(env2, FrameRef(frame_to)) := <stack-pop-frame(|env1)>;
 	  	env3 := <frame-set-current(|env2)> (<cont-this(|env2)>, frame_to)

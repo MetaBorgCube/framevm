@@ -46,8 +46,10 @@ rules
 	
 	
 	fix-missing-aliasses: blocks -> <topdown(try(fix-missing-alias))> blocks
-	fix-missing-alias: FVM_Link(name) -> FVM_Link(Bind(name, -1)) where _ := <is-string> name
-	fix-missing-alias: FVM_Cont(name) -> FVM_Cont(Bind(name, -1)) where _ := <is-string> name  
+	fix-missing-alias: FVM_Link(name)   -> FVM_Link(Bind(name, -1)) where _ := <is-string> name
+	fix-missing-alias: FVM_LinkIdx(idx) -> FVM_Link(Bind($[_l[idx]], <string-to-int> idx))
+	fix-missing-alias: FVM_Cont(name)   -> FVM_Cont(Bind(name, -1)) where _ := <is-string> name
+	fix-missing-alias: FVM_ContIdx(idx) -> FVM_Cont(Bind($[_c[idx]], <string-to-int> idx))
 	
 	apply-aliasses: (alias, blocks) -> <topdown(try(apply-alias(|alias)))> blocks
 	apply-alias(|alias): FVM_Link(name) -> FVM_Link(Bind(name, <string-to-int> idx)) where FVM_LinkAlias(FVM_Link(name), idx) := alias 

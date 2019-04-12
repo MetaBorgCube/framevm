@@ -146,7 +146,8 @@ instr[[FVM_IsFrame() ^(s)]].
 	instr[[FVM_TailCall() ^(s)]].
 	instr[[FVM_TailCall(lbl) ^(s)]]  := lbl[[lbl ^(s)]].
 	
-	instr[[FVM_ScopeNew(lbl) ^(s)]]  := lbl[[lbl ^(s)]].
-	instr[[FVM_ScopeNew() ^(s)]].
+	instr[[FVM_ScopeNew(bind, lbl) ^(s)]]  := lbl[[lbl ^(s)]], bind[[bind ^(s)]].
+	instr[[FVM_ScopeNew(bind) ^(s)]] := bind[[bind ^(s)]].
+	instr[[FVM_ScopeSetCurrent() ^(s)]].
 	instr[[FVM_ScopeExit(_, lbl) ^(s)]]  := lbl[[lbl ^(s)]].
 	instr[[FVM_ScopeExit(_) ^(s)]].

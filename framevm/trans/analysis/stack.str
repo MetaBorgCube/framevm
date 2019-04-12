@@ -103,8 +103,9 @@ rules
 	stack-delta: FVM_ContReturn() -> -1
 	stack-delta: FVM_ContReturn(_) -> 0
 	
-	stack-delta: FVM_ScopeNew(lbl) -> -1
-	stack-delta: FVM_ScopeNew()    -> -1
+	stack-delta: FVM_ScopeNew(_, lbl) -> -1
+	stack-delta: FVM_ScopeNew(_)    -> -1
+	stack-delta: FVM_ScopeSetCurrent()    -> -1
 	
 	stack-delta: FVM_ScopeExit(path) -> 0
 	stack-delta: FVM_ScopeExit(path, lbl) -> 0

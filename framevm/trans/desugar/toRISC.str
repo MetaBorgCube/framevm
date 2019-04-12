@@ -23,20 +23,28 @@ rules
 	r-new: FVM_New() -> [FVM_New("0")]
 
 
-	// Scope operations -> ScopeNew
-	r-scope: FVM_ScopeNew(lbl) -> 
-		[FVM_ScopeNew(),
+	// Scope operations -> mkcurrent
+	r-scope: FVM_ScopeNew(link) ->
+		[FVM_Dup(),
+		 FVM_Link(FVM_Self(), link),
+		 FVM_ScopeSetCurrent()
+		]
+		
+	r-scope: FVM_ScopeNew(link, lbl) ->
+		[FVM_Dup(),
+		 FVM_Link(FVM_Self(), link),
+		 FVM_ScopeSetCurrent(),
 		 FVM_Jump(lbl)
 		]
 		 
 	r-scope: FVM_ScopeExit(path, lbl) -> 
 		[FVM_Get(path),
-		 FVM_ScopeNew(),
+		 FVM_ScopeSetCurrent(),
 		 FVM_Jump(lbl)
 		]
 		
 	r-scope: FVM_ScopeExit(lbl) -> 
-		[FVM_ScopeNew(),
+		[FVM_ScopeSetCurrent(),
 		 FVM_Jump(lbl)
 		]
 		
