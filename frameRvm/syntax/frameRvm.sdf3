@@ -1,0 +1,12 @@
+module frameRvm
+
+imports
+  
+  Common pseudo
+
+context-free start-symbols
+  
+  Program
+
+context-free syntax
+	Program.Empty = <>

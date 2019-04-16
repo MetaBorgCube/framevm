@@ -1,0 +1,7 @@
+module test
+
+language frameRvm
+
+test parse [[
+
+]] parse succeeds
