@@ -89,7 +89,7 @@ context-free syntax
 	PathExp = Path
 	PathExp = Exp
 	
-	IntExp = INTLEZ
+	IntExp.IntLEZ = INTLEZ
 	IntExp = Exp
 	
 	Path.FVMR_Self  = <[]>

@@ -9,54 +9,125 @@ rules
   init ^ (s) := new s.
 
   [[FVMR_Program(_, _, blocks) ^ (s) ]] :=
-  	Map1(block)[[blocks ^(s)]].
+    Map1(block)[[blocks ^(s)]].
   	
   block[[FVMR_PseudoCode(_) ^(s)]].
-  block[[FVMR_Block(name, Seq(body)) ^(s)]] := 
-  	new block, 
-  	Block{name} <- s,
-  	distinct/name D(s)/Block | error $[Redefinition of label] @NAMES,
-  	Block{name} ===> block,
-  	block ---> s,
-  	instr[[body ^(block)]].
+  block[[FVMR_Block(FVMR_Label(name), Seq(body)) ^(s)]] := 
+    new block, 
+    Block{name} <- s,
+    distinct/name D(s)/Block | error $[Redefinition of label] @NAMES,
+    Block{name} ===> block,
+    block ---> s,
+    instr[[body ^(block)]].
   	
 
-  lbl[[FVM_Label(name) ^(s)]] :=
-  	Block{name} -> s,
-  	Block{name} |-> d | error $[Unknown jump label [name]] @name.
-
-
+  lbl[[FVMR_Label(name) ^(s)]] :=
+    Block{name} -> s,
+    Block{name} |-> d | error $[Unknown jump label [name]] @name.
+    
   ref[[name ^(s)]] :=
-  	Var{name} -> s,
-  	Var{name} |-> d | error $[Unknown reference [name]] @name.
+    Var{name} -> s,
+    Var{name} |-> d | error $[Unknown reference [name]] @name.
   	
 
   bind[[name ^(s)]] :=
-  	Var{name} <- s,
-  	distinct/name D(s)/Var | error $[Redefinition of variable] @name.
+    Var{name} <- s,
+    distinct/name D(s)/Var | error $[Redefinition of variable] @name.
   
    
-  instr[[ [FVMR_Assign(ids, exp) | tail] ^(s)]] :=
-  	Map1(bind)[[ids ^(s)]],
-  	exp[[exp ^(s)]],
-  	new bs, bs ---> s,
-  	instr[[tail ^(bs)]].
+  instr[[ [Assign(ids, exp, pure) | tail] ^(s)]] :=
+    Map1(bind)[[ids ^(s)]],
+	exp[[exp ^(s)]],
+	new bs, bs ---> s,
+	instr[[tail ^(bs)]],
+    pure == 0 | note $[impure] @exp.
   	
-  instr[[ [FVMR_Terminal(exp) | tail] ^(s)]] :=
-  	exp[[exp ^(s)]],
-  	instr[[tail ^(s)]].
+  instr[[ [Terminal(exp, pure) | tail] ^(s)]] :=
+    exp[[ exp ^(s)]],
+    instr[[ tail ^(s)]],
+    pure == 0 | note $[impure] @exp.
    
   instr[[ [FVMR_PathAlias(id, path) | tail] ^(s)]] :=
-  	bind[[id ^(s)]],
-  	new bs, bs ---> s,
-  	instr[[tail ^(bs)]].
+    bind[[id ^(s)]],
+    new bs, bs ---> s,
+    instr[[tail ^(bs)]].
    
   instr[[ [Control(exp)] ^(s)]] :=
-  	exp[[exp ^(s)]].
+    exp[[ exp ^(s)]].
   	
   instr[[ [Control(exp, refs)] ^(s)]] :=
-  	exp[[exp ^(s)]],
-  	Map1(ref)[[refs ^(s)]].
+    exp[[ exp ^(s)]],
+    Map1(ref)[[refs ^(s)]].
   	
+  	  
+  exp[[IntLEZ(_) ^(s)]].
+  exp[[FVMR_Path(_) ^(s)]].
+  exp[[FVMR_Ref(name) ^(s)]] :=
+    ref [[name ^(s)]].
+  
+  exp[[ FVMR_IPush(n) ^(s) ]].
+  exp[[ FVMR_INeg(exp) ^(s) ]] := exp[[ exp ^(s) ]].
+  
+  exp[[ FVMR_IAdd(exp1, exp2) ^(s) ]] :=  exp[[ exp1 ^(s) ]], exp[[ exp2 ^(s) ]].
+  exp[[ FVMR_IMul(exp1, exp2) ^(s) ]] :=  exp[[ exp1 ^(s) ]], exp[[ exp2 ^(s) ]].
+  exp[[ FVMR_ISub(exp1, exp2) ^(s) ]] :=  exp[[ exp1 ^(s) ]], exp[[ exp2 ^(s) ]].
+  exp[[ FVMR_IDiv(exp1, exp2) ^(s) ]] :=  exp[[ exp1 ^(s) ]], exp[[ exp2 ^(s) ]].
+  exp[[ FVMR_IMod(exp1, exp2) ^(s) ]] :=  exp[[ exp1 ^(s) ]], exp[[ exp2 ^(s) ]].
+	
+  exp[[ FVMR_IEq(exp1, exp2) ^(s) ]]  :=  exp[[ exp1 ^(s) ]], exp[[ exp2 ^(s) ]].
+  exp[[ FVMR_ILt(exp1, exp2) ^(s) ]]  :=  exp[[ exp1 ^(s) ]], exp[[ exp2 ^(s) ]].
+  exp[[ FVMR_IGt(exp1, exp2) ^(s) ]]  :=  exp[[ exp1 ^(s) ]], exp[[ exp2 ^(s) ]].
+  exp[[ FVMR_IOr(exp1, exp2) ^(s) ]]  :=  exp[[ exp1 ^(s) ]], exp[[ exp2 ^(s) ]].
+  exp[[ FVMR_IXor(exp1, exp2) ^(s) ]] :=  exp[[ exp1 ^(s) ]], exp[[ exp2 ^(s) ]].
+  exp[[ FVMR_IAnd(exp1, exp2) ^(s) ]] :=  exp[[ exp1 ^(s) ]], exp[[ exp2 ^(s) ]].
+
+  exp[[ FVMR_IsInt(exp) ^(s) ]]   := exp[[ exp ^(s) ]].
+  exp[[ FVMR_IsCont(exp) ^(s) ]]  := exp[[ exp ^(s) ]].
+  exp[[ FVMR_IsFrame(exp) ^(s) ]] := exp[[ exp ^(s) ]].
+	
+  exp[[ FVMR_New(exp) ^(s) ]] := exp[[ exp ^(s) ]].
+  exp[[ FVMR_New() ^(s) ]].
+	
+  exp[[ FVMR_Link(exp, path, ref) ^(s) ]] := exp[[ exp ^(s) ]].
+ 
+  exp[[ FVMR_Set(exp1, exp2) ^(s) ]] := exp[[ exp1 ^(s) ]], exp[[ exp2 ^(s) ]].
+  exp[[ FVMR_SetR(exp1, exp2, exp3) ^(s) ]] := exp[[ exp1 ^(s) ]], exp[[ exp2 ^(s) ]], exp[[ exp3 ^(s) ]].
+  exp[[ FVMR_Get(exp) ^(s) ]] := exp[[ exp ^(s) ]].
+  exp[[ FVMR_GetR(exp1, exp2) ^(s) ]] := exp[[ exp1 ^(s) ]], exp[[ exp2 ^(s) ]].	
+
+  exp[[ FVMR_ContRGet(_) ^(s) ]].
+  exp[[ FVMR_ContThis() ^(s) ]].
+  exp[[ FVMR_ContNew(lbl, _) ^(s) ]] := lbl[[lbl ^(s) ]].
+  exp[[ FVMR_ContTransfer(exp, _) ^(s) ]] := exp[[ exp ^(s) ]].
+	
+  exp[[ FVMR_ContSet(_, exp) ^(s) ]] := exp[[ exp ^(s) ]].
+  exp[[ FVMR_ContSetR(exp1, _, exp2) ^(s) ]] := exp[[ exp1 ^(s) ]], exp[[ exp2 ^(s) ]].
+  exp[[ FVMR_ContGet(_) ^(s) ]].
+  exp[[ FVMR_ContGetR(exp, _) ^(s) ]] := exp[[ exp ^(s) ]].
+	
+	
+  exp[[ FVMR_Return(exps) ^(s) ]] := Map1(exp)[[ exps ^(s) ]].
+  exp[[ FVMR_Yield(exps, lbl) ^(s) ]] := Map1(exp) [[exps ^(s) ]], lbl [[ lbl ^(s) ]].
+  exp[[ FVMR_JumpZ(exp, lbl1, lbl2) ^(s) ]] := exp[[ exp ^(s) ]], lbl [[ lbl1 ^(s) ]], lbl [[ lbl2 ^(s) ]].
+  exp[[ FVMR_Jump(lbl) ^(s) ]] := lbl [[ lbl ^(s) ]].
+  exp[[ FVMR_Call(exp, lbl1, lbl2) ^(s) ]] := exp[[ exp ^(s) ]], lbl [[ lbl1 ^(s) ]], lbl [[ lbl2 ^(s) ]].
+  exp[[ FVMR_Call(exp, lbl) ^(s) ]] := exp[[ exp ^(s) ]], lbl [[ lbl ^(s) ]].
+  exp[[ FVMR_TailCall(exp, lbl) ^(s) ]] := exp[[ exp ^(s) ]], lbl [[ lbl ^(s) ]].
+  exp[[ FVMR_TailCall(exp) ^(s) ]] := exp [[ exp ^(s) ]].
+  exp[[ FVMR_ContCall(exp, lbl) ^(s) ]] := exp[[ exp ^(s) ]], lbl [[ lbl ^(s) ]].
+  exp[[ FVMR_ContReturn(exp, _) ^(s) ]] := exp [[ exp ^(s) ]].
+  exp[[ FVMR_ContReturn(exp) ^(s) ]] := exp [[ exp ^(s) ]].
+	
+  exp[[ FVMR_Try(exp1, lbl1, exp2, lbl2, lbl3) ^(s) ]] := 
+  	exp[[ exp1 ^(s) ]], exp[[ exp2 ^(s) ]],
+  	lbl [[ lbl1 ^(s) ]], lbl [[ lbl2 ^(s) ]], lbl [[ lbl3 ^(s) ]].
   	
-  exp[[e ^(s)]] := false.
+  exp[[ FVMR_Throw(exp) ^(s) ]] := exp[[ exp ^(s) ]].
+	
+  exp[[ FVMR_ScopeExit(_) ^(s) ]].
+  exp[[ FVMR_ScopeNew(exp, _) ^(s) ]] := exp[[ exp ^(s) ]].
+  exp[[ FVMR_ScopeExit(_, lbl) ^(s) ]] := lbl [[ lbl ^(s) ]].
+  exp[[ FVMR_ScopeNew(exp, _, lbl) ^(s) ]] := exp[[ exp ^(s) ]], lbl [[ lbl ^(s) ]].
+  exp[[ FVMR_ScopeSetCurrent(exp) ^(s) ]] := exp[[ exp ^(s) ]].
+  exp[[ FVMR_Print(exp) ^(s) ]] := exp[[ exp ^(s) ]].
+  exp[[ FVMR_Debug() ^(s) ]].

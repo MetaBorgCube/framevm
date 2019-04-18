@@ -2,14 +2,18 @@ module desugar
 
 imports
 	desugar/fixSeq
+	desugar/pure
 
 signature
   sorts S
   constructors
     Seq : [Instr] -> S
+    Seq : [Instr] * [(ID, INT)] -> S
+    Assign : [ID] * Exp * INT -> S
+    Terminal : Exp * INT -> S
     
 rules  
-    desugar-all = fix-seq
+    desugar-all = fix-seq; detect-pure
   	 
-	resugar-all = resugar-seq
+	resugar-all = resugar-pure; resugar-seq
    

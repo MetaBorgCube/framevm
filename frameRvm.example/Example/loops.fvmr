@@ -28,25 +28,25 @@ FOR:
 	jumpz(lti(get([0]), ipush(3)), FOR_END, FOR_BODY)					// i
 
 FOR_BODY:
-	i <- get([0])
+	i <- get([0]) @inline
 	set([1], i)
 	
 	frame <- new()
 	newscope(frame, P, WHILE)
 
 WHILE:
-	j <- get([P, 1])
+	j <- get([P, 1]) @inline
 	jumpz(eqi(ipush(4), j), WHILE_BODY, WHILE_END) 
 	
 WHILE_BODY:
 	path J := [P,1]
 	path C := [P,P,0]
 	
-	j <- get(J)
+	j <- get(J) @inline
 	print(j)
 	set(J, addi(j, ipush(1)))
 	
-	count <- get(C)
+	count <- get(C) @inline
 	set(C, addi(count, ipush(1))) 
 	jump(WHILE)
 
@@ -63,7 +63,7 @@ FOR_END:
 
 MAIN_END:
 	print(get([0]))
-	return(ipush (0))
+	return(ipush(0))
 	
 	
 	

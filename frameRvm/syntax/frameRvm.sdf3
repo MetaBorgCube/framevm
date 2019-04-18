@@ -48,6 +48,7 @@ sorts Block context-free syntax
 	
 	OnReturnInstr.OnReturn = <<{ID ","}+> \<- <OnReturnExp>>
 
+	Instr.FVMR_PureAssign = <<{ID ","}+> \<- <Exp> @inline>
 	Instr.FVMR_Terminal = ExpTerminal
 	Instr.FVMR_Assign = <<{ID ","}+> \<- <Exp>>
 	Instr.FVMR_PathAlias = <path <ID> := <Path>>
