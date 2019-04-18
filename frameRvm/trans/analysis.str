@@ -5,13 +5,14 @@ imports
   nabl2/api
   nabl2/runtime
 
-  static-semantics
+  analysis/static-semantics
 
   pp
+  desugar
 
 rules // Analysis
 
-  editor-analyze = nabl2-analyze(id)
+  editor-analyze = nabl2-analyze(desugar-all)
 
 rules // Debugging
   

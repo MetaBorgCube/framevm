@@ -1,0 +1,15 @@
+module desugar
+
+imports
+	desugar/fixSeq
+
+signature
+  sorts S
+  constructors
+    Seq : [Instr] -> S
+    
+rules  
+    desugar-all = fix-seq
+  	 
+	resugar-all = resugar-seq
+   

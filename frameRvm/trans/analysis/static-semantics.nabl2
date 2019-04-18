@@ -1,0 +1,62 @@
+module analysis/static-semantics
+
+imports
+
+  signatures/-
+
+rules
+
+  init ^ (s) := new s.
+
+  [[FVMR_Program(_, _, blocks) ^ (s) ]] :=
+  	Map1(block)[[blocks ^(s)]].
+  	
+  block[[FVMR_PseudoCode(_) ^(s)]].
+  block[[FVMR_Block(name, Seq(body)) ^(s)]] := 
+  	new block, 
+  	Block{name} <- s,
+  	distinct/name D(s)/Block | error $[Redefinition of label] @NAMES,
+  	Block{name} ===> block,
+  	block ---> s,
+  	instr[[body ^(block)]].
+  	
+
+  lbl[[FVM_Label(name) ^(s)]] :=
+  	Block{name} -> s,
+  	Block{name} |-> d | error $[Unknown jump label [name]] @name.
+
+
+  ref[[name ^(s)]] :=
+  	Var{name} -> s,
+  	Var{name} |-> d | error $[Unknown reference [name]] @name.
+  	
+
+  bind[[name ^(s)]] :=
+  	Var{name} <- s,
+  	distinct/name D(s)/Var | error $[Redefinition of variable] @name.
+  
+   
+  instr[[ [FVMR_Assign(ids, exp) | tail] ^(s)]] :=
+  	Map1(bind)[[ids ^(s)]],
+  	exp[[exp ^(s)]],
+  	new bs, bs ---> s,
+  	instr[[tail ^(bs)]].
+  	
+  instr[[ [FVMR_Terminal(exp) | tail] ^(s)]] :=
+  	exp[[exp ^(s)]],
+  	instr[[tail ^(s)]].
+   
+  instr[[ [FVMR_PathAlias(id, path) | tail] ^(s)]] :=
+  	bind[[id ^(s)]],
+  	new bs, bs ---> s,
+  	instr[[tail ^(bs)]].
+   
+  instr[[ [Control(exp)] ^(s)]] :=
+  	exp[[exp ^(s)]].
+  	
+  instr[[ [Control(exp, refs)] ^(s)]] :=
+  	exp[[exp ^(s)]],
+  	Map1(ref)[[refs ^(s)]].
+  	
+  	
+  exp[[e ^(s)]] := false.

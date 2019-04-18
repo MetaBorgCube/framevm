@@ -2,7 +2,7 @@ module frameRvm
 
 imports
   
-  Common pseudo
+  Common pseudo expressions
 
 context-free start-symbols
   
@@ -10,3 +10,45 @@ context-free start-symbols
 
 context-free syntax
 	Program.Empty = <>
+	Program.FVMR_Program = <<InitSize> 
+<alias:Alias*>
+
+<body:Block*>
+>	{ layout (align-list body && align-list alias) }
+  
+	InitSize.FVMR_InitSize = <#init <INTLEZ>>
+	Alias.FVMR_LinkAlias = <#link <LinkRef> -\> <INTLEZ>>
+	Alias.FVMR_ContAlias = <#cont <ContRef> -\> <INTLEZ>>
+	
+sorts Block context-free syntax
+
+	Block.FVMR_Block = <
+<lbl:Label>: 
+    <body:Body>
+
+> 			{ layout (indent lbl body) }
+  
+	Block.FVMR_PseudoCode = <{ 
+  	<body:PsdBody>
+}
+
+> 			{ layout (indent "{" body && align "{" "}") }
+  
+	Body.FVMR_SeqJump = <<instr:Instr*> 
+<jump:ControlInstr>
+>			{ layout (align-list instr && align instr jump) }
+
+	Body.FVMR_RetSeqJump = <<ret:OnReturnInstr>
+<instr:Instr*> 
+<jump:ControlInstr>
+>			{ layout (align-list instr && align instr jump && align ret instr) }
+
+	ControlInstr.Control = <<ControlTerminal>>
+	ControlInstr.Control = <<ControlTerminal> | <{ID ","}+>>
+	
+	OnReturnInstr.OnReturn = <<{ID ","}+> \<- <OnReturnExp>>
+
+	Instr.FVMR_Terminal = ExpTerminal
+	Instr.FVMR_Assign = <<{ID ","}+> \<- <Exp>>
+	Instr.FVMR_PathAlias = <path <ID> := <Path>>
+	

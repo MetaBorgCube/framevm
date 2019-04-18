@@ -1,0 +1,111 @@
+module expressions
+
+imports
+	
+	Common
+
+context-free start-symbols
+	
+	Exp
+	ExpTerminal
+	ControlTerminal
+
+context-free syntax
+	Exp.FVMR_Ref    = <<ID>>
+	
+	Exp = IntOpExp
+	IntOpExp.FVMR_IPush  = <ipush(<INT>)>
+	IntOpExp.FVMR_INeg   = <negi(<Exp>)>
+	IntOpExp.FVMR_IAdd   = <addi(<Exp>, <Exp>)>
+	IntOpExp.FVMR_IMul   = <muli(<Exp>, <Exp>)>
+	IntOpExp.FVMR_ISub   = <subi(<Exp>, <Exp>)>
+	IntOpExp.FVMR_IDiv   = <divi(<Exp>, <Exp>)>
+	IntOpExp.FVMR_IMod   = <modi(<Exp>, <Exp>)>
+	
+	IntOpExp.FVMR_IEq    = <eqi(<Exp>, <Exp>)>
+	IntOpExp.FVMR_ILt    = <lti(<Exp>, <Exp>)>
+	IntOpExp.FVMR_IGt    = <gti(<Exp>, <Exp>)>
+	IntOpExp.FVMR_IOr    = <ori(<Exp>, <Exp>)>
+	IntOpExp.FVMR_IXor   = <xori(<Exp>, <Exp>)>
+	IntOpExp.FVMR_IAnd   = <andi(<Exp>, <Exp>)>	
+	
+	Exp = TypeExp
+	TypeExp.FVMR_IsInt   = <int?(<Exp>)>
+	TypeExp.FVMR_IsCont  = <cont?(<Exp>)>
+	TypeExp.FVMR_IsFrame = <frame?(<Exp>)>
+	
+	Exp = FrameExp
+	FrameExp.FVMR_New    = <new(<IntExp>)>
+	FrameExp.FVMR_New    = <new()>
+	
+	ExpTerminal.FVMR_Link  = <link(<Exp>, <PathExp>, <LinkRef>)>
+ 
+	ExpTerminal.FVMR_Set   = <set(<PathExp>, <Exp>)>
+	ExpTerminal.FVMR_SetR  = <setr(<Exp>, <PathExp>, <Exp>)>
+	FrameExp.FVMR_Get      = <get(<PathExp>)>
+	FrameExp.FVMR_GetR     = <getr(<Exp>, <PathExp>)>		
+	
+	Exp = ContExp
+	OnReturnExp.FVMR_ContRGet = <rget(<INTLEZ>)>
+	ContExp.FVMR_ContThis     = <cget()>
+	ContExp.FVMR_ContNew      = <cnew(<Label>, <INTLEZ>)>
+	ContExp.FVMR_ContTransfer = <transfer(<ContRefExp>, <INTLEZ>)>
+	
+	ExpTerminal.FVMR_ContSet  = <cset([<ContRef>], <Exp>)>
+	ExpTerminal.FVMR_ContSetR = <csetr(<Exp>, [<ContRef>], <Exp>)>
+	ContExp.FVMR_ContGet      = <cget([<ContRef>])>
+	ContExp.FVMR_ContGetR     = <cgetr(<Exp>, [<ContRef>])>
+	
+	
+	ControlTerminal.FVMR_Return     = <return(<{Exp ","}+>)>
+	ControlTerminal.FVMR_Yield      = <yield(<{Exp ","}+>, <Label>)>
+	ControlTerminal.FVMR_JumpZ      = <jumpz(<Exp>, <Label>, <Label>)>
+	ControlTerminal.FVMR_Jump       = <jump(<Label>)>
+	ControlTerminal.FVMR_Call       = <call(<Exp>, <Label>, <Label>)>
+	ControlTerminal.FVMR_Call       = <call(<Exp>, <Label>)>
+	ControlTerminal.FVMR_TailCall   = <tailcall(<Exp>, <Label>)>
+	ControlTerminal.FVMR_TailCall   = <tailcall(<Exp>)>
+	ControlTerminal.FVMR_ContCall   = <ccall(<ContRefExp>, <Label>)>
+	ControlTerminal.FVMR_ContReturn = <cret(<Exp>, [<ContRef>])>
+	ControlTerminal.FVMR_ContReturn = <cret(<Exp>)>
+	
+	ControlTerminal.FVMR_Try        = <try(<Exp>, <Label>, <Exp>, <Label>, <Label>)>
+	ControlTerminal.FVMR_Try        = <try(<Exp>, <Exp>, <Label>)>
+	ControlTerminal.FVMR_Throw      = <throw(<Exp>)>
+	
+	ExpTerminal.FVMR_ScopeExit     = <exitscope(<Path>)>
+	ExpTerminal.FVMR_ScopeNew      = <newscope(<Exp>, <LinkRef>)>
+	ControlTerminal.FVMR_ScopeExit = <exitscope(<Path>, <Label>)>
+	ControlTerminal.FVMR_ScopeNew  = <newscope(<Exp>, <LinkRef>, <Label>)>
+	ExpTerminal.FVMR_ScopeSetCurrent = <mkcurrent(<Exp>)>
+	ExpTerminal.FVMR_Print         = <print(<Exp>)>	
+	ExpTerminal.FVMR_Debug         = <debug()>	
+	
+	
+	
+	ContRefExp = Exp
+	ContRefExp.Cont = <[<ContRef>]>
+		
+	PathExp = Path
+	PathExp = Exp
+	
+	IntExp = INTLEZ
+	IntExp = Exp
+	
+	Path.FVMR_Self  = <[]>
+	Path.FVMR_Path  = <[<{PathRef ","}+>]>
+  
+	PathRef = SlotRef
+	PathRef = LinkRef
+  
+	SlotRef.FVMR_Slot    = INTLEZ
+	LinkRef.FVMR_Link    = LABEL
+	LinkRef.FVMR_LinkIdx = <_l<INTLEZ>>
+    
+	ContRef.FVMR_Cont    = CONTSLOT
+	ContRef.FVMR_ContIdx = <_c<INTLEZ>>
+	
+	Label.FVMR_Label = LABEL		
+	
+	
+	
