@@ -1,0 +1,108 @@
+module count-use
+
+imports
+	signatures/frameRvm-sig
+	signatures/expressions-sig
+	desugar
+    
+rules
+  	count-use: FVMR_Program(s, l, blocks) -> FVMR_Program(s, l, <map(count-use)> blocks)
+ 	count-use: f@FVMR_PseudoCode(body) -> f
+  	count-use: FVMR_Block(lbl, body) -> FVMR_Block(lbl, <count-use> body)
+  	count-use: Seq(body) -> Seq(body, vars)
+  	  where
+  	  	vars := <foldl(count-use-instr)> (body, [])
+  
+  	count-use-instr: (Control(control), vars) -> <count-use-control> (control, vars)
+  	count-use-instr: (Control(control, refs), vars) -> <count-use-refs>(refs, <count-use-control> (control, vars))
+  	count-use-instr: (FVMR_PathAlias(name, _), v) -> <append-vars> (v, name)
+  	
+  	count-use-instr: (Terminal(exp, pure), vars)    -> <count-use-exp> (exp, vars)
+  	count-use-instr: (Assign(ids, exp, pure), vars) -> <append-vars> (<count-use-exp> (exp, vars), ids, pure)
+  	
+  	append-vars: (vars, [], _) -> vars
+  	append-vars: (vars, [name | t], is_pure) -> [ (name, 0, is_pure) |<append-vars> (vars, t, is_pure)]
+  	append-vars: (vars, name) -> [ (name, 0, 0) | vars]
+  	
+  	count-use-refs: (refs, vars) -> <foldl(count-use-ref)> (refs, vars)
+  
+  	count-use-ref: (ref_id, []) -> <fail> where <debug> $[Undefined: [ref_id]]
+  	count-use-ref: (ref_id, [(ref_id, count, pure)| vars]) -> [(ref_id, <inc> count, pure)| vars]
+  	count-use-ref: (ref_id, [h| vars]) -> [h| <count-use-ref>(ref_id, vars)]
+  
+  
+  	count-use-exp: (FVMR_Ref(name), v) -> <count-use-ref> (name, v)
+  	
+  	count-use-exp: (FVMR_IPush(_), v) -> v
+	count-use-exp: (FVMR_INeg(exp), v) -> <count-use-exp> (exp, v)
+	count-use-exp: (FVMR_IAdd(exp1, exp2), v) -> <count-use-exp> (exp2, (<count-use-exp> (exp1, v)))
+
+	count-use-exp: (FVMR_IMul(exp1, exp2), v) -> <count-use-exp> (exp2, (<count-use-exp> (exp1, v)))
+	count-use-exp: (FVMR_ISub(exp1, exp2), v) -> <count-use-exp> (exp2, (<count-use-exp> (exp1, v)))
+	count-use-exp: (FVMR_IDiv(exp1, exp2), v) -> <count-use-exp> (exp2, (<count-use-exp> (exp1, v)))
+	count-use-exp: (FVMR_IMod(exp1, exp2), v) -> <count-use-exp> (exp2, (<count-use-exp> (exp1, v)))
+	
+	count-use-exp: (FVMR_IEq(exp1, exp2), v)  -> <count-use-exp> (exp2, (<count-use-exp> (exp1, v)))
+	count-use-exp: (FVMR_ILt(exp1, exp2), v)  -> <count-use-exp> (exp2, (<count-use-exp> (exp1, v)))
+	count-use-exp: (FVMR_IGt(exp1, exp2), v)  -> <count-use-exp> (exp2, (<count-use-exp> (exp1, v)))
+	count-use-exp: (FVMR_IOr(exp1, exp2), v)  -> <count-use-exp> (exp2, (<count-use-exp> (exp1, v)))
+	count-use-exp: (FVMR_IXor(exp1, exp2), v) -> <count-use-exp> (exp2, (<count-use-exp> (exp1, v)))
+	count-use-exp: (FVMR_IAnd(exp1, exp2), v) -> <count-use-exp> (exp2, (<count-use-exp> (exp1, v)))
+
+	count-use-exp: (FVMR_IsInt(exp), v)   -> <count-use-exp> (exp, v)
+	count-use-exp: (FVMR_IsCont(exp),v)   -> <count-use-exp> (exp, v)
+	count-use-exp: (FVMR_IsFrame(exp), v) -> <count-use-exp> (exp, v)
+	
+	count-use-exp: (IntLEZ(_), v) -> v
+	count-use-exp: (FVMR_New(exp), v) -> <count-use-exp> (exp, v)
+	
+	count-use-exp: (FVMR_New(), v) -> v
+	
+	count-use-exp: (FVMR_Link(exp1, exp2,_), v) -> <count-use-exp> (exp2, (<count-use-exp> (exp1, v)))
+	
+ 
+	count-use-exp: (FVMR_Set(exp1, exp2), v) -> <count-use-exp> (exp2, (<count-use-exp> (exp1, v)))
+	count-use-exp: (FVMR_SetR(exp1, exp2, exp3), v) -> <count-use-exp> (exp3, <count-use-exp> (exp2, (<count-use-exp> (exp1, v))))
+	count-use-exp: (FVMR_Get(exp), v) -> <count-use-exp> (exp, v)
+	count-use-exp: (FVMR_GetR(exp1, exp2), v) -> <count-use-exp> (exp2, (<count-use-exp> (exp1, v)))
+	
+	count-use-exp: (FVMR_ContThis(), v) -> v
+	count-use-exp: (FVMR_ContNew(_, _), v) -> v
+	count-use-exp: (FVMR_ContTransfer(exp, _), v) -> <count-use-exp> (exp, v)
+	
+	count-use-exp: (FVMR_ContSet(_, exp), v) -> <count-use-exp> (exp, v)
+	count-use-exp: (FVMR_ContSetR(exp1, _, exp2), v) -> <count-use-exp> (exp2, (<count-use-exp> (exp1, v)))
+	count-use-exp: (FVMR_ContGet(exp), v) -> <count-use-exp> (exp, v)
+	count-use-exp: (FVMR_ContGetR(exp1, exp2), v) -> <count-use-exp> (exp2, (<count-use-exp> (exp1, v)))
+
+	count-use-exp: (FVMR_ScopeExit(_), v) -> v
+	count-use-exp: (FVMR_ScopeNew(exp, _), v) -> <count-use-exp> (exp, v)
+	count-use-exp: (FVMR_ScopeSetCurrent(exp), v) -> <count-use-exp> (exp, v)
+	count-use-exp: (FVMR_Print(exp), v) -> <count-use-exp> (exp, v)
+	count-use-exp: (FVMR_Debug(), v) -> v
+	
+	count-use-exp: (FVMR_Path(_), v) -> v
+  
+ count-use-exp: e -> <fail> <debug> e
+  	
+  
+  	
+	count-use-control: (FVMR_Return(exps), v) -> <foldl(count-use-exp)> (exps, v)
+	count-use-control: (FVMR_Yield(exps, _), v) -> <foldl(count-use-exp)> (exps, v)
+	count-use-control: (FVMR_JumpZ(exp, _, _), v) -> <count-use-exp> (exp, v)
+	count-use-control: (FVMR_Jump(_), v) -> v
+	count-use-control: (FVMR_Call(exp, _, _), v) -> <count-use-exp> (exp, v)
+	count-use-control: (FVMR_Call(exp, _), v) -> <count-use-exp> (exp, v)
+	count-use-control: (FVMR_TailCall(exp, _), v) -> <count-use-exp> (exp, v)
+	count-use-control: (FVMR_TailCall(exp), v) -> <count-use-exp> (exp, v)
+	count-use-control: (FVMR_ContCall(exp, _), v) -> <count-use-exp> (exp, v)
+	count-use-control: (FVMR_ContReturn(exp, _), v) -> <count-use-exp> (exp, v)
+	count-use-control: (FVMR_ContReturn(exp), v) -> <count-use-exp> (exp, v)
+	
+	count-use-control: (FVMR_Try(exp1, _, exp2, _, _), v) -> <count-use-exp> (exp2, (<count-use-exp> (exp1, v)))
+	count-use-control: (FVMR_Try(exp1, exp2, _), v) ->  <count-use-exp> (exp2, (<count-use-exp> (exp1, v)))
+	count-use-control: (FVMR_Throw(exp), v) -> <count-use-exp> (exp, v)
+	
+	count-use-control: (FVMR_ScopeExit(exp, _), v) -> <count-use-exp> (exp, v)
+	count-use-control: (FVMR_ScopeNew(exp, _, _), v) -> <count-use-exp> (exp, v)
+

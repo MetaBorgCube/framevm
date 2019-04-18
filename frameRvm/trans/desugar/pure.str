@@ -1,0 +1,76 @@
+module pure
+
+imports
+	signatures/frameRvm-sig
+	signatures/expressions-sig
+	desugar
+    
+rules
+  	detect-pure: FVMR_Program(s, l, blocks) -> FVMR_Program(s, l, <map(detect-pure)> blocks)
+ 	detect-pure: FVMR_PseudoCode(body) -> FVMR_PseudoCode(body)
+  	detect-pure: FVMR_Block(lbl, body) -> FVMR_Block(lbl, <detect-pure> body)
+  	detect-pure: Seq(body) -> Seq(<map(detect-pure-instr)> body)
+  
+  
+  	detect-pure-instr: f@Control(_) -> f
+  	detect-pure-instr: f@Control(_, _) -> f
+  	detect-pure-instr: f@FVMR_PathAlias(_, _) -> f
+  	
+  	detect-pure-instr: FVMR_Terminal(exp) -> Terminal(exp, <detect-pure-exp> exp)
+  	detect-pure-instr: FVMR_Assign(ids, exp) -> Assign(ids, exp, <detect-pure-exp> exp)
+  	detect-pure-instr: FVMR_PureAssign(ids, exp) -> Assign(ids, exp, 0)
+  
+  
+  	detect-pure-exp: FVMR_IPush(_) -> 0
+	detect-pure-exp: FVMR_INeg(exp) -> <detect-pure-exp> exp
+	detect-pure-exp: FVMR_IAdd(exp1, exp2) -> <addi> (<detect-pure-exp> exp1, <detect-pure-exp> exp2)
+
+	detect-pure-exp: FVMR_IMul(exp1, exp2) -> <addi> (<detect-pure-exp> exp1, <detect-pure-exp> exp2)
+	detect-pure-exp: FVMR_ISub(exp1, exp2) -> <addi> (<detect-pure-exp> exp1, <detect-pure-exp> exp2)
+	detect-pure-exp: FVMR_IDiv(exp1, exp2) -> <addi> (<detect-pure-exp> exp1, <detect-pure-exp> exp2)
+	detect-pure-exp: FVMR_IMod(exp1, exp2) -> <addi> (<detect-pure-exp> exp1, <detect-pure-exp> exp2)
+	
+	detect-pure-exp: FVMR_IEq(exp1, exp2)  -> <addi> (<detect-pure-exp> exp1, <detect-pure-exp> exp2)
+	detect-pure-exp: FVMR_ILt(exp1, exp2)  -> <addi> (<detect-pure-exp> exp1, <detect-pure-exp> exp2)
+	detect-pure-exp: FVMR_IGt(exp1, exp2)  -> <addi> (<detect-pure-exp> exp1, <detect-pure-exp> exp2)
+	detect-pure-exp: FVMR_IOr(exp1, exp2)  -> <addi> (<detect-pure-exp> exp1, <detect-pure-exp> exp2)
+	detect-pure-exp: FVMR_IXor(exp1, exp2) -> <addi> (<detect-pure-exp> exp1, <detect-pure-exp> exp2)
+	detect-pure-exp: FVMR_IAnd(exp1, exp2) -> <addi> (<detect-pure-exp> exp1, <detect-pure-exp> exp2)
+
+	detect-pure-exp: FVMR_IsInt(exp)   -> <detect-pure-exp> exp
+	detect-pure-exp: FVMR_IsCont(exp)  -> <detect-pure-exp> exp
+	detect-pure-exp: FVMR_IsFrame(exp) -> <detect-pure-exp> exp
+	
+	detect-pure-exp: IntLEZ(_) -> 0
+	detect-pure-exp: FVMR_New(exp) -> <detect-pure-exp> exp
+	
+	detect-pure-exp: FVMR_New() -> 0
+	
+	detect-pure-exp: FVMR_Link(_, _,_) -> 1
+	
+ 
+	detect-pure-exp: FVMR_Set(_, _) -> 1
+	detect-pure-exp: FVMR_SetR(_,_,_) -> 1
+	detect-pure-exp: FVMR_Get(_) -> 1
+	detect-pure-exp: FVMR_GetR(_, _) -> 1		
+
+	detect-pure-exp: FVMR_ContThis() -> 0
+	detect-pure-exp: FVMR_ContNew(_, _) -> 0
+	detect-pure-exp: FVMR_ContTransfer(_, _) -> 1
+	
+	detect-pure-exp: FVMR_ContSet(_,_) -> 1
+	detect-pure-exp: FVMR_ContSetR(_, _, _) -> 1
+	detect-pure-exp: FVMR_ContGet(_) -> 1
+	detect-pure-exp: FVMR_ContGetR(_, _) -> 1
+
+	detect-pure-exp: FVMR_ScopeExit(_) -> 1
+	detect-pure-exp: FVMR_ScopeNew(_, _) -> 1
+	detect-pure-exp: FVMR_ScopeSetCurrent(_) -> 1
+	detect-pure-exp: FVMR_Print(_) -> 1	
+	detect-pure-exp: FVMR_Debug() -> 1	  
+  
+  
+  	resugar-pure = topdown(try(resugar-pure-instr))
+  	
+  	resugar-pure-instr: Terminal(exp, _) -> FVMR_Terminal(exp)
+  	resugar-pure-instr: Assign(ids, exp, _) -> FVMR_Assign(ids, exp)

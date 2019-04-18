@@ -53,8 +53,9 @@ menus
     
   menu: "Compile" (openeditor)
     
-    action: "Inline"          = editor-format (source)
-    action: "Show parsed AST" = debug-show-aterm (source)
+    action: "Inline"           = pp-inline (source)
+    action: "Show inlined AST" = inline    (source)
+    action: "Compile"          = compile   (source)
 
 views
   
