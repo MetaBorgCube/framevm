@@ -1,0 +1,37 @@
+module inline-single
+
+imports
+	signatures/frameRvm-sig
+	signatures/expressions-sig
+	desugar
+    
+rules
+  	inline-single: FVMR_Program(s, l, blocks) -> FVMR_Program(s, l, <map(inline-single)> blocks)
+// 	inline-single: f@FVMR_PseudoCode(body) -> f
+  	inline-single: FVMR_Block(lbl, body) -> FVMR_Block(lbl, <inline-single> body)
+  	inline-single: Seq(body, vars) -> Seq(body', vars')
+  	  with
+  	  	(inlinable, vars') := <filter-split(is-simple-inline)> vars;
+  	  	body' := <do-inline-all> (inlinable, body)
+  	  	
+  	do-inline-all: ([], body) -> body
+  	do-inline-all: ([(name, _,_, exp)|t], body) -> inlined_body
+  	  with
+  	  	body'  := <topdown(try(do-inline(|(name, exp))))> body;
+  	  	inlined_body := <do-inline-all> (t, body') 
+  	  	
+  	do-inline(|x): FVMR_Ref(name) -> exp
+  	  where
+  	  	(name, exp) := x
+  	  	
+  	do-inline(|x): Assign(name, _, _) -> Nop()
+  	  where
+  	  	(name, exp) := x
+  	  	
+  	do-inline(|x): FVMR_PathAlias(name, _) -> Nop()
+  	  where
+  	  	(name, exp) := x
+  	  	
+  	is-simple-inline: (name, 0, _, _)  -> name	// Unused
+  	is-simple-inline: (name, 1, 0, _)  -> name	// Single use
+  	is-simple-inline: (name, _, -1, _) -> name	// Paths

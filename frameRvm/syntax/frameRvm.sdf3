@@ -1,15 +1,14 @@
 module frameRvm
 
 imports
-  
-  Common pseudo expressions
+  expressions
+  Common
 
 context-free start-symbols
   
   Program
 
 context-free syntax
-	Program.Empty = <>
 	Program.FVMR_Program = <<InitSize> 
 <alias:Alias*>
 
@@ -48,8 +47,8 @@ sorts Block context-free syntax
 	
 	OnReturnInstr.OnReturn = <<{ID ","}+> \<- <OnReturnExp>>
 
-	Instr.FVMR_PureAssign = <<{ID ","}+> \<- <Exp> @inline>
+	Instr.FVMR_PureAssign = <<ID> \<- <Exp> @inline>
 	Instr.FVMR_Terminal = ExpTerminal
-	Instr.FVMR_Assign = <<{ID ","}+> \<- <Exp>>
+	Instr.FVMR_Assign = <<ID> \<- <Exp>>
 	Instr.FVMR_PathAlias = <path <ID> := <Path>>
 	

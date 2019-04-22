@@ -7,27 +7,28 @@ imports
     
 rules
   	count-use: FVMR_Program(s, l, blocks) -> FVMR_Program(s, l, <map(count-use)> blocks)
- 	count-use: f@FVMR_PseudoCode(body) -> f
+// 	count-use: f@FVMR_PseudoCode(body) -> f
   	count-use: FVMR_Block(lbl, body) -> FVMR_Block(lbl, <count-use> body)
   	count-use: Seq(body) -> Seq(body, vars)
   	  where
   	  	vars := <foldl(count-use-instr)> (body, [])
   
+  	count-use-instr: (Nop(), vars) -> vars
   	count-use-instr: (Control(control), vars) -> <count-use-control> (control, vars)
   	count-use-instr: (Control(control, refs), vars) -> <count-use-refs>(refs, <count-use-control> (control, vars))
-  	count-use-instr: (FVMR_PathAlias(name, _), v) -> <append-vars> (v, name)
+  	count-use-instr: (FVMR_PathAlias(name, exp), v) -> <append-vars> (v, name, exp)
   	
   	count-use-instr: (Terminal(exp, pure), vars)    -> <count-use-exp> (exp, vars)
-  	count-use-instr: (Assign(ids, exp, pure), vars) -> <append-vars> (<count-use-exp> (exp, vars), ids, pure)
+  	count-use-instr: (Assign(ids, exp, pure), vars) -> <append-vars> (<count-use-exp> (exp, vars), [ids], pure, exp)
   	
-  	append-vars: (vars, [], _) -> vars
-  	append-vars: (vars, [name | t], is_pure) -> [ (name, 0, is_pure) |<append-vars> (vars, t, is_pure)]
-  	append-vars: (vars, name) -> [ (name, 0, 0) | vars]
+  	append-vars: (vars, [], _, _) -> vars
+  	append-vars: (vars, [name | t], is_pure, exp) -> [ (name, 0, is_pure, exp) | <append-vars> (vars, t, is_pure, exp)]
+  	append-vars: (vars, name, exp) -> [ (name, 0, -1, exp) | vars]
   	
   	count-use-refs: (refs, vars) -> <foldl(count-use-ref)> (refs, vars)
   
   	count-use-ref: (ref_id, []) -> <fail> where <debug> $[Undefined: [ref_id]]
-  	count-use-ref: (ref_id, [(ref_id, count, pure)| vars]) -> [(ref_id, <inc> count, pure)| vars]
+  	count-use-ref: (ref_id, [(ref_id, count, pure, exp)| vars]) -> [(ref_id, <inc> count, pure, exp)| vars]
   	count-use-ref: (ref_id, [h| vars]) -> [h| <count-use-ref>(ref_id, vars)]
   
   
@@ -82,8 +83,6 @@ rules
 	count-use-exp: (FVMR_Debug(), v) -> v
 	
 	count-use-exp: (FVMR_Path(_), v) -> v
-  
- count-use-exp: e -> <fail> <debug> e
   	
   
   	

@@ -11,7 +11,7 @@ rules
   [[FVMR_Program(_, _, blocks) ^ (s) ]] :=
     Map1(block)[[blocks ^(s)]].
   	
-  block[[FVMR_PseudoCode(_) ^(s)]].
+//  block[[FVMR_PseudoCode(_) ^(s)]].
   block[[FVMR_Block(FVMR_Label(name), Seq(body)) ^(s)]] := 
     new block, 
     Block{name} <- s,
@@ -32,11 +32,11 @@ rules
 
   bind[[name ^(s)]] :=
     Var{name} <- s,
-    distinct/name D(s)/Var | error $[Redefinition of variable] @name.
+    distinct/name W(s)/Var | error $[Redefinition of variable] @name.
   
    
   instr[[ [Assign(ids, exp, pure) | tail] ^(s)]] :=
-    Map1(bind)[[ids ^(s)]],
+    bind[[ids ^(s)]],
 	exp[[exp ^(s)]],
 	new bs, bs ---> s,
 	instr[[tail ^(bs)]],
@@ -44,8 +44,7 @@ rules
   	
   instr[[ [Terminal(exp, pure) | tail] ^(s)]] :=
     exp[[ exp ^(s)]],
-    instr[[ tail ^(s)]],
-    pure == 0 | note $[impure] @exp.
+    instr[[ tail ^(s)]].	// Terminals cannot be shuffled anyways, so no need to check if it is pure
    
   instr[[ [FVMR_PathAlias(id, path) | tail] ^(s)]] :=
     bind[[id ^(s)]],
