@@ -19,6 +19,7 @@ rules
       	_ := <is-ret> h
     resugar-seq: f@FVMR_Block(lbl, FVMR_SeqJump(body, last)) -> f
       	
+    resugar-seq: FVMR_Block(lbl, Seq([body])) -> FVMR_Block(lbl, FVMR_SeqJump([], body))
     resugar-seq: FVMR_Block(lbl, Seq(body)) -> <resugar-seq> FVMR_Block(lbl, FVMR_SeqJump(body2, last))
       where
       	body' := <foldr(![], resugar-nop)> body;

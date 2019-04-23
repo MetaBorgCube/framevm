@@ -56,7 +56,11 @@ rules
   	
   instr[[ [Control(exp, refs)] ^(s)]] :=
     exp[[ exp ^(s)]],
-    Map1(ref)[[refs ^(s)]].
+    Map1(exp)[[refs ^(s)]].
+    
+  instr[[ [OnReturn(ids, _) | tail] ^(s)]] :=
+    Map1(bind)[[ids ^(s)]],
+    instr[[tail ^(s)]].
   	
   	  
   exp[[IntLEZ(_) ^(s)]].

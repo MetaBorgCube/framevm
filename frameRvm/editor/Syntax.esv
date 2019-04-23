@@ -53,9 +53,10 @@ menus
     
   menu: "Compile" (openeditor)
     
-    action: "Inline"           = pp-inline (source)
-    action: "Show inlined AST" = inline    (source)
-    action: "Compile"          = compile   (source)
+    action: "Inline"            = pp-inline       (source)
+    action: "Show inlined AST"  = inline          (source)
+    action: "Compile"           = compile         (source)
+    action: "Compile optimized" = compile-inlined (source)
 
 views
   

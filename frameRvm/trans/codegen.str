@@ -4,11 +4,12 @@ imports
 	codegen/count-use
 	codegen/inline-single
 	codegen/move-down
+	codegen/compile
 	desugar
 	pp
 	
 imports
-//  fvm-pp
+  fvm-pp
 
     
 rules
@@ -25,11 +26,17 @@ rules
       filename := <guarantee-extension(|"opt.fvmr")> path
     ; result   := <pp-debug> <resugar-all> <inline> <desugar-all> node
     
-//  compile:
-//	(node, _, _, path, project-path) -> (filename, result)
-//    with
-//      filename := <guarantee-extension(|"gen.fvm")> path
-//    ; result   := <pp-framevm> <compile> <inline> <desugar-all> node
+  compile:
+	(node, _, _, path, project-path) -> (filename, result)
+    with
+      filename := <guarantee-extension(|"gen.fvm")> path
+    ; result   := <pp-framevm> <compile-fvmr> <desugar-all> node
+
+  compile-inlined:
+	(node, _, _, path, project-path) -> (filename, result)
+    with
+      filename := <guarantee-extension(|"gen.fvm")> path
+    ; result   := <pp-framevm> <compile-fvmr> <inline> <desugar-all> node
     
        
 rules  

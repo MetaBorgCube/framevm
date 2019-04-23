@@ -15,6 +15,7 @@ rules
   	detect-pure-instr: f@Control(_) -> f
   	detect-pure-instr: f@Control(_, _) -> f
   	detect-pure-instr: f@FVMR_PathAlias(_, _) -> f
+  	detect-pure-instr: f@OnReturn(_, _) -> f
   	
   	detect-pure-instr: FVMR_Terminal(exp) -> Terminal(exp, <detect-pure-exp> exp)
   	detect-pure-instr: FVMR_Assign(ids, exp) -> Assign(ids, exp, <detect-pure-exp> exp)
@@ -22,6 +23,7 @@ rules
   
   
   	detect-pure-exp: FVMR_IPush(_) -> 0
+  	detect-pure-exp: FVMR_Ref(_) -> 0
 	detect-pure-exp: FVMR_INeg(exp) -> <detect-pure-exp> exp
 	detect-pure-exp: FVMR_IAdd(exp1, exp2) -> <addi> (<detect-pure-exp> exp1, <detect-pure-exp> exp2)
 

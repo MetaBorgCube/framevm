@@ -43,7 +43,7 @@ sorts Block context-free syntax
 >			{ layout (align-list instr && align instr jump && align ret instr) }
 
 	ControlInstr.Control = <<ControlTerminal>>
-	ControlInstr.Control = <<ControlTerminal> | <{ID ","}+>>
+	ControlInstr.Control = <<ControlTerminal> | <{Exp ","}+>>
 	
 	OnReturnInstr.OnReturn = <<{ID ","}+> \<- <OnReturnExp>>
 

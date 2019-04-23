@@ -20,6 +20,7 @@ rules
   	
   	count-use-instr: (Terminal(exp, pure), vars)    -> <count-use-exp> (exp, vars)
   	count-use-instr: (Assign(ids, exp, pure), vars) -> <append-vars> (<count-use-exp> (exp, vars), [ids], pure, exp)
+  	count-use-instr: (OnReturn(ids, exp), vars) -> <append-vars> (<count-use-exp> (exp, vars), ids, 1, exp)
   	
   	append-vars: (vars, [], _, _) -> vars
   	append-vars: (vars, [name | t], is_pure, exp) -> [ (name, 0, is_pure, exp) | <append-vars> (vars, t, is_pure, exp)]
@@ -72,6 +73,7 @@ rules
 	count-use-exp: (FVMR_ContTransfer(exp, _), v) -> <count-use-exp> (exp, v)
 	
 	count-use-exp: (FVMR_ContSet(_, exp), v) -> <count-use-exp> (exp, v)
+	count-use-exp: (FVMR_ContRGet(_), v) -> v
 	count-use-exp: (FVMR_ContSetR(exp1, _, exp2), v) -> <count-use-exp> (exp2, (<count-use-exp> (exp1, v)))
 	count-use-exp: (FVMR_ContGet(exp), v) -> <count-use-exp> (exp, v)
 	count-use-exp: (FVMR_ContGetR(exp1, exp2), v) -> <count-use-exp> (exp2, (<count-use-exp> (exp1, v)))
@@ -83,6 +85,8 @@ rules
 	count-use-exp: (FVMR_Debug(), v) -> v
 	
 	count-use-exp: (FVMR_Path(_), v) -> v
+	count-use-exp: (FVMR_Self(), v) -> v
+	
   	
   
   	
