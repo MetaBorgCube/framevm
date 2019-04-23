@@ -13,3 +13,8 @@
 *.name-resolution
 *.unifier
 *.symbolic
+
+*.aterm
+*.opt.fvmr
+*.gen.fvm
+*.opt.gen.fvm

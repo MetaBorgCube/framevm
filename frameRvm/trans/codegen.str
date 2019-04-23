@@ -35,7 +35,7 @@ rules
   compile-inlined:
 	(node, _, _, path, project-path) -> (filename, result)
     with
-      filename := <guarantee-extension(|"gen.fvm")> path
+      filename := <guarantee-extension(|"opt.gen.fvm")> path
     ; result   := <pp-framevm> <compile-fvmr> <inline> <desugar-all> node
     
        
