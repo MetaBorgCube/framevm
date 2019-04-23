@@ -121,8 +121,10 @@ instr[[FVM_Throw() ^(s)]].
 instr[[FVM_Link(bind1, bind2) ^(s)]] := bind[[bind1 ^(s)]], bind[[bind2 ^(s)]].
 instr[[FVM_LinkR(bind) ^(s)]] := bind[[bind ^(s)]].
 
-instr[[FVM_Copy() ^(s)]].
-instr[[FVM_CopyR() ^(s)]].
+instr[[FVM_ContCopy( policy1, policy2) ^(s)]] := policy1 == policy2 | note $[Are you sure? This unlinks the references to the heap from the copied heap].
+instr[[FVM_ContCopyR(policy1, policy2) ^(s)]] := policy1 == policy2 | note $[Are you sure? This unlinks the references to the heap from the copied heap].
+instr[[FVM_FrameCopy(_) ^(s)]].
+instr[[FVM_FrameCopyR(_) ^(s)]].
 
 instr[[FVM_IsInt() ^(s)]].
 instr[[FVM_IsCont() ^(s)]].

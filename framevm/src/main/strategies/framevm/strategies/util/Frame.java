@@ -27,8 +27,7 @@ public class Frame {
 		this.slots = new Slot[original.slots.length];
 		for (int i = 0; i < this.slots.length; i++) {
 			Slot slot = original.slots[i];
-			if (slot == null) continue;
-			slots[i] = new Slot(slot.value);
+			slots[i] = slot;
 		}
 		this.links = new Link[original.links.length];
 		for (int i = 0; i < this.links.length; i++) {
@@ -61,7 +60,7 @@ public class Frame {
 	 * 		The value to store in the {@link Slot}
 	 */
 	public void set(int id, IStrategoTerm value) {
-		slots[id] = new Slot(value);
+		getSlot(id).update(value);
 	}
 
 	/**
@@ -75,10 +74,15 @@ public class Frame {
 	 * 		The {@link Slot}, or <code>null</code> if not found
 	 */
 	public Slot getSlot(int id) {
-		if (id < slots.length) {
-			return slots[id];
+		if (id >= slots.length) throw new ArrayIndexOutOfBoundsException("Slot with index " + id + " does not exist");
+
+		Slot slot = slots[id];
+		if (slot == null) {
+			Slot newSlot = new Slot(null);
+			slots[id] = newSlot;
+			return newSlot;
 		} else {
-			return null;
+			return slot;
 		}
 	}
 

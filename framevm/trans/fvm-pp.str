@@ -15,10 +15,10 @@ rules
     with
       ext      := <get-extension> path
     ; filename := <guarantee-extension(|$[pp.[ext]])> path
-    ; result   := <pp-debug> node
+    ; result   := <pp-fvm-debug> node
 
 rules
-  pp-framevm = pp-debug
+  pp-framevm = pp-fvm-debug
   
   pp-framevm-string =
     parenthesize-framevm
@@ -38,7 +38,7 @@ rules
     ; !V([], <id>)
     ; box2text-string(|120)  
       
-  pp-debug :
+  pp-fvm-debug :
     ast -> result
     with
        result := <pp-framevm-string> ast

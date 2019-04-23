@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.spoofax.terms.util.NotImplementedException;
+
 /**
  * The environment that is passed around.
  * Contains a heap of all frames, a list of blocks, 
@@ -69,9 +71,22 @@ public class MachineState {
 	 * @return
 	 * 		The id of the new frame
 	 */
-	public Frame newFrameFrom(Frame old) {
-		String id = "frame_" + frameCount++;
-		return new Frame(id, old);
+	public Frame newFrameFrom(Frame old, CopyPolicy policy) {
+		if (policy == CopyPolicy.SHALLOW) {
+			String id = old.getId() + "'";
+			return new Frame(id, old);
+		} else {
+			throw new NotImplementedException("Deep copy of data frames not yet supported");
+		}
+	}
+	
+	public ControlFrame newControlFrameFrom(ControlFrame old, CopyPolicy policy, CopyPolicy framePolicy) {
+		if (policy == CopyPolicy.SHALLOW) {
+			String id = old.getId() + "'";
+			return new ControlFrame(id, old, framePolicy, this);
+		} else {
+			throw new NotImplementedException("Deep copy of control frames not yet supported");
+		}
 	}
 
 	/**

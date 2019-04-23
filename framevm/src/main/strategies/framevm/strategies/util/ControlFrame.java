@@ -1,5 +1,6 @@
 package framevm.strategies.util;
 
+import java.io.Serializable;
 import java.util.Stack;
 
 import org.spoofax.interpreter.terms.IStrategoTerm;
@@ -8,12 +9,13 @@ import org.spoofax.interpreter.terms.IStrategoTerm;
  * Operand stack that gets attached to a {@link Frame} when it becomes executable.
  * This opstack holds the stack, instruction counter and return addresses.
  */
-public class ControlFrame {
+public class ControlFrame implements Serializable {
+	private static final long serialVersionUID = 3480043498794343628L;
+	
 	private Block block;
 	private int instr_count;
 	private Stack<IStrategoTerm> stack;
 	private Continuation[] continuations;
-	private Slot returnValue;
 	private Frame currentFrame;
 	private String id;
 	
@@ -38,6 +40,24 @@ public class ControlFrame {
 		this.stack = new Stack<>(); //TODO: pre-allocate block.max-stack
 		this.currentFrame = frame;
 		this.id = id;
+	}
+
+	@SuppressWarnings("unchecked")
+	public ControlFrame(String id, ControlFrame old, CopyPolicy framePolicy, MachineState env) {
+		this.id = id;
+		this.block = old.block;
+		this.instr_count = old.instr_count;
+		
+		this.currentFrame = env.newFrameFrom(old.getCurrentFrame(), framePolicy);
+		
+		// TODO: Is the stack copy always shallow? It seems deep copy gives funky behaviour
+		this.stack = (Stack<IStrategoTerm>) old.stack.clone();
+		
+		Continuation[] oldContinuation = old.getContinuations();
+		this.continuations = new Continuation[oldContinuation.length];
+		for (int i = 0; i < continuations.length; i++) {
+			this.continuations[i] = oldContinuation[i];
+		}
 	}
 
 	/**
@@ -97,25 +117,6 @@ public class ControlFrame {
 		this.block = block;
 		this.instr_count = count;
 	}
-
-	/**
-	 * Called when returning to this operand stack.
-	 * Stores the return value.
-	 * 
-	 * @param value
-	 * 		The returned value
-	 */
-	public void setReturnValue(IStrategoTerm value) {
-		this.returnValue = new Slot(value);
-	}
-	
-	/**
-	 * @return
-	 * 		The return value
-	 */
-	public Slot getReturnValue() {
-		return this.returnValue;
-	}
 	
 	/**
 	 * Get the continuation from the specified slot.
@@ -145,24 +146,7 @@ public class ControlFrame {
 	public void setContinuation(int idx, Continuation continuation) {
 		this.continuations[idx] = continuation;
 	}
-
-	public ControlFrame copy(String id) {
-		ControlFrame copy = new ControlFrame(continuations.length, block, id);
-		copy.jump(block, instr_count);
-		if (getReturnValue() != null) {
-			copy.setReturnValue(getReturnValue().value);
-		}
-		for (int i = 0; i < continuations.length; i++) {
-			Continuation continuation = continuations[i];
-			copy.setContinuation(i, continuation);
-		}
-		
-		@SuppressWarnings("unchecked")
-		Stack<IStrategoTerm> stack = (Stack<IStrategoTerm>) this.stack.clone();
-		copy.stack = stack;
-		return copy;
-	}
-
+	
 	public Continuation[] getContinuations() {
 		return this.continuations;
 	}

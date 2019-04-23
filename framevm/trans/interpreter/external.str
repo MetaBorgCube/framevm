@@ -24,7 +24,7 @@ rules
 	external frame-new(|env)		// env| size -> (env', frame)
 	external frame-this(|env)		// env| -> frame
 	external frame-link(|env)		// env| (frame, frame, (lbl, idx)) -> env'
-	external frame-copy(|env)		// env| frame -> (env', frame)
+	external frame-copy(|env)		// env| (frame, policy) -> (env', frame)
 	external frame-set-current(|env2) // env| (cont, frame) -> env'
 
 	external vm-print(|env)			// env| val -> (env', string)
@@ -36,6 +36,7 @@ rules
 	external cont-get(|env)			// env| (cont, (cont_id, idx)) -> cont
 	external cont-this(|env)		// env| -> cont
 	external cont-transfer(|env)	// env| (cont, [val])-> env'
+	external cont-copy(|env)		// env| (cont, policy) -> (env', cont)
 	
 rules
 	ex-set-cx(|env):   (cont, ex)   -> <cont-set(|env)> (cont, ("x", 1), ex)

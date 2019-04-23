@@ -85,8 +85,10 @@ rules
 	stack-delta: FVM_Return() -> -1
 	stack-delta: FVM_ReturnN(n) -> <string-to-int> n
   
-	stack-delta: FVM_Copy()  -> 1
-	stack-delta: FVM_CopyR() -> 0
+	stack-delta: FVM_FrameCopy(_)  -> 1
+	stack-delta: FVM_FrameCopyR(_) -> 0
+	stack-delta: FVM_ContCopy(_, _)   -> 1
+	stack-delta: FVM_ContCopyR(_, _)  -> 0
   
 	stack-delta: FVM_JumpZ(lbl1, lbl2) -> -1
 	stack-delta: FVM_Jump(lbl) -> 0

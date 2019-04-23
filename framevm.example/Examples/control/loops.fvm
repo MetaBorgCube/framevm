@@ -17,9 +17,7 @@ MAIN:
 	set [0]					// count := 0
 							//
 	new	2					// For frame
-	dup						//
-	link [] P				//
-	newscope FOR_INIT		// move execution to new frame
+	newscope P FOR_INIT		// move execution to new frame
 	
 FOR_INIT:
 	ipush 0					//
@@ -37,9 +35,7 @@ FOR_BODY:
 	set [1]					// j := i
 	
 	new						// while frame
-	dup						//
-	link [] P				//
-	newscope WHILE			// enter while loop
+	newscope P WHILE		// enter while loop
 
 WHILE:
 	get [P, 1]				// j

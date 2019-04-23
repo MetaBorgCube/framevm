@@ -175,7 +175,8 @@ rules
 	
 	
 	// FVM_Continuations to relative FVM_Continuations
-	r-relative: FVM_Copy() -> [FVM_Get(FVM_Self()), FVM_CopyR()]
+	r-relative: FVM_ContCopy(policy1, policy2)  -> [FVM_ContThis(), FVM_ContCopyR(policy1, policy2)]
+	r-relative: FVM_FrameCopy(policy) -> [FVM_Get(FVM_Self()), FVM_FrameCopyR(policy)]
 	
 	r-relative: FVM_ContGet(FVM_Cont(Bind(name, n))) -> [FVM_IPush(<int-to-string> n), FVM_ContGet()]
 	r-relative: FVM_ContGetR(FVM_Cont(Bind(name, n))) -> [FVM_IPush(<int-to-string> n), FVM_ContGetR()]

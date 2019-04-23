@@ -2,7 +2,7 @@ module compile-pseudo
 
 imports 
 	signatures/framevm-sig
-	signatures/pseudo-sig
+	signatures/fvm-pseudo-sig
 	fvm-desugar
 	fvm-util
     

@@ -1,6 +1,6 @@
 module framevm
 
-imports Common pseudo
+imports fvm-common fvm-pseudo
 
 context-free start-symbols Program
 
@@ -97,27 +97,29 @@ sorts Instr context-free syntax
   FrameInstr.FVM_GetR   = <getr <Path>>			// Store value at path from frame on stack on stack
   
   
-  FrameInstr.FVM_Copy   = <copy>				// Copy the current frame
-  FrameInstr.FVM_CopyR  = <copyr>				// Copy the frame on top of the stack
+  FrameInstr.FVM_FrameCopy  = <copy <CopyPolicy>>				// Copy the current frame using the given policy
+  FrameInstr.FVM_FrameCopyR = <copyr <CopyPolicy>>				// Copy the frame on top of the stack using the given policy
+  ContInstr.FVM_ContCopy    = <ccopy <CopyPolicy> <CopyPolicy>>	// Copy the current controlframe using the given policy
+  ContInstr.FVM_ContCopyR   = <ccopyr <CopyPolicy> <CopyPolicy>>// Copy the continuation on top of the stack and propagate using the given policy
   
   
   Instr = ContInstr
-  ContInstr.FVM_ContThis     = <cget []>  						// Create a new continuation for the current execution point
-  ContInstr.FVM_ContNew      = <cnew <Label> <INTLEZ>>  		// Create a continuation for a frame on the stack at a new execution point
-  ContInstr.FVM_ContTransfer = <transfer <INTLEZ> [<ContRef>]>	// Transfer n elements as returned values to the given continuation
-  ContInstr.FVM_ContTransfer = <transfer <INTLEZ>>				// Transfer n elements as returned values to the continuation on top of the stack
+  ContInstr.FVM_ContThis      = <cget []>  						// Create a new continuation for the current execution point
+  ContInstr.FVM_ContNew       = <cnew <Label> <INTLEZ>>  		// Create a continuation for a frame on the stack at a new execution point
+  ContInstr.FVM_ContTransfer  = <transfer <INTLEZ> [<ContRef>]>	// Transfer n elements as returned values to the given continuation
+  ContInstr.FVM_ContTransfer  = <transfer <INTLEZ>>				// Transfer n elements as returned values to the continuation on top of the stack
   
-  OnReturnInstr.FVM_ContRGetN    = <rget <INTLEZ>>				// Get n returned values onto the stack
-  OnReturnInstr.FVM_ContRGet     = <rget>						// Get a return value on the stack
+  OnReturnInstr.FVM_ContRGetN = <rget <INTLEZ>>					// Get n returned values onto the stack
+  OnReturnInstr.FVM_ContRGet  = <rget>							// Get a return value on the stack
   
-  ContInstr.FVM_ContSet      = <cset>							// Store the value on top of the stack in the slot with id on second position
-  ContInstr.FVM_ContSet      = <cset [<ContRef>]>				// Store the value on top of the stack in the given slot
-  ContInstr.FVM_ContSetR     = <csetr>							// Store the value on top of the stack in the slot with id on second position of the continuarioin on third position
-  ContInstr.FVM_ContSetR     = <csetr [<ContRef>]>				// Store the value on top of the stack in the given slot of the continuarioin on second position
-  ContInstr.FVM_ContGet      = <cget>							// Get the continuation from the slot with id on top of the stack
-  ContInstr.FVM_ContGet      = <cget [<ContRef>]>				// Get the continuation from the given slot
-  ContInstr.FVM_ContGetR     = <cgetr>							// Get the continuation from the slot with id on top of the stack from the continuation on second position
-  ContInstr.FVM_ContGetR     = <cgetr [<ContRef>]>				// Get the continuation from the given slot from the continuation on top of the stack
+  ContInstr.FVM_ContSet       = <cset>							// Store the value on top of the stack in the slot with id on second position
+  ContInstr.FVM_ContSet       = <cset [<ContRef>]>				// Store the value on top of the stack in the given slot
+  ContInstr.FVM_ContSetR      = <csetr>							// Store the value on top of the stack in the slot with id on second position of the continuarioin on third position
+  ContInstr.FVM_ContSetR      = <csetr [<ContRef>]>				// Store the value on top of the stack in the given slot of the continuarioin on second position
+  ContInstr.FVM_ContGet       = <cget>							// Get the continuation from the slot with id on top of the stack
+  ContInstr.FVM_ContGet       = <cget [<ContRef>]>				// Get the continuation from the given slot
+  ContInstr.FVM_ContGetR      = <cgetr>							// Get the continuation from the slot with id on top of the stack from the continuation on second position
+  ContInstr.FVM_ContGetR      = <cgetr [<ContRef>]>				// Get the continuation from the given slot from the continuation on top of the stack
   
   
   ControlInstr.FVM_Return     = <return>						// Return the calue on top of the stack
@@ -157,7 +159,8 @@ sorts Instr context-free syntax
   ContRef.FVM_Cont    = CONTSLOT
   ContRef.FVM_ContIdx = <_c<INTLEZ>>
   
-
+  CopyPolicy.FVM_DeepCopy    = <deep>
+  CopyPolicy.FVM_ShallowCopy = <shallow>
   
 /* 
 

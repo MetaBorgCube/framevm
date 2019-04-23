@@ -26,14 +26,17 @@ public class frame_get_slot_0_1 extends FVMStrategy {
 		try {
 			int idx = Integer.valueOf(slotId);
 			Slot slot = frame.getSlot(idx);
-			if (slot == null) {
-				io.printError("Slot " + idx + " does not exist, or is still empty!");
+			if (slot.value == null) {
+				io.printError("Slot " + idx + " is still empty!");
 				return null;
 			} else {
 				return slot.value;
 			}
 		} catch (NumberFormatException ex) {
 			io.printError("Invalid slot " + slotId + ". It probably is a continuation you are looking for");
+			return null;
+		} catch (IndexOutOfBoundsException e){
+			io.printError(frame.getId() + ": " + e.getMessage());
 			return null;
 		}
 	}

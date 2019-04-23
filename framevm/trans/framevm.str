@@ -28,7 +28,7 @@ rules // Debugging
     with
       ext      := <get-extension> path
     ; filename := <guarantee-extension(|$[risc.[ext]])> path
-    ; result   := <pp-debug> <resugar> <desugar-full> node
+    ; result   := <pp-fvm-debug> <resugar> <desugar-full> node
     
   
   run-program-cisc:

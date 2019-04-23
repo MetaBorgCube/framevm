@@ -1,12 +1,10 @@
-module Common
+module fvm-common
 
 lexical syntax
 
   ID             = [a-zA-Z\_] [a-zA-Z0-9\_]*
   LABEL          = [A-Z\_] [A-Z0-9\_]* 
   CONTSLOT       = [a-z\_] [a-z0-9\_]* 
-  MAIN			 = "MAIN"
-  LABEL          = MAIN
   INT            = "-"? [0-9]+ 
   INTLZ          = [1-9][0-9]* 
   INTLEZ         = [0-9]+ 
@@ -51,7 +49,6 @@ lexical restrictions
   ID            -/- [a-zA-Z0-9\_]
   LABEL         -/- [A-Z0-9\_]
   CONTSLOT      -/- [a-z0-9\_]
-  MAIN          -/- [A-Z0-9\_]
   
   // EOF may not be followed by any char
   

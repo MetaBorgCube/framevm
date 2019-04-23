@@ -9,7 +9,6 @@ import org.spoofax.terms.StrategoTuple;
 import framevm.strategies.FVMStrategy;
 import framevm.strategies.util.Frame;
 import framevm.strategies.util.MachineState;
-import framevm.strategies.util.Slot;
 import mb.nabl2.stratego.StrategoBlob;
 
 public class frame_set_slot_0_1 extends FVMStrategy {
@@ -24,12 +23,11 @@ public class frame_set_slot_0_1 extends FVMStrategy {
 		Frame frame = (Frame) ((StrategoBlob) tuple.get(0)).value();
 		IStrategoTerm value = tuple.get(2);
 		int slotIdx = Integer.valueOf(((StrategoString) tuple.get(1)).stringValue());
-		
-		Slot slot = frame.getSlot(slotIdx);
-		if (slot == null) {
+		try {
 			frame.set(slotIdx, value);
-		} else {
-			slot.update(value);
+		} catch (ArrayIndexOutOfBoundsException e) {
+			io.printError(frame.getId() + ": " + e.getMessage());
+			return null;
 		}
 		return new StrategoBlob(env);
 	}
