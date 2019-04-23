@@ -45,9 +45,10 @@ rules
   	
   	compile-instr: (Nop(), (body, vars, stack)) -> (body, vars, stack)
   	compile-instr: (Control(control), env) -> <compile-control> (control, env)
-//  	compile-instr: (Control(control, refs), (body, vars, stack)) -> (<concat> [body, control', comp_refs], vars, stack)
-//  		with
-//  			(control', vars') := <compile-control> (control, (body, vars, stack));
+  	compile-instr: (Control(control, refs), env1) -> env3
+  	  with
+		(cpm_refs, env2) := <foldr(!env1, compile-exp)> refs;
+		(control', env3) := <compile-control> (control, env2)
   			
   			
   	compile-instr: (FVMR_PathAlias(name, exp), v) -> <fail><debug> "A path-alias should no longer exist at this point"
@@ -55,11 +56,7 @@ rules
   	compile-instr: (Terminal(exp, pure), (body, vars, stack))    -> <compile-exp> (exp, (body, vars, stack))
   	compile-instr: (Assign(ids, exp, pure), (body, vars, stack)) -> <compile-exp> (exp, (body, <init-name>((ids, stack), vars), <inc> stack))
 	
-//  	count-use-ref: (ref_id, []) -> <fail> where <debug> $[Undefined: [ref_id]]
-//  	count-use-ref: (ref_id, [(ref_id, count, pure, exp)| (body, vars, stack)]) -> [(ref_id, <inc> count, pure, exp)| (body, vars, stack)]
-//  	count-use-ref: (ref_id, [h| (body, vars, stack)]) -> [h| <count-use-ref>(ref_id, (body, vars, stack))]
-  
-  
+
   	compile-exp: (FVMR_Ref(name), (body, vars, stack)) -> (<append> (body, FVM_DupN(<int-to-string> <dec> <subt> (stack, loc))), vars', <inc> stack)
   	  where
   	  	(loc, u) := <lookup-name> (name, vars);
@@ -88,21 +85,59 @@ rules
 	compile-exp: (FVMR_IAdd(exp1, exp2), env1) -> (<append> (body, FVM_IAdd()), vars, <dec><dec> stack)
 	  with
 	  	env2 := <compile-exp> (exp1, env1); 
-	  	(body, vars, stack) := <compile-exp> (exp1, env2)  	
+	  	(body, vars, stack) := <compile-exp> (exp2, env2)  	
 	  	
+	compile-exp: (FVMR_IMul(exp1, exp2), env1) -> (<append> (body, FVM_IMul()), vars, <dec><dec> stack)
+	  with
+	  	env2 := <compile-exp> (exp1, env1); 
+	  	(body, vars, stack) := <compile-exp> (exp2, env2)
 	
-//	count-use-exp: (FVMR_IMul(exp1, exp2), v) -> <count-use-exp> (exp2, (<count-use-exp> (exp1, v)))
-//	count-use-exp: (FVMR_ISub(exp1, exp2), v) -> <count-use-exp> (exp2, (<count-use-exp> (exp1, v)))
-//	count-use-exp: (FVMR_IDiv(exp1, exp2), v) -> <count-use-exp> (exp2, (<count-use-exp> (exp1, v)))
-//	count-use-exp: (FVMR_IMod(exp1, exp2), v) -> <count-use-exp> (exp2, (<count-use-exp> (exp1, v)))
-//	
-//	count-use-exp: (FVMR_IEq(exp1, exp2), v)  -> <count-use-exp> (exp2, (<count-use-exp> (exp1, v)))
-//	count-use-exp: (FVMR_ILt(exp1, exp2), v)  -> <count-use-exp> (exp2, (<count-use-exp> (exp1, v)))
-//	count-use-exp: (FVMR_IGt(exp1, exp2), v)  -> <count-use-exp> (exp2, (<count-use-exp> (exp1, v)))
-//	count-use-exp: (FVMR_IOr(exp1, exp2), v)  -> <count-use-exp> (exp2, (<count-use-exp> (exp1, v)))
-//	count-use-exp: (FVMR_IXor(exp1, exp2), v) -> <count-use-exp> (exp2, (<count-use-exp> (exp1, v)))
-//	count-use-exp: (FVMR_IAnd(exp1, exp2), v) -> <count-use-exp> (exp2, (<count-use-exp> (exp1, v)))
-//
+	compile-exp: (FVMR_ISub(exp1, exp2), env1) -> (<append> (body, FVM_ISub()), vars, <dec><dec> stack)
+	  with
+	  	env2 := <compile-exp> (exp1, env1); 
+	  	(body, vars, stack) := <compile-exp> (exp2, env2)
+	
+	compile-exp: (FVMR_IDiv(exp1, exp2), env1) -> (<append> (body, FVM_IDiv()), vars, <dec><dec> stack)
+	  with
+	  	env2 := <compile-exp> (exp1, env1); 
+	  	(body, vars, stack) := <compile-exp> (exp2, env2)
+	
+	compile-exp: (FVMR_IMod(exp1, exp2), env1) -> (<append> (body, FVM_IMod()), vars, <dec><dec> stack)
+	  with
+	  	env2 := <compile-exp> (exp1, env1); 
+	  	(body, vars, stack) := <compile-exp> (exp2, env2)
+	
+	compile-exp: (FVMR_IEq(exp1, exp2), env1) -> (<append> (body, FVM_IEq()), vars, <dec><dec> stack)
+	  with
+	  	env2 := <compile-exp> (exp1, env1); 
+	  	(body, vars, stack) := <compile-exp> (exp2, env2)
+	
+	compile-exp: (FVMR_ILt(exp1, exp2), env1) -> (<append> (body, FVM_ILt()), vars, <dec><dec> stack)
+	  with
+	  	env2 := <compile-exp> (exp1, env1); 
+	  	(body, vars, stack) := <compile-exp> (exp2, env2)
+	
+	compile-exp: (FVMR_IGt(exp1, exp2), env1) -> (<append> (body, FVM_IGt()), vars, <dec><dec> stack)
+	  with
+	  	env2 := <compile-exp> (exp1, env1); 
+	  	(body, vars, stack) := <compile-exp> (exp2, env2)
+	
+	compile-exp: (FVMR_IOr(exp1, exp2), env1) -> (<append> (body, FVM_IOr()), vars, <dec><dec> stack)
+	  with
+	  	env2 := <compile-exp> (exp1, env1); 
+	  	(body, vars, stack) := <compile-exp> (exp2, env2)
+	
+	compile-exp: (FVMR_IXor(exp1, exp2), env1) -> (<append> (body, FVM_IXor()), vars, <dec><dec> stack)
+	  with
+	  	env2 := <compile-exp> (exp1, env1); 
+	  	(body, vars, stack) := <compile-exp> (exp2, env2)
+	
+	compile-exp: (FVMR_IAnd(exp1, exp2), env1) -> (<append> (body, FVM_IAnd()), vars, <dec><dec> stack)
+	  with
+	  	env2 := <compile-exp> (exp1, env1); 
+	  	(body, vars, stack) := <compile-exp> (exp2, env2)
+	  	
+
 //	count-use-exp: (FVMR_IsInt(exp), v)   -> <count-use-exp> (exp, v)
 //	count-use-exp: (FVMR_IsCont(exp),v)   -> <count-use-exp> (exp, v)
 //	count-use-exp: (FVMR_IsFrame(exp), v) -> <count-use-exp> (exp, v)
