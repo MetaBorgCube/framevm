@@ -3,6 +3,9 @@ module frameRvm
 imports
   expressions
   Common
+  
+imports
+  fvm-pseudo
 
 context-free start-symbols
   

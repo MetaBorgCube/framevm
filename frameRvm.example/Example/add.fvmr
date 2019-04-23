@@ -17,7 +17,7 @@ MAIN:
 	p <- ipush(42)
 	set([0], ipush(10)) 		// store value of x in current frame
 	callF <- new(2)				// create new call frame
-	link(callf, [], P)			// Link function scope to local scope
+	link(callF, [], P)			// Link function scope to local scope
 	setr(callF, [0], ipush(1)) 	// j := 2 // assign to formal parameter j in call frame
 	setr(callF, [1], ipush(3)) 	// j := 2 // assign to formal parameter j in call frame
 	call(callF, ADD, CONT2)	| p

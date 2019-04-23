@@ -7,7 +7,7 @@ imports
     
 rules
   	count-use: FVMR_Program(s, l, blocks) -> FVMR_Program(s, l, <map(count-use)> blocks)
-// 	count-use: f@FVMR_PseudoCode(body) -> f
+ 	count-use: f@FVMR_PseudoCode(body) -> f
   	count-use: FVMR_Block(lbl, body) -> FVMR_Block(lbl, <count-use> body)
   	count-use: Seq(body) -> Seq(body, vars)
   	  where

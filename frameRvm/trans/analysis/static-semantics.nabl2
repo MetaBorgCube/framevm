@@ -11,7 +11,8 @@ rules
   [[FVMR_Program(_, _, blocks) ^ (s) ]] :=
     Map1(block)[[blocks ^(s)]].
   	
-//  block[[FVMR_PseudoCode(_) ^(s)]].
+  block[[FVMR_PseudoCode(_) ^(s)]].
+  
   block[[FVMR_Block(FVMR_Label(name), Seq(body)) ^(s)]] := 
     new block, 
     Block{name} <- s,

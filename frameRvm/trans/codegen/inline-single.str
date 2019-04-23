@@ -7,7 +7,7 @@ imports
     
 rules
   	inline-single: FVMR_Program(s, l, blocks) -> FVMR_Program(s, l, <map(inline-single)> blocks)
-// 	inline-single: f@FVMR_PseudoCode(body) -> f
+ 	inline-single: f@FVMR_PseudoCode(body) -> f
   	inline-single: FVMR_Block(lbl, body) -> FVMR_Block(lbl, <inline-single> body)
   	inline-single: Seq(body, vars) -> Seq(body', vars')
   	  with

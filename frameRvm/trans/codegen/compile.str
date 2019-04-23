@@ -11,7 +11,7 @@ imports
     
 rules
   	compile-fvmr: FVMR_Program(FVMR_InitSize(s), l, blocks) -> FVM_Program(FVM_InitSize(s), l, <map(compile-fvmr)> blocks)
-// 	compile-fvmr: FVMR_PseudoCode(body) -> FVM_PseudoCode(body)
+ 	compile-fvmr: FVMR_PseudoCode(body) -> FVM_PseudoCode(body)
   	compile-fvmr: FVMR_Block(FVMR_Label(lbl), body) -> FVM_Block(FVM_Label(lbl), <compile-fvmr> body)
   	compile-fvmr: Seq(body, _) -> <fix-compiled-seq> Seq(body')
   	  where

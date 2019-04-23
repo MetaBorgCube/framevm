@@ -7,7 +7,7 @@ imports
     
 rules
   	detect-pure: FVMR_Program(s, l, blocks) -> FVMR_Program(s, l, <map(detect-pure)> blocks)
-// 	detect-pure: FVMR_PseudoCode(body) -> FVMR_PseudoCode(body)
+ 	detect-pure: FVMR_PseudoCode(body) -> FVMR_PseudoCode(body)
   	detect-pure: FVMR_Block(lbl, body) -> FVMR_Block(lbl, <detect-pure> body)
   	detect-pure: Seq(body) -> Seq(<map(detect-pure-instr)> body)
   

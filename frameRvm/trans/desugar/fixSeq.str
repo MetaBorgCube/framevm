@@ -6,14 +6,14 @@ imports
     
 rules
   	fix-seq: FVMR_Program(s, l, blocks) -> FVMR_Program(s, l, <map(fix-seq)> blocks)
-// 	fix-seq: FVMR_PseudoCode(body) -> FVMR_PseudoCode(body)
+ 	fix-seq: FVMR_PseudoCode(body) -> FVMR_PseudoCode(body)
   	fix-seq: FVMR_Block(lbl, body) -> FVMR_Block(lbl, <fix-seq> body)
   	fix-seq: FVMR_RetSeqJump(ret, body, jump) -> Seq([ret |<concat> [body, [jump]]])
   	fix-seq: FVMR_SeqJump(body, jump) -> Seq(<concat> [body, [jump]])
   
   
   	resugar-seq: FVMR_Program(s, l, blocks) -> FVMR_Program(s, [], <map(resugar-seq)> blocks)
-//    resugar-seq: FVMR_PseudoCode(body) -> FVMR_PseudoCode(body)
+    resugar-seq: FVMR_PseudoCode(body) -> FVMR_PseudoCode(body)
     resugar-seq: FVMR_Block(lbl, FVMR_SeqJump([h|body], last)) -> FVMR_Block(lbl, FVMR_RetSeqJump(h, body, last))
       where
       	_ := <is-ret> h

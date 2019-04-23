@@ -9,7 +9,7 @@ imports
     
 rules
   	move-down-all: FVMR_Program(s, l, blocks) -> FVMR_Program(s, l, <map(move-down-all)> blocks)
-// 	move-down-all: f@FVMR_PseudoCode(body) -> f
+ 	move-down-all: f@FVMR_PseudoCode(body) -> f
   	move-down-all: FVMR_Block(lbl, body) -> FVMR_Block(lbl, <move-down-all> body)
   	move-down-all: Seq(body, vars) -> Seq(body', vars)
   	  with
