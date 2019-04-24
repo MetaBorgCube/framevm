@@ -1,0 +1,9 @@
+---
+id: org.metaborg.lang:framevm-roger.test:0.1.0-SNAPSHOT
+name: framevm-roger
+dependencies:
+  compile:
+  - org.metaborg.lang:framevm:1.0.0
+  - org.metaborg:org.metaborg.meta.lang.spt:${metaborgVersion}
+build:
+  useBuildSystemSpec: true

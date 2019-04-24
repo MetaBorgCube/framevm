@@ -1,0 +1,31 @@
+module fixSeq
+
+imports
+	signatures/frameRvm-sig
+	desugar
+    
+rules
+  	fix-seq: RGR_Program(s, l, blocks) -> RGR_Program(s, l, <map(fix-seq)> blocks)
+ 	fix-seq: RGR_PseudoCode(body) -> RGR_PseudoCode(body)
+  	fix-seq: RGR_Block(lbl, body) -> RGR_Block(lbl, <fix-seq> body)
+  	fix-seq: RGR_RetSeqJump(ret, body, jump) -> Seq([ret |<concat> [body, [jump]]])
+  	fix-seq: RGR_SeqJump(body, jump) -> Seq(<concat> [body, [jump]])
+  
+  
+  	resugar-seq: RGR_Program(s, l, blocks) -> RGR_Program(s, [], <map(resugar-seq)> blocks)
+    resugar-seq: RGR_PseudoCode(body) -> RGR_PseudoCode(body)
+    resugar-seq: RGR_Block(lbl, RGR_SeqJump([h|body], last)) -> RGR_Block(lbl, RGR_RetSeqJump(h, body, last))
+      where
+      	_ := <is-ret> h
+    resugar-seq: f@RGR_Block(lbl, RGR_SeqJump(body, last)) -> f
+      	
+    resugar-seq: RGR_Block(lbl, Seq([body])) -> RGR_Block(lbl, RGR_SeqJump([], body))
+    resugar-seq: RGR_Block(lbl, Seq(body)) -> <resugar-seq> RGR_Block(lbl, RGR_SeqJump(body2, last))
+      where
+      	body' := <foldr(![], resugar-nop)> body;
+      	(body2, last) := <split-init-last> body'
+    
+    resugar-nop: (Nop(), body) -> body
+    resugar-nop: (instr, body) -> [instr | body]
+    
+    is-ret: r@OnReturn(_, _) -> r

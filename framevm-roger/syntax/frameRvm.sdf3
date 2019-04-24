@@ -1,0 +1,57 @@
+module frameRvm
+
+imports
+  expressions
+  Common
+  
+imports
+  fvm-pseudo
+
+context-free start-symbols
+  
+  Program
+
+context-free syntax
+	Program.RGR_Program = <<InitSize> 
+<alias:Alias*>
+
+<body:Block*>
+>	{ layout (align-list body && align-list alias) }
+  
+	InitSize.FVM_InitSize = <#init <INTLEZ>>
+	Alias.FVM_LinkAlias = <#link <LinkRef> -\> <INTLEZ>>
+	Alias.FVM_ContAlias = <#cont <ContRef> -\> <INTLEZ>>
+	
+sorts Block context-free syntax
+
+	Block.RGR_Block = <
+<lbl:Label>: 
+    <body:Body>
+
+> 			{ layout (indent lbl body) }
+  
+	Block.RGR_PseudoCode = <{ 
+  	<body:PsdBody>
+}
+
+> 			{ layout (indent "{" body && align "{" "}") }
+  
+	Body.RGR_SeqJump = <<instr:Instr*> 
+<jump:ControlInstr>
+>			{ layout (align-list instr && align instr jump) }
+
+	Body.RGR_RetSeqJump = <<ret:OnReturnInstr>
+<instr:Instr*> 
+<jump:ControlInstr>
+>			{ layout (align-list instr && align instr jump && align ret instr) }
+
+	ControlInstr.Control = <<ControlTerminal>>
+	ControlInstr.Control = <<ControlTerminal> | <{Exp ","}+>>
+	
+	OnReturnInstr.OnReturn = <<{ID ","}+> \<- <OnReturnExp>>
+
+	Instr.RGR_PureAssign = <<ID> \<- <Exp> @inline>
+	Instr.RGR_Terminal = ExpTerminal
+	Instr.RGR_Assign = <<ID> \<- <Exp>>
+	Instr.RGR_PathAlias = <path <ID> := <Path>>
+	

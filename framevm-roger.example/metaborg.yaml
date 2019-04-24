@@ -1,0 +1,13 @@
+---
+id: org.metaborg.lang:framevm-roger.example:0.1.0-SNAPSHOT
+name: framevm-roger.example
+dependencies:
+  compile:
+  - org.metaborg.lang:framevm-core:1.0.0
+debug:
+  typesmart: false
+runtime:
+  nabl2:
+    debug: analysis files
+build:
+  useBuildSystemSpec: true
