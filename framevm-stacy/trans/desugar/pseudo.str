@@ -13,15 +13,15 @@ signature
     PsdFuncDef: PsdID * [PsdField] * [PsdInstr] * INT * Type -> S
     
 rules
-	desugar-pseudo-all: FVM_Program(n, blocks, l) -> FVM_Program(n, <map(desugar-pseudo-all)> blocks, l)
-	desugar-pseudo-all: FVM_Block(name, body) -> FVM_Block(name, body)
-	desugar-pseudo-all: FVM_PseudoCode(Seq(body)) -> <desugar-pseudo> FVM_PseudoCode(body)
+	desugar-pseudo-all: STC_Program(n, blocks, l) -> STC_Program(n, <map(desugar-pseudo-all)> blocks, l)
+	desugar-pseudo-all: STC_Block(name, body) -> STC_Block(name, body)
+	desugar-pseudo-all: STC_PseudoCode(Seq(body)) -> <desugar-pseudo> STC_PseudoCode(body)
 	
 	desugar-pseudo = pseudo-desugar-bind
   
-  	resugar-pseudo-all : FVM_Program(n, aliasses, blocks) -> FVM_Program(n, aliasses, <map(resugar-pseudo-all)> blocks)
-	resugar-pseudo-all: FVM_Block(name, body) -> FVM_Block(name, body)
-	resugar-pseudo-all: FVM_PseudoCode(body) -> <resugar-pseudo> FVM_PseudoCode(Seq(body))
+  	resugar-pseudo-all : STC_Program(n, aliasses, blocks) -> STC_Program(n, aliasses, <map(resugar-pseudo-all)> blocks)
+	resugar-pseudo-all: STC_Block(name, body) -> STC_Block(name, body)
+	resugar-pseudo-all: STC_PseudoCode(body) -> <resugar-pseudo> STC_PseudoCode(Seq(body))
 	
 	resugar-pseudo = pseudo-resugar-binds
   
@@ -30,7 +30,7 @@ rules
   	pseudo-resugar-bind: PsdRecDef(name, methods, fields) -> PsdRecDef(name, <concat>[fields, methods])
   	pseudo-resugar-bind: PsdFuncDef(name, args, stmts, size, type) -> PsdFuncDef(name, PsdArgList(args), type, stmts)
   
-   	pseudo-desugar-bind: FVM_PseudoCode(instrs) -> FVM_PseudoCode(d_instrs)
+   	pseudo-desugar-bind: STC_PseudoCode(instrs) -> STC_PseudoCode(d_instrs)
 	  where
     	(d_instrs, _) := <foldl(pseudo-desugar-bind)> (instrs, ([], 0))
     	

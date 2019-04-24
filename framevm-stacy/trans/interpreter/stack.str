@@ -6,9 +6,9 @@ imports
 	interpreter/external
 
 rules
-	// FVM_SwapN/1
+	// STC_SwapN/1
 	// Swaps the value on top of the stack with the one in (n+1)th position
-	eval: (FVM_SwapN(n), env1) -> env4
+	eval: (STC_SwapN(n), env1) -> env4
 	  where
 	  	(env2, e1) := <stack-pop-any(|env1)>;
 	  	v := <string-to-int> n;
@@ -27,33 +27,33 @@ rules
 	  	(env3, e2) := <eval-swap(|env2)> (<dec> n, e1);
 	  	env4 := <stack-push(|env3)> tmp
 	  	
-	// FVM_Swap/0
+	// STC_Swap/0
 	// Takes two values from the stack
 	// Pushes them on the stack in reverse order
-	eval: (FVM_Swap(), env) -> env4
+	eval: (STC_Swap(), env) -> env4
 	  where
 	  	(env1, e1) := <stack-pop-any(|env)>;
 	  	(env2, e2) := <stack-pop-any(|env1)>;
 	  	env3 := <stack-push(|env2)> e1;
 	  	env4 := <stack-push(|env3)> e2
 	
-	// FVM_Pop/0
+	// STC_Pop/0
 	// Discards the top element on the stack
-	eval: (FVM_Pop(), env1) -> env2
+	eval: (STC_Pop(), env1) -> env2
 	  where
 	  	(env2, _) := <stack-pop-any(|env1)>
 	  	
-	// FVM_Dup/0
+	// STC_Dup/0
 	// Duplicates the element on top of the stack
-	eval: (FVM_Dup(), env1) -> env4
+	eval: (STC_Dup(), env1) -> env4
 	  where
 	  	(env2, val) := <stack-pop-any(|env1)>;	// pop once
 	  	env3 := <stack-push(|env2)> val;	//
 	  	env4 := <stack-push(|env3)> val		// push twice
 	  	
-	// FVM_DupN/1
+	// STC_DupN/1
 	// Duplicates the n-th element on top of the stack
-	eval: (FVM_DupN(n), env1) -> env3
+	eval: (STC_DupN(n), env1) -> env3
 	  where
 	  	(env2, val) := <eval-dup(|env1)> <string-to-int> n;
 	  	env3 := <stack-push(|env2)> val

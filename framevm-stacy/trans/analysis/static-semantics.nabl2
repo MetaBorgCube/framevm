@@ -24,14 +24,14 @@ rules
 
   init ^ (s) := new s.
   
-  [[FVM_Program(size, blocks, _) ^(s)]] :=
+  [[STC_Program(size, blocks, _) ^(s)]] :=
   	Map1(block)[[blocks ^(s)]].
   
-  block[[FVM_PseudoCode(body) ^(s)]] :=
+  block[[STC_PseudoCode(body) ^(s)]] :=
   	new pseudo, pseudo ---> s,
   	pseudo [[body ^(pseudo)]]. 
   	
-  block[[FVM_Block(FVM_Label(name), FVM_Seq(body), size) ^(s)]] :=
+  block[[STC_Block(FVM_Label(name), STC_Seq(body), size) ^(s)]] :=
   	new block, 
   	Block{name} <- s,
   	distinct/name D(s)/Block | error $[Redefinition of label] @NAMES,
@@ -61,95 +61,95 @@ rules
   	
   	
   	
-instr[[FVM_IPush(_) ^(s)]].
-instr[[FVM_INeg() ^(s)]].
-instr[[FVM_IAdd() ^(s)]].
-instr[[FVM_ISub() ^(s)]].
-instr[[FVM_IMul() ^(s)]].
-instr[[FVM_IDiv() ^(s)]].
-instr[[FVM_IMod() ^(s)]].
+instr[[STC_IPush(_) ^(s)]].
+instr[[STC_INeg() ^(s)]].
+instr[[STC_IAdd() ^(s)]].
+instr[[STC_ISub() ^(s)]].
+instr[[STC_IMul() ^(s)]].
+instr[[STC_IDiv() ^(s)]].
+instr[[STC_IMod() ^(s)]].
 
-instr[[FVM_IEq() ^(s)]].
-instr[[FVM_ILt() ^(s)]].
-instr[[FVM_IGt() ^(s)]].
-instr[[FVM_IOr() ^(s)]].
-instr[[FVM_IXor() ^(s)]].
-instr[[FVM_IAnd() ^(s)]].
+instr[[STC_IEq() ^(s)]].
+instr[[STC_ILt() ^(s)]].
+instr[[STC_IGt() ^(s)]].
+instr[[STC_IOr() ^(s)]].
+instr[[STC_IXor() ^(s)]].
+instr[[STC_IAnd() ^(s)]].
 
-instr[[FVM_Pop() ^(s)]].
-instr[[FVM_Dup() ^(s)]].
-instr[[FVM_DupN(_) ^(s)]].
+instr[[STC_Pop() ^(s)]].
+instr[[STC_Dup() ^(s)]].
+instr[[STC_DupN(_) ^(s)]].
 
-instr[[FVM_Swap() ^(s)]].
-instr[[FVM_SwapN(_) ^(s)]].
+instr[[STC_Swap() ^(s)]].
+instr[[STC_SwapN(_) ^(s)]].
 
-instr[[FVM_Print() ^(s)]].
-instr[[FVM_Debug() ^(s)]].
+instr[[STC_Print() ^(s)]].
+instr[[STC_Debug() ^(s)]].
   
 
-instr[[FVM_New(_) ^(s)]].
-instr[[FVM_New() ^(s)]].
-instr[[FVM_NewR() ^(s)]].
+instr[[STC_New(_) ^(s)]].
+instr[[STC_New() ^(s)]].
+instr[[STC_NewR() ^(s)]].
 
-instr[[FVM_Set() ^(s)]].
-instr[[FVM_Set(path) ^(s)]] := bind[[path ^(s)]].
-instr[[FVM_SetR() ^(s)]].
-instr[[FVM_SetR(path) ^(s)]] := bind[[path ^(s)]].
-instr[[FVM_Get() ^(s)]].
-instr[[FVM_Get(path) ^(s)]] := bind[[path ^(s)]].
-instr[[FVM_GetR() ^(s)]].
-instr[[FVM_GetR(path) ^(s)]] := bind[[path ^(s)]].
+instr[[STC_Set() ^(s)]].
+instr[[STC_Set(path) ^(s)]] := bind[[path ^(s)]].
+instr[[STC_SetR() ^(s)]].
+instr[[STC_SetR(path) ^(s)]] := bind[[path ^(s)]].
+instr[[STC_Get() ^(s)]].
+instr[[STC_Get(path) ^(s)]] := bind[[path ^(s)]].
+instr[[STC_GetR() ^(s)]].
+instr[[STC_GetR(path) ^(s)]] := bind[[path ^(s)]].
 
-instr[[FVM_ContSet() ^(s)]].
-instr[[FVM_ContSet(path) ^(s)]] := bind[[path ^(s)]].
-instr[[FVM_ContSetR() ^(s)]].
-instr[[FVM_ContSetR(path) ^(s)]] := bind[[path ^(s)]].
-instr[[FVM_ContGet() ^(s)]].
-instr[[FVM_ContGet(path) ^(s)]] := bind[[path ^(s)]].
-instr[[FVM_ContGetR() ^(s)]].
-instr[[FVM_ContGetR(path) ^(s)]] := bind[[path ^(s)]].
+instr[[STC_ContSet() ^(s)]].
+instr[[STC_ContSet(path) ^(s)]] := bind[[path ^(s)]].
+instr[[STC_ContSetR() ^(s)]].
+instr[[STC_ContSetR(path) ^(s)]] := bind[[path ^(s)]].
+instr[[STC_ContGet() ^(s)]].
+instr[[STC_ContGet(path) ^(s)]] := bind[[path ^(s)]].
+instr[[STC_ContGetR() ^(s)]].
+instr[[STC_ContGetR(path) ^(s)]] := bind[[path ^(s)]].
 
-instr[[FVM_ContTransfer(n) ^(s)]].
-instr[[FVM_ContTransfer(n, path) ^(s)]] := bind[[path ^(s)]].
+instr[[STC_ContTransfer(n) ^(s)]].
+instr[[STC_ContTransfer(n, path) ^(s)]] := bind[[path ^(s)]].
 
-instr[[FVM_ContRGetN(n) ^(s)]].
-instr[[FVM_ContRGet() ^(s)]].
+instr[[STC_ContRGetN(n) ^(s)]].
+instr[[STC_ContRGet() ^(s)]].
 
-instr[[FVM_Return() ^(s)]].
-instr[[FVM_Throw() ^(s)]].
+instr[[STC_Return() ^(s)]].
+instr[[STC_Throw() ^(s)]].
 
-instr[[FVM_Link(bind1, bind2) ^(s)]] := bind[[bind1 ^(s)]], bind[[bind2 ^(s)]].
-instr[[FVM_LinkR(bind) ^(s)]] := bind[[bind ^(s)]].
+instr[[STC_Link(bind1, bind2) ^(s)]] := bind[[bind1 ^(s)]], bind[[bind2 ^(s)]].
+instr[[STC_LinkR(bind) ^(s)]] := bind[[bind ^(s)]].
 
-instr[[FVM_ContCopy( policy1, policy2) ^(s)]] := policy1 == policy2 | note $[Are you sure? This unlinks the references to the heap from the copied heap].
-instr[[FVM_ContCopyR(policy1, policy2) ^(s)]] := policy1 == policy2 | note $[Are you sure? This unlinks the references to the heap from the copied heap].
-instr[[FVM_FrameCopy(_) ^(s)]].
-instr[[FVM_FrameCopyR(_) ^(s)]].
+instr[[STC_ContCopy( policy1, policy2) ^(s)]] := policy1 == policy2 | note $[Are you sure? This unlinks the references to the heap from the copied heap].
+instr[[STC_ContCopyR(policy1, policy2) ^(s)]] := policy1 == policy2 | note $[Are you sure? This unlinks the references to the heap from the copied heap].
+instr[[STC_FrameCopy(_) ^(s)]].
+instr[[STC_FrameCopyR(_) ^(s)]].
 
-instr[[FVM_IsInt() ^(s)]].
-instr[[FVM_IsCont() ^(s)]].
-instr[[FVM_IsFrame() ^(s)]].
+instr[[STC_IsInt() ^(s)]].
+instr[[STC_IsCont() ^(s)]].
+instr[[STC_IsFrame() ^(s)]].
 
 
-	instr[[FVM_ContThis() ^(s)]].
-	instr[[FVM_ContNew(lbl, _) ^(s)]] := lbl[[lbl ^(s)]].
-	instr[[FVM_Yield(lbl) ^(s)]] := lbl[[lbl ^(s)]].
-	instr[[FVM_ContCall(lbl) ^(s)]] := lbl[[lbl ^(s)]].
-	instr[[FVM_ContCall(path, lbl) ^(s)]] := lbl[[lbl ^(s)]], bind[[path ^(s)]].
-	instr[[FVM_ContReturn(path) ^(s)]] := bind[[path ^(s)]].
-	instr[[FVM_ContReturn() ^(s)]].
+	instr[[STC_ContThis() ^(s)]].
+	instr[[STC_ContNew(lbl, _) ^(s)]] := lbl[[lbl ^(s)]].
+	instr[[STC_Yield(lbl) ^(s)]] := lbl[[lbl ^(s)]].
+	instr[[STC_ContCall(lbl) ^(s)]] := lbl[[lbl ^(s)]].
+	instr[[STC_ContCall(path, lbl) ^(s)]] := lbl[[lbl ^(s)]], bind[[path ^(s)]].
+	instr[[STC_ContReturn(path) ^(s)]] := bind[[path ^(s)]].
+	instr[[STC_ContReturn() ^(s)]].
 	
-	instr[[FVM_Jump(lbl) ^(s)]]  := lbl[[lbl ^(s)]].
-	instr[[FVM_JumpZ(lbl1, lbl2) ^(s)]]  := lbl[[lbl1 ^(s)]], lbl[[lbl2 ^(s)]].
-	instr[[FVM_Call(lbl) ^(s)]]  := lbl[[lbl ^(s)]].
-	instr[[FVM_Call(lbl1, lbl2) ^(s)]]  := lbl[[lbl1 ^(s)]], lbl[[lbl2 ^(s)]].
-	instr[[FVM_Try(lbl1, lbl2, lbl3) ^(s)]]  := lbl[[lbl1 ^(s)]], lbl[[lbl2 ^(s)]], lbl[[lbl3 ^(s)]].
-	instr[[FVM_Try(lbl) ^(s)]] := lbl[[lbl ^(s)]].
-	instr[[FVM_TailCall() ^(s)]].
-	instr[[FVM_TailCall(lbl) ^(s)]]  := lbl[[lbl ^(s)]].
+	instr[[STC_Jump(lbl) ^(s)]]  := lbl[[lbl ^(s)]].
+	instr[[STC_JumpZ(lbl1, lbl2) ^(s)]]  := lbl[[lbl1 ^(s)]], lbl[[lbl2 ^(s)]].
+	instr[[STC_Call(lbl) ^(s)]]  := lbl[[lbl ^(s)]].
+	instr[[STC_Call(lbl1, lbl2) ^(s)]]  := lbl[[lbl1 ^(s)]], lbl[[lbl2 ^(s)]].
+	instr[[STC_Try(lbl1, lbl2, lbl3) ^(s)]]  := lbl[[lbl1 ^(s)]], lbl[[lbl2 ^(s)]], lbl[[lbl3 ^(s)]].
+	instr[[STC_Try(lbl) ^(s)]] := lbl[[lbl ^(s)]].
+	instr[[STC_TailCall() ^(s)]].
+	instr[[STC_TailCall(lbl) ^(s)]]  := lbl[[lbl ^(s)]].
 	
-	instr[[FVM_ScopeNew(bind, lbl) ^(s)]]  := lbl[[lbl ^(s)]], bind[[bind ^(s)]].
-	instr[[FVM_ScopeNew(bind) ^(s)]] := bind[[bind ^(s)]].
-	instr[[FVM_ScopeSetCurrent() ^(s)]].
-	instr[[FVM_ScopeExit(_, lbl) ^(s)]]  := lbl[[lbl ^(s)]].
-	instr[[FVM_ScopeExit(_) ^(s)]].
+	instr[[STC_ScopeNew(bind, lbl) ^(s)]]  := lbl[[lbl ^(s)]], bind[[bind ^(s)]].
+	instr[[STC_ScopeNew(bind) ^(s)]] := bind[[bind ^(s)]].
+	instr[[STC_ScopeSetCurrent() ^(s)]].
+	instr[[STC_ScopeExit(_, lbl) ^(s)]]  := lbl[[lbl ^(s)]].
+	instr[[STC_ScopeExit(_) ^(s)]].

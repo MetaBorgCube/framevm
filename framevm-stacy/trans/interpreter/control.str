@@ -2,6 +2,7 @@ module control
 
 imports 
 	signatures/framevm-stacy-sig
+	signatures/fvm-common-sig
 	interpreter/common
 	interpreter/external
 	interpreter/util
@@ -9,10 +10,10 @@ imports
 	fvm-desugar
 	
 rules	
-	// FVM_Call/2
+	// STC_Call/2
 	// Call the block at arg1 using the frame at the top of the stack
 	// This function returns to arg2 when finished
-	eval: (FVM_Call(FVM_Label(block), FVM_Label(returnAddr)), env1) -> env7
+	eval: (STC_Call(FVM_Label(block), FVM_Label(returnAddr)), env1) -> env7
 	  where
 	  	(env2, FrameRef(callFrame)) := <stack-pop-frame(|env1)>;	// get the function frame
 	  	(env3, func) := <vm-cont-new(|env2)> (callFrame, block, 2);
@@ -24,9 +25,9 @@ rules
 	  	env6 := <vm-jump(|env5)> returnAddr;
 	  	env7 := <cont-call(|env6)> func								// call the function
 	  	
-	// FVM_Call/1
+	// STC_Call/1
 	// Call the continuation at the top of the stack with return address set to block
-	eval: (FVM_Call(FVM_Label(block)), env1) -> env6
+	eval: (STC_Call(FVM_Label(block)), env1) -> env6
 	  where
 	  	(env2, Continuation(func)) := <stack-pop-cont(|env1)>;		// get the function continuation
 	  	cont_this := <cont-this(|env2)>;
@@ -36,10 +37,10 @@ rules
 	  	env5 := <vm-jump(|env4)> block;
 	  	env6 := <cont-call(|env5)> func								// call the function
 	 
-	// FVM_TailCall/1
+	// STC_TailCall/1
 	// Call the block at arg1 using the frame at the top of the stack
 	// Use tail call optimizations for this call
-	eval: (FVM_TailCall(FVM_Label(block)), env1) -> env6
+	eval: (STC_TailCall(FVM_Label(block)), env1) -> env6
 	  where
 	  	(env2, FrameRef(callFrame)) := <stack-pop-frame(|env1)>;	// get the function frame
 	  	(env3, func) := <vm-cont-new(|env2)> (callFrame, block, 2);
@@ -51,10 +52,10 @@ rules
 	  	env5 := <ex-set-cx(|env3)> (func, ex);						// Copy over exception
 	  	env6 := <cont-call(|env5)> func								// call the function
 	  	
-	// FVM_TailCall/0
+	// STC_TailCall/0
 	// Call the continuation at the top of the stack
 	// Use tail call optimizations for this call
-	eval: (FVM_TailCall(), env1) -> env5
+	eval: (STC_TailCall(), env1) -> env5
 	  where
 	  	(env2, Continuation(func)) := <stack-pop-cont(|env1)>;		// get the function continuation
 	  	cont_this := <cont-this(|env2)>;
@@ -64,28 +65,28 @@ rules
 	  	env4 := <ex-set-cx(|env3)> (func, ex);						// Copy over exception
 	  	env5 := <cont-call(|env4)> func								// call the function
 	 
-	 // FVM_ReturnN/1
+	 // STC_ReturnN/1
 	// Takes n values from the top of the stack and returns them to the caller
-	eval: (FVM_ReturnN(n), env1) -> env4
+	eval: (STC_ReturnN(n), env1) -> env4
 	  where
 	  	(env2, vals) := <pop-list(|env1)> <string-to-int> n;
 	  	continuation := <cont-get-cc(|env2)> <cont-this(|env2)>;
 	  	env3 := <cont-transfer(|env2)> (continuation, vals);
 	  	env4 := <cont-call(|env3)> continuation
 	  	
-	// FVM_Return/0
+	// STC_Return/0
 	// Take a value from top of the stack and return it to the caller
-	eval: (FVM_Return(), env1) -> env4
+	eval: (STC_Return(), env1) -> env4
 	  where
 	  	(env2, val) := <stack-pop-any(|env1)>;
 	  	continuation := <cont-get-cc(|env2)> <cont-this(|env2)>;
 	  	env3 := <cont-transfer(|env2)> (continuation, [val]);
 	  	env4 := <cont-call(|env3)> continuation
 	  	
-	// FVM_Yield/1
+	// STC_Yield/1
 	// Return the value on top of the stack and the current continuation to the caller.
 	// Sets the next instruction to be at the given label
-	eval: (FVM_Yield(FVM_Label(lbl)), env1) -> env5
+	eval: (STC_Yield(FVM_Label(lbl)), env1) -> env5
 	  where
 	  	this := <cont-this(|env1)>;
 	  	(env2, val) := <stack-pop-any(|env1)>;
@@ -94,26 +95,26 @@ rules
 	  	env4 := <vm-jump(|env3)> lbl;
 	  	env5 := <cont-call(|env4)> continuation
 	
-	// FVM_Jump/1
+	// STC_Jump/1
 	// Unconditional jump to a new block at the given label
-	eval: (FVM_Jump(FVM_Label(lbl)), env1) -> env2
+	eval: (STC_Jump(FVM_Label(lbl)), env1) -> env2
 	  where
 	  	env2 := <vm-jump(|env1)> lbl
 	
-	// FVM_JumpZ/2
+	// STC_JumpZ/2
 	// Conditional jump. 
 	// Checks top of the stack, when zero goes to arg1 else to arg2
-	eval: (FVM_JumpZ(FVM_Label(then), FVM_Label(else)), env1) -> env3
+	eval: (STC_JumpZ(FVM_Label(then), FVM_Label(else)), env1) -> env3
 	  where
 	  	(env2, IntV(val)) := <stack-pop-int(|env1)>;
 	  	trgt := <jump-eval> (val, then, else);
 	  	env3 := <vm-jump(|env2)> trgt
 	
-	// FVM_ScopeNew/1
+	// STC_ScopeNew/1
 	// Move execution to a new scope, for example when entering a for loop
 	// Uses the frame on top of the stack as new execution frame
 	// Jumps the execution to the given block
-	eval: (FVM_ScopeNew(FVM_Link(Bind(lbl, idx)), FVM_Label(block)), env1) -> env5
+	eval: (STC_ScopeNew(FVM_Link(Bind(lbl, idx)), FVM_Label(block)), env1) -> env5
 	  where
 	    frame_this := <frame-this(|env1)>;
 	  	(env2, FrameRef(frame_to)) := <stack-pop-frame(|env1)>;
@@ -121,19 +122,19 @@ rules
 	  	env4 := <frame-set-current(|env3)> (<cont-this(|env2)>, frame_to);
 	  	env5 := <vm-jump(|env4)> block
 
-	// FVM_ScopeNew/0
+	// STC_ScopeNew/0
 	// Move execution to a new scope, for example when entering a for loop
 	// Uses the frame on top of the stack as new execution frame
-	eval: (FVM_ScopeNew(FVM_Link(Bind(lbl, idx))), env1) -> env4
+	eval: (STC_ScopeNew(FVM_Link(Bind(lbl, idx))), env1) -> env4
 	  where
 	  	frame_this := <frame-this(|env1)>;
 	  	(env2, FrameRef(frame_to)) := <stack-pop-frame(|env1)>;
 	  	env3 := <frame-link(|env2)> (frame_to, frame_this, (lbl, idx));
 	  	env4 := <frame-set-current(|env3)> (<cont-this(|env3)>, frame_to)
 	  	
-	// FVM_ScopeSetCurrent/0
+	// STC_ScopeSetCurrent/0
 	// Set the frame on top of the stack as new execution frame (make sure its properly linked)
-	eval: (FVM_ScopeSetCurrent(), env1) -> env3
+	eval: (STC_ScopeSetCurrent(), env1) -> env3
 	  where
 	  	(env2, FrameRef(frame_to)) := <stack-pop-frame(|env1)>;
 	  	env3 := <frame-set-current(|env2)> (<cont-this(|env2)>, frame_to)

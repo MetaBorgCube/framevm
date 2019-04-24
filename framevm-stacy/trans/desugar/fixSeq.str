@@ -2,27 +2,28 @@ module fixSeq
 
 imports
 	signatures/framevm-stacy-sig
+	signatures/fvm-common-sig
 	fvm-desugar
     
 rules
 
-  	fix-seq: FVM_Program(s, blocks, l) -> FVM_Program(s, <map(fix-seq)> blocks, l)
- 	fix-seq: FVM_PseudoCode(body) -> FVM_PseudoCode(body)
-  	fix-seq: FVM_Block(lbl, body) -> FVM_Block(lbl, <fix-seq> body)
-  	fix-seq: FVM_RetSeqJump(ret, body, jump) -> FVM_Seq([ret |<concat> [body, [jump]]])
-  	fix-seq: FVM_SeqJump(body, jump) -> FVM_Seq(<concat> [body, [jump]])
+  	fix-seq: STC_Program(s, blocks, l) -> STC_Program(s, <map(fix-seq)> blocks, l)
+ 	fix-seq: STC_PseudoCode(body) -> STC_PseudoCode(body)
+  	fix-seq: STC_Block(lbl, body) -> STC_Block(lbl, <fix-seq> body)
+  	fix-seq: STC_RetSeqJump(ret, body, jump) -> STC_Seq([ret |<concat> [body, [jump]]])
+  	fix-seq: STC_SeqJump(body, jump) -> STC_Seq(<concat> [body, [jump]])
   
   
-  	resugar-seq: FVM_Program(s, blocks, l) -> FVM_Program(FVM_InitSize(<int-to-string> s), [], <map(resugar-seq)> blocks)
-    resugar-seq: FVM_PseudoCode(body) -> FVM_PseudoCode(body)
-    resugar-seq: FVM_Block(lbl, FVM_SeqJump([h|body], last)) -> FVM_Block(lbl, FVM_RetSeqJump(h, body, last))
+  	resugar-seq: STC_Program(s, blocks, l) -> STC_Program(FVM_InitSize(<int-to-string> s), [], <map(resugar-seq)> blocks)
+    resugar-seq: STC_PseudoCode(body) -> STC_PseudoCode(body)
+    resugar-seq: STC_Block(lbl, STC_SeqJump([h|body], last)) -> STC_Block(lbl, STC_RetSeqJump(h, body, last))
       where
       	_ := <is-ret> h
-    resugar-seq: f@FVM_Block(lbl, FVM_SeqJump(body, last)) -> f
+    resugar-seq: f@STC_Block(lbl, STC_SeqJump(body, last)) -> f
       	
-    resugar-seq: FVM_Block(lbl, FVM_Seq(body)) -> <resugar-seq> FVM_Block(lbl, FVM_SeqJump(body2, last))
+    resugar-seq: STC_Block(lbl, STC_Seq(body)) -> <resugar-seq> STC_Block(lbl, STC_SeqJump(body2, last))
       where
       	(body2, last) := <split-init-last> body
     
-    is-ret: r@FVM_ContRGetN(_) -> r
-    is-ret: r@FVM_ContRGet() -> r
+    is-ret: r@STC_ContRGetN(_) -> r
+    is-ret: r@STC_ContRGet() -> r

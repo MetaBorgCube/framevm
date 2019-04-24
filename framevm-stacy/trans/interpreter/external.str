@@ -1,6 +1,7 @@
 module external
 
-imports signatures/framevm-stacy-sig
+imports
+	signatures/fvm-common-sig
 
 rules 
 	external vm-init(|)				// (links, conts, slots) -> env

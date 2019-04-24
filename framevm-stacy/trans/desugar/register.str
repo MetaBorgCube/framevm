@@ -2,11 +2,12 @@ module register
 
 imports
 	signatures/framevm-stacy-sig
+	signatures/fvm-common-sig
 	fvm-desugar
 
 rules
-    apply-aliasses: FVM_ProgramNoInit(aliasses, blocks) -> <apply-aliasses> FVM_Program(FVM_InitSize("0"), aliasses, blocks)
-	apply-aliasses: FVM_Program(FVM_InitSize(n), aliasses, blocks) -> FVM_Program(<string-to-int> n, bound_blocks, <length> link_addresses)
+    apply-aliasses: STC_ProgramNoInit(aliasses, blocks) -> <apply-aliasses> STC_Program(FVM_InitSize("0"), aliasses, blocks)
+	apply-aliasses: STC_Program(FVM_InitSize(n), aliasses, blocks) -> STC_Program(<string-to-int> n, bound_blocks, <length> link_addresses)
 	  where
 	    all_aliasses := <insert-standards> aliasses;
 	    link_addresses := <foldl(extract-links)> (all_aliasses, []);
@@ -56,7 +57,7 @@ rules
 	apply-alias(|alias): FVM_Cont(name) -> FVM_Cont(Bind(name, <string-to-int> idx)) where FVM_ContAlias(FVM_Cont(name), idx) := alias
 	
 	
-	resugar-aliasses: FVM_Program(n, [], bound_blocks) -> FVM_Program(n, aliasses, blocks)
+	resugar-aliasses: STC_Program(n, [], bound_blocks) -> STC_Program(n, aliasses, blocks)
 	  where
 	  	blocks := <topdown(try(resugar-alias))> bound_blocks;
 	  	(aliasses, _) := <foldl(resugar-alias)>(<collect-all(is-alias)> bound_blocks, ([], []))

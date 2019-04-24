@@ -2,17 +2,18 @@ module stack
 
 imports
 	signatures/framevm-stacy-sig
+	signatures/fvm-common-sig
 	fvm-desugar
 
 rules
 	// check stack sizes of blocks
-	stack-calc: FVM_Program(s, blocks, l) -> FVM_Program(s, out_blocks, l)
+	stack-calc: STC_Program(s, blocks, l) -> STC_Program(s, out_blocks, l)
 	  where
     	(errors, out_blocks) := <unzip><mapconcat(stack-calc)> blocks
   
-	stack-calc: f@FVM_PseudoCode(body) -> [([], f)]
+	stack-calc: f@STC_PseudoCode(body) -> [([], f)]
 
-  	stack-calc: FVM_Block(FVM_Label(lbl), FVM_Seq(body)) -> [(errors, FVM_Block(FVM_Label(lbl), FVM_Seq(body), size))]
+  	stack-calc: STC_Block(FVM_Label(lbl), STC_Seq(body)) -> [(errors, STC_Block(FVM_Label(lbl), STC_Seq(body), size))]
   	  where
   		(size, errors) := <foldl(stack-update)>(body, (0, []))
   
@@ -27,101 +28,101 @@ rules
   	  	err := <debug> ("Popping from empty stack at", instr)
   	  	
 	// For each operation, calculate the change in stack size
-	stack-delta: FVM_IPush(_) -> 1
-	stack-delta: FVM_INeg()   -> 0
-	stack-delta: FVM_IAdd()   -> -1
-	stack-delta: FVM_IMul()   -> -1
-	stack-delta: FVM_ISub()   -> -1
-	stack-delta: FVM_IDiv()   -> -1
-	stack-delta: FVM_IMod()   -> -1
+	stack-delta: STC_IPush(_) -> 1
+	stack-delta: STC_INeg()   -> 0
+	stack-delta: STC_IAdd()   -> -1
+	stack-delta: STC_IMul()   -> -1
+	stack-delta: STC_ISub()   -> -1
+	stack-delta: STC_IDiv()   -> -1
+	stack-delta: STC_IMod()   -> -1
 	
-	stack-delta: FVM_IEq()    -> -1
-	stack-delta: FVM_ILt()    -> -1
-	stack-delta: FVM_IGt()    -> -1
-	stack-delta: FVM_IOr()    -> -1
-	stack-delta: FVM_IXor()   -> -1
-	stack-delta: FVM_IAnd()   -> -1
+	stack-delta: STC_IEq()    -> -1
+	stack-delta: STC_ILt()    -> -1
+	stack-delta: STC_IGt()    -> -1
+	stack-delta: STC_IOr()    -> -1
+	stack-delta: STC_IXor()   -> -1
+	stack-delta: STC_IAnd()   -> -1
   
-	stack-delta: FVM_New(_)   -> 1
-	stack-delta: FVM_New()    -> 1
-	stack-delta: FVM_NewR()   -> 0
+	stack-delta: STC_New(_)   -> 1
+	stack-delta: STC_New()    -> 1
+	stack-delta: STC_NewR()   -> 0
 	
-	stack-delta: FVM_Pop()    -> -1
-	stack-delta: FVM_Dup()    -> 1
-	stack-delta: FVM_DupN(_)  -> 1
-	stack-delta: FVM_Swap()   -> 0
-	stack-delta: FVM_SwapN(_) -> 0
+	stack-delta: STC_Pop()    -> -1
+	stack-delta: STC_Dup()    -> 1
+	stack-delta: STC_DupN(_)  -> 1
+	stack-delta: STC_Swap()   -> 0
+	stack-delta: STC_SwapN(_) -> 0
   
-	stack-delta: FVM_Link(_, _) -> -1
-	stack-delta: FVM_LinkR(_)   -> -2
+	stack-delta: STC_Link(_, _) -> -1
+	stack-delta: STC_LinkR(_)   -> -2
   
-	stack-delta: FVM_Get()      -> 0
-	stack-delta: FVM_Get(path)  -> 1
-	stack-delta: FVM_GetR()     -> -1
-	stack-delta: FVM_GetR(path) -> 0
+	stack-delta: STC_Get()      -> 0
+	stack-delta: STC_Get(path)  -> 1
+	stack-delta: STC_GetR()     -> -1
+	stack-delta: STC_GetR(path) -> 0
   
-	stack-delta: FVM_Set()      -> -2
-	stack-delta: FVM_Set(path)  -> -1
-	stack-delta: FVM_SetR()     -> -3
-	stack-delta: FVM_SetR(path) -> -2
+	stack-delta: STC_Set()      -> -2
+	stack-delta: STC_Set(path)  -> -1
+	stack-delta: STC_SetR()     -> -3
+	stack-delta: STC_SetR(path) -> -2
 	
-	stack-delta: FVM_ContSet()      -> -2
-	stack-delta: FVM_ContSet(cont)  -> -1
-	stack-delta: FVM_ContSetR()     -> -3
-	stack-delta: FVM_ContSetR(path) -> -2
+	stack-delta: STC_ContSet()      -> -2
+	stack-delta: STC_ContSet(cont)  -> -1
+	stack-delta: STC_ContSetR()     -> -3
+	stack-delta: STC_ContSetR(path) -> -2
 	
-	stack-delta: FVM_ContGet()      -> 0
-	stack-delta: FVM_ContGet(path)  -> 1
-	stack-delta: FVM_ContGetR()     -> -1
-	stack-delta: FVM_ContGetR(path) -> 0
+	stack-delta: STC_ContGet()      -> 0
+	stack-delta: STC_ContGet(path)  -> 1
+	stack-delta: STC_ContGetR()     -> -1
+	stack-delta: STC_ContGetR(path) -> 0
 	
-	stack-delta: FVM_ContTransfer(n)    -> <dec> <subti> (0, <string-to-int> n)
-	stack-delta: FVM_ContTransfer(n, _) -> <subti> (0, <string-to-int> n)
+	stack-delta: STC_ContTransfer(n)    -> <dec> <subti> (0, <string-to-int> n)
+	stack-delta: STC_ContTransfer(n, _) -> <subti> (0, <string-to-int> n)
 	
-	stack-delta: FVM_ContRGetN(n) -> <string-to-int> n
-	stack-delta: FVM_ContRGet()   -> 1
+	stack-delta: STC_ContRGetN(n) -> <string-to-int> n
+	stack-delta: STC_ContRGet()   -> 1
   
-	stack-delta: FVM_Print()  -> -1
-	stack-delta: FVM_Return() -> -1
-	stack-delta: FVM_ReturnN(n) -> <string-to-int> n
+	stack-delta: STC_Print()  -> -1
+	stack-delta: STC_Return() -> -1
+	stack-delta: STC_ReturnN(n) -> <string-to-int> n
   
-	stack-delta: FVM_FrameCopy(_)  -> 1
-	stack-delta: FVM_FrameCopyR(_) -> 0
-	stack-delta: FVM_ContCopy(_, _)   -> 1
-	stack-delta: FVM_ContCopyR(_, _)  -> 0
+	stack-delta: STC_FrameCopy(_)  -> 1
+	stack-delta: STC_FrameCopyR(_) -> 0
+	stack-delta: STC_ContCopy(_, _)   -> 1
+	stack-delta: STC_ContCopyR(_, _)  -> 0
   
-	stack-delta: FVM_JumpZ(lbl1, lbl2) -> -1
-	stack-delta: FVM_Jump(lbl) -> 0
-	stack-delta: FVM_Call(lbl1, lbl2) -> -1
-	stack-delta: FVM_Call(lbl) -> -1
-	stack-delta: FVM_TailCall(lbl) -> -1
-	stack-delta: FVM_TailCall() -> -1
+	stack-delta: STC_JumpZ(lbl1, lbl2) -> -1
+	stack-delta: STC_Jump(lbl) -> 0
+	stack-delta: STC_Call(lbl1, lbl2) -> -1
+	stack-delta: STC_Call(lbl) -> -1
+	stack-delta: STC_TailCall(lbl) -> -1
+	stack-delta: STC_TailCall() -> -1
 	
 	
-	stack-delta: FVM_ContThis() -> 1
-	stack-delta: FVM_ContNew(lbl, _) -> 0
+	stack-delta: STC_ContThis() -> 1
+	stack-delta: STC_ContNew(lbl, _) -> 0
 	
-	stack-delta: FVM_ContCall(_) -> -1
-	stack-delta: FVM_ContReturn() -> -1
-	stack-delta: FVM_ContReturn(_) -> 0
+	stack-delta: STC_ContCall(_) -> -1
+	stack-delta: STC_ContReturn() -> -1
+	stack-delta: STC_ContReturn(_) -> 0
 	
-	stack-delta: FVM_ScopeNew(_, lbl) -> -1
-	stack-delta: FVM_ScopeNew(_)    -> -1
-	stack-delta: FVM_ScopeSetCurrent()    -> -1
+	stack-delta: STC_ScopeNew(_, lbl) -> -1
+	stack-delta: STC_ScopeNew(_)    -> -1
+	stack-delta: STC_ScopeSetCurrent()    -> -1
 	
-	stack-delta: FVM_ScopeExit(path) -> 0
-	stack-delta: FVM_ScopeExit(path, lbl) -> 0
+	stack-delta: STC_ScopeExit(path) -> 0
+	stack-delta: STC_ScopeExit(path, lbl) -> 0
 	
-	stack-delta: FVM_Try(_, _, _) -> -2
-	stack-delta: FVM_Try(_) -> -2
-	stack-delta: FVM_Throw() -> -1
-	stack-delta: FVM_Yield(_) -> -1
+	stack-delta: STC_Try(_, _, _) -> -2
+	stack-delta: STC_Try(_) -> -2
+	stack-delta: STC_Throw() -> -1
+	stack-delta: STC_Yield(_) -> -1
 	
-	stack-delta: FVM_Debug() -> 0
+	stack-delta: STC_Debug() -> 0
 	
-	stack-delta: FVM_IsInt()   -> 0
-	stack-delta: FVM_IsCont()  -> 0
-	stack-delta: FVM_IsFrame() -> 0
+	stack-delta: STC_IsInt()   -> 0
+	stack-delta: STC_IsCont()  -> 0
+	stack-delta: STC_IsFrame() -> 0
   
   	stack-delta: a -> 0
   	  where

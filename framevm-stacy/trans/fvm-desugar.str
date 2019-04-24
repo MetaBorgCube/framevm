@@ -11,9 +11,9 @@ signature
   sorts S
   constructors    
     Bind : STRING * INT -> S
-    FVM_Seq : [Instr] -> S
-    FVM_Block : FVM_Label * FVM_Seq * INT -> S
-    FVM_Program: INT * [FVM_Block] -> S
+    STC_Seq : [Instr] -> S
+    STC_Block : STC_Label * STC_Seq * INT -> S
+    STC_Program: INT * [STC_Block] -> S
     
 rules  
     desugar-full = desugar; to-RISC-all

@@ -6,60 +6,60 @@ imports
 	interpreter/external
 
 rules
-	// FVM_IPush/1
+	// STC_IPush/1
 	// Pushes the given interger on the stack
-	eval: (FVM_IPush(i), env1) -> env2
+	eval: (STC_IPush(i), env1) -> env2
 	  where
 	  	env2 := <stack-push(|env1)> IntV(i)
 	
-	// FVM_INeg/0
+	// STC_INeg/0
 	// Takes an integer from the stack and negates it
 	// Pushes the result on the stack
-	eval: (FVM_INeg(), env) -> env3
+	eval: (STC_INeg(), env) -> env3
 	  where
 	  	(env1, IntV(e1)) := <stack-pop-int(|env)>;
 	  	env3 := <stack-push(|env1)> IntV(<subtS>("0", e1))
 	  	
-	// FVM_IAdd/0
+	// STC_IAdd/0
 	// Takes two integers from the stack, adds them together
 	// Pushes the result on the stack
-	eval: (FVM_IAdd(), env) -> env3
+	eval: (STC_IAdd(), env) -> env3
 	  where
 	  	(env1, IntV(e1)) := <stack-pop-int(|env)>;
 	  	(env2, IntV(e2)) := <stack-pop-int(|env1)>;
 	  	env3 := <stack-push(|env2)> IntV(<addS>(e1, e2))
 
-	// FVM_IMul/0
+	// STC_IMul/0
 	// Takes two integers from the stack, multiplies them
 	// Pushes the result on the stack
-	eval: (FVM_IMul(), env) -> env3
+	eval: (STC_IMul(), env) -> env3
 	  where
 	  	(env1, IntV(e1)) := <stack-pop-int(|env)>;
 	  	(env2, IntV(e2)) := <stack-pop-int(|env1)>;
 	  	env3 := <stack-push(|env2)> IntV(<mulS>(e1, e2))
 	  	
-	// FVM_ISub/0
+	// STC_ISub/0
 	// Takes two integers from the stack, subtracts them
 	// Pushes the result on the stack
-	eval: (FVM_ISub(), env) -> env3
+	eval: (STC_ISub(), env) -> env3
 	  where
 	  	(env1, IntV(e2)) := <stack-pop-int(|env)>;
 	  	(env2, IntV(e1)) := <stack-pop-int(|env1)>;
 	  	env3 := <stack-push(|env2)> IntV(<subtS>(e1, e2))
 	  	
-	// FVM_IDiv/0
+	// STC_IDiv/0
 	// Takes two integers from the stack, divides them
 	// Pushes the result on the stack
-	eval: (FVM_IDiv(), env) -> env3
+	eval: (STC_IDiv(), env) -> env3
 	  where
 	  	(env1, IntV(e2)) := <stack-pop-int(|env)>;
 	  	(env2, IntV(e1)) := <stack-pop-int(|env1)>;
 	  	env3 := <stack-push(|env2)> IntV(<divS>(e1, e2))
 	  	
-	// FVM_Imod/0
+	// STC_Imod/0
 	// Takes two integers from the stack, divides them
 	// Pushes the remainder on the stack	  	
-	eval: (FVM_IMod(), env) -> env3
+	eval: (STC_IMod(), env) -> env3
 	  where
 	  	(env1, IntV(e2)) := <stack-pop-int(|env)>;
 	  	(env2, IntV(e1)) := <stack-pop-int(|env1)>;
@@ -68,56 +68,56 @@ rules
 
 
 
-	// FVM_IEq/0
+	// STC_IEq/0
 	// Takes two integers from the stack, checks if they are equal
 	// and pushes the result on the stack
-  	eval: (FVM_IEq(), env) -> env3
+  	eval: (STC_IEq(), env) -> env3
 	  where
 	  	(env1, IntV(e1)) := <stack-pop-int(|env)>;
 	  	(env2, IntV(e2)) := <stack-pop-int(|env1)>;
 	  	env3 := <stack-push(|env2)> <eval-eq> (e1, e2)
 	  	
-	// FVM_ILt/0
+	// STC_ILt/0
 	// Takes two integers from the stack, checks if the second is smaller than the first
 	// and pushes the result on the stack
-  	eval: (FVM_ILt(), env) -> env3
+  	eval: (STC_ILt(), env) -> env3
 	  where
 	  	(env1, IntV(e1)) := <stack-pop-int(|env)>;
 	  	(env2, IntV(e2)) := <stack-pop-int(|env1)>;
 	  	env3 := <stack-push(|env2)> <eval-lt> (e2, e1)
 	  	
-	// FVM_IGt/0
+	// STC_IGt/0
 	// Takes two integers from the stack, checks if the second is bigger than the first
 	// and pushes the result on the stack
-  	eval: (FVM_IGt(), env) -> env3
+  	eval: (STC_IGt(), env) -> env3
 	  where
 	  	(env1, IntV(e1)) := <stack-pop-int(|env)>;
 	  	(env2, IntV(e2)) := <stack-pop-int(|env1)>;
 	  	env3 := <stack-push(|env2)> <eval-lt> (e1, e2)
 	  	
-	// FVM_IOr/0
+	// STC_IOr/0
 	// Takes two integers from the stack, calculates bitwise or
 	// and pushes the result on the stack
-  	eval: (FVM_IOr(), env) -> env3
+  	eval: (STC_IOr(), env) -> env3
 	  where
 	  	(env1, IntV(e1)) := <stack-pop-int(|env)>;
 	  	(env2, IntV(e2)) := <stack-pop-int(|env1)>;
 	  	env3 := <stack-push(|env2)> IntV(<int-to-string> <iori> (<string-to-int> e1, <string-to-int> e2))
 
-	// FVM_IXor/0
+	// STC_IXor/0
 	// Takes two integers from the stack, calculates bitwise or
 	// and pushes the result on the stack
-  	eval: (FVM_IXor(), env) -> env3
+  	eval: (STC_IXor(), env) -> env3
 	  where
 	  	(env1, IntV(e1)) := <stack-pop-int(|env)>;
 	  	(env2, IntV(e2)) := <stack-pop-int(|env1)>;
 	  	env3 := <stack-push(|env2)> IntV(<int-to-string> <xori> (<string-to-int> e1, <string-to-int> e2))
 	
 	
-	// FVM_IAnd/0
+	// STC_IAnd/0
 	// Takes two integers from the stack, calculates bitwise and
 	// and pushes the result on the stack
-  	eval: (FVM_IAnd(), env) -> env3
+  	eval: (STC_IAnd(), env) -> env3
 	  where
 	  	(env1, IntV(e1)) := <stack-pop-int(|env)>;
 	  	(env2, IntV(e2)) := <stack-pop-int(|env1)>;

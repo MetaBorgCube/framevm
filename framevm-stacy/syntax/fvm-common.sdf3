@@ -65,3 +65,70 @@ context-free restrictions
   LAYOUT? -/- [\ \t\n\r]
   LAYOUT? -/- [\/].[\/]
   LAYOUT? -/- [\/].[\*]
+  
+context-free syntax
+  Label.FVM_Label = LABEL
+  
+  InitSize.FVM_InitSize = <#init <INTLEZ>>
+  Alias.FVM_LinkAlias = <#link <LinkRef> -\> <INTLEZ>>
+  Alias.FVM_ContAlias = <#cont <ContRef> -\> <INTLEZ>>
+  Path.FVM_Self  = <[]>
+  Path.FVM_Path  = <[<{PathRef ","}+>]>
+  
+  PathRef = SlotRef
+  PathRef = LinkRef
+  
+  SlotRef.FVM_Slot    = INTLEZ
+  LinkRef.FVM_Link    = LABEL
+  LinkRef.FVM_LinkIdx = <_l<INTLEZ>>
+    
+  ContRef.FVM_Cont    = CONTSLOT
+  ContRef.FVM_ContIdx = <_c<INTLEZ>>
+  
+  CopyPolicy.FVM_DeepCopy    = <deep>
+  CopyPolicy.FVM_ShallowCopy = <shallow>
+  
+/* 
+
+Values 
+
+CodeV
+- jump
+- return 
+- ...
+
+IntV
+- add
+- pushi
+- jumpz
+
+BoolV
+- true, false
+- and 
+- or
+
+FrameRefV
+- new
+- set
+- get 
+
+closure =
+
+Frame with code pointer + reference pointer
+
+*/
+  
+/*
+
+initialization of frame slots / soundness 
+
+distinction between frame links and reference edges to frames 
+
+well-formedness properties of instructions?
+
+e.g. clean operand stack
+
+*/
+
+
+

@@ -6,9 +6,9 @@ imports
 	interpreter/external
 
 rules
-	// FVM_IsInt/0
+	// STC_IsInt/0
 	// Checks if the element on top of the stack is an integer
-	eval: (FVM_IsInt(), env1) -> env3
+	eval: (STC_IsInt(), env1) -> env3
 	  where
 	  	(env2, val) := <stack-pop-any(|env1)>;
 	  	env3 := <stack-push(|env2)> <is-intV> val
@@ -16,9 +16,9 @@ rules
 	is-intV: IntV(_) -> IntV("1")
 	is-intV: _       -> IntV("0")
 	
-	// FVM_IsFrame/0
+	// STC_IsFrame/0
 	// Checks if the element on top of the stack is a Frame
-	eval: (FVM_IsFrame(), env1) -> env3
+	eval: (STC_IsFrame(), env1) -> env3
 	  where
 	  	(env2, val) := <stack-pop-any(|env1)>;
 	  	env3 := <stack-push(|env2)> <is-frame> val
@@ -26,9 +26,9 @@ rules
 	is-frame: FrameRef(_) -> IntV("1")
 	is-frame: _           -> IntV("0")
 	
-	// FVM_IsCont/0
+	// STC_IsCont/0
 	// Checks if the element on top of the stack is a Continuation
-	eval: (FVM_IsCont(), env1) -> env3
+	eval: (STC_IsCont(), env1) -> env3
 	  where
 	  	(env2, val) := <stack-pop-any(|env1)>;
 	  	env3 := <stack-push(|env2)> <is-cont> val

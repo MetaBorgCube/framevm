@@ -7,17 +7,17 @@ imports
 
 rules	// Other instructions
 
-	// FVM_Print/0
+	// STC_Print/0
 	// Print the value on top of the stack to the console
-	eval: (FVM_Print(), env1) -> env3
+	eval: (STC_Print(), env1) -> env3
 	  where
 	  	(env2, val) := <stack-pop-any(|env1)>;
 	  	(env3, out) := <vm-print(|env2)> <val-to-string> val;
 	  	_ := <debug> out
 	  	
-	// FVM_Debug/0
+	// STC_Debug/0
 	// Print the state of the vm to the console and terminate
-	eval: (FVM_Debug(), env1) -> env2
+	eval: (STC_Debug(), env1) -> env2
 	  where
 	  	env2 := <vm-debug(|env1)>
 	

@@ -11,13 +11,13 @@ rules
 	// Convert a flat list of instructions to a VM program
 	// Blocks are separated by labels instead of actual blocks
 	// Sugar is re-added to make it printable
-	framevm-from-flat: [n | body] -> <resugar> FVM_Program(<string-to-int> n, aliasses, blocks)
+	framevm-from-flat: [n | body] -> <resugar> STC_Program(<string-to-int> n, aliasses, blocks)
 	  where
 	  	_ := <is-string> n;
 	  	(aliasses, d_body) := <get-aliasses> body;
 		(blocks, []) := <foldr(!([], []), from-flat-fold)> [FVM_Label("MAIN") | d_body]
 		
-	framevm-from-flat: body -> <resugar> FVM_Program(0, aliasses, blocks)
+	framevm-from-flat: body -> <resugar> STC_Program(0, aliasses, blocks)
 	  where
 	  	(aliasses, d_body) := <get-aliasses> body;
 		(blocks, []) := <foldr(!([], []), from-flat-fold)> [FVM_Label("MAIN") | d_body]
@@ -44,5 +44,5 @@ rules
     
     // If the current instruction is a label, close the block (we are going bottom to top)
     // Else just store the instruction and continue
-	from-flat-fold: (FVM_Label(lbl), (blocks, instrs)) -> ([FVM_Block(FVM_Label(lbl), FVM_Seq(instrs)) | blocks], [])
+	from-flat-fold: (FVM_Label(lbl), (blocks, instrs)) -> ([STC_Block(FVM_Label(lbl), STC_Seq(instrs)) | blocks], [])
 	from-flat-fold: (instr, (blocks, instrs)) -> (blocks, [instr | instrs])
