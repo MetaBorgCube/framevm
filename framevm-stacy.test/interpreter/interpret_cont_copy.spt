@@ -1,0 +1,30 @@
+module interpreter_cont_copy
+
+language framevm-stacy
+
+fixture [[#init 2
+MAIN:
+	[[...]]
+	print
+	
+	ipush 0
+	return
+]]
+
+test CISC shallow shallow cont copy 1 [[
+	new 1
+	dup
+	ipush 12
+	setr [0]
+	set [0]
+	ipush 13
+	ccopy shallow shallow
+	
+	dup
+	cget []
+	csetr [c]
+	ccall CONT
+	
+	
+]] transform "Run -> CISC" to "42
+42"

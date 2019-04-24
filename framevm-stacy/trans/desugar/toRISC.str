@@ -1,0 +1,211 @@
+module toRISC
+
+imports
+	signatures/framevm-stacy-sig
+	fvm-desugar
+
+rules
+	to-RISC-all: FVM_Program(s, blocks, l) -> FVM_Program(s, <map(to-RISC-all)> blocks, l)
+	to-RISC-all: FVM_PseudoCode(body) -> FVM_PseudoCode(body)
+	to-RISC-all: FVM_Block(lbl, FVM_Seq(body)) -> FVM_Block(lbl, FVM_Seq(body_risc))
+	  where
+		body_risc := <to-RISC(r-toN)><to-RISC(r-stack-index)><to-RISC(r-relative)><to-RISC(r-new)><to-RISC(r-link)><to-RISC(r-cont)><to-RISC(r-scope)> body
+  
+    // Boilerplate to make the desugaring step simpler
+  	to-RISC(s): x -> <foldr(![], (fpr(s) <+ idf))> x 
+  	fpr(s): (e, body) -> <concat> [<s>e, body]
+  	idf: (e, body) -> [e|body]
+  	
+  	// Link -> LinkR
+	r-link: FVM_Link(path, lbl)  -> [FVM_Get(path),  FVM_LinkR(lbl)]
+	
+	// New/0 -> New/1
+	r-new: FVM_New() -> [FVM_New("0")]
+
+
+	// Scope operations -> mkcurrent
+	r-scope: FVM_ScopeNew(link) ->
+		[FVM_Dup(),
+		 FVM_Link(FVM_Self(), link),
+		 FVM_ScopeSetCurrent()
+		]
+		
+	r-scope: FVM_ScopeNew(link, lbl) ->
+		[FVM_Dup(),
+		 FVM_Link(FVM_Self(), link),
+		 FVM_ScopeSetCurrent(),
+		 FVM_Jump(lbl)
+		]
+		 
+	r-scope: FVM_ScopeExit(path, lbl) -> 
+		[FVM_Get(path),
+		 FVM_ScopeSetCurrent(),
+		 FVM_Jump(lbl)
+		]
+		
+	r-scope: FVM_ScopeExit(lbl) -> 
+		[FVM_ScopeSetCurrent(),
+		 FVM_Jump(lbl)
+		]
+		
+		
+	// Implicit FVM_Continuations to explicit FVM_Continuations
+	r-cont: FVM_Return() -> 
+		[FVM_ContTransfer("1", FVM_Cont(Bind("c", 0))), 
+		 FVM_ContGet(FVM_Cont(Bind("c", 0))), 
+		 FVM_ContReturn()
+		]
+		
+	r-cont: FVM_ReturnN(n) -> 
+		[FVM_ContTransfer(n, FVM_Cont(Bind("c", 0))), 
+		 FVM_ContGet(FVM_Cont(Bind("c", 0))), 
+		 FVM_ContReturn()
+		]
+		
+	r-cont: FVM_Call(FVM_Label(block), FVM_Label(returnAddr)) -> 
+		[FVM_ContNew(FVM_Label(block), "2"), 
+		 FVM_Dup(),
+		 FVM_ContThis(),
+		 FVM_ContSetR(FVM_Cont(Bind("c", 0))),
+		 FVM_Dup(), 
+		 FVM_ContGet(FVM_Cont(Bind("x", 1))),
+		 FVM_ContSetR(FVM_Cont(Bind("x", 1))), 
+		 FVM_ContCall(FVM_Label(returnAddr))
+		]
+	
+	r-cont: FVM_Call(FVM_Label(return)) -> 
+		[FVM_Dup(), 
+		 FVM_ContGet(FVM_Cont(Bind("x", 1))), 
+		 FVM_ContSetR(FVM_Cont(Bind("x", 1))),
+		 FVM_Dup(),
+		 FVM_ContThis(), 
+		 FVM_ContSetR(FVM_Cont(Bind("c", 0))),
+		 FVM_ContCall(FVM_Label(return))
+		]
+		
+	r-cont: FVM_TailCall(FVM_Label(block)) -> 
+		[FVM_ContNew(FVM_Label(block), "2"), 
+		 FVM_Dup(),
+		 FVM_ContGet(FVM_Cont(Bind("c", 0))),
+		 FVM_ContSetR(FVM_Cont(Bind("c", 0))),
+		 FVM_Dup(), 
+		 FVM_ContGet(FVM_Cont(Bind("x", 1))),
+		 FVM_ContSetR(FVM_Cont(Bind("x", 1))), 
+		 FVM_ContReturn()
+		]
+		
+	r-cont: FVM_TailCall() -> 
+		[FVM_Dup(), 
+		 FVM_ContGet(FVM_Cont(Bind("x", 1))), 
+		 FVM_ContSetR(FVM_Cont(Bind("x", 1))),
+		 FVM_Dup(),
+		 FVM_ContGet(FVM_Cont(Bind("c", 0))), 
+		 FVM_ContSetR(FVM_Cont(Bind("c", 0))),
+		 FVM_ContReturn()
+		]
+		 
+	r-cont: FVM_Try(lbl_try, lbl_catch, lbl_next) ->
+		[FVM_ContNew(lbl_catch, "3"),
+		 FVM_Dup(),
+		 FVM_ContThis(),
+		 FVM_ContSetR(FVM_Cont(Bind("n", 2))),
+		 FVM_Dup(),
+		 FVM_ContGet(FVM_Cont(Bind("x", 1))),
+		 FVM_ContSetR(FVM_Cont(Bind("x", 1))),
+		 FVM_Dup(),
+		 FVM_ContGet(FVM_Cont(Bind("c", 0))),
+		 FVM_ContSetR(FVM_Cont(Bind("c", 0))),
+		 
+		 FVM_Swap(),
+		 
+		 FVM_ContNew(lbl_try, "3"),
+		 FVM_Dup(),
+		 FVM_ContThis(),
+		 FVM_ContSetR(FVM_Cont(Bind("n", 2))),
+		 FVM_Dup(),
+		 FVM_SwapN("2"),
+		 FVM_ContSetR(FVM_Cont(Bind("x", 1))),
+		 FVM_Dup(),
+		 FVM_ContGet(FVM_Cont(Bind("c", 0))),
+		 FVM_ContSetR(FVM_Cont(Bind("c", 0))),
+		 FVM_Dup(),
+		 FVM_ContThis(),
+		 FVM_ContSetR(FVM_Cont(Bind("n", 2))),
+		 FVM_ContCall(lbl_next)
+		]
+	
+	r-cont: FVM_Try(lbl) ->
+		[FVM_DupN("2"),
+		 FVM_Swap(),
+		 FVM_Dup(),
+		 FVM_ContThis(),
+		 FVM_ContSetR(FVM_Cont(Bind("n", 2))),
+		 FVM_Dup(),
+		 FVM_ContGet(FVM_Cont(Bind("x", 1))),
+		 FVM_ContSetR(FVM_Cont(Bind("x", 1))),
+		 FVM_Dup(),
+		 FVM_ContGet(FVM_Cont(Bind("c", 0))),
+		 FVM_ContSetR(FVM_Cont(Bind("c", 0))),
+		 
+		 FVM_ContSetR(FVM_Cont(Bind("x", 1))),
+		 FVM_Dup(),
+		 FVM_ContThis(),
+		 FVM_ContSetR(FVM_Cont(Bind("n", 2))),
+		 FVM_Dup(),
+		 FVM_ContGet(FVM_Cont(Bind("c", 0))),
+		 FVM_ContSetR(FVM_Cont(Bind("c", 0))),
+		 FVM_ContCall(lbl)
+		]
+		
+	r-cont: FVM_Throw() -> 
+		[FVM_ContGet(FVM_Cont(Bind("x", 1))),
+		 FVM_ContTransfer("1"),
+		 FVM_ContGet(FVM_Cont(Bind("x", 1))),
+		 FVM_ContReturn()
+		]
+	
+	r-cont: FVM_Yield(lbl) -> 
+		[FVM_ContThis(),
+		 FVM_Swap(),
+		 FVM_ContGet(FVM_Cont(Bind("c", 0))),
+		 FVM_ContTransfer("2"),
+		 FVM_ContGet(FVM_Cont(Bind("c", 0))),
+		 FVM_ContCall(lbl)
+		]
+	
+	
+	// FVM_Continuations to relative FVM_Continuations
+	r-relative: FVM_ContCopy(policy1, policy2)  -> [FVM_ContThis(), FVM_ContCopyR(policy1, policy2)]
+	r-relative: FVM_FrameCopy(policy) -> [FVM_Get(FVM_Self()), FVM_FrameCopyR(policy)]
+	
+	r-relative: FVM_ContGet(FVM_Cont(Bind(name, n))) -> [FVM_IPush(<int-to-string> n), FVM_ContGet()]
+	r-relative: FVM_ContGetR(FVM_Cont(Bind(name, n))) -> [FVM_IPush(<int-to-string> n), FVM_ContGetR()]
+	
+	r-relative: FVM_ContSet(FVM_Cont(Bind(name, n))) -> [FVM_IPush(<int-to-string> n), FVM_Swap(), FVM_ContSet()]
+	r-relative: FVM_ContSetR(FVM_Cont(Bind(name, n))) -> [FVM_IPush(<int-to-string> n), FVM_Swap(), FVM_ContSetR()]
+	
+	// Get/Set unfolding to single segment paths and only relative gets/sets
+	r-relative: FVM_Get() -> [FVM_Get(FVM_Self()), FVM_Swap(), FVM_GetR()]
+	r-relative: FVM_Set() -> [FVM_Get(FVM_Self()), FVM_SwapN("2"), FVM_Swap(), FVM_SetR()]
+	
+	r-relative: FVM_Get(path) -> [FVM_Get(FVM_Self()) | <r-relative> FVM_GetR(path)]
+	r-relative: FVM_GetR(FVM_Path(path)) -> <foldr(![], r-relative-get)> path
+	
+	r-relative: FVM_Set(FVM_Path(path)) -> <concat> [[FVM_Get(FVM_Self()) | <r-relative> FVM_GetR(FVM_Path(body))] , [FVM_Swap(), FVM_SetR(FVM_Path([last]))]]
+	  where
+	  	(body, last) := <split-init-last> path
+	r-relative: FVM_SetR(FVM_Path(path)) -> <concat> [<r-relative> FVM_GetR(FVM_Path(body)) , [FVM_SetR(FVM_Path([last]))]]
+	  where
+	  	(body, last) := <split-init-last> path
+	
+	r-relative-get: (e, list) -> [FVM_GetR(FVM_Path([e])) | list]
+	
+	// Reduce relative gets and sets of slots to getR/0 and setR/0
+	// I don't know why you would want to do this, but you can if you really want to
+	r-stack-index: FVM_New(n)                              -> [FVM_IPush(n), FVM_NewR()]
+	r-stack-index: FVM_GetR(FVM_Path([FVM_Slot(slot_id)])) -> [FVM_IPush(slot_id), FVM_GetR()]
+	r-stack-index: FVM_SetR(FVM_Path([FVM_Slot(slot_id)])) -> [FVM_IPush(slot_id), FVM_Swap(), FVM_SetR()]
+	
+	r-toN: FVM_Dup()  -> [FVM_DupN("1")]
+	r-toN: FVM_Swap() -> [FVM_SwapN("1")]
+	

@@ -1,0 +1,50 @@
+module fvm-pp
+
+imports
+
+  libstratego-gpp
+  libspoofax/sdf/pp
+  libspoofax/editor/refactoring/-
+  pp/framevm-stacy-parenthesize
+  pp/framevm-stacy-pp
+
+rules
+
+  editor-format:
+    (node, _, ast, path, project-path) -> (filename, result)
+    with
+      ext      := <get-extension> path
+    ; filename := <guarantee-extension(|$[pp.[ext]])> path
+    ; result   := <pp-fvm-debug> node
+
+rules
+  pp-framevm-stacy = pp-fvm-debug
+  
+  pp-framevm-stacy-string =
+    parenthesize-framevm-stacy
+    ; prettyprint-framevm-stacy-start-symbols
+    ; !V([], <id>)
+    ; box2text-string(|120)
+      
+  pp-partial-framevm-stacy-string =
+    parenthesize-framevm-stacy
+    ; prettyprint-framevm-stacy
+    ; !V([], <id>)
+    ; box2text-string(|120)
+    
+  pp-partial-framevm-stacy-string(|sort) =
+    parenthesize-framevm-stacy
+    ; prettyprint-framevm-stacy(|sort)
+    ; !V([], <id>)
+    ; box2text-string(|120)  
+      
+  pp-fvm-debug :
+    ast -> result
+    with
+       result := <pp-framevm-stacy-string> ast
+    <+ <bottomup(try(not(is-string); not(is-list); not(pp-framevm-stacy-string); debug(!"cannot pp ")))> ast
+    ;  result := ""
+
+rules
+  
+  construct-textual-change = construct-textual-change(pp-partial-framevm-stacy-string, parenthesize, override-reconstruction, resugar)

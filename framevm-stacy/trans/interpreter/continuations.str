@@ -1,0 +1,156 @@
+module continuations
+
+imports 
+	signatures/framevm-stacy-sig
+	interpreter/common
+	interpreter/external
+	interpreter/util
+	
+rules
+	// FVM_ContThis/0
+	// Push a continuation on the stack of the current execution point
+	eval: (FVM_ContThis(), env1) -> env2
+	  where
+	  	env2 := <stack-push(|env1)> Continuation(<cont-this(|env1)>)
+	  	
+	// FVM_ContNew/2
+	// Create a new ControlFrame at the given label using the frame on top of the stack as data frame
+	eval: (FVM_ContNew(FVM_Label(lbl), size), env1) -> env4
+	  where
+	  	(env2, FrameRef(frame)) := <stack-pop-frame(|env1)>;
+	  	(env3, cont) := <vm-cont-new(|env2)> (frame, lbl, <string-to-int> size);
+	  	env4 := <stack-push(|env3)> Continuation(cont)
+		
+	// FVM_ContGet/0
+	// Get the continuation from the slot with index found on top of the stack
+  	eval: (FVM_ContGet(), env1) -> env3
+  	  where
+  	  	(env2, IntV(idx)) := <stack-pop-int(|env1)>;
+  	  	env3 := <stack-push(|env2)> Continuation(<cont-get(|env2)> (<cont-this(|env2)>, ($[_c[idx]], <string-to-int> idx)))
+  	  	
+  	// FVM_ContGet/1
+  	// Get the continuation from the given slot
+  	eval: (FVM_ContGet(cont), env1) -> env2
+  	  where
+  	  	env2 := <stack-push(|env1)> Continuation(<cont-get(|env1)> (<cont-this(|env1)>, <cont-resolve> cont))
+
+	// FVM_ContSet/0
+	// Store continuation on top of stack in slot on second position on stack of the current control frame
+  	eval: (FVM_ContSet(), env1) -> env4
+  	  where
+  	  	(env2, Continuation(value)) := <stack-pop-cont(|env1)>;
+  	  	(env3, IntV(idx)) := <stack-pop-int(|env2)>;
+  	  	env4 := <cont-set(|env3)> (<cont-this(|env3)>, ($[_c[idx]], <string-to-int> idx), value)
+  	  	
+	// FVM_ContSet/1
+	// Store the continuation on top of the stack at the given locations
+  	eval: (FVM_ContSet(p), env1) -> env3
+  	  where
+  	  	(env2, Continuation(value)) := <stack-pop-cont(|env1)>;
+  	  	(cont, slot) := (<cont-this(|env2)>, <cont-resolve> p);
+  	  	env3 := <cont-set(|env2)> (cont, slot, value)
+  	  	
+  	// FVM_ContGetR/0
+  	// Get the continuation slot with index on top of stack of the continuation on second position
+  	eval: (FVM_ContGetR(), env1) -> env4
+  	  where
+  	  	(env2, IntV(idx)) := <stack-pop-int(|env1)>;
+  	  	(env3, Continuation(cont)) := <stack-pop-cont(|env2)>;
+  	  	env4 := <stack-push(|env3)> Continuation(<cont-get(|env3)> (cont, ($[_c[idx]], <string-to-int> idx)))
+  	
+  	// FVM_ContGetR/1
+  	// Get the given continuation slot for the continuation on top of the stack
+  	eval: (FVM_ContGetR(p), env1) -> env3
+  	  where
+  	  	(env2, Continuation(cont)) := <stack-pop-cont(|env1)>;
+  	  	env3 := <stack-push(|env2)> Continuation(<cont-get(|env2)> (cont, <cont-resolve> p))
+
+	// FVM_ContSetR/0
+	// Set the continuation on top of the stack in the slot with index found on the second position in the controlframe on the third position
+  	eval: (FVM_ContSetR(), env1) -> env5
+  	  where
+  	  	(env2, Continuation(value)) := <stack-pop-cont(|env1)>;
+  	  	(env3, IntV(idx)) := <stack-pop-int(|env2)>;
+  	  	(env4, Continuation(cont)) := <stack-pop-cont(|env3)>;
+  	  	env5 := <cont-set(|env4)> (cont, ($[_c[idx]], <string-to-int> idx), value)
+  	
+	// FVM_ContSetr/1
+	// Set the continuation on top of the stack in the given slot of the continuation on second position
+  	eval: (FVM_ContSetR(p), env1) -> env4
+  	  where
+  	  	(env2, Continuation(value)) := <stack-pop-cont(|env1)>;
+  	  	(env3, Continuation(cont)) := <stack-pop-cont(|env2)>;
+  	  	slot := <cont-resolve> p;
+  	  	env4 := <cont-set(|env3)> (cont, slot, value)
+
+	// FVM_ContRGet/0
+	// Get the returned values
+	// Depending on implementation these might already be on the stack
+	eval: (FVM_ContRGet(), env) -> env
+	  where
+	  	_ := <geq> (<stack-size(|env)>, 1)
+	eval: (FVM_ContRGet(), env) -> <fail>
+	  where
+	  	_ := <debug> "Stack does not contain enough elements"
+	
+	// FVM_ContRGetN/1
+	// Get n returned values
+	// Depending on implementation these might already be on the stack
+	eval: (FVM_ContRGetN(n), env) -> env
+	  where
+	  	_ := <geq> (<stack-size(|env)>, <string-to-int> n)
+	eval: (FVM_ContRGetN(_), env) -> <fail>
+	  where
+	  	_ := <debug> "Stack does not contain enough elements"
+	
+	// FVM_ContTransfer/2
+	// Transfer the top n elements from the stack to the stack of the given continuation
+	// The order of elements is preserved
+	eval: (FVM_ContTransfer(n, p), env1) -> env3
+	  where
+	    cont := <cont-get(|env1)> (<cont-this(|env1)>, <cont-resolve> p);
+	  	(env2, vals) := <pop-list(|env1)> <string-to-int> n;
+	  	env3 := <cont-transfer(|env2)> (cont, vals)
+	
+	//FVM_ContTransfer/1
+	// Transfer n elements from the stack to the stack of the continuation on top of the stack
+	// The order of elements is preserved
+	eval: (FVM_ContTransfer(n), env1) -> env4
+	  where
+	    (env2, Continuation(cont)) := <stack-pop-cont(|env1)>;
+	  	(env3, vals) := <pop-list(|env2)> <string-to-int> n;
+	  	env4 := <cont-transfer(|env3)> (cont, vals)
+	  	
+	// FVM_ContCall/1
+	// Call the continuation on top of the stack
+	// Set the next instruction of the current control frame to be at the given label
+	eval: (FVM_ContCall(FVM_Label(lbl)), env1) -> env4
+	  where
+	  	(env2, Continuation(cont)) := <stack-pop-cont(|env1)>;
+	  	env3 := <vm-jump(|env2)> lbl;
+	  	env4 := <cont-call(|env3)> cont
+	  	
+	// FVM_ContCall/2
+	// Call the given continuation
+	// Set the next instruction of the current control frame to be at the given label
+	eval: (FVM_ContCall(p, FVM_Label(lbl)), env1) -> env3
+	  where
+	  	cont := <cont-get(|env1)> (<cont-this(|env1)>, <cont-resolve> p);
+	  	env2 := <vm-jump(|env1)> lbl;
+	  	env3 := <cont-call(|env2)> cont
+	  	
+	// FVM_ContReturn/0
+	// Call the continuation on top of the stack
+	// Does not set the next instruction of the currenct control frame
+	eval: (FVM_ContReturn(), env1) -> env3
+	  where
+	  	(env2, Continuation(cont)) := <stack-pop-cont(|env1)>;
+	  	env3 := <cont-call(|env2)> cont
+	  	
+	// FVM_ContReturn/1
+	// Call the given continuation
+	// Does not set the next instruction of the currenct control frame
+	eval: (FVM_ContReturn(p), env1) -> env2
+	  where
+	  	cont := <cont-get(|env1)> (<cont-this(|env1)>, <cont-resolve> p);
+	  	env2 := <cont-call(|env1)> cont

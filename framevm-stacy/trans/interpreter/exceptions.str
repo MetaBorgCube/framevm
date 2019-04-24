@@ -1,0 +1,71 @@
+module exceptions
+
+imports 
+	signatures/framevm-stacy-sig
+	interpreter/common
+	interpreter/external
+	
+rules	
+	// FVM_Try/3
+	// Takes two frames from the stack and sets them up to be a try-catch block
+	// Moves execution to the try-block with the catch block as exception handler
+	eval: (FVM_Try(FVM_Label(lbl_try), FVM_Label(lbl_catch), FVM_Label(lbl_cont)), env1) -> env13
+	  where
+	    this := <cont-this(|env1)>;
+	  	cont := <cont-get-cc(|env1)> this;
+	  	ex   := <ex-get-cx(|env1)> this;
+	  	
+	  	(env2, FrameRef(frame_catch)) := <stack-pop-frame(|env1)>;
+	  	(env3, FrameRef(frame_try))   := <stack-pop-frame(|env2)>;
+	  	
+	  	(env4, catch) := <vm-cont-new(|env3)> (frame_catch, lbl_catch, 3);
+	  	(env5, try)   := <vm-cont-new(|env4)> (frame_try,   lbl_try, 3);
+	  	
+	  	env6 := <cont-set-cc(|env5)> (try, cont);
+	  	env7 := <ex-set-cx(|env6)>   (try, catch);
+	  	
+	  	env8 := <cont-set-cc(|env7)> (catch, cont);
+	  	env9 := <ex-set-cx(|env8)>   (catch, ex);
+	  	
+	  	env10 := <cont-set(|env9)>  (try,   ("n", 2), this);
+	  	env11 := <cont-set(|env10)> (catch, ("n", 2), this);
+	  	env12 := <vm-jump(|env11)> lbl_cont;
+	  	env13 := <cont-call(|env12)> try
+	  	
+	// FVM_Try/1
+	// Takes two continuation from the stack and sets them up to be a try-catch block
+	// Moves execution to the try-block with the catch block as exception handler
+	eval: (FVM_Try(FVM_Label(lbl_cont)), env1) -> env11
+	  where
+	    this := <cont-this(|env1)>;
+	  	cont := <cont-get-cc(|env1)> this;
+	  	ex   := <ex-get-cx(|env1)> this;
+	  	
+	  	(env2, Continuation(catch)) := <stack-pop-cont(|env1)>;
+	  	(env3, Continuation(try))   := <stack-pop-cont(|env2)>;
+	  		  	
+	  	env4 := <cont-set-cc(|env3)> (try, cont);
+	  	env5 := <ex-set-cx(|env4)>   (try, catch);
+	  	
+	  	env6 := <cont-set-cc(|env5)> (catch, cont);
+	  	env7 := <ex-set-cx(|env6)>   (catch, ex);
+	  	
+	  	env8 := <cont-set(|env7)> (try,   ("n", 2), this);
+	  	env9 := <cont-set(|env8)> (catch, ("n", 2), this);
+	  	env10 := <vm-jump(|env9)> lbl_cont;
+	  	env11 := <cont-call(|env10)> try 
+	
+	// FVM_Throw/0
+	// Throw the element on top of the stack to the current exception handler
+	eval: (FVM_Throw(), env1) -> env4
+	  where
+	  	(env2, throwable) := <stack-pop-any(|env1)>;
+	  	handler := <ex-get-cx(|env2)> <cont-this(|env2)>;
+	  	env3 := <cont-transfer(|env2)> (handler, [throwable]);
+	  	env4 := <cont-call(|env3)> handler
+	  	
+	  	
+	
+	
+	
+	

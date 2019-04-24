@@ -1,0 +1,71 @@
+module pseudo
+
+imports
+	signatures/framevm-stacy-sig
+	signatures/fvm-pseudo-sig
+	fvm-desugar
+
+signature
+  sorts S
+  constructors    
+    Bind : PsdID * PsdExp -> S
+    PsdRecDef: PsdID * [PsdInstr] * INT -> S
+    PsdFuncDef: PsdID * [PsdField] * [PsdInstr] * INT * Type -> S
+    
+rules
+	desugar-pseudo-all: FVM_Program(n, blocks, l) -> FVM_Program(n, <map(desugar-pseudo-all)> blocks, l)
+	desugar-pseudo-all: FVM_Block(name, body) -> FVM_Block(name, body)
+	desugar-pseudo-all: FVM_PseudoCode(Seq(body)) -> <desugar-pseudo> FVM_PseudoCode(body)
+	
+	desugar-pseudo = pseudo-desugar-bind
+  
+  	resugar-pseudo-all : FVM_Program(n, aliasses, blocks) -> FVM_Program(n, aliasses, <map(resugar-pseudo-all)> blocks)
+	resugar-pseudo-all: FVM_Block(name, body) -> FVM_Block(name, body)
+	resugar-pseudo-all: FVM_PseudoCode(body) -> <resugar-pseudo> FVM_PseudoCode(Seq(body))
+	
+	resugar-pseudo = pseudo-resugar-binds
+  
+  	pseudo-resugar-binds = topdown(try(pseudo-resugar-bind))
+  	pseudo-resugar-bind: Bind(name, idx) -> name
+  	pseudo-resugar-bind: PsdRecDef(name, methods, fields) -> PsdRecDef(name, <concat>[fields, methods])
+  	pseudo-resugar-bind: PsdFuncDef(name, args, stmts, size, type) -> PsdFuncDef(name, PsdArgList(args), type, stmts)
+  
+   	pseudo-desugar-bind: FVM_PseudoCode(instrs) -> FVM_PseudoCode(d_instrs)
+	  where
+    	(d_instrs, _) := <foldl(pseudo-desugar-bind)> (instrs, ([], 0))
+    	
+    pseudo-desugar-bind: (PsdDefine(PsdID(var), exp), (body, idx)) -> (<concat> [body, [PsdDefine(Bind(var, idx), exp)]], <inc> idx)
+    
+    pseudo-desugar-bind: (PsdFuncDef(name, PsdArgList(args), type, instrs), (body, idx)) -> (<concat> [body, [PsdFuncDef(name, d_args, d_body, size, type)]], idx)
+      where
+      	(d_args, a_idx) := <foldl(pseudo-desugar-bind)> (args, ([], 0));
+      	(d_body, _) := <foldl(pseudo-desugar-bind)> (instrs, ([], a_idx));
+		size := <addi> (<length> args, <length> <filter(is-define)> instrs) 
+      	
+    pseudo-desugar-bind: (PsdRecDef(var, instrs), (body, idx)) -> (<concat> [body, [PsdRecDef(var, methods, fields)]], idx)
+      where
+      	(d_body, _) := <foldl(pseudo-desugar-bind)> (instrs, ([], 0));
+      	fields := <filter(is-field-decl)> d_body;
+      	methods := <filter(is-method-decl)> d_body
+      	
+    pseudo-desugar-bind: (PsdFor(var, from, to, Seq(instrs)), (body, idx)) -> (<concat> [body, [PsdFor(Bind(var, 0), from, to, Seq(d_instrs))]], idx)
+      where
+      	(d_instrs, _) := <foldl(pseudo-desugar-bind)> (instrs, ([], 1))
+    
+    pseudo-desugar-bind: (PsdWithFrom(var, from, instrs), (body, idx)) -> (<concat> [body, [PsdWithFrom(Bind(var, 0), from, d_instrs)]], idx)
+      where
+      	(d_instrs, _) := <foldl(pseudo-desugar-bind)> (instrs, ([], 1))
+    
+    pseudo-desugar-bind: (PsdWhile(cond, Seq(instrs)), (body, idx)) -> (<concat> [body, [PsdWhile(cond, Seq(d_instrs))]], idx)
+      where
+      	(d_instrs, _) := <foldl(pseudo-desugar-bind)> (instrs, ([], 0))
+      	
+    is-field-decl: f@PsdField(_) -> f 
+    is-method-decl: f@PsdMethod(_) -> f
+    is-define: f@PsdDefine(_, _) -> f 
+    
+    pseudo-desugar-bind: (PsdField(Field(type, var)), (body, idx)) -> (<concat> [body, [PsdField(Field(type, Bind(var, idx)))]], <inc> idx)
+    pseudo-desugar-bind: (Field(type, var), (body, idx)) -> (<concat> [body, [Field(type, Bind(var, idx))]], <inc> idx)
+    
+    
+    pseudo-desugar-bind: (e, (body, idx)) -> (<concat> [body, [e]], idx)

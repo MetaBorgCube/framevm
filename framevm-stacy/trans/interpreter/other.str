@@ -1,0 +1,31 @@
+module other
+
+imports 
+	signatures/framevm-stacy-sig
+	interpreter/common
+	interpreter/external
+
+rules	// Other instructions
+
+	// FVM_Print/0
+	// Print the value on top of the stack to the console
+	eval: (FVM_Print(), env1) -> env3
+	  where
+	  	(env2, val) := <stack-pop-any(|env1)>;
+	  	(env3, out) := <vm-print(|env2)> <val-to-string> val;
+	  	_ := <debug> out
+	  	
+	// FVM_Debug/0
+	// Print the state of the vm to the console and terminate
+	eval: (FVM_Debug(), env1) -> env2
+	  where
+	  	env2 := <vm-debug(|env1)>
+	
+	
+rules	// Util
+	// Convert a value to a displayable string 
+	val-to-string: IntV(v) -> v
+	val-to-string: FrameRef(frame) -> frame
+	val-to-string: Continuation(cont) -> cont
+	
+	

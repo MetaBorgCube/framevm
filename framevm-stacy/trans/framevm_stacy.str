@@ -1,0 +1,66 @@
+module framevm_stacy
+
+imports completion/completion
+imports outline
+imports fvm-pp
+imports fvm-analysis
+imports fvm-interpreter
+imports fvm-desugar
+imports desugar/register
+imports codegen/compile-pseudo
+
+rules // Debugging
+  
+  debug-show-aterm:
+    (node, _, _, path, project-path) -> (filename, result)
+    with
+      filename := <guarantee-extension(|"aterm")> path
+    ; result   := node
+
+  debug-show-desugared-aterm:
+    (node, _, _, path, project-path) -> (filename, result)
+    with
+      filename := <guarantee-extension(|"aterm")> path
+    ; result   := <desugar-full> node
+    
+  editor-format-desugar:
+    (node, _, ast, path, project-path) -> (filename, result)
+    with
+      ext      := <get-extension> path
+    ; filename := <guarantee-extension(|$[risc.[ext]])> path
+    ; result   := <pp-framevm-stacy> <resugar> <desugar-full> node
+    
+  
+  run-program-cisc:
+    (node, _, _, path, project-path) -> (filename, result)
+    with
+      filename := <guarantee-extension(|"value")> path
+    ; result   := <eval-program> <desugar> node
+    
+  run-program-risc:
+    (node, _, _, path, project-path) -> (filename, result)
+    with
+      filename := <guarantee-extension(|"value")> path
+    ; result   := <eval-program> <debug><desugar-full> node
+    
+  run-program-compare:
+    (node, _, _, path, project-path) -> (filename, out)
+    with
+      filename := <guarantee-extension(|"value")> path
+    ; result1  := <eval-program> <desugar> node
+    ; result2  := <eval-program> <desugar-full> node
+    ; out      := <compare-output> (result1, result2)
+    
+  compile-pseudocode:
+    (node, _, _, path, project-path) -> (filename, out)
+    with
+      ext      := <get-extension> path
+    ; filename := <guarantee-extension(|$[gen.[ext]])> path
+    ; out      := <pp-framevm-stacy> <compile-pseudo> node
+    
+  compare-output = equal < !"Yes" + !"No"
+    
+    
+    
+    
+    
