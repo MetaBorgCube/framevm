@@ -1,9 +1,8 @@
 module outline
 
 imports
-  
-  signatures/frameRvm-sig
-  libspoofax/editor/outline
+	signatures/framevm-roger-sig
+	libspoofax/editor/outline
 
 rules
   

@@ -1,4 +1,4 @@
-package frameRvm.strategies;
+package framevm_roger.strategies;
 
 import org.strategoxt.lang.JavaInteropRegisterer;
 import org.strategoxt.lang.Strategy;

@@ -1,13 +1,13 @@
 module count-use
 
 imports
-	signatures/frameRvm-sig
+	signatures/framevm-roger-sig
 	signatures/expressions-sig
 	desugar
     
 rules
   	count-use: RGR_Program(s, l, blocks) -> RGR_Program(s, l, <map(count-use)> blocks)
- 	count-use: f@RGR_PseudoCode(body) -> f
+// 	count-use: f@RGR_PseudoCode(body) -> f
   	count-use: RGR_Block(lbl, body) -> RGR_Block(lbl, <count-use> body)
   	count-use: Seq(body) -> Seq(body, vars)
   	  where
@@ -84,8 +84,8 @@ rules
 	count-use-exp: (RGR_Print(exp), v) -> <count-use-exp> (exp, v)
 	count-use-exp: (RGR_Debug(), v) -> v
 	
-	count-use-exp: (RGR_Path(_), v) -> v
-	count-use-exp: (RGR_Self(), v) -> v
+	count-use-exp: (FVM_Path(_), v) -> v
+	count-use-exp: (FVM_Self(), v) -> v
 	
   	
   

@@ -68,5 +68,11 @@
   		<version>1.0.0</version>
   		<scope>runtime</scope>
   	</dependency>
+  	<dependency>
+  		<groupId>org.metaborg.lang</groupId>
+  		<artifactId>framevm-stacy</artifactId>
+  		<version>1.0.0</version>
+  		<scope>runtime</scope>
+  	</dependency>
 </dependencies>
 </project>

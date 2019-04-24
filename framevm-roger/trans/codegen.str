@@ -9,7 +9,7 @@ imports
 	pp
 	
 imports
-  fvm-pp
+  stc-common
 
     
 rules
@@ -23,20 +23,20 @@ rules
   pp-inline:
 	(node, _, _, path, project-path) -> (filename, result)
     with
-      filename := <guarantee-extension(|"opt.fvmr")> path
+      filename := <guarantee-extension(|"opt.rgr")> path
     ; result   := <pp-debug> <resugar-all> <inline> <desugar-all> node
     
   compile:
 	(node, _, _, path, project-path) -> (filename, result)
     with
-      filename := <guarantee-extension(|"gen.fvm")> path
-    ; result   := <pp-framevm> <compile-fvmr> <desugar-all> node
+      filename := <guarantee-extension(|"gen.stc")> path
+    ; result   := <pp-framevm-stacy> <compile-rgr> <desugar-all> node
 
   compile-inlined:
 	(node, _, _, path, project-path) -> (filename, result)
     with
-      filename := <guarantee-extension(|"opt.gen.fvm")> path
-    ; result   := <pp-framevm> <compile-fvmr> <inline> <desugar-all> node
+      filename := <guarantee-extension(|"opt.gen.stc")> path
+    ; result   := <pp-framevm-stacy> <compile-rgr> <inline> <desugar-all> node
     
        
 rules  

@@ -1,11 +1,11 @@
-module frameRvm
+module framevm-roger
 
 imports
   expressions
   Common
   
 imports
-  fvm-pseudo
+//  fvm-pseudo
 
 context-free start-symbols
   
@@ -30,11 +30,11 @@ sorts Block context-free syntax
 
 > 			{ layout (indent lbl body) }
   
-	Block.RGR_PseudoCode = <{ 
-  	<body:PsdBody>
-}
-
-> 			{ layout (indent "{" body && align "{" "}") }
+//	Block.RGR_PseudoCode = <{ 
+//  	<body:PsdBody>
+//}
+//
+//> 			{ layout (indent "{" body && align "{" "}") }
   
 	Body.RGR_SeqJump = <<instr:Instr*> 
 <jump:ControlInstr>

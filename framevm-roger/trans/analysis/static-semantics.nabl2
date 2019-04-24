@@ -11,9 +11,9 @@ rules
   [[RGR_Program(_, _, blocks) ^ (s) ]] :=
     Map1(block)[[blocks ^(s)]].
   	
-  block[[RGR_PseudoCode(_) ^(s)]].
+//  block[[RGR_PseudoCode(_) ^(s)]].
   
-  block[[RGR_Block(FVMR_Label(name), Seq(body)) ^(s)]] := 
+  block[[RGR_Block(FVM_Label(name), Seq(body)) ^(s)]] := 
     new block, 
     Block{name} <- s,
     distinct/name D(s)/Block | error $[Redefinition of label] @NAMES,
@@ -22,7 +22,7 @@ rules
     instr[[body ^(block)]].
   	
 
-  lbl[[FVMR_Label(name) ^(s)]] :=
+  lbl[[FVM_Label(name) ^(s)]] :=
     Block{name} -> s,
     Block{name} |-> d | error $[Unknown jump label [name]] @name.
     
@@ -47,7 +47,7 @@ rules
     exp[[ exp ^(s)]],
     instr[[ tail ^(s)]].	// Terminals cannot be shuffled anyways, so no need to check if it is pure
    
-  instr[[ [FVMR_PathAlias(id, path) | tail] ^(s)]] :=
+  instr[[ [RGR_PathAlias(id, path) | tail] ^(s)]] :=
     bind[[id ^(s)]],
     new bs, bs ---> s,
     instr[[tail ^(bs)]].
@@ -65,7 +65,7 @@ rules
   	
   	  
   exp[[IntLEZ(_) ^(s)]].
-  exp[[FVMR_Path(_) ^(s)]].
+  exp[[FVM_Path(_) ^(s)]].
   exp[[RGR_Ref(name) ^(s)]] :=
     ref [[name ^(s)]].
   

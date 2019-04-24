@@ -15,6 +15,6 @@
 *.symbolic
 
 *.aterm
-*.opt.fvmr
-*.gen.fvm
-*.opt.gen.fvm
+*.opt.rgr
+*.gen.stc
+*.opt.gen.stc

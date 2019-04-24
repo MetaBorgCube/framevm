@@ -2,17 +2,17 @@ module compile
 
 imports
 	codegen/count-use
-	signatures/frameRvm-sig
 	signatures/expressions-sig
+	signatures/framevm-roger-sig
 	desugar
 	
 imports
-	signatures/framevm-sig
+	signatures/framevm-stacy-sig
     
 rules
-  	compile-rgr: RGR_Program(FVMR_InitSize(s), l, blocks) -> FVM_Program(FVM_InitSize(s), l, <map(compile-rgr)> blocks)
- 	compile-rgr: RGR_PseudoCode(body) -> FVM_PseudoCode(body)
-  	compile-rgr: RGR_Block(FVMR_Label(lbl), body) -> FVM_Block(FVM_Label(lbl), <compile-rgr> body)
+  	compile-rgr: RGR_Program(FVM_InitSize(s), l, blocks) -> RGR_Program(FVM_InitSize(s), l, <map(compile-rgr)> blocks)
+// 	compile-rgr: RGR_PseudoCode(body) -> FVM_PseudoCode(body)
+  	compile-rgr: RGR_Block(FVM_Label(lbl), body) -> STC_Block(FVM_Label(lbl), <compile-rgr> body)
   	compile-rgr: Seq(body, _) -> <fix-compiled-seq> Seq(body')
   	  where
   	  	Seq(body2, vars) := <count-use> Seq(body);
@@ -25,8 +25,8 @@ rules
   	
   	transform-vars: (name, use, _, _) -> (name, -1, use)
   	
-	fix-compiled-seq: Seq([body]) -> FVM_SeqJump([], body)
-    fix-compiled-seq: Seq(body) -> FVM_SeqJump(body', last)
+	fix-compiled-seq: Seq([body]) -> STC_SeqJump([], body)
+    fix-compiled-seq: Seq(body) -> STC_SeqJump(body', last)
       where
       	(body', last) := <split-init-last> body
   	
@@ -57,7 +57,7 @@ rules
   	compile-instr: (Assign(ids, exp, pure), (body, vars, stack)) -> <compile-exp> (exp, (body, <init-name>((ids, stack), vars), <inc> stack))
 	
 
-  	compile-exp: (RGR_Ref(name), (body, vars, stack)) -> (<append> (body, FVM_DupN(<int-to-string> <dec> <subt> (stack, loc))), vars', <inc> stack)
+  	compile-exp: (RGR_Ref(name), (body, vars, stack)) -> (<append> (body, STC_DupN(<int-to-string> <dec> <subt> (stack, loc))), vars', <inc> stack)
   	  where
   	  	(loc, u) := <lookup-name> (name, vars);
   	  	_ := <gt> (u, 1);
@@ -77,62 +77,62 @@ rules
 	append: (list, elems) -> <concat> [list, elems] where <is-list> elems
 	append: (list, elem)  -> <concat> [list, [elem]]
 
-  	compile-exp: (RGR_IPush(n), (body, vars, stack)) -> (<append> (body, FVM_IPush(n)), vars, <inc> stack)
-	compile-exp: (RGR_INeg(exp), env) -> (<append> (body, FVM_INeg()), vars, <dec> stack)
+  	compile-exp: (RGR_IPush(n), (body, vars, stack)) -> (<append> (body, STC_IPush(n)), vars, <inc> stack)
+	compile-exp: (RGR_INeg(exp), env) -> (<append> (body, STC_INeg()), vars, <dec> stack)
 	  with
 	  	(body, vars, stack) := <compile-exp> (exp, env)
 	
-	compile-exp: (RGR_IAdd(exp1, exp2), env1) -> (<append> (body, FVM_IAdd()), vars, <dec><dec> stack)
+	compile-exp: (RGR_IAdd(exp1, exp2), env1) -> (<append> (body, STC_IAdd()), vars, <dec><dec> stack)
 	  with
 	  	env2 := <compile-exp> (exp1, env1); 
 	  	(body, vars, stack) := <compile-exp> (exp2, env2)  	
 	  	
-	compile-exp: (RGR_IMul(exp1, exp2), env1) -> (<append> (body, FVM_IMul()), vars, <dec><dec> stack)
+	compile-exp: (RGR_IMul(exp1, exp2), env1) -> (<append> (body, STC_IMul()), vars, <dec><dec> stack)
 	  with
 	  	env2 := <compile-exp> (exp1, env1); 
 	  	(body, vars, stack) := <compile-exp> (exp2, env2)
 	
-	compile-exp: (RGR_ISub(exp1, exp2), env1) -> (<append> (body, FVM_ISub()), vars, <dec><dec> stack)
+	compile-exp: (RGR_ISub(exp1, exp2), env1) -> (<append> (body, STC_ISub()), vars, <dec><dec> stack)
 	  with
 	  	env2 := <compile-exp> (exp1, env1); 
 	  	(body, vars, stack) := <compile-exp> (exp2, env2)
 	
-	compile-exp: (RGR_IDiv(exp1, exp2), env1) -> (<append> (body, FVM_IDiv()), vars, <dec><dec> stack)
+	compile-exp: (RGR_IDiv(exp1, exp2), env1) -> (<append> (body, STC_IDiv()), vars, <dec><dec> stack)
 	  with
 	  	env2 := <compile-exp> (exp1, env1); 
 	  	(body, vars, stack) := <compile-exp> (exp2, env2)
 	
-	compile-exp: (RGR_IMod(exp1, exp2), env1) -> (<append> (body, FVM_IMod()), vars, <dec><dec> stack)
+	compile-exp: (RGR_IMod(exp1, exp2), env1) -> (<append> (body, STC_IMod()), vars, <dec><dec> stack)
 	  with
 	  	env2 := <compile-exp> (exp1, env1); 
 	  	(body, vars, stack) := <compile-exp> (exp2, env2)
 	
-	compile-exp: (RGR_IEq(exp1, exp2), env1) -> (<append> (body, FVM_IEq()), vars, <dec><dec> stack)
+	compile-exp: (RGR_IEq(exp1, exp2), env1) -> (<append> (body, STC_IEq()), vars, <dec><dec> stack)
 	  with
 	  	env2 := <compile-exp> (exp1, env1); 
 	  	(body, vars, stack) := <compile-exp> (exp2, env2)
 	
-	compile-exp: (RGR_ILt(exp1, exp2), env1) -> (<append> (body, FVM_ILt()), vars, <dec><dec> stack)
+	compile-exp: (RGR_ILt(exp1, exp2), env1) -> (<append> (body, STC_ILt()), vars, <dec><dec> stack)
 	  with
 	  	env2 := <compile-exp> (exp1, env1); 
 	  	(body, vars, stack) := <compile-exp> (exp2, env2)
 	
-	compile-exp: (RGR_IGt(exp1, exp2), env1) -> (<append> (body, FVM_IGt()), vars, <dec><dec> stack)
+	compile-exp: (RGR_IGt(exp1, exp2), env1) -> (<append> (body, STC_IGt()), vars, <dec><dec> stack)
 	  with
 	  	env2 := <compile-exp> (exp1, env1); 
 	  	(body, vars, stack) := <compile-exp> (exp2, env2)
 	
-	compile-exp: (RGR_IOr(exp1, exp2), env1) -> (<append> (body, FVM_IOr()), vars, <dec><dec> stack)
+	compile-exp: (RGR_IOr(exp1, exp2), env1) -> (<append> (body, STC_IOr()), vars, <dec><dec> stack)
 	  with
 	  	env2 := <compile-exp> (exp1, env1); 
 	  	(body, vars, stack) := <compile-exp> (exp2, env2)
 	
-	compile-exp: (RGR_IXor(exp1, exp2), env1) -> (<append> (body, FVM_IXor()), vars, <dec><dec> stack)
+	compile-exp: (RGR_IXor(exp1, exp2), env1) -> (<append> (body, STC_IXor()), vars, <dec><dec> stack)
 	  with
 	  	env2 := <compile-exp> (exp1, env1); 
 	  	(body, vars, stack) := <compile-exp> (exp2, env2)
 	
-	compile-exp: (RGR_IAnd(exp1, exp2), env1) -> (<append> (body, FVM_IAnd()), vars, <dec><dec> stack)
+	compile-exp: (RGR_IAnd(exp1, exp2), env1) -> (<append> (body, STC_IAnd()), vars, <dec><dec> stack)
 	  with
 	  	env2 := <compile-exp> (exp1, env1); 
 	  	(body, vars, stack) := <compile-exp> (exp2, env2)
@@ -167,16 +167,16 @@ rules
 //	count-use-exp: (RGR_ScopeExit(_), v) -> v
 //	count-use-exp: (RGR_ScopeNew(exp, _), v) -> <count-use-exp> (exp, v)
 //	count-use-exp: (RGR_ScopeSetCurrent(exp), v) -> <count-use-exp> (exp, v)
-	compile-exp: (RGR_Print(exp), env) -> (<append> (body, FVM_Print()), vars, <dec> stack)
+	compile-exp: (RGR_Print(exp), env) -> (<append> (body, STC_Print()), vars, <dec> stack)
 	  with
 	  	(body, vars, stack) := <compile-exp> (exp, env)
-	count-use-exp: (RGR_Debug(), (body, vars, stack)) -> (<append> (body, FVM_Debug()), vars, stack)
+	count-use-exp: (RGR_Debug(), (body, vars, stack)) -> (<append> (body, STC_Debug()), vars, stack)
 //	
 //	count-use-exp: (RGR_Path(_), v) -> v
 //  	
 //  
 //  	
-	compile-control: (RGR_Return([exp]), env) -> (<append> (body, FVM_Return()), vars, <dec> stack)
+	compile-control: (RGR_Return([exp]), env) -> (<append> (body, STC_Return()), vars, <dec> stack)
 	  with
 	  	(body, vars, stack) := <compile-exp> (exp, env)
 	  	

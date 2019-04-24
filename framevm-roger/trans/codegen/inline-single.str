@@ -1,13 +1,13 @@
 module inline-single
 
 imports
-	signatures/frameRvm-sig
+	signatures/framevm-roger-sig
 	signatures/expressions-sig
 	desugar
     
 rules
   	inline-single: RGR_Program(s, l, blocks) -> RGR_Program(s, l, <map(inline-single)> blocks)
- 	inline-single: f@RGR_PseudoCode(body) -> f
+// 	inline-single: f@RGR_PseudoCode(body) -> f
   	inline-single: RGR_Block(lbl, body) -> RGR_Block(lbl, <inline-single> body)
   	inline-single: Seq(body, vars) -> Seq(body', vars')
   	  with

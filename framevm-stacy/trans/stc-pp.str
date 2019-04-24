@@ -34,7 +34,7 @@ rules
     parenthesize-framevm-stacy
     ; prettyprint-framevm-stacy(|sort)
     ; !V([], <id>)
-    ; box2text-string(|120)  
+    ; box2text-string(|120)
       
   pp-stacy-debug :
     ast -> result

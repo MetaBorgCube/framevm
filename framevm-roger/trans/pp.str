@@ -5,8 +5,8 @@ imports
   libstratego-gpp
   libspoofax/sdf/pp
   libspoofax/editor/refactoring/-
-  pp/frameRvm-parenthesize
-  pp/frameRvm-pp
+  pp/framevm-roger-parenthesize
+  pp/framevm-roger-pp
 
 rules
 
@@ -19,31 +19,31 @@ rules
 
 rules
   
-  pp-frameRvm-string =
-    parenthesize-frameRvm
-    ; prettyprint-frameRvm-start-symbols
+  pp-framevm-roger-string =
+    parenthesize-framevm-roger
+    ; prettyprint-framevm-roger-start-symbols
     ; !V([], <id>)
     ; box2text-string(|120)
       
-  pp-partial-frameRvm-string =
-    parenthesize-frameRvm
-    ; prettyprint-frameRvm
+  pp-partial-framevm-roger-string =
+    parenthesize-framevm-roger
+    ; prettyprint-framevm-roger
     ; !V([], <id>)
     ; box2text-string(|120)
     
-  pp-partial-frameRvm-string(|sort) =
-    parenthesize-frameRvm
-    ; prettyprint-frameRvm(|sort)
+  pp-partial-framevm-roger-string(|sort) =
+    parenthesize-framevm-roger
+    ; prettyprint-framevm-roger(|sort)
     ; !V([], <id>)
     ; box2text-string(|120)  
       
   pp-debug :
     ast -> result
     with
-       result := <pp-frameRvm-string> ast
-    <+ <bottomup(try(not(is-string); not(is-list); not(pp-frameRvm-string); debug(!"cannot pp ")))> ast
+       result := <pp-framevm-roger-string> ast
+    <+ <bottomup(try(not(is-string); not(is-list); not(pp-framevm-roger-string); debug(!"cannot pp ")))> ast
     ;  result := ""
 
 rules
   
-  construct-textual-change = construct-textual-change(pp-partial-frameRvm-string, parenthesize, override-reconstruction, resugar)
+  construct-textual-change = construct-textual-change(pp-partial-framevm-roger-string, parenthesize, override-reconstruction, resugar)

@@ -1,13 +1,13 @@
 module pure
 
 imports
-	signatures/frameRvm-sig
+	signatures/framevm-roger-sig
 	signatures/expressions-sig
 	desugar
     
 rules
   	detect-pure: RGR_Program(s, l, blocks) -> RGR_Program(s, l, <map(detect-pure)> blocks)
- 	detect-pure: RGR_PseudoCode(body) -> RGR_PseudoCode(body)
+// 	detect-pure: RGR_PseudoCode(body) -> RGR_PseudoCode(body)
   	detect-pure: RGR_Block(lbl, body) -> RGR_Block(lbl, <detect-pure> body)
   	detect-pure: Seq(body) -> Seq(<map(detect-pure-instr)> body)
   
