@@ -11,7 +11,7 @@
 *.aterm
 *.value
 *.out
-*.pp.fvm
-*.risc.fvm
-*.gen.fvm
+*.pp.stc
+*.risc.stc
+*.gen.stc
 *.dot
