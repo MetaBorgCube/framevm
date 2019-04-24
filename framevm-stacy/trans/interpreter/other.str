@@ -2,8 +2,9 @@ module other
 
 imports 
 	signatures/framevm-stacy-sig
-	interpreter/common
 	interpreter/external
+	
+	stc-common
 
 rules	// Other instructions
 

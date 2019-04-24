@@ -15,11 +15,9 @@ rules
     with
       ext      := <get-extension> path
     ; filename := <guarantee-extension(|$[pp.[ext]])> path
-    ; result   := <pp-fvm-debug> node
+    ; result   := <pp-stacy-debug> node
 
-rules
-  pp-framevm-stacy = pp-fvm-debug
-  
+rules  
   pp-framevm-stacy-string =
     parenthesize-framevm-stacy
     ; prettyprint-framevm-stacy-start-symbols
@@ -38,7 +36,7 @@ rules
     ; !V([], <id>)
     ; box2text-string(|120)  
       
-  pp-fvm-debug :
+  pp-stacy-debug :
     ast -> result
     with
        result := <pp-framevm-stacy-string> ast

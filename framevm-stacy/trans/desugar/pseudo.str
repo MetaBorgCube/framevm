@@ -3,7 +3,7 @@ module pseudo
 imports
 	signatures/framevm-stacy-sig
 	signatures/fvm-pseudo-sig
-	stc-desugar
+	stc-common
 
 signature
   sorts S

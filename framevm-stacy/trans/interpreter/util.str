@@ -2,8 +2,9 @@ module util
 
 imports 
 	signatures/fvm-common-sig
-	stc-desugar
 	interpreter/external
+	
+	stc-common
 	
 rules
 	pop-list(|env): 0 -> (env, [])

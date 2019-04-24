@@ -3,7 +3,7 @@ module fixSeq
 imports
 	signatures/framevm-stacy-sig
 	signatures/fvm-common-sig
-	stc-desugar
+	stc-common
     
 rules
 

@@ -3,11 +3,10 @@ module control
 imports 
 	signatures/framevm-stacy-sig
 	signatures/fvm-common-sig
-	interpreter/common
 	interpreter/external
 	interpreter/util
 	
-	stc-desugar
+	stc-common
 	
 rules	
 	// STC_Call/2

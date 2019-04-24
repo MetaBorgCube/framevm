@@ -4,11 +4,11 @@ imports
 	signatures/framevm-stacy-sig
 	signatures/fvm-common-sig
 	signatures/fvm-pseudo-sig
-	stc-desugar
+	stc-common
 	stc-util
     
 rules
-  	compile-pseudo: STC_Program(_, blocks) -> <framevm-from-flat> <concat> [instrs, [STC_IPush("0"), STC_Return()]]
+  	compile-pseudo: STC_Program(_, blocks) -> <stc-from-flat> <concat> [instrs, [STC_IPush("0"), STC_Return()]]
       where
 	  	_ := <new-counter> "cont";
 	  	_ := <new-counter> "then"; 

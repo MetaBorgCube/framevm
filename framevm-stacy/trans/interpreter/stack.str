@@ -2,8 +2,9 @@ module stack
 
 imports 
 	signatures/framevm-stacy-sig
-	interpreter/common
 	interpreter/external
+	
+	stc-common
 
 rules
 	// STC_SwapN/1

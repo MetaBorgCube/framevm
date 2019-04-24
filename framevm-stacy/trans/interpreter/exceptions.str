@@ -3,8 +3,9 @@ module exceptions
 imports 
 	signatures/framevm-stacy-sig
 	signatures/fvm-common-sig
-	interpreter/common
 	interpreter/external
+	
+	stc-common
 	
 rules	
 	// STC_Try/3

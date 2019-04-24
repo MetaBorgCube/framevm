@@ -3,9 +3,10 @@ module continuations
 imports 
 	signatures/framevm-stacy-sig
 	signatures/fvm-common-sig
-	interpreter/common
 	interpreter/external
 	interpreter/util
+	
+	stc-common
 	
 rules
 	// STC_ContThis/0

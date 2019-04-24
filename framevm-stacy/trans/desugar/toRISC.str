@@ -3,7 +3,7 @@ module toRISC
 imports
 	signatures/framevm-stacy-sig
 	signatures/fvm-common-sig
-	stc-desugar
+	stc-common
 
 rules
 	to-RISC-all: STC_Program(s, blocks, l) -> STC_Program(s, <map(to-RISC-all)> blocks, l)

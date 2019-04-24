@@ -4,10 +4,9 @@ imports
 	signatures/framevm-stacy-sig
 	signatures/fvm-common-sig
 	
-	interpreter/common
 	interpreter/external
 	
-	stc-desugar
+	stc-common
 
 rules
 	// STC_New/0
