@@ -1,6 +1,0 @@
-MAIN:
-	new 2
-	size
-	print
-	ipush 0
-	return

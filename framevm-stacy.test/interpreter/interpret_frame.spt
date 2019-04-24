@@ -14,6 +14,28 @@ test new [[
 	new
 ]] transform "Run -> CISC" to "frame_1"
 
+
+test size 1 [[
+	new
+	size
+]] transform "Run -> CISC" to "0"
+
+test size 2 [[
+	new 2
+	size
+]] transform "Run -> CISC" to "2"
+
+test size 3 [[
+	ipush 2
+	newr
+	size
+]] transform "Run -> CISC" to "2"
+
+test size 4 [[
+	ipush 2
+	size
+]] transform "Run -> CISC" to "FAIL"
+
 test link 1 [[
 	new
 	dup
