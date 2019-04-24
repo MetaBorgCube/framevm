@@ -1,6 +1,6 @@
 ---
 id: org.metaborg.lang:framevm-stacy.example:1.0.0
-name: framevm
+name: framevm-stacy
 dependencies:
   compile:
   - org.metaborg.lang:framevm-stacy:1.0.0
