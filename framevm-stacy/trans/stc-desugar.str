@@ -1,4 +1,4 @@
-module fvm-desugar
+module stc-desugar
 
 imports
 	signatures/framevm-stacy-sig

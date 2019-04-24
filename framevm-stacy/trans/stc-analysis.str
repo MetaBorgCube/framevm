@@ -1,11 +1,11 @@
-module fvm-analysis
+module stc-analysis
 
 imports
   nabl2/api
   nabl2/runtime
   
-  fvm-desugar
-  fvm-pp
+  stc-desugar
+  stc-pp
   analysis/stack
   analysis/static-semantics
 

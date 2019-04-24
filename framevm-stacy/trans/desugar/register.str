@@ -3,7 +3,7 @@ module register
 imports
 	signatures/framevm-stacy-sig
 	signatures/fvm-common-sig
-	fvm-desugar
+	stc-desugar
 
 rules
     apply-aliasses: STC_ProgramNoInit(aliasses, blocks) -> <apply-aliasses> STC_Program(FVM_InitSize("0"), aliasses, blocks)

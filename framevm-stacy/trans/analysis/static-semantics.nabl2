@@ -87,6 +87,7 @@ instr[[STC_Print() ^(s)]].
 instr[[STC_Debug() ^(s)]].
   
 
+instr[[STC_FSize() ^(s)]].
 instr[[STC_New(_) ^(s)]].
 instr[[STC_New() ^(s)]].
 instr[[STC_NewR() ^(s)]].

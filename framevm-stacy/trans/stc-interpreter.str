@@ -1,9 +1,9 @@
-module fvm-interpreter
+module stc-interpreter
 
 imports 
 	signatures/framevm-stacy-sig
 	interpreter/-
-	fvm-desugar
+	stc-desugar
     
 rules
   	eval-program: STC_Program(s, blocks, links) -> out

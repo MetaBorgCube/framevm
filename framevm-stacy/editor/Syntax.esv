@@ -62,9 +62,9 @@ menus
     action: "RISC"    = run-program-risc (source)
     action: "Compare" = run-program-compare (source)
     
-  menu: "Pseudocode" (openeditor)
-  
-    action: "Compile" = compile-pseudocode
+//  menu: "Pseudocode" (openeditor)
+//  
+//    action: "Compile" = compile-pseudocode
     
 views
   

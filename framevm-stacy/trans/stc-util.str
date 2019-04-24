@@ -1,10 +1,10 @@
-module fvm-util
+module stc-util
 
 imports
 	nabl2/api
   
 	signatures/framevm-stacy-sig
-	fvm-desugar
+	stc-desugar
 
 rules
 	

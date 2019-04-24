@@ -7,7 +7,7 @@ imports
 	interpreter/common
 	interpreter/external
 	
-	fvm-desugar
+	stc-desugar
 
 rules
 	// STC_New/0
@@ -163,6 +163,14 @@ rules
 		(frame, FVM_Link(link_id)) := <resolve> (path, FrameRef(<frame-this(|env1)>), env1);
 		env2 := <frame-set-current(|env1)> (<cont-this(|env1)>, <frame-get-link(|env1)> (frame, link_id))
 		
+	// STC_FSize/0
+	// Get the size of the frame on top of the stack
+	eval: (STC_FSize(), env1) -> env3
+	  where
+	  	(env2, FrameRef(frame)) := <stack-pop-frame(|env1)>;
+	  	size := <frame-size(|env2)> frame;
+	  	env3 := <stack-push(|env2)> IntV(size)
+	  	
 	// Get a Slot or Link with the given id and frame
 	frame-get: (env, frame, FVM_Link(Bind(link_id, idx))) -> FrameRef(<frame-get-link(|env)> (frame, (link_id, idx)))
 	frame-get: (env, frame, FVM_Slot(slot_id))            -> <frame-get-slot(|env)> (frame, slot_id)				// Normal slots

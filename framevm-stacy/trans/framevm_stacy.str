@@ -2,10 +2,10 @@ module framevm_stacy
 
 imports completion/completion
 imports outline
-imports fvm-pp
-imports fvm-analysis
-imports fvm-interpreter
-imports fvm-desugar
+imports stc-pp
+imports stc-analysis
+imports stc-interpreter
+imports stc-desugar
 imports desugar/register
 imports codegen/compile-pseudo
 
@@ -51,12 +51,12 @@ rules // Debugging
     ; result2  := <eval-program> <desugar-full> node
     ; out      := <compare-output> (result1, result2)
     
-  compile-pseudocode:
-    (node, _, _, path, project-path) -> (filename, out)
-    with
-      ext      := <get-extension> path
-    ; filename := <guarantee-extension(|$[gen.[ext]])> path
-    ; out      := <pp-framevm-stacy> <compile-pseudo> node
+//  compile-pseudocode:
+//    (node, _, _, path, project-path) -> (filename, out)
+//    with
+//      ext      := <get-extension> path
+//    ; filename := <guarantee-extension(|$[gen.[ext]])> path
+//    ; out      := <pp-framevm-stacy> <compile-pseudo> node
     
   compare-output = equal < !"Yes" + !"No"
     

@@ -26,6 +26,7 @@ rules
 	external frame-this(|env)		// env| -> frame
 	external frame-link(|env)		// env| (frame, frame, (lbl, idx)) -> env'
 	external frame-copy(|env)		// env| (frame, policy) -> (env', frame)
+	external frame-size(|env)		// env| frame -> int
 	external frame-set-current(|env2) // env| (cont, frame) -> env'
 
 	external vm-print(|env)			// env| val -> (env', string)

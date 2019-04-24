@@ -3,7 +3,7 @@ module stack
 imports
 	signatures/framevm-stacy-sig
 	signatures/fvm-common-sig
-	fvm-desugar
+	stc-desugar
 
 rules
 	// check stack sizes of blocks
@@ -55,6 +55,7 @@ rules
   
 	stack-delta: STC_Link(_, _) -> -1
 	stack-delta: STC_LinkR(_)   -> -2
+	stack-delta: STC_FSize()   -> 0
   
 	stack-delta: STC_Get()      -> 0
 	stack-delta: STC_Get(path)  -> 1

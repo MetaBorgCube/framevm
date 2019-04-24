@@ -4,8 +4,8 @@ imports
 	signatures/framevm-stacy-sig
 	signatures/fvm-common-sig
 	signatures/fvm-pseudo-sig
-	fvm-desugar
-	fvm-util
+	stc-desugar
+	stc-util
     
 rules
   	compile-pseudo: STC_Program(_, blocks) -> <framevm-from-flat> <concat> [instrs, [STC_IPush("0"), STC_Return()]]

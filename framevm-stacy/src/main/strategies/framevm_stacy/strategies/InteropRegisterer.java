@@ -16,6 +16,7 @@ import framevm_stacy.strategies.frame_ops.frame_link_0_1;
 import framevm_stacy.strategies.frame_ops.frame_new_0_1;
 import framevm_stacy.strategies.frame_ops.frame_set_current_0_1;
 import framevm_stacy.strategies.frame_ops.frame_set_slot_0_1;
+import framevm_stacy.strategies.frame_ops.frame_size_0_1;
 import framevm_stacy.strategies.frame_ops.frame_this_0_1;
 import framevm_stacy.strategies.stack_ops.stack_pop_any_0_1;
 import framevm_stacy.strategies.stack_ops.stack_pop_cont_0_1;
@@ -54,6 +55,7 @@ public class InteropRegisterer extends JavaInteropRegisterer {
 				stack_size_0_1.instance,
 
 				frame_new_0_1.instance,
+				frame_size_0_1.instance,
 				frame_get_link_0_1.instance,
 				frame_get_slot_0_1.instance,
 				frame_set_slot_0_1.instance,

@@ -7,7 +7,7 @@ imports
 	interpreter/external
 	interpreter/util
 	
-	fvm-desugar
+	stc-desugar
 	
 rules	
 	// STC_Call/2

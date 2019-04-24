@@ -2,7 +2,7 @@ module util
 
 imports 
 	signatures/fvm-common-sig
-	fvm-desugar
+	stc-desugar
 	interpreter/external
 	
 rules
