@@ -1,0 +1,70 @@
+#init 1
+{
+	var count := 0
+	for i = 0 -> 3:
+		var j := i
+		while j != 4:
+			j := j + 1
+			print (j)
+			count := count + 1
+		print(j)
+//	print(j)				// should not work (scoping)
+	print(count)			// print(9)
+}
+
+MAIN:
+	count <- ipush(0)
+	set([0], count)
+	
+	frame <- new(2)
+	newscope(frame, P, FOR_INIT)
+	
+FOR_INIT:
+	path I := [0]
+	set(I, ipush(0))
+	jump(FOR)
+
+FOR:
+	jumpz(lti(get([0]), ipush(3)), FOR_END, FOR_BODY)					// i
+
+FOR_BODY:
+	i <- get([0]) @inline
+	set([1], i)
+	
+	frame <- new()
+	newscope(frame, P, WHILE)
+
+WHILE:
+	j <- get([P, 1]) @inline
+	jumpz(eqi(ipush(4), j), WHILE_BODY, WHILE_END) 
+	
+WHILE_BODY:
+	path J := [P,1]
+	path C := [P,P,0]
+	
+	j <- get(J) @inline
+	print(j)
+	set(J, addi(j, ipush(1)))
+	
+	count <- get(C) @inline
+	set(C, addi(count, ipush(1))) 
+	jump(WHILE)
+
+WHILE_END:
+	exitscope([P], FOR_INC)
+	
+FOR_INC:
+	path i := [0]
+	set(i, addi(ipush(1), get(i)))
+	jump(FOR)	
+	
+FOR_END:
+	exitscope([P], MAIN_END)
+
+MAIN_END:
+	print(get([0]))
+	return(ipush(0))
+	
+	
+	
+	
