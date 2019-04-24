@@ -28,7 +28,9 @@ The following files contain the definitions you might want to use when compiling
 - `signatures/fvm-common-sig`: Signatures of the Frame VM
 - `stc-common`: Common (desugared) constructors and usefull functions when operating on Stacy ASTs:
   - `pp-framevm-stacy`: Pretty-print a Stacy AST 
-  - `eval-program`: Run a Stacy AST (Note: for this to work you need to copy over the java strategies and register them)
+  - `stc-eval`: Run a Stacy AST (Note: for this to work you need to copy over the java strategies and register them)
 - `stc-util`: Helper functions when compiling to Stacy. See the `docs` folder for a more detailed description
+  - `stc-from-flat`: Build a valid Stacy AST from a list of instructions
+  - `framevm-path-from-nabl2`: Get an access path from an Nabl2 reference
 
 If you need other strategies from other files, please notify me such that I can add them to these files. This as any other file might change in the future.
