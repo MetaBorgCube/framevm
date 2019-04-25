@@ -44,9 +44,9 @@ rules
 		 STC_Jump(lbl)
 		]
 		
-	r-scope: STC_ScopeExit(lbl) -> 
-		[STC_ScopeSetCurrent(),
-		 STC_Jump(lbl)
+	r-scope: STC_ScopeExit(path) -> 
+		[STC_Get(path),
+		 STC_ScopeSetCurrent()
 		]
 		
 		

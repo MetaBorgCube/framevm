@@ -152,5 +152,5 @@ instr[[STC_IsFrame() ^(s)]].
 	instr[[STC_ScopeNew(bind, lbl) ^(s)]]  := lbl[[lbl ^(s)]], bind[[bind ^(s)]].
 	instr[[STC_ScopeNew(bind) ^(s)]] := bind[[bind ^(s)]].
 	instr[[STC_ScopeSetCurrent() ^(s)]].
-	instr[[STC_ScopeExit(_, lbl) ^(s)]]  := lbl[[lbl ^(s)]].
-	instr[[STC_ScopeExit(_) ^(s)]].
+	instr[[STC_ScopeExit(bind) ^(s)]] := bind[[bind ^(s)]].
+	instr[[STC_ScopeExit(bind, lbl) ^(s)]] := bind[[bind ^(s)]], lbl[[lbl ^(s)]].

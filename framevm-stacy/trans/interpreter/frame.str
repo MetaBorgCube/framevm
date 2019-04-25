@@ -159,8 +159,8 @@ rules
 	// Can be seen as functioning like a break statement
 	eval: (STC_ScopeExit(FVM_Path(path)), env1) -> env2
 	  where
-		(frame, FVM_Link(link_id)) := <resolve> (path, FrameRef(<frame-this(|env1)>), env1);
-		env2 := <frame-set-current(|env1)> (<cont-this(|env1)>, <frame-get-link(|env1)> (frame, link_id))
+		(frame, FVM_Link(Bind(link_id, idx))) := <resolve> (path, FrameRef(<frame-this(|env1)>), env1);
+		env2 := <frame-set-current(|env1)> (<cont-this(|env1)>, <frame-get-link(|env1)> (frame, (link_id, idx)))
 		
 	// STC_FSize/0
 	// Get the size of the frame on top of the stack
