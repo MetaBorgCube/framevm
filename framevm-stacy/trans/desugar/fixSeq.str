@@ -15,7 +15,8 @@ rules
   
   
   	resugar-seq: STC_Program(s, blocks, l) -> STC_Program(FVM_InitSize(<int-to-string> s), [], <map(resugar-seq)> blocks) where <is-int> l
-  	resugar-seq: STC_Program(s, a, blocks) -> STC_Program(FVM_InitSize(<int-to-string> s), a,  <map(resugar-seq)> blocks) where <is-list> a
+  	resugar-seq: STC_Program(s, a, blocks) -> STC_Program(FVM_InitSize(s), a, <map(resugar-seq)> blocks) where <is-string> s; <is-list> a; <is-list> blocks
+
     resugar-seq: STC_PseudoCode(body) -> STC_PseudoCode(body)
     resugar-seq: STC_Block(lbl, STC_SeqJump([h|body], last)) -> STC_Block(lbl, STC_RetSeqJump(h, body, last))
       where
