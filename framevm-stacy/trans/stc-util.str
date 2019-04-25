@@ -5,7 +5,7 @@ imports
   
 	signatures/framevm-stacy-sig
 	signatures/fvm-common-sig
-	stc-desugar
+	stc-common
 
 rules
 	
@@ -14,7 +14,7 @@ rules
 	// Sugar is re-added to make it printable
 	stc-from-flat: [n | body] -> <resugar> STC_Program(<string-to-int> n, aliasses, blocks)
 	  where
-	  	_ := <is-string> n;
+	  	<is-string> n;
 	  	(aliasses, d_body) := <get-aliasses> body;
 		(blocks, []) := <foldr(!([], []), from-flat-fold)> [FVM_Label("MAIN") | d_body]
 		
