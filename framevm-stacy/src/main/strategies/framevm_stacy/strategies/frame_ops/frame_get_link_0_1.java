@@ -32,13 +32,8 @@ public class frame_get_link_0_1 extends FVMStrategy {
 			io.printError("A link with index " + linkIdx + " does not exist");
 			return null;
 		}
-		if (!link.linkId.equals(linkId)) {
-			if (link.linkId.startsWith("_l")) {
-				link.linkId = linkId;	// Update to better name
-			} else if (!linkId.startsWith("_l")) {
-				io.printError("Link lable mismatch, requested " + linkId + ", but foud " + link.linkId);
-				return null;
-			}
+		if (!link.linkId.equals(linkId) && link.linkId.startsWith("_l")) {
+			link.linkId = linkId;	// Update to better name
 		}
 		return new StrategoBlob(link.target);
 	}

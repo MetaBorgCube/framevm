@@ -40,12 +40,9 @@ public class cont_set_0_1 extends FVMStrategy {
 				if (cont.id.startsWith("c")) {
 					cont.id = contId;	// Update to better name
 					cont.update(continuationFrame);
-				} else if (contId.startsWith("c")) {
+				} else {
 					// Ignore less descriptive name
 					cont.update(continuationFrame);
-				} else {
-					io.printError("ID mismatch, expected " + contId + " but found " + cont.id);
-					return null;
 				}
 			} else {
 				cont.update(continuationFrame);
