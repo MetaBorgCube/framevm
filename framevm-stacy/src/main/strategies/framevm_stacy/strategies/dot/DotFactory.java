@@ -6,6 +6,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.spoofax.interpreter.terms.IStrategoTerm;
+import org.spoofax.terms.StrategoString;
 
 import framevm_stacy.strategies.util.Block;
 import framevm_stacy.strategies.util.ControlFrame;
@@ -19,6 +20,7 @@ import mb.nabl2.stratego.StrategoBlob;
  */
 public abstract class DotFactory {
 	private static final Pattern FRAME_PATTERN = Pattern.compile("FrameRef\\((.+)\\)");
+	private static final Pattern CLOSURE_PATTERN = Pattern.compile("ClosV\\((.+,.+)\\)");
 	private static final Pattern CONTINUATION_PATTERN = Pattern.compile("Continuation\\((.+)\\)");
 	private static final String[] COLORS = {"green", "purple", "hotpink", 
 											"dodgerblue4", "chocolate4", 
@@ -272,14 +274,24 @@ public abstract class DotFactory {
 	 */
 	public static String termToString(IStrategoTerm term, HashMap<String, String> nodes, List<String> links, String slotRef) {
 		String value = term.toString().replace("\"", "");
-		Matcher matcher = FRAME_PATTERN.matcher(value);
 		
+		Matcher matcher = FRAME_PATTERN.matcher(value);
 		if (matcher.matches()) {	// If it is a reference
 			Frame frame = (Frame) ((StrategoBlob) term.getSubterm(0)).value();
 			String frameRef = frame(frame.getId());
 			DotFrameFactory.build(frame, nodes, links);
 			links.add(referenceLink(slotRef, frameRef + ":id"));
 			return "FrameRef(" + frame.getId() + ")";
+		}
+		
+		matcher = CLOSURE_PATTERN.matcher(value);
+		if (matcher.matches()) {	// If it is a closure
+			Frame frame = (Frame) ((StrategoBlob) term.getSubterm(0)).value();
+			String block = ((StrategoString) term.getSubterm(1).getSubterm(0)).stringValue();
+			String frameRef = frame(frame.getId());
+			DotFrameFactory.build(frame, nodes, links);
+			links.add(referenceLink(slotRef, frameRef + ":id"));
+			return "Closure(" + frame.getId() + ", " + block + ")";
 		}
 		
 		matcher = CONTINUATION_PATTERN.matcher(value);
