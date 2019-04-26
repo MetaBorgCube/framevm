@@ -84,6 +84,8 @@ rules
 	stack-delta: STC_ContRGet()   -> 1
   
 	stack-delta: STC_Print()  -> -1
+	stack-delta: STC_PrintChar()  -> -1
+	stack-delta: STC_PrintString()  -> -1
 	stack-delta: STC_Return() -> -1
 	stack-delta: STC_ReturnN(n) -> <string-to-int> n
   
@@ -130,6 +132,8 @@ rules
 	stack-delta: STC_ClosNew(_, _) -> 0
 	stack-delta: STC_ClosNew(_)    -> 0
 	stack-delta: STC_ClosUnpack() -> 0
+	
+	stack-delta: STC_StringPush(_) -> 1
   
   	stack-delta: a -> 0
   	  where

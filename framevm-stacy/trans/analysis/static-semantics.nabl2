@@ -84,6 +84,8 @@ instr[[STC_Swap() ^(s)]].
 instr[[STC_SwapN(_) ^(s)]].
 
 instr[[STC_Print() ^(s)]].
+instr[[STC_PrintChar() ^(s)]].
+instr[[STC_PrintString() ^(s)]].
 instr[[STC_Debug() ^(s)]].
 instr[[STC_DebugKill() ^(s)]].
   
@@ -161,3 +163,5 @@ instr[[STC_IsClos() ^(s)]].
 	instr[[STC_ClosNew(lbl) ^(s)]]    := lbl[[lbl ^(s)]].
 	instr[[STC_ClosToCont(_) ^(s)]].
 	instr[[STC_ClosUnpack() ^(s)]].
+	
+	instr[[STC_StringPush(_) ^(s)]].

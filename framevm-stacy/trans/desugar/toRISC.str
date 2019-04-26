@@ -10,7 +10,7 @@ rules
 	to-RISC-all: STC_PseudoCode(body) -> STC_PseudoCode(body)
 	to-RISC-all: STC_Block(lbl, STC_Seq(body)) -> STC_Block(lbl, STC_Seq(body_risc))
 	  where
-		body_risc := <to-RISC(r-toN)><to-RISC(r-stack-index)><to-RISC(r-relative)><to-RISC(r-new)><to-RISC(r-link)><to-RISC(r-cont)><to-RISC(r-scope)> body
+		body_risc := <to-RISC(r-string)><to-RISC(r-toN)><to-RISC(r-stack-index)><to-RISC(r-relative)><to-RISC(r-new)><to-RISC(r-link)><to-RISC(r-cont)><to-RISC(r-scope)> body
   
     // Boilerplate to make the desugaring step simpler
   	to-RISC(s): x -> <foldr(![], (fpr(s) <+ idf))> x 
@@ -209,4 +209,18 @@ rules
 	
 	r-toN: STC_Dup()  -> [STC_DupN("1")]
 	r-toN: STC_Swap() -> [STC_SwapN("1")]
+	
+	
+	r-string: STC_StringPush(string) -> <concat> [[
+		STC_New(<int-to-string> <inc> length),
+		STC_Dup(),
+		STC_IPush(<int-to-string> length),
+		STC_SetR(FVM_Path([FVM_Slot("0")]))], chars]
+		
+	  where
+	  	length := <string-length> string;
+	  	string' := <string-replace(|"\\n", "\n")> <string-replace(|"\\t", "\t")> string;
+	  	chars := <concat> <map-with-index(r-char)> <explode-string> string'
+	  	
+	r-char: (idx, char) -> [STC_Dup(), STC_IPush(<int-to-string> char), STC_SetR(FVM_Path([FVM_Slot(<int-to-string> idx)]))]
 	

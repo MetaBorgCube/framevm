@@ -11,7 +11,7 @@ lexical syntax
   BOOL			 = "true"
   BOOL			 = "false"
   
-  STRING         = "\"" StringChar* "\"" 
+  STRING         = StringChar*
   StringChar     = ~[\"\n] 
   StringChar     = "\\\"" 
   StringChar     = BackSlashChar 
