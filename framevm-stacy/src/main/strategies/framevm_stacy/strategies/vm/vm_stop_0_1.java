@@ -8,6 +8,7 @@ import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermFactory;
 
 import framevm_stacy.strategies.FVMStrategy;
+import framevm_stacy.strategies.util.ControlFrame;
 import framevm_stacy.strategies.util.Frame;
 import framevm_stacy.strategies.util.MachineState;
 
@@ -52,8 +53,15 @@ public class vm_stop_0_1 extends FVMStrategy {
 				return factory.makeString(out);
 			}
 		} else {
-			io.printError("Execution terminated in non-terminal state");
-			return factory.makeString("FAIL");
+			ControlFrame frame = env.currentThread.getControlFrame();
+			String instr = frame.getBlock().getInstr(Math.max(0, frame.getInstr_count() - 1)).toString();
+			if ("STC_DebugKill".equals(instr)) {
+				io.printError("Printing debug info, all output is discarded");
+				return factory.makeString(env.debug.trim());
+			} else {
+				io.printError("Execution terminated in non-terminal state");
+				return factory.makeString("FAIL");
+			}
 		}
 	}
 }

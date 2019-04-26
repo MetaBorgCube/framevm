@@ -39,8 +39,9 @@ sorts Block context-free syntax
 >			{ layout (align-list instr && align instr jump && align ret instr) }
   
 sorts Instr context-free syntax
-  Instr.STC_Print    = <print>					// Prints value on the stack
-  Instr.STC_Debug    = <debug>					// Prints the state of the vm
+  Instr.STC_Print     = <print>					// Prints value on the stack
+  Instr.STC_Debug     = <debug>					// Prints the state of the vm
+  Instr.STC_DebugKill = <debug!>				// Prints the state of the vm and kills execution
   
   
   Instr = IntInstr

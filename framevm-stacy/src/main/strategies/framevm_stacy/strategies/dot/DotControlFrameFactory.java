@@ -32,10 +32,9 @@ public class DotControlFrameFactory extends DotFactory {
 			nodes.put(name, "");	// Mark this as existing, eventhough we are not finished creating it (This prevents infinite looping)
 		}
 		
-		int count = frame.getInstr_count();
-
 		// Add links to the executing instruction and the stack
 		if (frame.getBlock() != null) {
+			int count = frame.getInstr_count();
 			String target = block(frame.getBlock()) + ":" + (Math.max(0, count - 1));
 			links.add(blockLink(name, target));
 		}
@@ -86,7 +85,7 @@ public class DotControlFrameFactory extends DotFactory {
 		@SuppressWarnings("unchecked")
 		Stack<IStrategoTerm> stack = (Stack<IStrategoTerm>) frame.getStack().clone();
 		
-		count = 0;
+		int count = 0;
 		String stackName = stack(frame);
 		
 		while (!stack.isEmpty())  {

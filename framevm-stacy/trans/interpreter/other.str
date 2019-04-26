@@ -17,8 +17,14 @@ rules	// Other instructions
 	  	_ := <debug> out
 	  	
 	// STC_Debug/0
-	// Print the state of the vm to the console and terminate
+	// Print the state of the vm to the console
 	eval: (STC_Debug(), env1) -> env2
+	  where
+	  	env2 := <vm-debug(|env1)>
+	  	
+	// STC_DebugKill/0
+	// Print the state of the vm to the console and terminate
+	eval: (STC_DebugKill(), env1) -> <fail> env2
 	  where
 	  	env2 := <vm-debug(|env1)>
 	

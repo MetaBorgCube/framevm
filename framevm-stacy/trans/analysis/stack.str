@@ -3,7 +3,7 @@ module stack
 imports
 	signatures/framevm-stacy-sig
 	signatures/fvm-common-sig
-	stc-desugar
+	stc-common
 
 rules
 	// check stack sizes of blocks
@@ -120,6 +120,7 @@ rules
 	stack-delta: STC_Yield(_) -> -1
 	
 	stack-delta: STC_Debug() -> 0
+	stack-delta: STC_DebugKill() -> 0
 	
 	stack-delta: STC_IsInt()   -> 0
 	stack-delta: STC_IsCont()  -> 0

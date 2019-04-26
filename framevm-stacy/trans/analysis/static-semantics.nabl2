@@ -85,6 +85,7 @@ instr[[STC_SwapN(_) ^(s)]].
 
 instr[[STC_Print() ^(s)]].
 instr[[STC_Debug() ^(s)]].
+instr[[STC_DebugKill() ^(s)]].
   
 
 instr[[STC_FSize() ^(s)]].
