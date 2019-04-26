@@ -6,6 +6,7 @@ imports
 	signatures/framevm-stacy-sig
 	signatures/fvm-common-sig
 	stc-common
+	stc-desugar
 
 rules
 	
@@ -15,7 +16,7 @@ rules
 	stc-from-flat: [n | body] -> <resugar> STC_Program(n, aliasses, blocks)
 	  where
 	  	<is-string> n;
-	  	(aliasses, d_body) := <debug><get-aliasses> body;
+	  	(aliasses, d_body) := <get-aliasses> body;
 		(blocks, []) := <foldr(!([], []), from-flat-fold)> [FVM_Label("MAIN") | d_body]
 		
 	stc-from-flat: body@[n|_] -> <resugar> STC_Program("0", aliasses, blocks)
