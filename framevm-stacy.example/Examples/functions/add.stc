@@ -12,7 +12,7 @@ ADD:
   	get [0] 		// i
   	get [1] 		// j
   	addi			// i + j
-  	return			//
+  	return 			//
 
 MAIN:
 	ipush 10		//

@@ -11,10 +11,7 @@
 
 MAIN:
 	new						// For frame
-	dup						//
-	link [] P				//
-							//
-	newscope FOR_INIT		// Enter for loop
+	newscope P FOR_INIT		// Enter for loop
 	
 FOR_INIT:
 	new 0					// Try frame

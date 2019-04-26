@@ -11,10 +11,7 @@
 
 MAIN:
 	new 3					// With i frame
-	dup						//
-	link [] P				//
-							//
-	newscope WITH_I_INIT	//
+	newscope P WITH_I_INIT	//
 	
 WITH_I_INIT:
 	new 4					// Create array
@@ -53,9 +50,7 @@ WITH_I_NEXT:
 	set [0]					// i := next i
 							//
 	new 3					// With j frame
-	dup						//
-	link [] P				//
-	newscope WITH_J_INIT	//
+	newscope P WITH_J_INIT	//
 	
 WITH_I_INC:	
 	get [2]					// Increment idx
