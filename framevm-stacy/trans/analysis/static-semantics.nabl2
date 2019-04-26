@@ -56,8 +56,7 @@ rules
   	bind[[link ^(s)]].
   bind[[FVM_Cont(cont) ^(s)]] :=
   	bind[[cont ^(s)]].
-  bind[[FVM_Slot(slot) ^(s)]] :=
-  	bind[[slot ^(s)]].
+  bind[[FVM_Slot(slot) ^(s)]].
   	
   	
   	
