@@ -125,6 +125,11 @@ rules
 	stack-delta: STC_IsInt()   -> 0
 	stack-delta: STC_IsCont()  -> 0
 	stack-delta: STC_IsFrame() -> 0
+	stack-delta: STC_IsClos() -> 0
+	
+	stack-delta: STC_ClosNew(_, _) -> 0
+	stack-delta: STC_ClosNew(_)    -> 0
+	stack-delta: STC_ClosUnpack() -> 0
   
   	stack-delta: a -> 0
   	  where

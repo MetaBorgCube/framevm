@@ -17,6 +17,7 @@ signature
   constructors   
     Continuation : ControlFrame -> V 
     FrameRef : String -> V
+    ClosV : FrameRef * FVM_Label -> V
     IntV : Int -> V
     
 rules

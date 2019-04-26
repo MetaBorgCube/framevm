@@ -5,6 +5,7 @@ imports
 	signatures/fvm-common-sig
 	
 	interpreter/external
+	interpreter/util
 	
 	stc-common
 
@@ -116,9 +117,6 @@ rules
 	  	(env2, FrameRef(frame)) := <stack-pop-frame(|env1)>;
 	  	(env3, copy) := <frame-copy(|env2)> (frame, <policy-to-string> policy);
 	  	env4 := <stack-push(|env2)> FrameRef(copy)
-	
-	policy-to-string: FVM_DeepCopy() -> "deep"
-  	policy-to-string: FVM_ShallowCopy() -> "shallow"
   	
 	// STC_Link/2
 	// Link the frame on top of the stack to the frame pointed to by arg1

@@ -17,6 +17,7 @@ rules
 	external stack-pop-int(|env)	// env| -> (env', int)
 	external stack-pop-cont(|env)	// env| -> (env', continuation)
 	external stack-pop-frame(|env)	// env| -> (env', frame)
+	external stack-pop-closure(|env)// env| -> (env', closure)
 	external stack-size(|env)		// env| -> int
 	
 	external frame-get-slot(|env)	// env| (frame, slot) -> val

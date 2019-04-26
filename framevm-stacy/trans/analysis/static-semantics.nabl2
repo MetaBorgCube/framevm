@@ -131,6 +131,7 @@ instr[[STC_FrameCopyR(_) ^(s)]].
 instr[[STC_IsInt() ^(s)]].
 instr[[STC_IsCont() ^(s)]].
 instr[[STC_IsFrame() ^(s)]].
+instr[[STC_IsClos() ^(s)]].
 
 
 	instr[[STC_ContThis() ^(s)]].
@@ -155,3 +156,8 @@ instr[[STC_IsFrame() ^(s)]].
 	instr[[STC_ScopeSetCurrent() ^(s)]].
 	instr[[STC_ScopeExit(bind) ^(s)]] := bind[[bind ^(s)]].
 	instr[[STC_ScopeExit(bind, lbl) ^(s)]] := bind[[bind ^(s)]], lbl[[lbl ^(s)]].
+	
+	instr[[STC_ClosNew(_, lbl) ^(s)]] := lbl[[lbl ^(s)]].
+	instr[[STC_ClosNew(lbl) ^(s)]]    := lbl[[lbl ^(s)]].
+	instr[[STC_ClosToCont(_) ^(s)]].
+	instr[[STC_ClosUnpack() ^(s)]].

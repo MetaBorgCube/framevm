@@ -37,4 +37,13 @@ rules
 	is-cont: Continuation(_) -> IntV("1")
 	is-cont: _               -> IntV("0")
 	
+	// STC_IsClos/0
+	// Checks if the element on top of the stack is a closure
+	eval: (STC_IsClos(), env1) -> env3
+	  where
+	  	(env2, val) := <stack-pop-any(|env1)>;
+	  	env3 := <stack-push(|env2)> <is-clos> val
+	
+	is-clos: ClosV(_, _) -> IntV("1")
+	is-clos: _           -> IntV("0")
 	

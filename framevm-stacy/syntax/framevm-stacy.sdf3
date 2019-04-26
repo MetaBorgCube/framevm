@@ -73,6 +73,7 @@ sorts Instr context-free syntax
   TypeInstr.STC_IsInt   = <int?>				// Check if the element on top of the stack is an integer
   TypeInstr.STC_IsCont  = <cont?>				// Check if the element on top of the stack is a continuation
   TypeInstr.STC_IsFrame = <frame?>				// Check if the element on top of the stack is a data frame
+  TypeInstr.STC_IsClos  = <closure?>			// Check if the element on top of the stack is a closure
   
   Instr = FrameInstr
   FrameInstr.STC_New    = <new>					// Create new frame with 0 slots and push pointer on stack
@@ -141,3 +142,11 @@ sorts Instr context-free syntax
   FrameInstr.STC_ScopeNew     = <newscope <LinkRef>>			// Set the current frame
   ControlInstr.STC_ScopeNew   = <newscope <LinkRef> <Label>>	// Move execution to another scope and copy over the current continuation
   FrameInstr.STC_ScopeSetCurrent = <mkcurrent>					// Set the frame on top of the stack as the current dataframe
+
+  Instr = ClosInstr
+  ClosInstr.STC_ClosNew      = <newc <CopyPolicy> <Label>>		// Create a new closure form the frame on top of the stack and the given label. Use the given copy policy
+  ClosInstr.STC_ClosNew      = <newc <Label>>					// Create a new closure form the frame on top of the stack and the given label. Uses shallow copy
+  ClosInstr.STC_ClosToCont   = <cnew <INTLEZ>>					// Create a continuation from a closure
+  ClosInstr.STC_ClosUnpack   = <unpack>							// Get the dataframe of the closure on top of the stack
+  
+  

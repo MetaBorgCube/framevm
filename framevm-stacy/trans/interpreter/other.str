@@ -2,6 +2,7 @@ module other
 
 imports 
 	signatures/framevm-stacy-sig
+	signatures/fvm-common-sig
 	interpreter/external
 	
 	stc-common
@@ -34,5 +35,6 @@ rules	// Util
 	val-to-string: IntV(v) -> v
 	val-to-string: FrameRef(frame) -> frame
 	val-to-string: Continuation(cont) -> cont
+	val-to-string: ClosV(frame, FVM_Label(lbl)) -> (frame, lbl)
 	
 	
