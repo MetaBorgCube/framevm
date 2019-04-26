@@ -1,0 +1,6 @@
+MAIN:
+	spush "Hello World"
+	prints
+	
+	ipush 0
+	return
