@@ -1,58 +1,35 @@
 MAIN:
-	new 13
-	dup
-	ipush 12
-	setr [0]
-	
-	dup
-	ipush 72		// H
-	setr [1]
-	
-	dup
-	ipush 101		// e
-	setr [2]
-	
-	dup
-	ipush 108		// l
-	setr [3]
-	
-	dup
-	ipush 108		// l
-	setr [4]
-	
-	dup
-	ipush 111		// o
-	setr [5]
-	
-	dup
-	ipush 32		// ' '
-	setr [6]
-	
-	dup
-	ipush 87		// W
-	setr [7]
-	
-	dup
-	ipush 111		// o
-	setr [8]
-	
-	dup
-	ipush 114		// r
-	setr [9]
-	
-	dup
-	ipush 108		// l
-	setr [10]
-	
-	dup
-	ipush 100		// d
-	setr [11]
-	
-	dup
-	ipush 10
-	setr [12]
+	spush "Hello World!"
+	call PRINT CONT
 
-	prints
-	
+CONT:
 	ipush 0
 	return
+	
+PRINT:
+	get [0]				// Size
+	ipush 0				// Idx
+	jump PRINT_LOOP		//
+	
+PRINT_LOOP:
+	dup 2				// Size
+	dup 2				// Idx
+	eqi					// If end of string
+	jumpz PRINT_CHAR PRINT_END
+	
+PRINT_END:
+	pop					// Clear idx
+	pop					// Clear size
+	cget [c]			// Return address
+	cret				// Return
+	
+PRINT_CHAR:
+	ipush 1				// Increment the index
+	addi				//
+						//
+	dup					// Get the old index + 1 
+	get					//
+	printc				// Print that character
+						//
+	jump PRINT_LOOP		// Goto next character
+	
