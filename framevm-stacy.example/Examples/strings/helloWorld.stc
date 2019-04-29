@@ -1,8 +1,8 @@
 MAIN:
 	spush "Hello World!"
-	call PRINT CONT
+	call PRINT MAIN_END
 
-CONT:
+MAIN_END:
 	ipush 0
 	return
 	
