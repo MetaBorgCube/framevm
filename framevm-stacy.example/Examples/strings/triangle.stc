@@ -1,0 +1,85 @@
+#init 1
+
+MAIN:
+	ipush 5				// Number of triangles
+	set [0]				// Store it
+						//
+	ipush 1				// Initial number of triangles
+	new					// New scope
+	newscope P LOOP_INC_INIT
+
+LOOP_INC_INIT:
+	dup					// Index
+	get [P, 0]			// Max
+	eqi					// Check if done incrementing
+	jumpz LOOP_INC_NEXT LOOP_DEC_INIT
+	
+LOOP_INC:
+	ipush 10			//
+	printc				// Print newline
+	dup					// Index
+	get [P, 0]			// Max
+	eqi					// Check if done incrementing
+	jumpz LOOP_INC_NEXT LOOP_DEC_INIT
+	
+LOOP_INC_NEXT:
+	new 1				// Printing frame
+	dup					//
+	dup 3				// Idx
+	setr [0]			// Store the amount to print
+	swap				//
+	ipush 1				//
+	addi				// Increment the index
+	swap				//
+	call PRINT LOOP_INC	// Print the *s
+	
+
+LOOP_DEC_INIT:
+	dup					// Idx
+	ipush 0				//
+	eqi					// Check if done
+	jumpz LOOP_DEC_NEXT EXIT
+	
+LOOP_DEC:
+	ipush 10			//
+	printc				// Print newline
+	dup					// Idx
+	ipush 0				// 
+	eqi					// Check if done
+	jumpz LOOP_DEC_NEXT EXIT
+	
+LOOP_DEC_NEXT:
+	new 1				// Print frame
+	dup					//
+	dup 3				// Idx
+	setr [0]			// Store the amount to print
+	swap				//
+	ipush 1				//
+	subi				// Decrement idx
+	swap				//
+	call PRINT LOOP_DEC	// Print the *s
+	
+EXIT:
+	pop					// Pop the idx
+	ipush 0				//
+	return				// Exitcode 0
+	
+PRINT:
+	get [0]				// Check how much left to print
+	jumpz PRINT_EXIT PRINT_NEXT
+	
+PRINT_EXIT:
+	cget [c]			// Return to caller
+	cret				//
+
+PRINT_NEXT:
+	get [0]				//
+	ipush 1				//
+	subi				// Decrement amount left
+	set [0]				//
+						//
+	cpush '*'			// Print a *
+	printc				//
+						//
+	jump PRINT			// Loop
+	
