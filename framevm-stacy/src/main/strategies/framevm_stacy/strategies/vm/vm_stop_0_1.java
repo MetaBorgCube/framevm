@@ -49,7 +49,10 @@ public class vm_stop_0_1 extends FVMStrategy {
 				io.printError("Printing debug info, all output is discarded");
 				return factory.makeString(env.debug.trim());
 			} else {
-				String out = env.stdout.toString().trim();
+				String out = env.stdout.toString();
+				if (out.endsWith("\n")) {
+					out = out.substring(0, out.length() - 1);
+				}
 				return factory.makeString(out);
 			}
 		} else {
