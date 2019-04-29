@@ -60,7 +60,7 @@ rules
   	
   	
 
-instr[[STC_CPush(_) ^(s)]].
+instr[[STC_CharPush(_) ^(s)]].
 instr[[STC_IPush(_) ^(s)]].
 instr[[STC_INeg() ^(s)]].
 instr[[STC_IAdd() ^(s)]].
@@ -85,7 +85,6 @@ instr[[STC_SwapN(_) ^(s)]].
 
 instr[[STC_Print() ^(s)]].
 instr[[STC_PrintChar() ^(s)]].
-instr[[STC_PrintString() ^(s)]].
 instr[[STC_Debug() ^(s)]].
 instr[[STC_DebugKill() ^(s)]].
   

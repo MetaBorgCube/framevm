@@ -1,0 +1,16 @@
+module strings
+
+imports
+	signatures/framevm-stacy-sig
+    
+rules
+
+  	fix-strings = topdown(try(fix-string))
+  	
+  	fix-string: STC_StringPush(string) -> STC_StringPush(<unquote(!"\"")> string)
+  	fix-string: STC_CharPush(char) -> STC_CharPush(<unquote(!"'")> char)
+  	
+  	resugar-strings = topdown(try(resugar-string))
+  	
+  	resugar-string: STC_StringPush(string) -> STC_StringPush($["[string]"])
+  	resugar-string: STC_CharPush(char) -> STC_CharPush($['[char]'])

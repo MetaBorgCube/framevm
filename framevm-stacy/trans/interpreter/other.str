@@ -18,32 +18,8 @@ rules	// Other instructions
 	  	(env3, out) := <vm-print(|env2)> <val-to-string> val;
 	  	_ := <debug> out
 	  	
-	// STC_PrintString/0
-	eval: (STC_PrintString(), env1) -> env3
-	  where
-	  	(env2, FrameRef(frame)) := <stack-pop-frame(|env1)>;
-	  	size := <dec> <frame-size(|env2)> frame;
-	  	<geq> (size, 1);
-	  	<eq> (size, <string-length-slot> (frame, env2));
-	  	vals := <reverse> <string-get-slots> (frame, size, env2);
-	  	(env3, out) := <vm-print-chars(|env2)> vals;
-	  	_ := <debug> out
-	  	
-	string-get-slots: (frame, 0, _) -> []
-	string-get-slots: (frame, idx, env) -> [n | <string-get-slots> (frame, <dec> idx, env)]
-	  with
-	  	IntV(n) := <frame-get-slot(|env)> (frame, idx)
-	  	
-	string-get-slots: (frame, idx, _) -> <fail> <debug> $[Slot [idx] of [frame] does not contain an integer]
-	string-get-slots: e-> <fail> <debug> e
-	  	
-	string-length-slot: (frame, env) -> <string-to-int> n
-	  where
-	  	IntV(n) := <frame-get-slot(|env)> (frame, "0")
-	  	
-	string-length-slot: (frame, env) -> <fail> <debug> $[First slot of [frame] does not contain an integer]
-
 	// STC_PrintChar/0
+	// Print the character on top of the stack
 	eval: (STC_PrintChar(), env1) -> env3
 	  where
 	  	(env2, IntV(val)) := <stack-pop-int(|env1)>;
@@ -51,11 +27,12 @@ rules	// Other instructions
 	  	_ := <debug> out
 	  	
 	  	
-	// STC_CPush/1
-	eval: (STC_CPush(char), env1) -> env2
+	// STC_CharPush/1
+	// Push a character to the stack
+	eval: (STC_CharPush(char), env1) -> env2
 	  where
 	  	[char' |_] := <explode-string> <fix-string-escaping> char;
-	  	env2 := <stack-push(|env1)> <debug> IntV(char')
+	  	env2 := <stack-push(|env1)> IntV(char')
 	  	
 	// STC_Debug/0
 	// Print the state of the vm to the console
@@ -78,14 +55,13 @@ rules	// Other instructions
 	  	size := <length> chars;
 	  	(env2, frame) :=  <frame-new(|env1)> <inc> size;
 	  	env3 := <stack-push(|env2)> FrameRef(frame);
-	  	env4 := <frame-set-slot(|env3)> (frame, "0", IntV(<int-to-string> size));
+	  	env4 := <frame-set-slot(|env3)> (frame, 0, IntV(size));
 	  	(env5, _, _) := <foldl(char-store)> (chars, (env4, 1, frame))
 	
-	char-store: (char, (env1, idx, frame)) -> <debug>(env2, <inc> idx, frame)
+	char-store: (char, (env1, idx, frame)) -> (env2, <inc> idx, frame)
 	  where
-	  	env2 := <frame-set-slot(|env1)> (frame, <int-to-string> idx, IntV(<int-to-string> char))
+	  	env2 := <frame-set-slot(|env1)> (frame, idx, IntV(char))
 	  	
-	char-store: e -> <fail> <debug> e
 rules	// Util
 	// Convert a value to a displayable string 
 	val-to-string: IntV(v) -> v where <is-int> v

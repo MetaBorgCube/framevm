@@ -25,10 +25,10 @@ rules
   	 stack-update: (instr, (size, errs)) -> (new_size, [err | errs])
   	  where
   	  	new_size := <addi> (size, <stack-delta> instr);
-  	  	err := <debug> ("Popping from empty stack at", instr)
+  	  	err := ("Popping from empty stack at", instr)
   	  	
 	// For each operation, calculate the change in stack size
-	stack-delta: STC_CPush(_) -> 1
+	stack-delta: STC_CharPush(_) -> 1
 	stack-delta: STC_IPush(_) -> 1
 	stack-delta: STC_INeg()   -> 0
 	stack-delta: STC_IAdd()   -> -1
@@ -86,7 +86,6 @@ rules
   
 	stack-delta: STC_Print()  -> -1
 	stack-delta: STC_PrintChar()  -> -1
-	stack-delta: STC_PrintString()  -> -1
 	stack-delta: STC_Return() -> -1
 	stack-delta: STC_ReturnN(n) -> <string-to-int> n
   

@@ -6,10 +6,11 @@ imports
 	desugar/fixSeq
 	desugar/pseudo
 	desugar/register
+	desugar/strings
    
 rules  
     desugar-full = desugar; to-RISC-all
-    desugar = apply-aliasses; fix-seq; desugar-pseudo-all
+    desugar = apply-aliasses; fix-seq; desugar-pseudo-all; fix-strings
   	 
-	resugar = resugar-seq; resugar-pseudo-all; resugar-aliasses 
+	resugar = resugar-seq; resugar-pseudo-all; resugar-aliasses; resugar-strings 
    
