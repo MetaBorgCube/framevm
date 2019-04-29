@@ -1,6 +1,35 @@
 MAIN:
-	spush "Hello World"
-	prints
-	
+	spush "Hello World!"
+	call PRINT CONT
+
+CONT:
 	ipush 0
 	return
+	
+PRINT:
+	get [0]				// Size
+	ipush 0				// Idx
+	jump PRINT_LOOP		//
+	
+PRINT_LOOP:
+	dup 2				// Size
+	dup 2				// Idx
+	eqi					// If end of string
+	jumpz PRINT_CHAR PRINT_END
+	
+PRINT_END:
+	pop					// Clear idx
+	pop					// Clear size
+	cget [c]			// Return address
+	cret				// Return
+	
+PRINT_CHAR:
+	ipush 1				// Increment the index
+	addi				//
+						//
+	dup					// Get the old index + 1 
+	get					//
+	printc				// Print that character
+						//
+	jump PRINT_LOOP		// Goto next character
+	

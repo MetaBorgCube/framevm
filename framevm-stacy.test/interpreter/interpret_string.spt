@@ -1,0 +1,73 @@
+module interpreter_arithmetic_int
+
+language framevm-stacy
+
+fixture [[MAIN:
+	[[...]]
+
+EXIT:
+	ipush 0
+	return
+	
+PRINT:
+	get [0]
+	ipush 0
+	jump PRINT_LOOP
+	
+PRINT_LOOP:
+	dup 2
+	dup 2
+	eqi
+	jumpz PRINT_CHAR PRINT_END
+	
+PRINT_END:
+	pop
+	pop
+	cget [c]
+	cret
+	
+PRINT_CHAR:
+	ipush 1
+	addi
+	dup
+	get
+	printc
+	jump PRINT_LOOP
+]]
+
+test Hello World! [[
+	spush "Hello World!"
+	call PRINT EXIT
+]] transform "Run -> CISC" to "Hello World!"
+
+test Hello World! [[
+	spush "Hello\nWorld!"
+	call PRINT EXIT
+]] transform "Run -> CISC" to "Hello
+World!"
+
+test print char unicode [[
+	ipush 128539
+	printc
+	jump EXIT
+]] transform "Run -> CISC" to ""
+
+test print char [[
+	ipush 65
+	printc
+	jump EXIT
+]] transform "Run -> CISC" to "A"
+
+
+test empty string 1 [[
+	new 1
+	dup
+	ipush 0
+	setr [0]
+	call PRINT EXIT
+]] transform "Run -> CISC" to ""
+
+test empty string 2 [[
+	spush ""
+	call PRINT EXIT
+]] transform "Run -> CISC" to ""
