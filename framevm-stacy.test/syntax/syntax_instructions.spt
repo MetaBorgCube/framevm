@@ -127,8 +127,8 @@ test getr path c         [[getr [c] ]]     parse fails
 test getr path negative  [[getr [-1] ]]    parse fails
 
 
-test cnewr simple      [[cnew LBL 0]]  parse succeeds
-test cnewr negative    [[cnew LBL -1]] parse fails
-test cnewr only label  [[cnew LBL]]    parse fails
-test cnewr only number [[cnew 0]]      parse fails
-test cnewr empty       [[cnew]]        parse fails
+test cnew simple      [[cnew LBL 0]]  parse succeeds
+test cnew negative    [[cnew LBL -1]] parse fails
+test cnew only label  [[cnew LBL]]    parse fails
+test cnew closure     [[cnew 0]]      parse succeeds
+test cnew empty       [[cnew]]        parse fails

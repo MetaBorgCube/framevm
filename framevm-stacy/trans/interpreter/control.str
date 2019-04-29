@@ -139,5 +139,5 @@ rules
 	  	env3 := <frame-set-current(|env2)> (<cont-this(|env2)>, frame_to)
 	  	
 	// Resolve which label to pick
-	jump-eval: ("0", then, _) -> then
+	jump-eval: (0, then, _) -> then
 	jump-eval: (_, _, else) -> else		// Catch all other than 0

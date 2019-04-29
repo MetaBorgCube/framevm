@@ -11,6 +11,11 @@ lexical syntax
   BOOL			 = "true"
   BOOL			 = "false"
   
+  CHAR           = ~[\'\n]
+  CHAR           = "\\t"
+  CHAR           = "\\n"
+  CHAR           = "\\'"
+  
   STRING         = StringChar*
   StringChar     = ~[\"\n] 
   StringChar     = "\\\"" 

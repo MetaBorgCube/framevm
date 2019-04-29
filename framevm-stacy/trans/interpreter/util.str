@@ -19,3 +19,5 @@ rules
 
 	policy-to-string: FVM_DeepCopy() -> "deep"
   	policy-to-string: FVM_ShallowCopy() -> "shallow"
+  	
+  	fix-string-escaping = string-replace(|"\\n", "\n"); string-replace(|"\\t", "\t"); string-replace(|"\\'", "'"); string-replace(|"\\\"", "\"")

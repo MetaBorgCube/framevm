@@ -4,7 +4,7 @@ package framevm_stacy.strategies.frame_ops;
 import org.spoofax.interpreter.library.IOAgent;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermFactory;
-import org.spoofax.terms.StrategoString;
+import org.spoofax.terms.StrategoInt;
 import org.spoofax.terms.StrategoTuple;
 import framevm_stacy.strategies.FVMStrategy;
 import framevm_stacy.strategies.util.Frame;
@@ -21,8 +21,8 @@ public class frame_set_slot_0_1 extends FVMStrategy {
 		StrategoTuple tuple = (StrategoTuple) arg;
 		
 		Frame frame = (Frame) ((StrategoBlob) tuple.get(0)).value();
+		int slotIdx = ((StrategoInt) tuple.get(1)).intValue();
 		IStrategoTerm value = tuple.get(2);
-		int slotIdx = Integer.valueOf(((StrategoString) tuple.get(1)).stringValue());
 		try {
 			frame.set(slotIdx, value);
 		} catch (ArrayIndexOutOfBoundsException e) {

@@ -4,6 +4,8 @@ imports
 	signatures/framevm-stacy-sig
 	signatures/fvm-common-sig
 	stc-common
+	
+	interpreter/util
 
 rules
 	to-RISC-all: STC_Program(s, blocks, l) -> STC_Program(s, <map(to-RISC-all)> blocks, l)
@@ -218,7 +220,7 @@ rules
 		STC_SetR(FVM_Path([FVM_Slot("0")]))], chars]
 		
 	  where
-	  	string' := <string-replace(|"\\n", "\n")> <string-replace(|"\\t", "\t")> string;
+	  	string' := <fix-string-escaping> string;
 	  	length := <string-length> string';
 	  	chars := <concat> <map-with-index(r-char)> <explode-string> string'
 	  	

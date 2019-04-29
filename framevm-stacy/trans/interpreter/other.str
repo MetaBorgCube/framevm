@@ -4,6 +4,7 @@ imports
 	signatures/framevm-stacy-sig
 	signatures/fvm-common-sig
 	interpreter/external
+	interpreter/util
 	
 	stc-common
 
@@ -29,9 +30,9 @@ rules	// Other instructions
 	  	_ := <debug> out
 	  	
 	string-get-slots: (frame, 0, _) -> []
-	string-get-slots: (frame, idx, env) -> [<string-to-int> n | <string-get-slots> (frame, <dec> idx, env)]
+	string-get-slots: (frame, idx, env) -> [n | <string-get-slots> (frame, <dec> idx, env)]
 	  with
-	  	IntV(n) := <frame-get-slot(|env)> (frame, <int-to-string> idx)
+	  	IntV(n) := <frame-get-slot(|env)> (frame, idx)
 	  	
 	string-get-slots: (frame, idx, _) -> <fail> <debug> $[Slot [idx] of [frame] does not contain an integer]
 	string-get-slots: e-> <fail> <debug> e
@@ -46,8 +47,15 @@ rules	// Other instructions
 	eval: (STC_PrintChar(), env1) -> env3
 	  where
 	  	(env2, IntV(val)) := <stack-pop-int(|env1)>;
-	  	(env3, out) := <vm-print-chars(|env2)> [<string-to-int> val];
+	  	(env3, out) := <vm-print-chars(|env2)> [val];
 	  	_ := <debug> out
+	  	
+	  	
+	// STC_CPush/1
+	eval: (STC_CPush(char), env1) -> env2
+	  where
+	  	[char' |_] := <explode-string> <fix-string-escaping> char;
+	  	env2 := <stack-push(|env1)> <debug> IntV(char')
 	  	
 	// STC_Debug/0
 	// Print the state of the vm to the console
@@ -65,7 +73,7 @@ rules	// Other instructions
 	// Push a string to the stack
 	eval: (STC_StringPush(string), env1) -> env5
 	  where
-	    string' := <string-replace(|"\\n", "\n")> <string-replace(|"\\t", "\t")> string;
+	    string' := <fix-string-escaping> string;
 	  	chars := <explode-string> string';
 	  	size := <length> chars;
 	  	(env2, frame) :=  <frame-new(|env1)> <inc> size;
@@ -80,7 +88,7 @@ rules	// Other instructions
 	char-store: e -> <fail> <debug> e
 rules	// Util
 	// Convert a value to a displayable string 
-	val-to-string: IntV(v) -> v
+	val-to-string: IntV(v) -> v where <is-int> v
 	val-to-string: FrameRef(frame) -> frame
 	val-to-string: Continuation(cont) -> cont
 	val-to-string: ClosV(frame, FVM_Label(lbl)) -> (frame, lbl)

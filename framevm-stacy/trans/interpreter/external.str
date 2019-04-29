@@ -49,6 +49,6 @@ rules
 	ex-get-cx(|env):   cont -> <cont-get(|env)> (cont, ("x", 1))
 	cont-get-cc(|env): cont -> <cont-get(|env)> (cont, ("c", 0))
 	
-	frame-set(|env): (frame, FVM_Slot(slot), value) -> <frame-set-slot(|env)> (frame, slot, value)
+	frame-set(|env): (frame, FVM_Slot(slot), value) -> <frame-set-slot(|env)> (frame, <string-to-int> slot, value)
 	frame-set(|env): (frame, FVM_Cont(cont), value) -> <cont-set(|env)> (frame, cont, value)
 	

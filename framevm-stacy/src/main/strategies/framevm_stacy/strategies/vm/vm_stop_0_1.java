@@ -15,7 +15,7 @@ import framevm_stacy.strategies.util.MachineState;
 
 public class vm_stop_0_1 extends FVMStrategy {
 	public static vm_stop_0_1 instance = new vm_stop_0_1();
-	private static final Pattern PATTERN = Pattern.compile("IntV\\(\"(\\d)\"\\)");
+	private static final Pattern PATTERN = Pattern.compile("IntV\\((\\d)\\)");
 
 	@Override
 	// env -> string

@@ -44,6 +44,7 @@ sorts Instr context-free syntax
   Instr.STC_PrintChar   = <printc>				// Prints character on the stack
   Instr.STC_Debug       = <debug>				// Prints the state of the vm
   Instr.STC_DebugKill   = <debug!>				// Prints the state of the vm and kills execution
+  IntInstr.STC_CPush    = <cpush '<CHAR>'>		// Push a character value to stack
   
   
   Instr = IntInstr

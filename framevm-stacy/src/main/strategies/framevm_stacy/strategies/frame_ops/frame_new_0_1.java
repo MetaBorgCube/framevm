@@ -15,7 +15,7 @@ public class frame_new_0_1 extends FVMStrategy {
 	public static frame_new_0_1 instance = new frame_new_0_1();
 
 	@Override
-	// env| -> (env', frame)
+	// env| int -> (env', frame)
 	// create a new frame and return it
 	protected IStrategoTerm invoke(IOAgent io, ITermFactory factory, MachineState env, IStrategoTerm arg) {
 		int size = ((StrategoInt) arg).intValue();

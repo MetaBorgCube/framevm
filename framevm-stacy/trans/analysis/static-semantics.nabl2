@@ -59,7 +59,8 @@ rules
   bind[[FVM_Slot(slot) ^(s)]].
   	
   	
-  	
+
+instr[[STC_CPush(_) ^(s)]].
 instr[[STC_IPush(_) ^(s)]].
 instr[[STC_INeg() ^(s)]].
 instr[[STC_IAdd() ^(s)]].
