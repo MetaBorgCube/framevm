@@ -19,7 +19,7 @@ Include the following in your projects `pom.xml`:
 Include the following in your `metaborg.yaml`:
 ```yaml
 dependencies:
-  compile:
+  source:
   - org.metaborg.lang:framevm-stacy:1.0.0
 ```
 
