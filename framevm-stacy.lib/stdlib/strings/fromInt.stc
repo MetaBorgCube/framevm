@@ -1,0 +1,117 @@
+INT_TO_STRING:
+	get [0]
+	ipush 0
+	lti
+	new 1
+	newscope P
+	jumpz POS_INT_TO_STRING NEG_INT_TO_STRING
+
+NEG_INT_TO_STRING:
+	ipush 0
+	get [P, 0]
+	subi
+	set [0]
+	ipush 0
+	jump INT_TO_DIGITS
+
+POS_INT_TO_STRING:
+	get [P, 0]
+	set [0]
+	ipush 0
+	jump INT_TO_DIGITS
+	
+INT_TO_DIGITS:
+	ipush 1
+	addi
+	get [0]
+	ipush 10
+	modi
+	ipush 48
+	addi
+	swap
+	
+	get [0]
+	ipush 10
+	divi
+	dup
+	set [0]
+	jumpz TO_STRING INT_TO_DIGITS
+	
+TO_STRING:
+	new 3
+	dup
+	newscope P
+	
+	dup
+	ipush 1
+	get [P, P, 0]
+	ipush 0
+	lti
+	addi
+	setr [1]
+	
+	dup
+	dup 3
+	ipush 1
+	addi
+	get [P, P, 0]
+	ipush 0
+	lti
+	addi
+	newr
+	setr [0]
+	
+	dup
+	getr [0]
+	dup 3
+	get [P, P, 0]
+	ipush 0
+	lti
+	addi
+	setr [0]
+	
+	swap
+	ipush 1
+	addi
+	get [P, P, 0]
+	ipush 0
+	lti
+	addi
+	setr [2]
+	jump DIGITS_TO_STRING
+	
+DIGITS_TO_STRING:
+	get [1]
+	get [2]
+	eqi
+	jumpz DIGITS_TO_STRING_2 INT_TO_STRING_END
+	
+DIGITS_TO_STRING_2:
+	get [0]
+	swap
+	get [1]
+	swap
+	setr
+	
+	ipush 1
+	get [1]
+	addi
+	set [1]
+
+	jump DIGITS_TO_STRING
+	
+INT_TO_STRING_END:
+	get [P, P, 0]
+	ipush 0
+	lti
+	jumpz INT_TO_STRING_END_POS INT_TO_STRING_END_NEG
+
+INT_TO_STRING_END_POS:
+	get [0]
+	return
+	
+INT_TO_STRING_END_NEG:
+	ipush 45
+	set [0, 1]
+	get [0]
+	return

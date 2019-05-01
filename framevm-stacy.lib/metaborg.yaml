@@ -1,0 +1,10 @@
+---
+id: org.metaborg.lang:framevm-stacy.lib:1.0.0
+name: framevm-stacy
+dependencies:
+  compile:
+  - org.metaborg.lang:framevm-stacy:1.0.0
+debug:
+  typesmart: false
+build:
+  useBuildSystemSpec: true
