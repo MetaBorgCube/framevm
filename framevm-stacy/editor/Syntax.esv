@@ -46,22 +46,24 @@ language
 
 menus
   
-  menu: "Syntax" (openeditor)
+  menu: "Syntax" (openeditor)(source)
     
-    action: "Format"             = editor-format (source)
-    action: "Show parsed AST"    = debug-show-aterm (source)
-    action: "Show desugared AST" = debug-show-desugared-aterm (source)
+    action: "Format"             = editor-format
+    action: "Show parsed AST"    = debug-show-aterm
+    action: "Show desugared AST" = debug-show-desugared-aterm
     
-  menu: "RISC" (openeditor)
-    
-    action: "Transform to RISC" = editor-format-desugar (source)
-    action: "Show RISC AST"     = debug-show-desugared-full-aterm (source)
+  menu: "RISC" (openeditor) (source)
+    action: "Transform to RISC" = editor-format-desugar
+    action: "Show RISC AST"     = debug-show-desugared-full-aterm
   
-  menu: "Run" (openeditor)
+  menu: "Run" (openeditor) (source)    
+    action: "CISC"    = run-program-cisc
+    action: "RISC"    = run-program-risc
+    action: "Compare" = run-program-compare
     
-    action: "CISC"    = run-program-cisc (source)
-    action: "RISC"    = run-program-risc (source)
-    action: "Compare" = run-program-compare (source)
+  menu: "Debug" (openeditor) (source)
+    action: "CISC"    = run-program-cisc-debug
+    action: "RISC"    = run-program-risc-debug
     
 //  menu: "Pseudocode" (openeditor)
 //  

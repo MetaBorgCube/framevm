@@ -6,14 +6,17 @@ imports
 	stc-desugar
     
 rules
-  	eval-program: STC_Program(s, blocks, links) -> out
+	eval-program-debug = eval-program(debug(!"execute: "))
+	eval-program = eval-program(id)
+	
+  	eval-program(s): STC_Program(s, blocks, links) -> out
       where 
     	env1 := <vm-init> (links, 2, s);
       	env2 := <foldl(store-block)> (blocks, env1);
       	env3 := <store-block> (STC_Block(FVM_Label("_exit"), STC_Seq([])), env2);
       	env4 := <store-block> (STC_Block(FVM_Label("_catch"), STC_Seq([])), env3);
       	env5 := <vm-start(|env4)>;
-    	env6 := <execute(|env5)>;
+    	env6 := <execute(s|env5)>;
     	out  := <vm-stop(|env6)>
     	
     store-block: (STC_PseudoCode(_), env) -> env
@@ -21,8 +24,7 @@ rules
     
     // Ask next instruction and evaluate it
     // Repeat until no instructions are left
-  	execute(|env) = vm-execute(debug(!"execute: "); eval | env)
-//  	execute(|env) = vm-execute(eval | env)
+  	execute(s|env) = vm-execute(s; eval | env)
 
     // Instruction not implemented or execution failed
 	// Catches current instructions and reports them
