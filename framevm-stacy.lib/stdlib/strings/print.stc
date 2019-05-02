@@ -1,23 +1,23 @@
-//export PRINT
+export PRINT_STRING as print
 	
-PRINT:
+PRINT_STRING:
 	get [0, 0]			// Size
 	ipush 0				// Idx
-	jump PRINT_LOOP		//
+	jump __PRINT_LOOP		//
 	
-PRINT_LOOP:
+__PRINT_LOOP:
 	dup 2				// Size
 	dup 2				// Idx
 	eqi					// If end of string
-	jumpz PRINT_CHAR PRINT_END
+	jumpz __PRINT_CHAR __PRINT_END
 	
-PRINT_END:
+__PRINT_END:
 	pop					// Clear idx
 	pop					// Clear size
 	cget [c]			// Return address
 	cret				// Return
 	
-PRINT_CHAR:
+__PRINT_CHAR:
 	ipush 1				// Increment the index
 	addi				//
 						//
@@ -27,5 +27,5 @@ PRINT_CHAR:
 	getr				//
 	printc				// Print that character
 						//
-	jump PRINT_LOOP		// Goto next character
+	jump __PRINT_LOOP		// Goto next character
 	

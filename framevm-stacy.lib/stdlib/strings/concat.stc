@@ -1,5 +1,7 @@
 // Expects a dataframe with two strings, string at index [1] will be appended to string at index [0]
-CONCAT:
+// Made by @Geweldig
+
+CONCAT_STRINGS:
 	get [0, 0]			//Get length of first string.
 	get [1, 0]  		//Get length of second string.
 	addi       		 	//Compute total length of new string.
@@ -29,28 +31,28 @@ CONCAT:
 	setr [4]
 	
 	mkcurrent          //Set previously created dataframe to current dataframe
-	jump CONCAT_CHECK
+	jump __CONCAT_CHECK
 	
-CONCAT_CHECK:
+__CONCAT_CHECK:
 	get [3]                         //Determine which string we will start to loop over.
 	ipush 2                         //If we have finished looping over both strings
 	eqi                             //jump to the end, if not concat the current string.
-	jumpz CONCAT_STRING CONCAT_END
+	jumpz __CONCAT_STRING __CONCAT_END
 	
-CONCAT_STRING:
+__CONCAT_STRING:
 	get [3]           //Get the string we will loop over.
 	get
 	getr [0]          //Get length of the string.
 	ipush 0           //Get index of the string.
-	jump CONCAT_LOOP  //Start looping.
+	jump __CONCAT_LOOP  //Start looping.
 
-CONCAT_LOOP:
+__CONCAT_LOOP:
 	dup 2                                //If the length is equal to the current index,
 	dup 2                                //stop looping. If not add the current character to the new string.
 	eqi
-	jumpz CONCAT_CHAR CONCAT_STRING_END
+	jumpz __CONCAT_CHAR __CONCAT_STRING_END
 
-CONCAT_CHAR:
+__CONCAT_CHAR:
 	ipush 1           //Increment index of character we want to get.
 	addi
 	dup
@@ -68,17 +70,17 @@ CONCAT_CHAR:
 	swap 2
 	setr
 	
-	jump CONCAT_LOOP  //Go to next character
+	jump __CONCAT_LOOP  //Go to next character
 
-CONCAT_STRING_END:
+__CONCAT_STRING_END:
 	pop                //Pop index and string length from stack,
 	pop                //as they are no longer needed. 
 	get [3]            //Increment which string we want to loop over, as we have
 	ipush 1            //finished looping over this string.
 	addi
 	set [3]
-	jump CONCAT_CHECK  //Check if we want to loop again.
+	jump __CONCAT_CHECK  //Check if we want to loop again.
 
-CONCAT_END:
+__CONCAT_END:
 	get [2]  //Return the newly created string
 	return
