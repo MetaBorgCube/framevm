@@ -15,7 +15,7 @@ rules // Analysis
   
   prefix-filename: AnalyzeUnit(fname, ast, params) -> AnalyzeUnit(fname, (module-name, ast), params)
     where
-    	module-name := <remove-extension; string-replace(|"/", "."); string-replace(|"\\", ".")> fname
+      module-name := <remove-extension; string-replace(|"/", "."); string-replace(|"\\", ".")> fname
   prefix-filename: a@AnalyzeFinal(_, _, _) -> a
   prefix-filename: a@AnalyzeInitial(_) -> a
   

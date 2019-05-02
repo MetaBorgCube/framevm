@@ -1,8 +1,8 @@
 module stc-common
 
 imports
-	stc-pp
-	stc-interpreter
+    stc-pp
+    stc-interpreter
 
 signature
   sorts S
@@ -21,6 +21,6 @@ signature
     IntV : Int -> V
     
 rules
-	pp-framevm-stacy         = pp-stacy-debug
-	eval-framevm-stacy       = eval-program
-	eval-framevm-stacy-debug = eval-program-debug
+    pp-framevm-stacy         = pp-stacy-debug
+    eval-framevm-stacy       = eval-program
+    eval-framevm-stacy-debug = eval-program-debug

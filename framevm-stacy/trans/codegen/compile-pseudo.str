@@ -1,47 +1,47 @@
 module compile-pseudo
 
 imports 
-	signatures/framevm-stacy-sig
-	signatures/fvm-common-sig
-	signatures/fvm-pseudo-sig
-	stc-common
-	stc-util
+    signatures/framevm-stacy-sig
+    signatures/fvm-common-sig
+    signatures/fvm-pseudo-sig
+    stc-common
+    stc-util
     
 rules
-  	compile-pseudo: STC_Program(_, _, blocks) -> <stc-from-flat> <concat> [instrs, [STC_IPush("0"), STC_Return()]]
+    compile-pseudo: STC_Program(_, _, blocks) -> <stc-from-flat> <concat> [instrs, [STC_IPush("0"), STC_Return()]]
       where
-	  	_ := <new-counter> "cont";
-	  	_ := <new-counter> "then"; 
-	  	_ := <new-counter> "else";
-	  	_ := <new-counter> "fun"; 
-      	instrs := <mapconcat(compile-pseudo-instr)> <getfirst(is-pseudo)> blocks
-      	
+        _ := <new-counter> "cont";
+        _ := <new-counter> "then"; 
+        _ := <new-counter> "else";
+        _ := <new-counter> "fun"; 
+        instrs := <mapconcat(compile-pseudo-instr)> <getfirst(is-pseudo)> blocks
+          
     is-pseudo: STC_PseudoCode(body) -> body
     
     compile-pseudo-instr: PsdDefine(Bind(name, idx), exp) -> <concat> [exp_instr, set_instr]
       where
-      	exp_instr := <compile-pseudo-exp> exp;
-	  	cont_lbl := FVM_Label($[CONT_[<next-counter> "cont"]]);
-	  	set_instr := []
-//      	set_instr := [STC_New("1"), STC_Dup(), STC_Link(FVM_Self(), FVM_Link("P")), STC_Dup(), STC_SetR(FVM_Path([FVM_Slot(<int-to-string> idx)])), STC_ScopeDown(cont_lbl), cont_lbl]
-      	
-   compile-pseudo-instr: PsdAssign(ref, exp) -> <concat> [exp_instr, set_instr]
+        exp_instr := <compile-pseudo-exp> exp;
+        cont_lbl := FVM_Label($[CONT_[<next-counter> "cont"]]);
+        set_instr := []
+//        set_instr := [STC_New("1"), STC_Dup(), STC_Link(FVM_Self(), FVM_Link("P")), STC_Dup(), STC_SetR(FVM_Path([FVM_Slot(<int-to-string> idx)])), STC_ScopeDown(cont_lbl), cont_lbl]
+          
+    compile-pseudo-instr: PsdAssign(ref, exp) -> <concat> [exp_instr, set_instr]
       where
-      	exp_instr := <compile-pseudo-exp> exp;
-      	path := FVM_Path(<compile-ref> ref);
-      	set_instr := [STC_Set(path)]
-      	
+        exp_instr := <compile-pseudo-exp> exp;
+        path := FVM_Path(<compile-ref> ref);
+        set_instr := [STC_Set(path)]
+          
       
-   compile-ref: PsdRef(PsdID(obj), tail) -> <concat> [obj_path, tail_path]
-     where
-     	FVM_Path(obj_path) := <framevm-path-from-nabl2> (obj, "PsdVar", "index");
-     	tail_path := <compile-ref> tail
-     	
-   compile-ref: PsdID(ref) -> obj_path
-     where
-     	FVM_Path(obj_path) := <framevm-path-from-nabl2> (ref, "PsdVar", "index")
-    	
-   compile-pseudo-exp: PsdInt(n) -> [STC_IPush(n)]
+    compile-ref: PsdRef(PsdID(obj), tail) -> <concat> [obj_path, tail_path]
+      where
+        FVM_Path(obj_path) := <framevm-path-from-nabl2> (obj, "PsdVar", "index");
+        tail_path := <compile-ref> tail
+         
+    compile-ref: PsdID(ref) -> obj_path
+      where
+        FVM_Path(obj_path) := <framevm-path-from-nabl2> (ref, "PsdVar", "index")
+        
+    compile-pseudo-exp: PsdInt(n) -> [STC_IPush(n)]
    
    
    

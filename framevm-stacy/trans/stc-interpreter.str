@@ -1,33 +1,33 @@
 module stc-interpreter
 
 imports 
-	signatures/framevm-stacy-sig
-	interpreter/-
-	stc-desugar
+    signatures/framevm-stacy-sig
+    interpreter/-
+    stc-desugar
     
 rules
-	eval-program-debug = eval-program(debug(!"execute: "))
-	eval-program = eval-program(id)
-	
-  	eval-program(s): (_, STC_Program(i, s, blocks, links)) -> out
+    eval-program-debug = eval-program(debug(!"execute: "))
+    eval-program = eval-program(id)
+    
+    eval-program(s): (_, STC_Program(i, s, blocks, links)) -> out
       where 
-    	env1 := <vm-init> (links, 2, s);
-      	env2 := <foldl(store-block)> (blocks, env1);
-      	env3 := <store-block> (STC_Block(FVM_Label("_exit"), STC_Seq([])), env2);
-      	env4 := <store-block> (STC_Block(FVM_Label("_catch"), STC_Seq([])), env3);
-      	env5 := <vm-start(|env4)>;
-    	env6 := <execute(s|env5)>;
-    	out  := <vm-stop(|env6)>
-    	
+        env1 := <vm-init> (links, 2, s);
+        env2 := <foldl(store-block)> (blocks, env1);
+        env3 := <store-block> (STC_Block(FVM_Label("_exit"), STC_Seq([])), env2);
+        env4 := <store-block> (STC_Block(FVM_Label("_catch"), STC_Seq([])), env3);
+        env5 := <vm-start(|env4)>;
+        env6 := <execute(s|env5)>;
+        out  := <vm-stop(|env6)>
+        
     store-block: (STC_PseudoCode(_), env) -> env
-  	store-block: (STC_Block(FVM_Label(lbl), STC_Seq(body)), env) -> <vm-store-block(|env)> (lbl, body)
+    store-block: (STC_Block(FVM_Label(lbl), STC_Seq(body)), env) -> <vm-store-block(|env)> (lbl, body)
     
     // Ask next instruction and evaluate it
     // Repeat until no instructions are left
-  	execute(s|env) = vm-execute(s; eval | env)
+    execute(s|env) = vm-execute(s; eval | env)
 
     // Instruction not implemented or execution failed
-	// Catches current instructions and reports them
-	eval: (instr, env) -> <fail>
-	  where
-	  	_ := <debug> ("Execution failed at instruction", instr)
+    // Catches current instructions and reports them
+    eval: (instr, env) -> <fail>
+      where
+        <debug> ("Execution failed at instruction", instr)

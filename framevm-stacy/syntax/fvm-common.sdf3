@@ -10,8 +10,8 @@ lexical syntax
   INT            = "-"? [0-9]+ 
   INTLZ          = [1-9][0-9]* 
   INTLEZ         = [0-9]+ 
-  BOOL			 = "true"
-  BOOL			 = "false"
+  BOOL           = "true"
+  BOOL           = "false"
   
   CHAR           = "'" ~[\'\t\n] "'"
   CHAR           = "'\\t'"
@@ -36,16 +36,16 @@ lexical syntax
   NewLineEOF     = EOF 
   EOF            =  
 
-//  LABEL = 	"MAIN" 		{reject}
-  ID = 		"addi" 		{reject}
-  ID = 		"jump" 		{reject}
-  ID = 		"jumpz" 	{reject}
-  ID = 		"dup"	 	{reject}
-  ID = 		"new"	 	{reject}
-  ID = 		"pushi"	 	{reject}
-  ID = 		"MAIN"	 	{reject}
-  ID = 		"true"	 	{reject}
-  ID = 		"false"	 	{reject}
+//  LABEL =     "MAIN"         {reject}
+  ID =         "addi"        {reject}
+  ID =         "jump"        {reject}
+  ID =         "jumpz"       {reject}
+  ID =         "dup"         {reject}
+  ID =         "new"         {reject}
+  ID =         "pushi"       {reject}
+  ID =         "MAIN"        {reject}
+  ID =         "true"        {reject}
+  ID =         "false"       {reject}
   
   
 lexical restrictions

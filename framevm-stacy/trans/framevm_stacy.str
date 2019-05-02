@@ -1,15 +1,15 @@
 module framevm_stacy
 
 imports
-	completion/completion
-	outline
-	pp
-	stc-common
-	stc-analysis
-	stc-interpreter
-	stc-desugar
-	desugar/register
-	codegen/compile-pseudo
+    completion/completion
+    outline
+    pp
+    stc-common
+    stc-analysis
+    stc-interpreter
+    stc-desugar
+    desugar/register
+    codegen/compile-pseudo
 
 rules // Debugging
 

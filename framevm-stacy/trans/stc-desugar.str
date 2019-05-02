@@ -1,18 +1,18 @@
 module stc-desugar
 
 imports
-	signatures/framevm-stacy-sig
-	desugar/toRISC
-	desugar/fixSeq
-	desugar/pseudo
-	desugar/register
-	desugar/strings
+    signatures/framevm-stacy-sig
+    desugar/toRISC
+    desugar/fixSeq
+    desugar/pseudo
+    desugar/register
+    desugar/strings
    
 rules  
-	a-desugar-full: (f, ast) -> (f, ast') with ast':= <desugar-full> ast
-	
+    a-desugar-full: (f, ast) -> (f, ast') with ast':= <desugar-full> ast
+    
     desugar-full = desugar; to-RISC-all
     desugar = apply-aliasses; fix-seq; desugar-pseudo-all; fix-strings
-  	 
-	resugar = resugar-seq; resugar-pseudo-all; resugar-aliasses; resugar-strings 
+       
+    resugar = resugar-seq; resugar-pseudo-all; resugar-aliasses; resugar-strings 
    
