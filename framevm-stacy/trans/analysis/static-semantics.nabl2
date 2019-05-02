@@ -6,7 +6,7 @@ imports
   analysis/pseudo
   
 signature
-	namespaces Var
+	namespaces Var Module
 
 name resolution
   labels
@@ -24,8 +24,13 @@ rules
 
   init ^ (s) := new s.
   
-  [[STC_Program(size, blocks, _) ^(s)]] :=
-  	Map1(block)[[blocks ^(s)]].
+  [[(fname, ast@STC_Program(imports, size, blocks, _)) ^(s)]] :=
+  	new prog, prog ---> s,
+  	Module{fname} <- s,
+  	Module{fname}.ast := ast,
+  	Module{fname} ===> prog,
+//  	Map1(import)[[imports ^(prog)]],
+  	Map1(block)[[blocks ^(prog)]].
   
   block[[STC_PseudoCode(body) ^(s)]] :=
   	new pseudo, pseudo ---> s,

@@ -16,6 +16,7 @@ pardonedLanguages:
 - EditorService
 - Stratego-Sugar
 - SDF
+
 exports:
 - language: ATerm
   directory: src-gen/syntax
@@ -40,7 +41,8 @@ exports:
   includes: "**/*.esv"
 - language: EditorService
   directory: editor
-includes: "**/*.esv"
+  includes: "**/*.esv"
+
 debug:
   typesmart: false
 language:

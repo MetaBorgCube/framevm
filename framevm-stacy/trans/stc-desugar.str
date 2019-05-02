@@ -9,6 +9,8 @@ imports
 	desugar/strings
    
 rules  
+	a-desugar-full: (f, ast) -> (f, ast') with ast':= <desugar-full> ast
+	
     desugar-full = desugar; to-RISC-all
     desugar = apply-aliasses; fix-seq; desugar-pseudo-all; fix-strings
   	 

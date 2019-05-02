@@ -13,13 +13,13 @@ rules
 	// Convert a flat list of instructions to a VM program
 	// Blocks are separated by labels instead of actual blocks
 	// Sugar is re-added to make it printable
-	stc-from-flat: [n | body] -> <resugar> STC_Program(n, aliasses, blocks)
+	stc-from-flat: [n | body] -> <resugar> STC_Program([], n, aliasses, blocks)
 	  where
 	  	<is-string> n;
 	  	(aliasses, d_body) := <get-aliasses> body;
 		(blocks, []) := <foldr(!([], []), from-flat-fold)> [FVM_Label("MAIN") | d_body]
 		
-	stc-from-flat: body@[n|_] -> <resugar> STC_Program("0", aliasses, blocks)
+	stc-from-flat: body@[n|_] -> <resugar> STC_Program([], "0", aliasses, blocks)
 	  where
 	  	<not(is-string)> n;
 	  	(aliasses, d_body) := <get-aliasses> body;

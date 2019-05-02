@@ -10,7 +10,7 @@ signature
     Bind : STRING * INT -> S
     STC_Seq : [Instr] -> S
     STC_Block : STC_Label * STC_Seq * INT -> S
-    STC_Program: INT * [STC_Block] -> S
+    STC_Program: Import * INT * [STC_Block] -> S
 
 signature
   sorts V

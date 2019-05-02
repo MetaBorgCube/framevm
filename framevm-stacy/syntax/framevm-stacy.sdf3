@@ -5,20 +5,22 @@ imports fvm-common fvm-pseudo
 context-free start-symbols Program
 
 sorts Program context-free syntax
-  Program.STC_Program = <<InitSize> 
+  Program.STC_Program = <<imports:Import*>
+<InitSize> 
 <alias:Alias*>
 
 <body:Block*>
->	{ layout (align-list body && align-list alias) }
+>	{ layout (align-list body && align-list alias && align-list imports) }
   
-  Program.STC_ProgramNoInit = <<alias:Alias*>
+  Program.STC_ProgramNoInit = <<imports:Import*>
+<alias:Alias*>
 
-<body:Block*>>	{ layout (align-list body && align-list alias) }
+<body:Block*>>	{ layout (align-list body && align-list alias && align-list imports) }
   
 sorts Block context-free syntax
 
   Block.STC_Block = <
-<lbl:Label>: 
+<lbl:BlockLabel>: 
     <body:Body>
 
 > 			{ layout (indent lbl body) }

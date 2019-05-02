@@ -56,12 +56,12 @@ menus
     action: "Transform to RISC" = editor-format-desugar
     action: "Show RISC AST"     = debug-show-desugared-full-aterm
   
-  menu: "Run" (openeditor) (source)    
+  menu: "Run" (openeditor)  
     action: "CISC"    = run-program-cisc
     action: "RISC"    = run-program-risc
     action: "Compare" = run-program-compare
     
-  menu: "Debug" (openeditor) (source)
+  menu: "Debug" (openeditor)
     action: "CISC"    = run-program-cisc-debug
     action: "RISC"    = run-program-risc-debug
     

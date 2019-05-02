@@ -9,7 +9,7 @@ rules
 	eval-program-debug = eval-program(debug(!"execute: "))
 	eval-program = eval-program(id)
 	
-  	eval-program(s): STC_Program(s, blocks, links) -> out
+  	eval-program(s): (_, STC_Program(i, s, blocks, links)) -> out
       where 
     	env1 := <vm-init> (links, 2, s);
       	env2 := <foldl(store-block)> (blocks, env1);

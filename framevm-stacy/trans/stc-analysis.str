@@ -3,6 +3,7 @@ module stc-analysis
 imports
   nabl2/api
   nabl2/runtime
+  nabl2/runtime/analysis/-
   
   stc-desugar
   stc-pp
@@ -10,7 +11,14 @@ imports
   analysis/static-semantics
 
 rules // Analysis
-  editor-analyze = nabl2-analyze(desugar-full; stack-calc)
+  editor-analyze = prefix-filename; nabl2-analyze(a-desugar-full; a-stack-calc)
+  
+  prefix-filename: AnalyzeUnit(fname, ast, params) -> AnalyzeUnit(fname, (module-name, ast), params)
+    where
+    	module-name := <remove-extension; string-replace(|"/", "."); string-replace(|"\\", ".")> fname
+  prefix-filename: a@AnalyzeFinal(_, _, _) -> a
+  prefix-filename: a@AnalyzeInitial(_) -> a
+  
 
 rules // Debugging
 
