@@ -2,6 +2,9 @@ module stc-desugar
 
 imports
     signatures/framevm-stacy-sig
+    signatures/fvm-common-sig
+    stc-common
+    
     desugar/toRISC
     desugar/fixSeq
     desugar/pseudo
@@ -13,8 +16,7 @@ rules
     desugar = split-header; apply-aliasses; fix-seq; desugar-pseudo-all; fix-strings
        
     resugar = resugar-seq; resugar-pseudo-all; resugar-aliasses; resugar-strings; unify-header
-	resugar-flat = resugar-seq; resugar-strings; unify-header
-
+	
    	split-header: STC_Program(FVM_Header(headeritems), blocks) -> STC_Program(fname, imports, initsize, aliasses, blocks)
    	  with
    	  	fname := "";
