@@ -5,15 +5,10 @@ imports fvm-common fvm-pseudo
 context-free start-symbols Program
 
 sorts Program context-free syntax
-  Program.STC_Program = <<pre:Header*>
+  Program.STC_Program = <<Header>
 
 <body:Block*>
->    { layout (align-list body && align-list pre) }
-  
-  
-  Header = Import
-  Header = InitSize
-  Header = Alias
+>    { layout (align-list body) }
   
 sorts Block context-free syntax
 

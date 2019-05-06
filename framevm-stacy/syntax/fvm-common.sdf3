@@ -102,6 +102,11 @@ context-free syntax
   CopyPolicy.FVM_DeepCopy    = <deep>
   CopyPolicy.FVM_ShallowCopy = <shallow>
   
+  Header.FVM_Header = items:HeaderItem* { layout (align-list items) }
+  HeaderItem = Import
+  HeaderItem = InitSize
+  HeaderItem = Alias
+  
   Import.FVM_Import   = <import <LIB>>
   Import.FVM_ImportN  = <from <LIB> import <{LIBFUNC ", "}+>>
   Import.FVM_ImportAs = <from <LIB> import <LIBFUNC> as <LIBFUNC>>

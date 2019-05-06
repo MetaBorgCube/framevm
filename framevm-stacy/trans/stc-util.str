@@ -13,23 +13,13 @@ rules
     // Convert a flat list of instructions to a VM program
     // Blocks are separated by labels instead of actual blocks
     // Sugar is re-added to make it printable
-    stc-from-flat: [n | body] -> <resugar> STC_Program("", [], <string-to-int> n, aliasses, blocks)
-      where
-        <is-string> n;
-        (aliasses, d_body) := <get-aliasses> body;
-        (blocks, []) := <foldr(!([], []), from-flat-fold)> [FVM_Label("MAIN") | d_body]
+    stc-from-flat: (h@FVM_Header(items), body) -> <resugar> <split-header> STC_Program(h, blocks)
+      with
+        (blocks, []) := <foldr(!([], []), from-flat-fold)> [FVM_Label("MAIN") | body]
         
-    stc-from-flat: body@[n|_] -> <resugar> STC_Program("", [], 0, aliasses, blocks)
-      where
-        <not(is-string)> n;
-        (aliasses, d_body) := <get-aliasses> body;
-        (blocks, []) := <foldr(!([], []), from-flat-fold)> [FVM_Label("MAIN") | d_body]
-    
-    get-aliasses: [FVM_LinkAlias(from, to) | body] -> ([FVM_LinkAlias(from, to)|aliasses], body') where (aliasses, body') := <get-aliasses> body
-    get-aliasses: [FVM_ContAlias(from, to) | body] -> ([FVM_ContAlias(from, to)|aliasses], body') where (aliasses, body') := <get-aliasses> body
-    get-aliasses: body -> ([], body)
-    
-    
+    stc-from-flat: body -> <stc-from-flat> (FVM_Header([]), body) where <is-list> body
+   
+   
     // Convert the path from an nabl2 lookup to one that can be interpreted by the VM  
     framevm-path-from-nabl2: (name, namespace, property) -> FVM_Path(fvm_path)
       where
