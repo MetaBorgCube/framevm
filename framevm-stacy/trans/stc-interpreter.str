@@ -6,12 +6,15 @@ imports
     stc-desugar
     
 rules
-    eval-program-debug = eval-program(debug(!"execute: "))
+    eval-program-debug = eval-program(debug-eval)
+    debug-eval: t@(e, _) -> t
+      where <topdown(try(rm-annotations)); debug(!"execute: ")> e
+      
     eval-program = eval-program(id)
     
-    eval-program(s): (_, STC_Program(i, s, blocks, links)) -> out
+    eval-program(s): STC_Program(fn, i, s, links, blocks) -> out
       where 
-        env1 := <vm-init> (links, 2, s);
+        env1 := <vm-init> (<length> links, 2, s);
         env2 := <foldl(store-block)> (blocks, env1);
         env3 := <store-block> (STC_Block(FVM_Label("_exit"), STC_Seq([])), env2);
         env4 := <store-block> (STC_Block(FVM_Label("_catch"), STC_Seq([])), env3);
@@ -20,7 +23,9 @@ rules
         out  := <vm-stop(|env6)>
         
     store-block: (STC_PseudoCode(_), env) -> env
-    store-block: (STC_Block(FVM_Label(lbl), STC_Seq(body)), env) -> <vm-store-block(|env)> (lbl, body)
+    
+    store-block: (STC_Block(l@FVM_Label(lbl), s@STC_Seq(body)), env) -> <store-block> (STC_Block(l, s, 0), env)
+    store-block: (STC_Block(FVM_Label(lbl), STC_Seq(body), _), env) -> <vm-store-block(|env)> (lbl, body)
     
     // Ask next instruction and evaluate it
     // Repeat until no instructions are left

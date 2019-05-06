@@ -13,13 +13,13 @@ signature
     PsdFuncDef: PsdID * [PsdField] * [PsdInstr] * INT * Type -> S
     
 rules
-    desugar-pseudo-all: STC_Program(i, n, blocks, l) -> STC_Program(i, n, <map(desugar-pseudo-all)> blocks, l)
+    desugar-pseudo-all: STC_Program(fn, i, s, a, blocks) -> STC_Program(fn, i, s, a, <map(desugar-pseudo-all)> blocks)
     desugar-pseudo-all: STC_Block(name, body) -> STC_Block(name, body)
     desugar-pseudo-all: STC_PseudoCode(Seq(body)) -> <desugar-pseudo> STC_PseudoCode(body)
     
     desugar-pseudo = pseudo-desugar-bind
   
-    resugar-pseudo-all: STC_Program(i, n, aliasses, blocks) -> STC_Program(i, n, aliasses, <map(resugar-pseudo-all)> blocks)
+    resugar-pseudo-all: STC_Program(fn, i, s, a, blocks) -> STC_Program(fn, i, s, a, <map(resugar-pseudo-all)> blocks)
     resugar-pseudo-all: STC_Block(name, body) -> STC_Block(name, body)
     resugar-pseudo-all: STC_PseudoCode(body) -> <resugar-pseudo> STC_PseudoCode(Seq(body))
     

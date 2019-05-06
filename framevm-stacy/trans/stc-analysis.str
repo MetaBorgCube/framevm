@@ -11,10 +11,10 @@ imports
   analysis/static-semantics
 
 rules // Analysis
-  editor-analyze = prefix-filename; nabl2-analyze(a-desugar-full; a-stack-calc)
+  editor-analyze = prefix-filename; nabl2-analyze(desugar; stack-calc)
   
   prefix-filename: AnalyzeUnit(fname, ast, params) -> AnalyzeUnit(fname, (module-name, ast), params)
-    where
+    with
       module-name := <remove-extension; string-replace(|"/", "."); string-replace(|"\\", ".")> fname
   prefix-filename: a@AnalyzeFinal(_, _, _) -> a
   prefix-filename: a@AnalyzeInitial(_) -> a

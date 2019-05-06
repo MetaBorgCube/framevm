@@ -7,9 +7,7 @@ imports
 
 rules
     // check stack sizes of blocks
-    a-stack-calc: (f, ast) -> (f, ast') with ast' := <stack-calc> ast
-    
-    stack-calc: STC_Program(i, s, blocks, l) -> STC_Program(i, s, out_blocks, l)
+    stack-calc: STC_Program(fn, i, s, a, blocks) -> STC_Program(fn, i, s, a, out_blocks)
       where
         (errors, out_blocks) := <unzip><mapconcat(stack-calc)> blocks
   

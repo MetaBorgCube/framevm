@@ -6,7 +6,7 @@ imports
   analysis/pseudo
   
 signature
-    namespaces Var Module
+    namespaces Var Module ModuleFunc
 
 name resolution
   labels
@@ -24,14 +24,52 @@ rules
 
   init ^ (s) := new s.
   
-  [[(fname, ast@STC_Program(imports, size, blocks, _)) ^(s)]] :=
-    new prog, prog ---> s,
+  [[ast@STC_Program(fname, imports, size, a, blocks) ^(s)]] :=
+    new prog,
+    Map1(block)[[blocks ^(prog)]],
+    
+    new mod, mod ---> s,
     Module{fname} <- s,
     Module{fname}.ast := ast,
-    Module{fname} ===> prog,
-//    Map1(import)[[imports ^(prog)]],
-    Map1(block)[[blocks ^(prog)]].
+    Module{fname} ===> mod,
+    Map2(import)[[imports ^(mod, prog)]].
+    
   
+  
+  import[[FVM_Import(lib_name) ^(s, _)]] :=
+  	Module{lib_name} -> s,
+  	Module{lib_name} |-> d | error $[Module not found: [lib_name]] @lib_name.
+  	
+  import[[FVM_ImportN(lib_name, funcs) ^(s, _)]] :=
+  	Module{lib_name} -> s,
+  	Module{lib_name} |-> d | error $[Module not found: [lib_name]] @lib_name,
+  	d ?===> ds,
+  	Map1(libfunc)[[funcs ^(ds)]].
+  	
+  import[[FVM_ImportAs(lib_name, func_name, func_as) ^(s, _)]] :=
+  	Module{lib_name} -> s,
+  	Module{lib_name} |-> d | error $[Module not found: [lib_name]] @lib_name,
+  	d ?===> ds,
+  	new ns, ns ---> ds,
+  	ModuleFunc{func_name} -> ns,
+  	ModuleFunc{func_name} |-> d | error $[Function not found: [func_name]] @func_name,
+  	d.label := lbl,
+  	ModuleFunc{func_as} <- s,
+  	ModuleFunc{func_as}.lbl := lbl.
+  
+  import[[FVM_Export(lbl, func_as) ^(mod, prog)]] :=
+  	ModuleFunc{func_as} <- mod,
+  	false | error $[[ModuleFunc{func_as}] [mod]] @lbl,
+  	ModuleFunc{func_as}.label := lbl,
+  	lbl[[lbl ^(prog)]].
+  	
+  libfunc[[func_name ^(ds)]] :=
+  	new ns, ns ---> ds,
+  	ModuleFunc{func_name} -> ns,
+  	ModuleFunc{func_name} |-> d | error $[Function not found: [func_name] [ds]] @func_name.
+  	
+  	
+  	
   block[[STC_PseudoCode(body) ^(s)]] :=
     new pseudo, pseudo ---> s,
     pseudo [[body ^(pseudo)]]. 
@@ -39,13 +77,14 @@ rules
   block[[STC_Block(FVM_Label(name), STC_Seq(body), size) ^(s)]] :=
     new block, 
     Block{name} <- s,
-    distinct/name D(s)/Block | error $[Redefinition of label] @NAMES,
+    distinct/name D(s)/Block | error $[Redefinition of label] @name,
     Block{name} ===> block,
     block ---> s,
     Map1(instr)[[body ^(block)]],
     size == 0 | warning $[Stack delta is non-zero: [size]] @name.
       
-  lbl[[FVM_Label(name) ^(s)]] :=
+  lbl[[FVM_Label(name) ^(s)]] := lbl[[name^(s)]].
+  lbl[[name ^(s)]] :=
     Block{name} -> s,
     Block{name} |-> d | error $[Unknown jump label [name]] @name.
     

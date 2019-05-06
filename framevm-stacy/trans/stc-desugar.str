@@ -8,11 +8,31 @@ imports
     desugar/register
     desugar/strings
    
-rules  
-    a-desugar-full: (f, ast) -> (f, ast') with ast':= <desugar-full> ast
-    
+rules
     desugar-full = desugar; to-RISC-all
-    desugar = apply-aliasses; fix-seq; desugar-pseudo-all; fix-strings
+    desugar = split-header; apply-aliasses; fix-seq; desugar-pseudo-all; fix-strings
        
-    resugar = resugar-seq; resugar-pseudo-all; resugar-aliasses; resugar-strings 
+    resugar = resugar-seq; resugar-pseudo-all; resugar-aliasses; resugar-strings; unify-header
    
+
+   	split-header: STC_Program(header, blocks) -> STC_Program(fname, imports, initsize, aliasses, blocks)
+   	  with
+   	  	fname := "";
+   	  	imports := <filter(is-import)> header;
+   	  	aliasses := <filter(is-alias)> header;
+   	  	initsize := <getfirst(is-init) <+ !0> header
+   	  	
+    split-header: (fname, prog@STC_Program(header, blocks)) -> STC_Program(fname, imports, initsize, aliasses, blocks)
+   	  with
+   	  	STC_Program(_, imports, initsize, aliasses, blocks) := <split-header> prog
+   	  	
+   	unify-header: STC_Program(fname, imports, n, aliasses, blocks) 
+   		-> STC_Program(<concat> [imports, [FVM_InitSize(<int-to-string> n)], aliasses], blocks)
+   	 
+   	is-import: i@FVM_Import(_) -> i
+   	is-import: i@FVM_ImportN(_, _) -> i
+   	is-import: i@FVM_ImportAs(_, _, _) -> i
+   	is-import: i@FVM_Export(_, _) -> i
+   	
+   	is-init: FVM_InitSize(s) -> <string-to-int> s
+   	

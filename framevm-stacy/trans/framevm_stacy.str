@@ -33,36 +33,38 @@ rules // Debugging
     ; result   := <pp-framevm-stacy> <resugar> <desugar-full> ast
     
   
+  
+  
   run-program-cisc:
     (_, _, ast, path, project-path) -> (filename, result)
     with
       filename := <guarantee-extension(|"value")> path
-    ; result   := <eval-program> <desugar> ast
+    ; result   := <eval-program> ast
     
   run-program-risc:
     (_, _, ast, path, project-path) -> (filename, result)
     with
       filename := <guarantee-extension(|"value")> path
-    ; result   := <eval-program> <debug><desugar-full> ast
+    ; result   := <eval-program> <to-RISC-all> ast
     
   run-program-cisc-debug:
     (_, _, ast, path, project-path) -> (filename, result)
     with
       filename := <guarantee-extension(|"value")> path
-    ; result   := <eval-program-debug> <desugar> ast
+    ; result   := <eval-program-debug> ast
     
   run-program-risc-debug:
     (_, _, ast, path, project-path) -> (filename, result)
     with
       filename := <guarantee-extension(|"value")> path
-    ; result   := <eval-program-debug> <debug><desugar-full> ast
+    ; result   := <eval-program-debug> <to-RISC-all> ast
     
   run-program-compare:
     (_, _, ast, path, project-path) -> (filename, out)
     with
       filename := <guarantee-extension(|"value")> path
-    ; result1  := <eval-program> <desugar> ast
-    ; result2  := <eval-program> <desugar-full> ast
+    ; result1  := <eval-program> ast
+    ; result2  := <eval-program> <to-RISC-all> ast
     ; out      := <compare-output> (result1, result2)
     
 //  compile-pseudocode:

@@ -13,10 +13,10 @@
 MAIN:
 	jump START		//
   
-START :
+START:
 	ipush 1			//
 	ipush 2			//
-	addi			// 1 + 2
+	addi		 	// 1 + 2
 	set [0]			// store in a
 	jump MORE		//
   

@@ -8,7 +8,7 @@ imports
     interpreter/util
 
 rules
-    to-RISC-all: STC_Program(i, s, blocks, l) -> STC_Program(i, s, <map(to-RISC-all)> blocks, l)
+    to-RISC-all: STC_Program(fn, i, s, a, blocks) -> STC_Program(fn, i, s, a, <map(to-RISC-all)> blocks)
     to-RISC-all: STC_PseudoCode(body) -> STC_PseudoCode(body)
     to-RISC-all: STC_Block(lbl, STC_Seq(body)) -> STC_Block(lbl, STC_Seq(body_risc))
       where
