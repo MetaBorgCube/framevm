@@ -5,8 +5,8 @@ imports
 
 rules 
     external vm-init(|)               // (links, conts, slots) -> env
-    external vm-store-block(|env)     // env| (lbl, [instr]) -> env' 
-    external vm-start(|env)           // env| env| -> env'
+    external vm-store-block(|env)     // env| ((lib, lbl), [instr]) -> env' 
+    external vm-start(|env)           // env| (lib, block) -> env'
     external vm-stop(|env)            // env| -> string
     external vm-execute(eval|env)     // eval|env| -> env'
     
@@ -32,8 +32,8 @@ rules
 
     external vm-print(|env)           // env| val -> (env', string)
     external vm-print-chars(|env)     // env| [int] -> (env', string)
-    external vm-jump(|env)            // env| lbl -> env'
-    external vm-cont-new(|env)        // env| (frame, lbl, size) -> (env', cont)
+    external vm-jump(|env)            // env| (lib, lbl) -> env'
+    external vm-cont-new(|env)        // env| (frame, (lib, lbl), size) -> (env', cont)
 
     external cont-call(|env)          // env| cont -> env'
     external cont-set(|env)           // env| (cont, (contId, contIdx), cont) -> env'

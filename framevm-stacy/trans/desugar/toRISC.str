@@ -10,6 +10,9 @@ imports
 rules
     to-RISC-all: STC_Program(fn, i, s, a, blocks) -> STC_Program(fn, i, s, a, <map(to-RISC-all)> blocks)
     to-RISC-all: STC_PseudoCode(body) -> STC_PseudoCode(body)
+    to-RISC-all: STC_Block(lbl, STC_Seq(body), d) -> STC_Block(lbl, STC_Seq(body_risc), d)
+      where
+        STC_Block(lbl, STC_Seq(body_risc)) := <to-RISC-all> STC_Block(lbl, STC_Seq(body))
     to-RISC-all: STC_Block(lbl, STC_Seq(body)) -> STC_Block(lbl, STC_Seq(body_risc))
       where
         body_risc := <to-RISC(r-toN)><to-RISC(r-stack-index)><to-RISC(r-relative)><to-RISC(r-new)><to-RISC(r-link)><to-RISC(r-cont)><to-RISC(r-scope)><to-RISC(r-string)> body

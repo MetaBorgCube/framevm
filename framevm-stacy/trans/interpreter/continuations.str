@@ -17,10 +17,10 @@ rules
           
     // STC_ContNew/2
     // Create a new ControlFrame at the given label using the frame on top of the stack as data frame
-    eval: (STC_ContNew(FVM_Label(lbl), size), env1) -> env4
+    eval: (STC_ContNew(FVM_BoundLabel(lib, lbl), size), env1) -> env4
       where
         (env2, FrameRef(frame)) := <stack-pop-frame(|env1)>;
-        (env3, cont) := <vm-cont-new(|env2)> (frame, lbl, <string-to-int> size);
+        (env3, cont) := <vm-cont-new(|env2)> (frame, (lib, lbl), <string-to-int> size);
         env4 := <stack-push(|env3)> Continuation(cont)
         
     // STC_ContGet/0
@@ -124,19 +124,19 @@ rules
     // STC_ContCall/1
     // Call the continuation on top of the stack
     // Set the next instruction of the current control frame to be at the given label
-    eval: (STC_ContCall(FVM_Label(lbl)), env1) -> env4
+    eval: (STC_ContCall(FVM_BoundLabel(lib, lbl)), env1) -> env4
       where
         (env2, Continuation(cont)) := <stack-pop-cont(|env1)>;
-        env3 := <vm-jump(|env2)> lbl;
+        env3 := <vm-jump(|env2)> (lib, lbl);
         env4 := <cont-call(|env3)> cont
           
     // STC_ContCall/2
     // Call the given continuation
     // Set the next instruction of the current control frame to be at the given label
-    eval: (STC_ContCall(p, FVM_Label(lbl)), env1) -> env3
+    eval: (STC_ContCall(p, FVM_BoundLabel(lib, lbl)), env1) -> env3
       where
         cont := <cont-get(|env1)> (<cont-this(|env1)>, <cont-resolve> p);
-        env2 := <vm-jump(|env1)> lbl;
+        env2 := <vm-jump(|env1)> (lib, lbl);
         env3 := <cont-call(|env2)> cont
           
     // STC_ContReturn/0

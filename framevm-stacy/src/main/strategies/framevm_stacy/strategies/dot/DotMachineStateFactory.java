@@ -34,10 +34,12 @@ public class DotMachineStateFactory extends DotFactory {
 
 		List<String> blockList = new ArrayList<>();
 		// Add all code blocks
-		for (Block block : env.blocks.values()) {
-			if (block.getName().equals("_exit") || block.getName().equals("_catch")) continue;
-			
-			blockList.add(DotBlockFactory.build(block, linkList));
+		for (HashMap<String, Block> lib : env.blocks.values()) {
+			for (Block block : lib.values()) {
+				if (block.getName().equals("_exit") || block.getName().equals("_catch")) continue;
+				
+				blockList.add(DotBlockFactory.build(block, linkList));
+			}
 		}
 
 		// Generate output string

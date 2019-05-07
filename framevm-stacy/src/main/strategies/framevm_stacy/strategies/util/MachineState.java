@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.terms.util.NotImplementedException;
 
 /**
@@ -12,7 +13,7 @@ import org.spoofax.terms.util.NotImplementedException;
  * a pointer to the currently active frame and the console output.
  */
 public class MachineState {
-	public HashMap<String, Block> blocks;
+	public HashMap<String, HashMap<String, Block>> blocks;
 	public MachineThread thread;
 	public StringBuilder stdout;
 	public String debug;	
@@ -46,8 +47,10 @@ public class MachineState {
 	 * @return
 	 * 		The block
 	 */
-	public Block getBlock(String name) {
-		return blocks.get(name);
+	public Block getBlock(String libName, String blockName) {
+		HashMap<String, Block> lib = blocks.get(libName);
+		if (lib == null) return null;
+		return lib.get(blockName);
 	}
 		
 	/**
@@ -130,5 +133,12 @@ public class MachineState {
 	public ControlFrame newControlFrame(int contSize, Frame frame, Block block) {
 		String id = "controlFrame_" + controlCount++;
 		return new ControlFrame(contSize, frame, block, id);
+	}
+
+	public void putBlock(String libName, String blockName, IStrategoTerm[] instrs) {
+		if (!blocks.containsKey(libName)) {
+			blocks.put(libName, new HashMap<>());
+		}
+		blocks.get(libName).put(blockName, new Block(blockName, instrs));
 	}
 }

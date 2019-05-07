@@ -32,12 +32,12 @@ rules
     // STC_ClosToCont/1
     eval: (STC_ClosToCont(size), env1) -> env4
       where
-        (env2, ClosV(frame, FVM_Label(lbl))) := <stack-pop-closure(|env1)>;
-        (env3, cont) := <vm-cont-new(|env2)> (frame, lbl, <string-to-int> size);
+        (env2, ClosV(frame, FVM_BoundLabel(lib, lbl))) := <stack-pop-closure(|env1)>;
+        (env3, cont) := <vm-cont-new(|env2)> (frame, (lib, lbl), <string-to-int> size);
         env4 := <stack-push(|env3)> Continuation(cont)
           
     // STC_ClosUnpack/0
     eval: (STC_ClosUnpack(), env1) -> env3
       where
-        (env2, ClosV(frame, FVM_Label(lbl))) := <stack-pop-closure(|env1)>;
+        (env2, ClosV(frame, _)) := <stack-pop-closure(|env1)>;
         env3 := <stack-push(|env2)> FrameRef(frame)

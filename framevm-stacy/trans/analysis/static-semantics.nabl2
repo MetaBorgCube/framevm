@@ -30,7 +30,7 @@ rules
     
     new mod, mod ---> s,
     Module{fname} <- s,
-    Module{fname}.ast := ast,
+    Module{fname}.blocks := blocks,
     Module{fname} ===> mod,
     Map2(import)[[imports ^(mod, prog)]].
     

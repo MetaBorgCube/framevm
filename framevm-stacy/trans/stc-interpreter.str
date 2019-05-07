@@ -14,18 +14,29 @@ rules
     
     eval-program(s): STC_Program(fn, i, s, links, blocks) -> out
       where 
-        env1 := <vm-init> (<length> links, 2, s);
-        env2 := <foldl(store-block)> (blocks, env1);
-        env3 := <store-block> (STC_Block(FVM_Label("_exit"), STC_Seq([])), env2);
-        env4 := <store-block> (STC_Block(FVM_Label("_catch"), STC_Seq([])), env3);
-        env5 := <vm-start(|env4)>;
+        <gti> (<string-length> fn, 1);
+        blocks' := <resolve-jump-labels(|fn)> blocks;
+        
+        env1 := <vm-init> (<length> links, 2, s); 
+        (_, env2) := <foldl(store-block)> (blocks', (fn, env1));
+        (_, env3) := <store-block> (STC_Block(FVM_Label("_exit"), STC_Seq([])), (fn, env2));
+        (_, env4) := <store-block> (STC_Block(FVM_Label("_catch"), STC_Seq([])), (fn, env3));
+        env5 := <vm-start(|env4)> (fn, "MAIN");
         env6 := <execute(s|env5)>;
         out  := <vm-stop(|env6)>
         
-    store-block: (STC_PseudoCode(_), env) -> env
+    store-block: (STC_PseudoCode(_), t@(lib, env)) -> t
     
-    store-block: (STC_Block(l@FVM_Label(lbl), s@STC_Seq(body)), env) -> <store-block> (STC_Block(l, s, 0), env)
-    store-block: (STC_Block(FVM_Label(lbl), STC_Seq(body), _), env) -> <vm-store-block(|env)> (lbl, body)
+//    store-block: (lib, STC_Block(l@FVM_Label(lbl), s@STC_Seq(body)), env) -> <store-block> (lib, STC_Block(l, s, 0), env)
+    store-block: (STC_Block(FVM_Label(lbl), STC_Seq(body)), (lib, env)) -> (lib, <vm-store-block(|env)> ((lib, lbl), body))
+    
+    resolve-jump-labels(|lib): [] -> []
+    resolve-jump-labels(|lib): [b@STC_PseudoCode(_) | t] -> [b | <resolve-jump-labels(|lib)> t]
+    resolve-jump-labels(|lib): [STC_Block(lbl, STC_Seq(body), _) | t] -> [STC_Block(lbl, STC_Seq(body')) | <resolve-jump-labels(|lib)> t]
+      where
+        body' := <bottomup(try(resolve-jump-labels-(|lib)))> body
+    
+    resolve-jump-labels-(|lib): FVM_Label(lbl) -> FVM_BoundLabel(lib, lbl)
     
     // Ask next instruction and evaluate it
     // Repeat until no instructions are left
