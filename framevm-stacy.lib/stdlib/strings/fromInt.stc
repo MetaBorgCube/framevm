@@ -1,3 +1,5 @@
+export INT_TO_STRING as int_to_string
+
 INT_TO_STRING:
 	get [0]
 	ipush 0

@@ -36,5 +36,10 @@ The following files contain the definitions you might want to use when compiling
 
 If you need other strategies from other files, please notify me such that I can add them to these files. This as any other file might change in the future.
 
+### Linking the standard library
+Stacy includes a number of functions in a library like string concatenation and string printing.
+
+To make use of this library, you have to make the files visible to importing files. There are two ways to do this: The first is to simply copy over the `stdlib` folder from `framevm-stacy.lib` to the root of your project that contains the Stacy programs. This method is not encouraged as you need to manually update the library when it is updated. You might notice that making a symlink fixes this issue, sadly these don't work nicely in combination with Eclipse. The second solution is to select your project in eclipse and open its properties (project -> properties). Here you navigate to the 'Java build path' page and click `link source`. In the dialog, select the `framevm-stacy.lib/stdlib`-folder and give it the name 'stdlib'. Stacy programs now should be able to import functions from the library.
+
 ## Importing Roger
 > Work in progress

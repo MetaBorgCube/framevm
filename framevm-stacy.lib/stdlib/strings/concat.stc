@@ -1,3 +1,5 @@
+export CONCAT_STRINGS as concat_strings
+
 // Expects a dataframe with two strings, string at index [1] will be appended to string at index [0]
 // Made by @Geweldig
 

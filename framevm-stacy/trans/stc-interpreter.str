@@ -3,8 +3,8 @@ module stc-interpreter
 imports 
     signatures/framevm-stacy-sig
     interpreter/-
-    stc-desugar
     
+    stc-common
     nabl2/api
     
 rules
