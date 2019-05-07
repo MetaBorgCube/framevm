@@ -13,12 +13,10 @@ imports
 rules // Analysis
   editor-analyze = prefix-filename; nabl2-analyze(desugar; stack-calc)
   
-  prefix-filename: AnalyzeUnit(fname, ast, params) -> AnalyzeUnit(fname, (module-name, ast), params)
+  prefix-filename: AnalyzeMulti(p, files) -> AnalyzeMulti(p, <map(prefix-filename)> files)
+  prefix-filename: (fname, Added(ast)) -> (fname, Added((module-name, ast)))
     with
       module-name := <remove-extension; string-replace(|"/", "."); string-replace(|"\\", ".")> fname
-  prefix-filename: a@AnalyzeFinal(_, _, _) -> a
-  prefix-filename: a@AnalyzeInitial(_) -> a
-  
 
 rules // Debugging
 
