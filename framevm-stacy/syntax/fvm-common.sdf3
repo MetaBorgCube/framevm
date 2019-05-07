@@ -107,8 +107,7 @@ context-free syntax
   HeaderItem = InitSize
   HeaderItem = Alias
   
-  Import.FVM_Import   = <import <LIB>>
-  Import.FVM_ImportN  = <from <LIB> import <{LIBFUNC ", "}+>>
+  Import.FVM_Import  = <from <LIB> import <{LIBFUNC ", "}+>>
   Import.FVM_ImportAs = <from <LIB> import <LIBFUNC> as <LIBFUNC>>
   Import.FVM_Export   = <export <LABEL> as <LIBFUNC>>
   

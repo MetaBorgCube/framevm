@@ -35,38 +35,41 @@ rules
     Map2(import)[[imports ^(mod, prog)]].
     
   
-  
-  import[[FVM_Import(lib_name) ^(s, _)]] :=
-  	Module{lib_name} -> s,
-  	Module{lib_name} |-> d | error $[Module not found: [lib_name]] @lib_name.
   	
-  import[[FVM_ImportN(lib_name, funcs) ^(s, _)]] :=
+  import[[FVM_Import(lib_name, funcs) ^(s, prog)]] :=
   	Module{lib_name} -> s,
   	Module{lib_name} |-> d | error $[Module not found: [lib_name]] @lib_name,
   	d ?===> ds,
-  	Map1(libfunc)[[funcs ^(ds)]].
+  	Map2(libfunc)[[funcs ^(ds, prog)]].
   	
-  import[[FVM_ImportAs(lib_name, func_name, func_as) ^(s, _)]] :=
+  import[[FVM_ImportAs(lib_name, func_name, func_as) ^(s, prog)]] :=
   	Module{lib_name} -> s,
   	Module{lib_name} |-> d | error $[Module not found: [lib_name]] @lib_name,
   	d ?===> ds,
   	new ns, ns ---> ds,
   	ModuleFunc{func_name} -> ns,
-  	ModuleFunc{func_name} |-> d | error $[Function not found: [func_name]] @func_name,
-  	d.label := lbl,
-  	ModuleFunc{func_as} <- s,
-  	ModuleFunc{func_as}.lbl := lbl.
+  	ModuleFunc{func_name} |-> d2 | error $[Function not found: [func_name] [ds]] @func_name,
+  	d2.label := lbl,
+  	d2.lib := lib,
+  	ModuleFunc{func_as} <- prog,
+  	ModuleFunc{func_as}.lbl := lbl,
+  	ModuleFunc{func_as}.lib := lib.
   
-  import[[FVM_Export(lbl, func_as) ^(mod, prog)]] :=
+  import[[FVM_Export(lib, lbl, func_as) ^(mod, prog)]] :=
   	ModuleFunc{func_as} <- mod,
-  	false | error $[[ModuleFunc{func_as}] [mod]] @lbl,
   	ModuleFunc{func_as}.label := lbl,
+  	ModuleFunc{func_as}.lib   := lib,
   	lbl[[lbl ^(prog)]].
   	
-  libfunc[[func_name ^(ds)]] :=
+  libfunc[[func_name ^(ds, s)]] :=
   	new ns, ns ---> ds,
   	ModuleFunc{func_name} -> ns,
-  	ModuleFunc{func_name} |-> d | error $[Function not found: [func_name] [ds]] @func_name.
+  	ModuleFunc{func_name} |-> d | error $[Function not found: [func_name] [ds]] @func_name,
+  	d.label := lbl,
+  	d.lib := lib,
+  	ModuleFunc{func_name} <- s,
+  	ModuleFunc{func_name}.lbl := lbl,
+  	ModuleFunc{func_name}.lib := lib.
   	
   	
   	
@@ -82,6 +85,10 @@ rules
     block ---> s,
     Map1(instr)[[body ^(block)]],
     size == 0 | warning $[Stack delta is non-zero: [size]] @name.
+  
+  lbl[[FVM_ExternalLabel(name) ^(s)]] :=
+    ModuleFunc{name} -> s,
+    ModuleFunc{name} |-> d | error $[Unknown imported function [name]] @name.
       
   lbl[[FVM_Label(name) ^(s)]] := lbl[[name^(s)]].
   lbl[[name ^(s)]] :=

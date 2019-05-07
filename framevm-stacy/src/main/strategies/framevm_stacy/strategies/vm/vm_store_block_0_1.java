@@ -31,7 +31,7 @@ public class vm_store_block_0_1 extends FVMStrategy {
 			data[idx++] = instr;
 		}
 		env.putBlock(libName, blockName, data);
-		io.printError("Added block " + blockName + " with " + instrs.size() + " instructions");
+		io.printError("Added block " + blockName + " with " + instrs.size() + " instructions for " + libName);
 		return new StrategoBlob(env);
 	}
 }

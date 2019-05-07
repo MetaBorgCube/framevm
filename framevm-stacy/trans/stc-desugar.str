@@ -17,24 +17,22 @@ rules
        
     resugar = resugar-seq; resugar-pseudo-all; resugar-aliasses; resugar-strings; unify-header
 	
-   	split-header: STC_Program(FVM_Header(headeritems), blocks) -> STC_Program(fname, imports, initsize, aliasses, blocks)
+   	split-header: prog@STC_Program(_, _) -> <split-header> ("", prog)
+   	  	
+    split-header: (fname, STC_Program(FVM_Header(headeritems), blocks)) -> STC_Program(fname, imports, initsize, aliasses, blocks)
    	  with
-   	  	fname := "";
-   	  	imports := <filter(is-import)> headeritems;
+   	  	imports := <map(try(apply-export(|fname)))> <filter(is-import)> headeritems;
    	  	aliasses := <filter(is-alias)> headeritems;
    	  	initsize := <getfirst(is-init) <+ !0> headeritems
-   	  	
-    split-header: (fname, prog@STC_Program(header, blocks)) -> STC_Program(fname, imports, initsize, aliasses, blocks)
-   	  with
-   	  	STC_Program(_, imports, initsize, aliasses, blocks) := <split-header> prog
    	  	
    	unify-header: STC_Program(fname, imports, n, aliasses, blocks) 
    		-> STC_Program(FVM_Header(<concat> [imports, [FVM_InitSize(<int-to-string> n)], aliasses]), blocks)
    	 
-   	is-import: i@FVM_Import(_) -> i
-   	is-import: i@FVM_ImportN(_, _) -> i
+   	is-import: i@FVM_Import(_, _) -> i
    	is-import: i@FVM_ImportAs(_, _, _) -> i
    	is-import: i@FVM_Export(_, _) -> i
+   	
+   	apply-export(|lib): FVM_Export(lbl, name) -> FVM_Export(lib, lbl, name)
    	
    	is-alias: f@FVM_LinkAlias(_, _) -> f
    	is-alias: f@FVM_ContAlias(_, _) -> f

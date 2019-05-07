@@ -5,6 +5,8 @@ imports
     interpreter/-
     stc-desugar
     
+    nabl2/api
+    
 rules
     eval-program-debug = eval-program(debug-eval)
     debug-eval: t@(e, _) -> t
@@ -21,14 +23,33 @@ rules
         (_, env2) := <foldl(store-block)> (blocks', (fn, env1));
         (_, env3) := <store-block> (STC_Block(FVM_Label("_exit"), STC_Seq([])), (fn, env2));
         (_, env4) := <store-block> (STC_Block(FVM_Label("_catch"), STC_Seq([])), (fn, env3));
-        env5 := <vm-start(|env4)> (fn, "MAIN");
-        env6 := <execute(s|env5)>;
-        out  := <vm-stop(|env6)>
+        env5 := <foldl(import-blocks)> (i, env4);
+        env6 := <vm-start(|env5)> (fn, "MAIN");
+        env7 := <execute(s|env6)>;
+        out  := <vm-stop(|env7)>
         
     store-block: (STC_PseudoCode(_), t@(lib, env)) -> t
     
-//    store-block: (lib, STC_Block(l@FVM_Label(lbl), s@STC_Seq(body)), env) -> <store-block> (lib, STC_Block(l, s, 0), env)
     store-block: (STC_Block(FVM_Label(lbl), STC_Seq(body)), (lib, env)) -> (lib, <vm-store-block(|env)> ((lib, lbl), body))
+    
+    import-blocks: (FVM_Import(lib, _), env1) -> env2
+      where 
+        blocks := <resolve-jump-labels(|lib)> <get-lib-blocks> lib;
+        (_, env2) := <foldl(store-block)> (blocks, (lib, env1))
+        
+    import-blocks: (FVM_ImportAs(lib, _, _), env1) -> env2
+      where 
+        blocks := <resolve-jump-labels(|lib)> <get-lib-blocks> lib;
+        (_, env2) := <foldl(store-block)> (blocks, (lib, env1))
+        
+    import-blocks: (FVM_Export(_, _, _), env) -> env
+    
+    get-lib-blocks: libname -> blocks
+      where
+        a            := <nabl2-get-ast-analysis> libname;
+        ref-occ      := <nabl2-mk-occurrence(|"Module")> libname;
+        (dec-occ, path) := <nabl2-get-resolved-name(|a)> ref-occ;
+        blocks          := <nabl2-get-property(|a, "blocks")> dec-occ
     
     resolve-jump-labels(|lib): [] -> []
     resolve-jump-labels(|lib): [b@STC_PseudoCode(_) | t] -> [b | <resolve-jump-labels(|lib)> t]
@@ -37,6 +58,13 @@ rules
         body' := <bottomup(try(resolve-jump-labels-(|lib)))> body
     
     resolve-jump-labels-(|lib): FVM_Label(lbl) -> FVM_BoundLabel(lib, lbl)
+    resolve-jump-labels-(|l): FVM_ExternalLabel(func_name) -> <debug> FVM_BoundLabel(lib, lbl)
+      where
+        a            := <nabl2-get-ast-analysis> func_name;
+        ref-occ      := <nabl2-mk-occurrence(|"ModuleFunc")> func_name;
+        (dec-occ, path) := <nabl2-get-resolved-name(|a)> ref-occ;
+        lib          := <nabl2-get-property(|a, "lib")> dec-occ;
+        lbl          := <nabl2-get-property(|a, "lbl")> dec-occ
     
     // Ask next instruction and evaluate it
     // Repeat until no instructions are left
