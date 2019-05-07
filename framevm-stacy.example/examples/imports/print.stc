@@ -6,9 +6,6 @@ MAIN:
 	spush "abcdefg"
 	setr [0]
 	call print MAIN_END
-
-AAA:
-	return
 	
 MAIN_END:
 	ipush 0

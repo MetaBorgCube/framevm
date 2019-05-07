@@ -16,7 +16,10 @@ rules // Analysis
   prefix-filename: AnalyzeMulti(p, files) -> AnalyzeMulti(p, <map(prefix-filename)> files)
   
   prefix-filename: c@(fname, Cached(_)) -> c
-  prefix-filename: (fname, Added(ast)) -> (fname, Added((module-name, ast)))
+  prefix-filename: (fname, Added(ast)) -> (fname, Added(<prefix-filename(|fname)> ast))
+  prefix-filename: (fname, Changed(ast, r)) -> (fname, Changed(<prefix-filename(|fname)> ast, r))
+  
+  prefix-filename(|fname): ast -> (module-name, ast)
     with
       module-name := <remove-extension; string-replace(|"/", "."); string-replace(|"\\", ".")> fname
   
