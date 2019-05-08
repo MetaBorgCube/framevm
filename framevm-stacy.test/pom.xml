@@ -39,7 +39,7 @@
         <artifactId>spoofax-maven-plugin</artifactId>
         <version>${metaborg-version}</version>
         <configuration>
-          <languageUnderTest>org.example:framevm:0.1.0-SNAPSHOT</languageUnderTest>
+          <languageUnderTest>org.metaborg.lang:framevm-stacy:1.0.0</languageUnderTest>
         </configuration>
       </plugin>
     </plugins>
