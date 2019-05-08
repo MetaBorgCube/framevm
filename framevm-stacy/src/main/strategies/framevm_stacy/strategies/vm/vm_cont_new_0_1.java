@@ -19,12 +19,22 @@ public class vm_cont_new_0_1 extends FVMStrategy {
 	public static vm_cont_new_0_1 instance = new vm_cont_new_0_1();
 
 	@Override
-	// env| (frame, lbl, size) -> (env', cont)
+	// env| (frame, (lib, lbl), size) -> (env', cont)
 	protected IStrategoTerm invoke(IOAgent io, ITermFactory factory, MachineState env, IStrategoTerm arg) {
 		StrategoTuple tuple = (StrategoTuple) arg;
 
 		Frame frame = (Frame) ((StrategoBlob) tuple.get(0)).value();
-		Block block = env.getBlock(((StrategoString) tuple.get(1)).stringValue());
+		
+		StrategoTuple blockTuple = (StrategoTuple) tuple.get(1);
+		String libName = ((StrategoString) blockTuple.get(0)).stringValue();
+		String blockName = ((StrategoString) blockTuple.get(1)).stringValue();
+		Block block = env.getBlock(libName, blockName);
+		
+		if (block == null) {
+			io.printError("Block " + blockName + " not found in library " + libName + "!");
+			return null;
+		}
+		
 		int contSize = ((StrategoInt) tuple.get(2)).intValue();
 		
 		ControlFrame cont = env.newControlFrame(contSize, block);

@@ -1,18 +1,17 @@
 module strings
 
 imports
-	signatures/framevm-stacy-sig
+    signatures/framevm-stacy-sig
     
 rules
-
-  	fix-strings = topdown(try(fix-string))
-  	
-  	fix-string: STC_StringPush(string) -> STC_StringPush(<unquote(!"\"")> string)
-  	fix-string: STC_CharPush(char) -> STC_CharPush(<unquote(!"'")> char)
-  	
-  	resugar-strings = topdown(try(resugar-string))
-  	
-  	resugar-string: STC_StringPush(string) -> STC_StringPush(<escape-input(|"\"")> string)
-  	resugar-string: STC_CharPush(char) -> STC_CharPush(<escape-input(|"'")> char)
-  	
-	escape-input(|char): string -> <concat-strings> [char, <escape> string, char]
+    fix-strings = topdown(try(fix-string))
+      
+    fix-string: STC_StringPush(string) -> STC_StringPush(<unquote(!"\"")> string)
+    fix-string: STC_CharPush(char) -> STC_CharPush(<unquote(!"'")> char)
+      
+    resugar-strings = topdown(try(resugar-string))
+      
+    resugar-string: STC_StringPush(string) -> STC_StringPush(<escape-input(|"\"")> string)
+    resugar-string: STC_CharPush(char) -> STC_CharPush(<escape-input(|"'")> char)
+      
+    escape-input(|char): string -> <concat-strings> [char, <escape> string, char]

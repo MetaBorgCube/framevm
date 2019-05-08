@@ -3,13 +3,15 @@ module fvm-common
 lexical syntax
 
   ID             = [a-zA-Z\_] [a-zA-Z0-9\_]*
+  LIB            = [a-z] [a-zA-Z0-9\_\.]*
+  LIBFUNC        = [a-z] [a-zA-Z0-9\_]*
   LABEL          = [A-Z\_] [A-Z0-9\_]* 
   CONTSLOT       = [a-z\_] [a-z0-9\_]* 
   INT            = "-"? [0-9]+ 
   INTLZ          = [1-9][0-9]* 
   INTLEZ         = [0-9]+ 
-  BOOL			 = "true"
-  BOOL			 = "false"
+  BOOL           = "true"
+  BOOL           = "false"
   
   CHAR           = "'" ~[\'\t\n] "'"
   CHAR           = "'\\t'"
@@ -34,16 +36,16 @@ lexical syntax
   NewLineEOF     = EOF 
   EOF            =  
 
-//  LABEL = 	"MAIN" 		{reject}
-  ID = 		"addi" 		{reject}
-  ID = 		"jump" 		{reject}
-  ID = 		"jumpz" 	{reject}
-  ID = 		"dup"	 	{reject}
-  ID = 		"new"	 	{reject}
-  ID = 		"pushi"	 	{reject}
-  ID = 		"MAIN"	 	{reject}
-  ID = 		"true"	 	{reject}
-  ID = 		"false"	 	{reject}
+//  LABEL =     "MAIN"         {reject}
+  ID =         "addi"        {reject}
+  ID =         "jump"        {reject}
+  ID =         "jumpz"       {reject}
+  ID =         "dup"         {reject}
+  ID =         "new"         {reject}
+  ID =         "pushi"       {reject}
+  ID =         "MAIN"        {reject}
+  ID =         "true"        {reject}
+  ID =         "false"       {reject}
   
   
 lexical restrictions
@@ -55,6 +57,8 @@ lexical restrictions
   INTLZ         -/- [0-9]
   INTLEZ        -/- [0-9]
   ID            -/- [a-zA-Z0-9\_]
+  LIB           -/- [a-zA-Z0-9\_]
+  LIBFUNC       -/- [a-zA-Z0-9\_]
   LABEL         -/- [A-Z0-9\_]
   CONTSLOT      -/- [a-z0-9\_]
   
@@ -75,7 +79,9 @@ context-free restrictions
   LAYOUT? -/- [\/].[\*]
   
 context-free syntax
-  Label.FVM_Label = LABEL
+  BlockLabel.FVM_Label = LABEL
+  Label = BlockLabel
+  Label.FVM_ExternalLabel = LIBFUNC
   
   InitSize.FVM_InitSize = <#init <INTLEZ>>
   Alias.FVM_LinkAlias = <#link <LinkRef> -\> <INTLEZ>>
@@ -95,6 +101,15 @@ context-free syntax
   
   CopyPolicy.FVM_DeepCopy    = <deep>
   CopyPolicy.FVM_ShallowCopy = <shallow>
+  
+  Header.FVM_Header = items:HeaderItem* { layout (align-list items) }
+  HeaderItem = Import
+  HeaderItem = InitSize
+  HeaderItem = Alias
+  
+  Import.FVM_Import  = <from <LIB> import <{LIBFUNC ", "}+>>
+  Import.FVM_ImportAs = <from <LIB> import <LIBFUNC> as <LIBFUNC>>
+  Import.FVM_Export   = <export <LABEL> as <LIBFUNC>>
   
 /* 
 

@@ -6,8 +6,8 @@ imports
   analysis/pseudoExp
   
 signature
-	namespaces PsdVar PsdRec PsdFunc
-	
+    namespaces PsdVar PsdRec PsdFunc
+    
 signature
   constructors
     RecT : occurrence * list(Type) -> Type
@@ -23,21 +23,21 @@ name resolution
   order
     D < P,
     D < I,
-	I < P
+    I < P
 
   well-formedness
-	P* I*
+    P* I*
 
 rules
   
   pseudo[[body ^(s)]] :=
-  	pseudoInstr[[body ^(s)]].
-  	  	
+      pseudoInstr[[body ^(s)]].
+            
   pseudoInstr[[ [] ^(s)]].
   pseudoInstr[[ [PsdExp(exp) | tail ] ^(s)]] :=
-  	pseudoExp[[exp ^(s) : _]],
-  	pseudoInstr[[tail ^(s)]].
-  	
+    pseudoExp[[exp ^(s) : _]],
+    pseudoInstr[[tail ^(s)]].
+      
   pseudoInstr [[ [PsdRecDef(name, methods, fields) | tail] ^(p)]] :=
     new ps, ps ---> p,
     PsdRec{name} <- ps,
@@ -48,22 +48,21 @@ rules
     PsdRec{name} ===> rec,
     Map1(pseudoInstr)[[methods ^(rec)]],
     Map1T(pseudoField) [[fields ^(rec) : fieldtys]],
-    
-  	pseudoInstr[[tail ^(ps)]].
-  	
+    pseudoInstr[[tail ^(ps)]].
+      
   pseudoField [[PsdField(Field(type, Bind(var, idx))) ^(s) : ty]] :=
-  	pseudoType [[type ^(s) : ty]],
-  	PsdVar{var} <- s,
-  	PsdVar{var}.index := idx,
-  	PsdVar{var}: ty!.
+    pseudoType [[type ^(s) : ty]],
+    PsdVar{var} <- s,
+    PsdVar{var}.index := idx,
+    PsdVar{var}: ty!.
   
   pseudoInstr [[ [PsdIf(cond, Seq(then)) | tail] ^(s) ]] :=
     pseudoExp[[cond ^(s) : ty]],
     ty == BoolT() | error $[The condition must have a boolean result, found [ty]] @cond,
     new t, t ---> s,
     pseudo[[then ^(t)]],
-  	pseudoInstr[[tail ^(s)]].
-  	
+    pseudoInstr[[tail ^(s)]].
+      
   
   pseudoInstr [[ [PsdIfElse(cond, Seq(then), Seq(else)) | tail] ^(s) ]] :=
     pseudoExp[[cond ^(s) : ty]],
@@ -72,7 +71,7 @@ rules
     pseudo[[then ^(t)]],
     new e, e ---> s,
     pseudo[[else ^(e)]],
-  	pseudoInstr[[tail ^(s)]].
+    pseudoInstr[[tail ^(s)]].
     
   pseudoInstr [[ [PsdDefine(Bind(var, idx), exp) | tail] ^(p) ]] :=
     pseudoExp[[exp ^(p) : ty]],
@@ -81,23 +80,23 @@ rules
     PsdVar{var} <- ps,
     PsdVar{var}.index := idx,
     PsdVar{var}: ty!,
-  	pseudoInstr[[tail ^(ps)]].
-  	
+    pseudoInstr[[tail ^(ps)]].
+      
   pseudoInstr [[ [PsdField(Bind(var, idx)) | tail] ^(p) ]] :=    
     PsdVar{var} <- p,
     PsdVar{var}.index := idx,
-  	pseudoInstr[[tail ^(p)]].
+    pseudoInstr[[tail ^(p)]].
     
   pseudoInstr [[ [t@PsdAssign(ref, exp) | tail] ^(s) ]] :=
     pseudoExp[[exp ^(s) : ty1]],
     pseudoExp[[ref ^(s) : ty2]],
     ty1 == ty2 | error $[Incompatible types [ty1] and [ty2]] @t,
-  	pseudoInstr[[tail ^(s)]].
-  	
+    pseudoInstr[[tail ^(s)]].
+      
   pseudoInstr [[ [ PsdFuncDef(name, args, body, size, type) | tail] ^(p)]] :=
     new ps, ps ---> p,
     new fun, fun ---> ps,
-  	pseudoType[[type ^(p) : rty]],
+    pseudoType[[type ^(p) : rty]],
     pseudoInstr[[body ^(fun)]],
     Map1T(pseudoBind) [[args ^(fun) : argtys]],
     
@@ -107,59 +106,59 @@ rules
     PsdFunc{name} ===> fun,
     PsdVar{"$return"} <- fun,
     PsdVar{"$return"}: rty!,
-  	pseudoInstr[[tail ^(ps)]].
-  	
+    pseudoInstr[[tail ^(ps)]].
+      
   pseudoInstr [[ [t@PsdReturn(exp) | tail ] ^(ps)]] :=
-  	pseudoExp[[exp ^(ps) : ty]],
-  	PsdVar{"$return"} -> ps,
-  	PsdVar{"$return"} |-> d | error $[Not inside a function!] @t,
-  	d : rty,
-  	ty == rty | error $[Unexpected return type [ty], expected [rty]] @exp,
-  	tail == [] | error $[Dead code after return] @t.
-  	
+      pseudoExp[[exp ^(ps) : ty]],
+      PsdVar{"$return"} -> ps,
+      PsdVar{"$return"} |-> d | error $[Not inside a function!] @t,
+      d : rty,
+      ty == rty | error $[Unexpected return type [ty], expected [rty]] @exp,
+      tail == [] | error $[Dead code after return] @t.
+      
   pseudoInstr [[ [PsdAssert(exp) | tail ] ^(ps)]] :=
-  	pseudoExp[[exp ^(ps): condty]], condty == BoolT() | error $[[condty] is not a boolean] @exp,
-  	pseudoInstr[[tail ^(ps)]].
-  	
+      pseudoExp[[exp ^(ps): condty]], condty == BoolT() | error $[[condty] is not a boolean] @exp,
+      pseudoInstr[[tail ^(ps)]].
+      
   pseudoInstr [[ [PsdPrint(exp) | tail ] ^(ps)]] :=
-  	pseudoExp[[exp ^(ps) : _]],
-  	pseudoInstr[[tail ^(ps)]].
-  	
+      pseudoExp[[exp ^(ps) : _]],
+      pseudoInstr[[tail ^(ps)]].
+      
   pseudoInstr [[ [PsdFor(Bind(var, idx), from, to, Seq(stmts)) | tail ] ^(ps)]] :=
-  	pseudoExp[[from ^(ps) : fromty]], fromty == IntT() | error $[[fromty] is not an integer] @from,
-  	pseudoExp[[to ^(ps) : toty]],   toty   == IntT() | error $[[toty] is not an integer] @to,
-  	new for, for ---> ps,
-  	 PsdVar{var} <- for,
-  	 PsdVar{var}: IntT()!,
-  	 PsdVar{var}.index := idx,
-  	 pseudoInstr[[stmts ^(for)]],
-  	pseudoInstr[[tail ^(ps)]].
-  	
+      pseudoExp[[from ^(ps) : fromty]], fromty == IntT() | error $[[fromty] is not an integer] @from,
+      pseudoExp[[to ^(ps) : toty]],   toty   == IntT() | error $[[toty] is not an integer] @to,
+      new for, for ---> ps,
+       PsdVar{var} <- for,
+       PsdVar{var}: IntT()!,
+       PsdVar{var}.index := idx,
+       pseudoInstr[[stmts ^(for)]],
+      pseudoInstr[[tail ^(ps)]].
+      
   pseudoInstr [[ [PsdWithFrom(Bind(var, idx), from, stmts) | tail ] ^(ps)]] :=
-  	pseudoExp[[from ^(ps) : fromty]], fromty == ArrayT(arrty) | error $[[fromty] is not an array] @from,
-  	new with, with ---> ps,
-  	 PsdVar{var} <- with,
-  	 PsdVar{var}: arrty!,
-  	 PsdVar{var}.index := idx,
-  	 pseudoInstr[[stmts ^(with)]],
-  	pseudoInstr[[tail ^(ps)]].
-  	
+      pseudoExp[[from ^(ps) : fromty]], fromty == ArrayT(arrty) | error $[[fromty] is not an array] @from,
+      new with, with ---> ps,
+       PsdVar{var} <- with,
+       PsdVar{var}: arrty!,
+       PsdVar{var}.index := idx,
+       pseudoInstr[[stmts ^(with)]],
+      pseudoInstr[[tail ^(ps)]].
+      
   pseudoInstr [[ [PsdWhile(cond, Seq(stmts)) | tail ] ^(ps)]] :=
-  	pseudoExp[[cond ^(ps) : condty]], condty == BoolT() | error $[[condty] is not a boolean] @cond,
-  	new while, while ---> ps,
-  	 pseudoInstr[[stmts ^(while)]],  	
-  	pseudoInstr[[tail ^(ps)]].
+      pseudoExp[[cond ^(ps) : condty]], condty == BoolT() | error $[[condty] is not a boolean] @cond,
+      new while, while ---> ps,
+       pseudoInstr[[stmts ^(while)]],      
+      pseudoInstr[[tail ^(ps)]].
   
-  	
+      
   pseudoBind [[Field(type, bind) ^(s) : ty]] :=
-  	pseudoBind[[bind ^(s) : ty]],
-  	pseudoType[[type ^(s) : ty]].
+      pseudoBind[[bind ^(s) : ty]],
+      pseudoType[[type ^(s) : ty]].
  
   pseudoBind [[Bind(name, idx) ^(s) : ty]] :=
-  	PsdVar{name} <- s,
-  	PsdVar{name}.index := idx,
-  	PsdVar{name}: ty!.
-  	
+      PsdVar{name} <- s,
+      PsdVar{name}.index := idx,
+      PsdVar{name}: ty!.
+      
   pseudoType [[Int() ^(s) : IntT()]].
   pseudoType [[Bool() ^(s) : BoolT()]].
   

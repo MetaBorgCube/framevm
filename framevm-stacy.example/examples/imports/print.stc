@@ -1,0 +1,12 @@
+from stdlib.strings.print import print
+
+MAIN:
+	new 1
+	dup
+	spush "abcdefg"
+	setr [0]
+	call print MAIN_END
+	
+MAIN_END:
+	ipush 0
+	return

@@ -3,6 +3,8 @@ package framevm_stacy.strategies.vm;
 import org.spoofax.interpreter.library.IOAgent;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermFactory;
+import org.spoofax.terms.StrategoString;
+import org.spoofax.terms.StrategoTuple;
 
 import framevm_stacy.strategies.FVMStrategy;
 import framevm_stacy.strategies.util.Block;
@@ -17,13 +19,16 @@ public class vm_start_0_1 extends FVMStrategy {
 	public static vm_start_0_1 instance = new vm_start_0_1();
 
 	@Override
-	// env| -> env'
+	// env| (lib, block) -> env'
 	// Start the vm by setting the initial frame as executable and running the MAIN block
 	protected IStrategoTerm invoke(IOAgent io, ITermFactory factory, MachineState env, IStrategoTerm arg) {
-		Block block = env.getBlock("MAIN");
-
+		StrategoTuple tuple = (StrategoTuple) arg;
+		String blockName = ((StrategoString) tuple.get(1)).stringValue();
+		String libName = ((StrategoString) tuple.get(0)).stringValue();
+		Block block = env.getBlock(libName, blockName);
+		
 		if (block == null) {
-			io.printError("No MAIN block found!");
+			io.printError("No main block found!");
 			return null;
 		}
 		

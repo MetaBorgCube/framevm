@@ -1,16 +1,41 @@
 module stc-desugar
 
 imports
-	signatures/framevm-stacy-sig
-	desugar/toRISC
-	desugar/fixSeq
-	desugar/pseudo
-	desugar/register
-	desugar/strings
+    signatures/framevm-stacy-sig
+    signatures/fvm-common-sig
+    stc-common
+    
+    desugar/toRISC
+    desugar/fixSeq
+    desugar/pseudo
+    desugar/register
+    desugar/strings
    
-rules  
+rules
     desugar-full = desugar; to-RISC-all
-    desugar = apply-aliasses; fix-seq; desugar-pseudo-all; fix-strings
-  	 
-	resugar = resugar-seq; resugar-pseudo-all; resugar-aliasses; resugar-strings 
-   
+    desugar = split-header; apply-aliasses; fix-seq; desugar-pseudo-all; fix-strings
+       
+    resugar = resugar-seq; resugar-pseudo-all; resugar-aliasses; resugar-strings; unify-header
+	
+   	split-header: prog@STC_Program(_, _) -> <split-header> ("", prog)
+   	  	
+    split-header: (fname, STC_Program(FVM_Header(headeritems), blocks)) -> STC_Program(fname, imports, initsize, aliasses, blocks)
+   	  with
+   	  	imports := <map(try(apply-export(|fname)))> <filter(is-import)> headeritems;
+   	  	aliasses := <filter(is-alias)> headeritems;
+   	  	initsize := <getfirst(is-init) <+ !0> headeritems
+   	  	
+   	unify-header: STC_Program(fname, imports, n, aliasses, blocks) 
+   		-> STC_Program(FVM_Header(<concat> [imports, [FVM_InitSize(<int-to-string> n)], aliasses]), blocks)
+   	 
+   	is-import: i@FVM_Import(_, _) -> i
+   	is-import: i@FVM_ImportAs(_, _, _) -> i
+   	is-import: i@FVM_Export(_, _) -> i
+   	
+   	apply-export(|lib): FVM_Export(lbl, name) -> FVM_Export(lib, lbl, name)
+   	
+   	is-alias: f@FVM_LinkAlias(_, _) -> f
+   	is-alias: f@FVM_ContAlias(_, _) -> f
+   	
+   	is-init: FVM_InitSize(s) -> <string-to-int> s
+   	

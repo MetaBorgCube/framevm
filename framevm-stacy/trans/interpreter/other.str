@@ -1,72 +1,70 @@
 module other
 
 imports 
-	signatures/framevm-stacy-sig
-	signatures/fvm-common-sig
-	interpreter/external
-	interpreter/util
-	
-	stc-common
+    signatures/framevm-stacy-sig
+    signatures/fvm-common-sig
+    interpreter/external
+    interpreter/util
+    
+    stc-common
 
-rules	// Other instructions
+rules    // Other instructions
 
-	// STC_Print/0
-	// Print the value on top of the stack to the console
-	eval: (STC_Print(), env1) -> env3
-	  where
-	  	(env2, val) := <stack-pop-any(|env1)>;
-	  	(env3, out) := <vm-print(|env2)> <val-to-string> val;
-	  	_ := <debug> out
-	  	
-	// STC_PrintChar/0
-	// Print the character on top of the stack
-	eval: (STC_PrintChar(), env1) -> env3
-	  where
-	  	(env2, IntV(val)) := <stack-pop-int(|env1)>;
-	  	(env3, out) := <vm-print-chars(|env2)> [val];
-	  	_ := <debug> out
-	  	
-	  	
-	// STC_CharPush/1
-	// Push a character to the stack
-	eval: (STC_CharPush(char), env1) -> env2
-	  where
-	  	[char' |_] := <explode-string> <fix-string-escaping> char;
-	  	env2 := <stack-push(|env1)> IntV(char')
-	  	
-	// STC_Debug/0
-	// Print the state of the vm to the console
-	eval: (STC_Debug(), env1) -> env2
-	  where
-	  	env2 := <vm-debug(|env1)>
-	  	
-	// STC_DebugKill/0
-	// Print the state of the vm to the console and terminate
-	eval: (STC_DebugKill(), env1) -> <fail> env2
-	  where
-	  	env2 := <vm-debug(|env1)>
-	
-	// STC_StringPush/1
-	// Push a string to the stack
-	eval: (STC_StringPush(string), env1) -> env5
-	  where
-	    string' := <fix-string-escaping> string;
-	  	chars := <explode-string> string';
-	  	size := <length> chars;
-	  	(env2, frame) :=  <frame-new(|env1)> <inc> size;
-	  	env3 := <stack-push(|env2)> FrameRef(frame);
-	  	env4 := <frame-set-slot(|env3)> (frame, 0, IntV(size));
-	  	(env5, _, _) := <foldl(char-store)> (chars, (env4, 1, frame))
-	
-	char-store: (char, (env1, idx, frame)) -> (env2, <inc> idx, frame)
-	  where
-	  	env2 := <frame-set-slot(|env1)> (frame, idx, IntV(char))
-	  	
-rules	// Util
-	// Convert a value to a displayable string 
-	val-to-string: IntV(v) -> v where <is-int> v
-	val-to-string: FrameRef(frame) -> frame
-	val-to-string: Continuation(cont) -> cont
-	val-to-string: ClosV(frame, FVM_Label(lbl)) -> (frame, lbl)
-	
-	
+    // STC_Print/0
+    // Print the value on top of the stack to the console
+    eval: (STC_Print(), env1) -> env3
+      where
+        (env2, val) := <stack-pop-any(|env1)>;
+        (env3, out) := <vm-print(|env2)> <val-to-string> val;
+        <debug> out
+          
+    // STC_PrintChar/0
+    // Print the character on top of the stack
+    eval: (STC_PrintChar(), env1) -> env3
+      where
+        (env2, IntV(val)) := <stack-pop-int(|env1)>;
+        (env3, out) := <vm-print-chars(|env2)> [val];
+        <debug> out
+          
+          
+    // STC_CharPush/1
+    // Push a character to the stack
+    eval: (STC_CharPush(char), env1) -> env2
+      where
+        [char' |_] := <explode-string> <fix-string-escaping> char;
+        env2 := <stack-push(|env1)> IntV(char')
+          
+    // STC_Debug/0
+    // Print the state of the vm to the console
+    eval: (STC_Debug(), env1) -> env2
+      where
+        env2 := <vm-debug(|env1)>
+         
+    // STC_DebugKill/0
+    // Print the state of the vm to the console and terminate
+    eval: (STC_DebugKill(), env1) -> <fail> env2
+      where
+        env2 := <vm-debug(|env1)>
+    
+    // STC_StringPush/1
+    // Push a string to the stack
+    eval: (STC_StringPush(string), env1) -> env5
+      where
+        string' := <fix-string-escaping> string;
+        chars := <explode-string> string';
+        size := <length> chars;
+        (env2, frame) :=  <frame-new(|env1)> <inc> size;
+        env3 := <stack-push(|env2)> FrameRef(frame);
+        env4 := <frame-set-slot(|env3)> (frame, 0, IntV(size));
+        (env5, _, _) := <foldl(char-store)> (chars, (env4, 1, frame))
+    
+    char-store: (char, (env1, idx, frame)) -> (env2, <inc> idx, frame)
+      where
+        env2 := <frame-set-slot(|env1)> (frame, idx, IntV(char))
+          
+rules    // Util
+    // Convert a value to a displayable string 
+    val-to-string: IntV(v) -> v where <is-int> v
+    val-to-string: FrameRef(frame) -> frame
+    val-to-string: Continuation(cont) -> cont
+    val-to-string: ClosV(frame, FVM_BoundLabel(lib, lbl)) -> (frame, lbl)

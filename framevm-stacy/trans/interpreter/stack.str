@@ -1,72 +1,72 @@
 module stack
 
 imports 
-	signatures/framevm-stacy-sig
-	interpreter/external
-	
-	stc-common
+    signatures/framevm-stacy-sig
+    interpreter/external
+    
+    stc-common
 
 rules
-	// STC_SwapN/1
-	// Swaps the value on top of the stack with the one in (n+1)th position
-	eval: (STC_SwapN(n), env1) -> env4
-	  where
-	  	(env2, e1) := <stack-pop-any(|env1)>;
-	  	v := <string-to-int> n;
-	  	(env3, e2) := <eval-swap(|env2)> (v, e1);
-	  	env4 := <stack-push(|env3)> e2
-	  	
-	eval-swap(|env1): (1, e1) -> (env3, e2)
-	  where
-	  	(env2, e2) := <stack-pop-any(|env1)>;
-	  	env3 := <stack-push(|env2)> e1
-	  	
-	eval-swap(|env1): (n, e1) -> (env4, e2)
-	  where
-	  	_ := <geq>(n, 2);
-	  	(env2, tmp) := <stack-pop-any(|env1)>;
-	  	(env3, e2) := <eval-swap(|env2)> (<dec> n, e1);
-	  	env4 := <stack-push(|env3)> tmp
-	  	
-	// STC_Swap/0
-	// Takes two values from the stack
-	// Pushes them on the stack in reverse order
-	eval: (STC_Swap(), env) -> env4
-	  where
-	  	(env1, e1) := <stack-pop-any(|env)>;
-	  	(env2, e2) := <stack-pop-any(|env1)>;
-	  	env3 := <stack-push(|env2)> e1;
-	  	env4 := <stack-push(|env3)> e2
-	
-	// STC_Pop/0
-	// Discards the top element on the stack
-	eval: (STC_Pop(), env1) -> env2
-	  where
-	  	(env2, _) := <stack-pop-any(|env1)>
-	  	
-	// STC_Dup/0
-	// Duplicates the element on top of the stack
-	eval: (STC_Dup(), env1) -> env4
-	  where
-	  	(env2, val) := <stack-pop-any(|env1)>;	// pop once
-	  	env3 := <stack-push(|env2)> val;	//
-	  	env4 := <stack-push(|env3)> val		// push twice
-	  	
-	// STC_DupN/1
-	// Duplicates the n-th element on top of the stack
-	eval: (STC_DupN(n), env1) -> env3
-	  where
-	  	(env2, val) := <eval-dup(|env1)> <string-to-int> n;
-	  	env3 := <stack-push(|env2)> val
-	 
-	eval-dup(|env1): 1 -> (env3, val)
-	  where
-	  	(env2, val) := <stack-pop-any(|env1)>;
-	  	env3 := <stack-push(|env2)> val
-	  	
-	eval-dup(|env1): n -> (env4, val)
-	  where
-	  	_ := <geq>(n, 2);
-	  	(env2, tmp) := <stack-pop-any(|env1)>;
-	  	(env3, val) := <eval-dup(|env2)> <dec> n;
-	  	env4 := <stack-push(|env3)> tmp
+    // STC_SwapN/1
+    // Swaps the value on top of the stack with the one in (n+1)th position
+    eval: (STC_SwapN(n), env1) -> env4
+      where
+        (env2, e1) := <stack-pop-any(|env1)>;
+        v := <string-to-int> n;
+        (env3, e2) := <eval-swap(|env2)> (v, e1);
+        env4 := <stack-push(|env3)> e2
+          
+    eval-swap(|env1): (1, e1) -> (env3, e2)
+      where
+        (env2, e2) := <stack-pop-any(|env1)>;
+        env3 := <stack-push(|env2)> e1
+          
+    eval-swap(|env1): (n, e1) -> (env4, e2)
+      where
+        <geq>(n, 2);
+        (env2, tmp) := <stack-pop-any(|env1)>;
+        (env3, e2) := <eval-swap(|env2)> (<dec> n, e1);
+        env4 := <stack-push(|env3)> tmp
+          
+    // STC_Swap/0
+    // Takes two values from the stack
+    // Pushes them on the stack in reverse order
+    eval: (STC_Swap(), env) -> env4
+      where
+        (env1, e1) := <stack-pop-any(|env)>;
+        (env2, e2) := <stack-pop-any(|env1)>;
+        env3 := <stack-push(|env2)> e1;
+        env4 := <stack-push(|env3)> e2
+    
+    // STC_Pop/0
+    // Discards the top element on the stack
+    eval: (STC_Pop(), env1) -> env2
+      where
+        (env2, _) := <stack-pop-any(|env1)>
+         
+    // STC_Dup/0
+    // Duplicates the element on top of the stack
+    eval: (STC_Dup(), env1) -> env4
+      where
+        (env2, val) := <stack-pop-any(|env1)>;    // pop once
+        env3 := <stack-push(|env2)> val;    //
+        env4 := <stack-push(|env3)> val        // push twice
+          
+    // STC_DupN/1
+    // Duplicates the n-th element on top of the stack
+    eval: (STC_DupN(n), env1) -> env3
+      where
+        (env2, val) := <eval-dup(|env1)> <string-to-int> n;
+        env3 := <stack-push(|env2)> val
+     
+    eval-dup(|env1): 1 -> (env3, val)
+      where
+        (env2, val) := <stack-pop-any(|env1)>;
+        env3 := <stack-push(|env2)> val
+          
+    eval-dup(|env1): n -> (env4, val)
+      where
+        <geq>(n, 2);
+        (env2, tmp) := <stack-pop-any(|env1)>;
+        (env3, val) := <eval-dup(|env2)> <dec> n;
+        env4 := <stack-push(|env3)> tmp

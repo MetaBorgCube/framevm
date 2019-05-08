@@ -1,80 +1,79 @@
 module register
 
 imports
-	signatures/framevm-stacy-sig
-	signatures/fvm-common-sig
-	stc-common
+    signatures/framevm-stacy-sig
+    signatures/fvm-common-sig
+    stc-common
 
 rules
-    apply-aliasses: STC_ProgramNoInit(aliasses, blocks) -> <apply-aliasses> STC_Program(FVM_InitSize("0"), aliasses, blocks)
-	apply-aliasses: STC_Program(FVM_InitSize(n), aliasses, blocks) -> STC_Program(<string-to-int> n, bound_blocks, <length> link_addresses)
-	  where
-	    all_aliasses := <insert-standards> aliasses;
-	    link_addresses := <foldl(extract-links)> (all_aliasses, []);
-	  	bound_blocks := <fix-missing-aliasses> <foldl(apply-aliasses)> (all_aliasses, blocks)
+    apply-aliasses: STC_Program(fn, i, s, aliasses, blocks) -> STC_Program(fn, i, s, link_addresses, bound_blocks)
+      where
+        all_aliasses   := <insert-standards> aliasses;
+        link_addresses := <foldl(extract-links)> (all_aliasses, []);
+        bound_blocks   := <fix-missing-aliasses> <foldl(apply-aliasses)> (all_aliasses, blocks)
 
-	extract-links: (FVM_LinkAlias(FVM_Link(name), _), links) -> [name | links]
-	  where
-	  	_ := <not(elem)> (name, links)
-	  	
-	extract-links: (_, links) -> links
-	  	
-	insert-standards: aliasses -> p_i_c_x_n
-	  where
-	  	p         := <try(insert-standard-alias(|FVM_LinkAlias(FVM_Link("P"), "0")))> aliasses;
-	  	p_i       := <try(insert-standard-alias(|FVM_LinkAlias(FVM_Link("I"), "1")))> p;
-	  	p_i_c     := <try(insert-standard-alias(|FVM_ContAlias(FVM_Cont("c"), "0")))> p_i;
-	  	p_i_c_x   := <try(insert-standard-alias(|FVM_ContAlias(FVM_Cont("x"), "1")))> p_i_c;
-	  	p_i_c_x_n := <try(insert-standard-alias(|FVM_ContAlias(FVM_Cont("n"), "2")))> p_i_c_x
+    extract-links: (l@FVM_LinkAlias(FVM_Link(name), _), links) -> [l | links]
+      where
+        _ := <not(elem)> (name, links)
+          
+    extract-links: (_, links) -> links
+          
+    insert-standards: aliasses -> p_i_c_x_n
+      where
+        p         := <try(insert-standard-alias(|FVM_LinkAlias(FVM_Link("P"), "0")))> aliasses;
+        p_i       := <try(insert-standard-alias(|FVM_LinkAlias(FVM_Link("I"), "1")))> p;
+        p_i_c     := <try(insert-standard-alias(|FVM_ContAlias(FVM_Cont("c"), "0")))> p_i;
+        p_i_c_x   := <try(insert-standard-alias(|FVM_ContAlias(FVM_Cont("x"), "1")))> p_i_c;
+        p_i_c_x_n := <try(insert-standard-alias(|FVM_ContAlias(FVM_Cont("n"), "2")))> p_i_c_x
 
-	insert-standard-alias(|alias): aliasses -> [alias | aliasses]
-	  where
-	    FVM_LinkAlias(FVM_Link(name), _) := alias;
-	    _ := <not(in-aliasses)> (name, aliasses)
-	    
-	insert-standard-alias(|alias): aliasses -> [alias | aliasses]
-	  where
-	    FVM_ContAlias(FVM_Cont(name), _) := alias;
-	    _ := <not(in-aliasses)> (name, aliasses)
-	    
-	in-aliasses: (name, aliasses) -> names
-	  where
-	  	names := <map(extract-alias-name)> aliasses;
-	  	_ := <elem> (name, names)
-	  	
-	extract-alias-name: FVM_ContAlias(FVM_Cont(name), _) -> name
-	extract-alias-name: FVM_LinkAlias(FVM_Link(name), _) -> name
-	
-	
-	fix-missing-aliasses: blocks -> <topdown(try(fix-missing-alias))> blocks
-	fix-missing-alias: FVM_Link(name)   -> FVM_Link(Bind(name, -1)) where _ := <is-string> name
-	fix-missing-alias: FVM_LinkIdx(idx) -> FVM_Link(Bind($[_l[idx]], <string-to-int> idx))
-	fix-missing-alias: FVM_Cont(name)   -> FVM_Cont(Bind(name, -1)) where _ := <is-string> name
-	fix-missing-alias: FVM_ContIdx(idx) -> FVM_Cont(Bind($[_c[idx]], <string-to-int> idx))
-	
-	apply-aliasses: (alias, blocks) -> <topdown(try(apply-alias(|alias)))> blocks
-	apply-alias(|alias): FVM_Link(name) -> FVM_Link(Bind(name, <string-to-int> idx)) where FVM_LinkAlias(FVM_Link(name), idx) := alias 
-	apply-alias(|alias): FVM_Cont(name) -> FVM_Cont(Bind(name, <string-to-int> idx)) where FVM_ContAlias(FVM_Cont(name), idx) := alias
-	
-	
-	resugar-aliasses: STC_Program(n, old_aliasses, bound_blocks) -> STC_Program(n, aliasses, blocks)
-	  where
-	  	blocks := <topdown(try(resugar-alias))> bound_blocks;
-	  	(new_aliasses, _) := <foldl(resugar-alias)>(<collect-all(is-alias)> bound_blocks, ([], []));
-	  	aliasses := <list-merge> (old_aliasses, new_aliasses)
-	
-	is-alias: f@FVM_Link(Bind(name, idx)) -> f
-	is-alias: f@FVM_Cont(Bind(name, idx)) -> f
-	
-	resugar-alias: FVM_Link(Bind(name, idx)) -> FVM_Link(name)
-	resugar-alias: FVM_Cont(Bind(name, idx)) -> FVM_Cont(name)
-	
-	resugar-alias: (FVM_Link(Bind(name, idx)), (aliasses, ids)) -> ([FVM_LinkAlias(FVM_Link(name), <int-to-string> idx)|aliasses], [name|ids])
-	  where
-	  	_ := <not(elem)> (name, ids)
-	resugar-alias: (FVM_Cont(Bind(name, idx)), (aliasses, ids)) -> ([FVM_ContAlias(FVM_Cont(name), <int-to-string> idx)|aliasses], [name|ids])
-	  where
-	  	_ := <not(elem)> (name, ids)
-	
-	list-merge: (a, b) -> <concat; make-set> [a, b]
-	
+    insert-standard-alias(|alias): aliasses -> [alias | aliasses]
+      where
+        FVM_LinkAlias(FVM_Link(name), _) := alias;
+        <not(in-aliasses)> (name, aliasses)
+        
+    insert-standard-alias(|alias): aliasses -> [alias | aliasses]
+      where
+        FVM_ContAlias(FVM_Cont(name), _) := alias;
+        <not(in-aliasses)> (name, aliasses)
+        
+    in-aliasses: (name, aliasses) -> names
+      where
+        names := <map(extract-alias-name)> aliasses;
+        <elem> (name, names)
+          
+    extract-alias-name: FVM_ContAlias(FVM_Cont(name), _) -> name
+    extract-alias-name: FVM_LinkAlias(FVM_Link(name), _) -> name
+    
+    
+    fix-missing-aliasses: blocks -> <topdown(try(fix-missing-alias))> blocks
+    fix-missing-alias: FVM_Link(name)   -> FVM_Link(Bind(name, -1)) where _ := <is-string> name
+    fix-missing-alias: FVM_LinkIdx(idx) -> FVM_Link(Bind($[_l[idx]], <string-to-int> idx))
+    fix-missing-alias: FVM_Cont(name)   -> FVM_Cont(Bind(name, -1)) where _ := <is-string> name
+    fix-missing-alias: FVM_ContIdx(idx) -> FVM_Cont(Bind($[_c[idx]], <string-to-int> idx))
+    
+    apply-aliasses: (alias, blocks) -> <topdown(try(apply-alias(|alias)))> blocks
+    apply-alias(|alias): FVM_Link(name) -> FVM_Link(Bind(name, <string-to-int> idx)) where FVM_LinkAlias(FVM_Link(name), idx) := alias 
+    apply-alias(|alias): FVM_Cont(name) -> FVM_Cont(Bind(name, <string-to-int> idx)) where FVM_ContAlias(FVM_Cont(name), idx) := alias
+    
+    
+    resugar-aliasses: STC_Program(fn, i, s, old_aliasses, bound_blocks) -> STC_Program(fn, i, s, aliasses, blocks)
+      where
+        blocks := <topdown(try(resugar-alias))> bound_blocks;
+        (new_aliasses, _) := <foldl(resugar-alias)>(<collect-all(is-alias)> bound_blocks, ([], []));
+        aliasses := <list-merge> (old_aliasses, new_aliasses)
+    
+    is-alias: f@FVM_Link(Bind(name, idx)) -> f
+    is-alias: f@FVM_Cont(Bind(name, idx)) -> f
+    
+    resugar-alias: FVM_Link(Bind(name, idx)) -> FVM_Link(name)
+    resugar-alias: FVM_Cont(Bind(name, idx)) -> FVM_Cont(name)
+    
+    resugar-alias: (FVM_Link(Bind(name, idx)), (aliasses, ids)) -> ([FVM_LinkAlias(FVM_Link(name), <int-to-string> idx)|aliasses], [name|ids])
+      where
+        <not(elem)> (name, ids)
+    resugar-alias: (FVM_Cont(Bind(name, idx)), (aliasses, ids)) -> ([FVM_ContAlias(FVM_Cont(name), <int-to-string> idx)|aliasses], [name|ids])
+      where
+        <not(elem)> (name, ids)
+    
+    list-merge: (a, b) -> <concat; make-set> [a, b]
+    

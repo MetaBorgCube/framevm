@@ -1,16 +1,18 @@
 module stc-common
 
 imports
-	stc-pp
-	stc-interpreter
+    stc-pp
+    stc-interpreter
 
 signature
   sorts S
   constructors    
     Bind : STRING * INT -> S
+    FVM_BoundLabel : STRING * FVM_Label -> S
+    FVM_Export : STRING * STRING * STRING -> S
     STC_Seq : [Instr] -> S
     STC_Block : STC_Label * STC_Seq * INT -> S
-    STC_Program: INT * [STC_Block] -> S
+    STC_Program: STRING * [Import] * INT * [Alias] * [STC_Block] -> S
 
 signature
   sorts V
@@ -21,5 +23,6 @@ signature
     IntV : Int -> V
     
 rules
-	pp-framevm-stacy = pp-stacy-debug
-	eval-framevm-stacy = eval-program
+    pp-framevm-stacy         = pp-stacy-debug
+    eval-framevm-stacy       = eval-program
+    eval-framevm-stacy-debug = eval-program-debug

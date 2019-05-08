@@ -1,44 +1,43 @@
 module closure
 
 imports 
-	signatures/framevm-stacy-sig
-	signatures/fvm-common-sig
-	interpreter/external
-	interpreter/util
-	
-	stc-common
-	
+    signatures/framevm-stacy-sig
+    signatures/fvm-common-sig
+    interpreter/external
+    interpreter/util
+    
+    stc-common
+    
 rules
-	// STC_ClosNew/2
-	// Create a closure of a frame and a label
-	eval: (STC_ClosNew(p@FVM_DeepCopy(), lbl), env1) -> env4
-	  where
-	  	(env2, FrameRef(frame)) := <stack-pop-frame(|env1)>;
-	  	(env3, copy) := <frame-copy(|env2)> (frame, <policy-to-string> p);
-	  	env4 := <stack-push(|env3)> ClosV(copy, lbl)
-	  	
-	eval: (STC_ClosNew(_, lbl), env1) -> env3
-	  where
-	  	(env2, FrameRef(frame)) := <stack-pop-frame(|env1)>;
-	  	env3 := <stack-push(|env2)> ClosV(frame, lbl)
-	  	
-	// STC_ClosNew/1
-	// Create a new closure of a frame and label
-	eval: (STC_ClosNew(lbl), env1) -> env3
-	  where
-	  	(env2, FrameRef(frame)) := <stack-pop-frame(|env1)>;
-	  	env3 := <stack-push(|env2)> ClosV(frame, lbl)
-	  	
-	// STC_ClosToCont/1
-	eval: (STC_ClosToCont(size), env1) -> env4
-	  where
-	  	(env2, ClosV(frame, FVM_Label(lbl))) := <stack-pop-closure(|env1)>;
-	  	(env3, cont) := <vm-cont-new(|env2)> (frame, lbl, <string-to-int> size);
-	  	env4 := <stack-push(|env3)> Continuation(cont)
-	  	
-	// STC_ClosUnpack/0
-	eval: (STC_ClosUnpack(), env1) -> env3
-	  where
-	  	(env2, ClosV(frame, FVM_Label(lbl))) := <stack-pop-closure(|env1)>;
-	  	env3 := <stack-push(|env2)> FrameRef(frame)
-	  	
+    // STC_ClosNew/2
+    // Create a closure of a frame and a label
+    eval: (STC_ClosNew(p@FVM_DeepCopy(), lbl), env1) -> env4
+      where
+        (env2, FrameRef(frame)) := <stack-pop-frame(|env1)>;
+        (env3, copy) := <frame-copy(|env2)> (frame, <policy-to-string> p);
+        env4 := <stack-push(|env3)> ClosV(copy, lbl)
+          
+    eval: (STC_ClosNew(_, lbl), env1) -> env3
+      where
+        (env2, FrameRef(frame)) := <stack-pop-frame(|env1)>;
+        env3 := <stack-push(|env2)> ClosV(frame, lbl)
+          
+    // STC_ClosNew/1
+    // Create a new closure of a frame and label
+    eval: (STC_ClosNew(lbl), env1) -> env3
+      where
+        (env2, FrameRef(frame)) := <stack-pop-frame(|env1)>;
+        env3 := <stack-push(|env2)> ClosV(frame, lbl)
+          
+    // STC_ClosToCont/1
+    eval: (STC_ClosToCont(size), env1) -> env4
+      where
+        (env2, ClosV(frame, FVM_BoundLabel(lib, lbl))) := <stack-pop-closure(|env1)>;
+        (env3, cont) := <vm-cont-new(|env2)> (frame, (lib, lbl), <string-to-int> size);
+        env4 := <stack-push(|env3)> Continuation(cont)
+          
+    // STC_ClosUnpack/0
+    eval: (STC_ClosUnpack(), env1) -> env3
+      where
+        (env2, ClosV(frame, _)) := <stack-pop-closure(|env1)>;
+        env3 := <stack-push(|env2)> FrameRef(frame)
