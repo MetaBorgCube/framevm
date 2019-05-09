@@ -132,6 +132,7 @@ rules
     stack-delta: STC_ClosNew(_, _) -> 0
     stack-delta: STC_ClosNew(_)    -> 0
     stack-delta: STC_ClosUnpack()  -> 0
+    stack-delta: STC_ClosToCont(_) -> 0
     
     stack-delta: STC_StringPush(_) -> 1
   
