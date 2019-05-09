@@ -12,24 +12,24 @@ MAIN:
 
 test new [[
 	new
-]] transform "Run -> CISC" to "frame_1"
+]] transform "Run -> CISC" to "Frame(frame_1)"
 
 
 test size 1 [[
 	new
 	size
-]] transform "Run -> CISC" to "0"
+]] transform "Run -> CISC" to "IntV(0)"
 
 test size 2 [[
 	new 2
 	size
-]] transform "Run -> CISC" to "2"
+]] transform "Run -> CISC" to "IntV(2)"
 
 test size 3 [[
 	ipush 2
 	newr
 	size
-]] transform "Run -> CISC" to "2"
+]] transform "Run -> CISC" to "IntV(2)"
 
 test size 4 [[
 	ipush 2
@@ -41,7 +41,7 @@ test link 1 [[
 	dup
 	link [] P
 	getr [P]
-]] transform "Run -> CISC" to "frame_0"
+]] transform "Run -> CISC" to "Frame(frame_0)"
 
 test link 2 [[
 	new
@@ -54,13 +54,13 @@ test link 2 [[
 	dup
 	print
 	getr [Q, P]
-]] transform "Run -> CISC" to "frame_2
-frame_0"
+]] transform "Run -> CISC" to "Frame(frame_2)
+Frame(frame_0)"
 
 
 test get self [[
 	get []
-]] transform "Run -> CISC" to "frame_0"
+]] transform "Run -> CISC" to "Frame(frame_0)"
 
 test get slot 0 [[
 	new 1
@@ -69,7 +69,7 @@ LBL1:
 	ipush 42
 	set [0]
 	get [0]
-]] transform "Run -> CISC" to "42"
+]] transform "Run -> CISC" to "IntV(42)"
 
 test get slot multiple [[
 	new 2
@@ -82,14 +82,14 @@ LBL1:
 	get [1]
 	print
 	get [0]
-]] transform "Run -> CISC" to "13
-42"
+]] transform "Run -> CISC" to "IntV(13)
+IntV(42)"
 
 
 test getr self [[
 	new
 	getr []
-]] transform "Run -> CISC" to "frame_1"
+]] transform "Run -> CISC" to "Frame(frame_1)"
 
 test getr slot 0 [[
 	new 1
@@ -97,7 +97,7 @@ test getr slot 0 [[
 	ipush 42
 	setr [0]
 	getr [0]
-]] transform "Run -> CISC" to "42"
+]] transform "Run -> CISC" to "IntV(42)"
 
 test getr slot multiple [[
 	new 2
@@ -113,8 +113,8 @@ test getr slot multiple [[
 	getr [1]
 	print
 	getr [0]
-]] transform "Run -> CISC" to "13
-42"
+]] transform "Run -> CISC" to "IntV(13)
+IntV(42)"
 
 
 test getr slot multiple 2 [[
@@ -135,6 +135,6 @@ test getr slot multiple 2 [[
 	print
 	ipush 0
 	getr
-]] transform "Run -> CISC" to "13
-42"
+]] transform "Run -> CISC" to "IntV(13)
+IntV(42)"
 

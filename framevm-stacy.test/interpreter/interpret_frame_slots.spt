@@ -23,7 +23,7 @@ test CISC new one slot 1[[
 	ipush 10
 	setr [0]
 	getr [0]
-]] transform "Run -> CISC" to "10"
+]] transform "Run -> CISC" to "IntV(10)"
 
 test CISC new one slot 2[[
 	new 1
@@ -47,7 +47,7 @@ test CISC new two slots 2[[
 	ipush 10
 	setr [1]
 	getr [1]
-]] transform "Run -> CISC" to "10"
+]] transform "Run -> CISC" to "IntV(10)"
 
 test CISC newr one slot 1[[
 	ipush 1
@@ -56,7 +56,7 @@ test CISC newr one slot 1[[
 	ipush 10
 	setr [0]
 	getr [0]
-]] transform "Run -> CISC" to "10"
+]] transform "Run -> CISC" to "IntV(10)"
 
 test CISC newr one slot 2[[
 	ipush 1
@@ -83,7 +83,7 @@ test CISC newr two slots 2[[
 	ipush 10
 	setr [1]
 	getr [1]
-]] transform "Run -> CISC" to "10"
+]] transform "Run -> CISC" to "IntV(10)"
 
 
 
@@ -102,7 +102,7 @@ test RISC new one slot 1[[
 	ipush 10
 	setr [0]
 	getr [0]
-]] transform "Run -> RISC" to "10"
+]] transform "Run -> RISC" to "IntV(10)"
 
 test RISC new one slot 2[[
 	new 1
@@ -126,7 +126,7 @@ test RISC new two slots 2[[
 	ipush 10
 	setr [1]
 	getr [1]
-]] transform "Run -> RISC" to "10"
+]] transform "Run -> RISC" to "IntV(10)"
 
 test RISC newr one slot 1[[
 	ipush 1
@@ -135,7 +135,7 @@ test RISC newr one slot 1[[
 	ipush 10
 	setr [0]
 	getr [0]
-]] transform "Run -> RISC" to "10"
+]] transform "Run -> RISC" to "IntV(10)"
 
 test RISC newr one slot 2[[
 	ipush 1
@@ -162,4 +162,4 @@ test RISC newr two slots 2[[
 	ipush 10
 	setr [1]
 	getr [1]
-]] transform "Run -> RISC" to "10"
+]] transform "Run -> RISC" to "IntV(10)"

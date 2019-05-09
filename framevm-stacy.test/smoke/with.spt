@@ -119,10 +119,10 @@ WITH_J_END:
 MAIN_END:
 	ipush 0
 	return
-]] transform "Run -> RISC" to "6
-3
-7
-2"
+]] transform "Run -> RISC" to "IntV(6)
+IntV(3)
+IntV(7)
+IntV(2)"
 
 test with example CISC [[MAIN:
 	new 3
@@ -241,9 +241,9 @@ WITH_J_END:
 MAIN_END:
 	ipush 0
 	return
-]] transform "Run -> CISC" to "6
-3
-7
-2"
+]] transform "Run -> CISC" to "IntV(6)
+IntV(3)
+IntV(7)
+IntV(2)"
 	
 	

@@ -52,7 +52,7 @@ FUNC_ELSE:
 FUNC_END:
 	rget
 	return
-]] transform "Run -> RISC" to "42"
+]] transform "Run -> RISC" to "IntV(42)"
 	
 
 test Routine resolution example CISC [[#init2
@@ -105,6 +105,6 @@ FUNC_ELSE:
 FUNC_END:
 	rget
 	return
-]] transform "Run -> CISC" to "42"
+]] transform "Run -> CISC" to "IntV(42)"
 	
 	

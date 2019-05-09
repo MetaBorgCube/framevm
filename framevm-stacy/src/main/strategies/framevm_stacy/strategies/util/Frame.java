@@ -125,6 +125,6 @@ public class Frame {
 	
 	@Override
 	public String toString() {
-		return this.id;
+		return "Frame(" + this.id + ")";
 	}
 }

@@ -29,7 +29,7 @@ FOO:
 	print
 	ipush 0
 	return
-]] transform "Run -> RISC" to "6" 
+]] transform "Run -> RISC" to "IntV(6)" 
 
 test Jump example CISC [[#init 2
 MAIN:
@@ -58,4 +58,4 @@ FOO:
 	print
 	ipush 0
 	return
-]] transform "Run -> CISC" to "6" 
+]] transform "Run -> CISC" to "IntV(6)" 

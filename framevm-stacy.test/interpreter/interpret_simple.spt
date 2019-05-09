@@ -8,4 +8,4 @@ MAIN:
 	print
 	ipush 0
 	return
-]] transform "Run -> RISC" to "1"
+]] transform "Run -> RISC" to "IntV(1)"

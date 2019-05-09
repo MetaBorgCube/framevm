@@ -29,7 +29,7 @@ MAIN:
 	
 	ipush 0
 	return
-]] transform "Run -> RISC" to "6"
+]] transform "Run -> RISC" to "IntV(6)"
 	
 
 test Array example CISC [[#init 2
@@ -59,4 +59,4 @@ MAIN:
 	
 	ipush 0
 	return
-]] transform "Run -> CISC" to "6"
+]] transform "Run -> CISC" to "IntV(6)"

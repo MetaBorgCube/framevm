@@ -45,7 +45,7 @@ MAIN_END:
 	print
 	ipush 0
 	return
-]] transform "Run -> RISC" to "903"
+]] transform "Run -> RISC" to "IntV(903)"
 
 test Sum to example CISC [[MAIN:
 	new 1
@@ -90,4 +90,4 @@ MAIN_END:
 	print
 	ipush 0
 	return
-]] transform "Run -> CISC" to "903"
+]] transform "Run -> CISC" to "IntV(903)"

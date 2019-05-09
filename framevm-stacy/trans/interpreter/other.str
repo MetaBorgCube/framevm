@@ -64,7 +64,7 @@ rules    // Other instructions
           
 rules    // Util
     // Convert a value to a displayable string 
-    val-to-string: IntV(v) -> v where <is-int> v
+    val-to-string: IntV(v) -> IntV(v)
     val-to-string: FrameRef(frame) -> frame
     val-to-string: Continuation(cont) -> cont
     val-to-string: ClosV(frame, FVM_BoundLabel(lib, lbl)) -> (frame, lbl)

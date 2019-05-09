@@ -33,8 +33,8 @@ MAIN_END:
 	print
 	ipush 0
 	return
-]] transform "Run -> RISC" to "1
-0"
+]] transform "Run -> RISC" to "IntV(1)
+IntV(0)"
 
 test Simple exception example CISC [[MAIN:
 	new
@@ -67,5 +67,5 @@ MAIN_END:
 	print
 	ipush 0
 	return
-]] transform "Run -> CISC" to "1
-0"
+]] transform "Run -> CISC" to "IntV(1)
+IntV(0)"

@@ -60,10 +60,10 @@ MAIN_CATCH:
 MAIN_END:
 	ipush 0
 	return
-]] transform "Run -> RISC" to "1
-frame_4
-frame_3
-frame_0"
+]] transform "Run -> RISC" to "IntV(1)
+Frame(frame_4)
+Frame(frame_3)
+Frame(frame_0)"
 
 test Exception trace example CISC [[MAIN:
 	new
@@ -123,7 +123,7 @@ MAIN_CATCH:
 MAIN_END:
 	ipush 0
 	return
-]] transform "Run -> CISC" to "1
-frame_4
-frame_3
-frame_0"
+]] transform "Run -> CISC" to "IntV(1)
+Frame(frame_4)
+Frame(frame_3)
+Frame(frame_0)"

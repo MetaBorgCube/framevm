@@ -31,7 +31,7 @@ CONT2:
 	print
 	ipush 0
 	return
-]] transform "Run -> RISC" to "4"
+]] transform "Run -> RISC" to "IntV(4)"
 
 test Add example CISC [[ADD:
   	get [0]
@@ -62,4 +62,4 @@ CONT2:
 	print
 	ipush 0
 	return
-]] transform "Run -> CISC" to "4"
+]] transform "Run -> CISC" to "IntV(4)"

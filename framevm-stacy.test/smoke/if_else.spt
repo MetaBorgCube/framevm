@@ -28,7 +28,7 @@ CONT:
 	print
 	ipush 0
 	return
-]] transform "Run -> RISC" to "10"
+]] transform "Run -> RISC" to "IntV(10)"
 
 
 test if else example CISC [[#init 2
@@ -57,4 +57,4 @@ CONT:
 	print
 	ipush 0
 	return
-]] transform "Run -> CISC" to "10"
+]] transform "Run -> CISC" to "IntV(10)"

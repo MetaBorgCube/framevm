@@ -66,8 +66,8 @@ FUNC_1:
 	addi
 	setr [1]
 	return
-]] transform "Run -> RISC" to "1
-4"
+]] transform "Run -> RISC" to "IntV(1)
+IntV(4)"
 
 test Superclasses example CISC[[#init1
 MAIN:
@@ -133,6 +133,6 @@ FUNC_1:
 	addi
 	setr [1]
 	return
-]] transform "Run -> CISC" to "1
-4"
+]] transform "Run -> CISC" to "IntV(1)
+IntV(4)"
 	

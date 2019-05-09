@@ -3,7 +3,6 @@ package framevm_stacy.strategies.vm;
 import org.spoofax.interpreter.library.IOAgent;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermFactory;
-import org.spoofax.terms.StrategoInt;
 import org.spoofax.terms.StrategoString;
 import org.spoofax.terms.StrategoTuple;
 
@@ -20,9 +19,7 @@ public class vm_print_0_1 extends FVMStrategy {
 	// Print the given string to console
 	protected IStrategoTerm invoke(IOAgent io, ITermFactory factory, MachineState env, IStrategoTerm arg) {
 		String out;
-		if (arg instanceof StrategoInt) {
-			out = String.valueOf(((StrategoInt) arg).intValue());
-		} else if (arg instanceof StrategoBlob) {
+		if (arg instanceof StrategoBlob) {
 			out = ((StrategoBlob) arg).value().toString();
 		} else if (arg instanceof StrategoTuple) {
 			StrategoTuple tuple = (StrategoTuple) arg;

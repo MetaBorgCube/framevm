@@ -166,32 +166,32 @@ THREAD2_EXIT:
 MAIN_END:
 	ipush 0
 	return
-]] transform "Run -> RISC" to "1
-0
-2
-0
-1
-1
-2
-1
-1
-2
-2
-2
-1
-3
-2
-3
-1
-4
-1
-5
-1
-6
-1
-7
-1
-8"
+]] transform "Run -> RISC" to "IntV(1)
+IntV(0)
+IntV(2)
+IntV(0)
+IntV(1)
+IntV(1)
+IntV(2)
+IntV(1)
+IntV(1)
+IntV(2)
+IntV(2)
+IntV(2)
+IntV(1)
+IntV(3)
+IntV(2)
+IntV(3)
+IntV(1)
+IntV(4)
+IntV(1)
+IntV(5)
+IntV(1)
+IntV(6)
+IntV(1)
+IntV(7)
+IntV(1)
+IntV(8)"
 
 test Threading example CISC [[#init 3
 #cont p -> 0
@@ -357,29 +357,29 @@ THREAD2_EXIT:
 MAIN_END:
 	ipush 0
 	return
-]] transform "Run -> CISC" to "1
-0
-2
-0
-1
-1
-2
-1
-1
-2
-2
-2
-1
-3
-2
-3
-1
-4
-1
-5
-1
-6
-1
-7
-1
-8"
+]] transform "Run -> CISC" to "IntV(1)
+IntV(0)
+IntV(2)
+IntV(0)
+IntV(1)
+IntV(1)
+IntV(2)
+IntV(1)
+IntV(1)
+IntV(2)
+IntV(2)
+IntV(2)
+IntV(1)
+IntV(3)
+IntV(2)
+IntV(3)
+IntV(1)
+IntV(4)
+IntV(1)
+IntV(5)
+IntV(1)
+IntV(6)
+IntV(1)
+IntV(7)
+IntV(1)
+IntV(8)"

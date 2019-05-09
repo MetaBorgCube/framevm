@@ -34,7 +34,7 @@ MAIN_END:
 	print
 	ipush 0
 	return
-]] transform "Run -> RISC" to "5"
+]] transform "Run -> RISC" to "IntV(5)"
 
 test Object in function example CISC [[#init 1
 MAIN:
@@ -68,4 +68,4 @@ MAIN_END:
 	print
 	ipush 0
 	return
-]] transform "Run -> CISC" to "5"
+]] transform "Run -> CISC" to "IntV(5)"

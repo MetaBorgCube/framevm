@@ -28,8 +28,8 @@ test CISC shallow frame copy 1 [[
 	get [0, 0]
 	print
 	get [1, 0]
-]] transform "Run -> CISC" to "42
-42"
+]] transform "Run -> CISC" to "IntV(42)
+IntV(42)"
 
 test CISC shallow frame copy 2 [[
 	new 1
@@ -48,8 +48,8 @@ test CISC shallow frame copy 2 [[
 	get [0, 0]
 	print
 	get [1, 0]
-]] transform "Run -> CISC" to "42
-42"
+]] transform "Run -> CISC" to "IntV(42)
+IntV(42)"
 
 test CISC shallow nested frame copy 1 [[
 	new 1
@@ -72,8 +72,8 @@ test CISC shallow nested frame copy 1 [[
 	get [0, 0, 0]
 	print
 	get [1, 0, 0]
-]] transform "Run -> CISC" to "42
-42"
+]] transform "Run -> CISC" to "IntV(42)
+IntV(42)"
 
 test CISC shallow nested frame copy 2 [[
 	new 1
@@ -96,8 +96,8 @@ test CISC shallow nested frame copy 2 [[
 	get [0, 0, 0]
 	print
 	get [1, 0, 0]
-]] transform "Run -> CISC" to "42
-42"
+]] transform "Run -> CISC" to "IntV(42)
+IntV(42)"
 
 test CISC shallow linked frame copy 1 [[
 	new 1
@@ -120,8 +120,8 @@ test CISC shallow linked frame copy 1 [[
 	get [0, P, 0]
 	print
 	get [1, P, 0]
-]] transform "Run -> CISC" to "42
-42"
+]] transform "Run -> CISC" to "IntV(42)
+IntV(42)"
 
 test CISC shallow linked frame copy 1 [[
 	new 1
@@ -144,8 +144,8 @@ test CISC shallow linked frame copy 1 [[
 	get [0, P, 0]
 	print
 	get [1, P, 0]
-]] transform "Run -> CISC" to "42
-42"
+]] transform "Run -> CISC" to "IntV(42)
+IntV(42)"
 
 
 test CISC deep frame copy 1 [[
@@ -165,8 +165,8 @@ test CISC deep frame copy 1 [[
 	get [0, 0]
 	print
 	get [1, 0]
-]] transform "Run -> CISC" to "42
-12"
+]] transform "Run -> CISC" to "IntV(42)
+IntV(12)"
 
 test CISC deep frame copy 2 [[
 	new 1
@@ -185,8 +185,8 @@ test CISC deep frame copy 2 [[
 	get [0, 0]
 	print
 	get [1, 0]
-]] transform "Run -> CISC" to "12
-42"
+]] transform "Run -> CISC" to "IntV(12)
+IntV(42)"
 
 test CISC deep nested frame copy 1 [[
 	new 1
@@ -209,8 +209,8 @@ test CISC deep nested frame copy 1 [[
 	get [0, 0, 0]
 	print
 	get [1, 0, 0]
-]] transform "Run -> CISC" to "42
-12"
+]] transform "Run -> CISC" to "IntV(42)
+IntV(12)"
 
 test CISC deep nested frame copy 2 [[
 	new 1
@@ -233,8 +233,8 @@ test CISC deep nested frame copy 2 [[
 	get [0, 0, 0]
 	print
 	get [1, 0, 0]
-]] transform "Run -> CISC" to "12
-42"
+]] transform "Run -> CISC" to "IntV(12)
+IntV(42)"
 
 test CISC deep linked frame copy 1 [[
 	new 1
@@ -257,8 +257,8 @@ test CISC deep linked frame copy 1 [[
 	get [0, P, 0]
 	print
 	get [1, P, 0]
-]] transform "Run -> CISC" to "42
-12"
+]] transform "Run -> CISC" to "IntV(42)
+IntV(12)"
 
 test CISC deep linked frame copy 2 [[
 	new 1
@@ -281,8 +281,8 @@ test CISC deep linked frame copy 2 [[
 	get [0, P, 0]
 	print
 	get [1, P, 0]
-]] transform "Run -> CISC" to "12
-42"
+]] transform "Run -> CISC" to "IntV(12)
+IntV(42)"
 
 
 test RISC shallow frame copy 1 [[
@@ -302,8 +302,8 @@ test RISC shallow frame copy 1 [[
 	get [0, 0]
 	print
 	get [1, 0]
-]] transform "Run -> RISC" to "42
-42"
+]] transform "Run -> RISC" to "IntV(42)
+IntV(42)"
 
 test RISC shallow frame copy 2 [[
 	new 1
@@ -322,8 +322,8 @@ test RISC shallow frame copy 2 [[
 	get [0, 0]
 	print
 	get [1, 0]
-]] transform "Run -> RISC" to "42
-42"
+]] transform "Run -> RISC" to "IntV(42)
+IntV(42)"
 
 test RISC shallow nested frame copy 1 [[
 	new 1
@@ -346,8 +346,8 @@ test RISC shallow nested frame copy 1 [[
 	get [0, 0, 0]
 	print
 	get [1, 0, 0]
-]] transform "Run -> RISC" to "42
-42"
+]] transform "Run -> RISC" to "IntV(42)
+IntV(42)"
 
 test RISC shallow nested frame copy 2 [[
 	new 1
@@ -370,8 +370,8 @@ test RISC shallow nested frame copy 2 [[
 	get [0, 0, 0]
 	print
 	get [1, 0, 0]
-]] transform "Run -> RISC" to "42
-42"
+]] transform "Run -> RISC" to "IntV(42)
+IntV(42)"
 
 test RISC shallow linked frame copy 1 [[
 	new 1
@@ -394,8 +394,8 @@ test RISC shallow linked frame copy 1 [[
 	get [0, P, 0]
 	print
 	get [1, P, 0]
-]] transform "Run -> RISC" to "42
-42"
+]] transform "Run -> RISC" to "IntV(42)
+IntV(42)"
 
 test RISC shallow linked frame copy 1 [[
 	new 1
@@ -418,8 +418,8 @@ test RISC shallow linked frame copy 1 [[
 	get [0, P, 0]
 	print
 	get [1, P, 0]
-]] transform "Run -> RISC" to "42
-42"
+]] transform "Run -> RISC" to "IntV(42)
+IntV(42)"
 
 
 test RISC deep frame copy 1 [[
@@ -439,8 +439,8 @@ test RISC deep frame copy 1 [[
 	get [0, 0]
 	print
 	get [1, 0]
-]] transform "Run -> RISC" to "42
-12"
+]] transform "Run -> RISC" to "IntV(42)
+IntV(12)"
 
 test RISC deep frame copy 2 [[
 	new 1
@@ -459,8 +459,8 @@ test RISC deep frame copy 2 [[
 	get [0, 0]
 	print
 	get [1, 0]
-]] transform "Run -> RISC" to "12
-42"
+]] transform "Run -> RISC" to "IntV(12)
+IntV(42)"
 
 test RISC deep nested frame copy 1 [[
 	new 1
@@ -483,8 +483,8 @@ test RISC deep nested frame copy 1 [[
 	get [0, 0, 0]
 	print
 	get [1, 0, 0]
-]] transform "Run -> RISC" to "42
-12"
+]] transform "Run -> RISC" to "IntV(42)
+IntV(12)"
 
 test RISC deep nested frame copy 2 [[
 	new 1
@@ -507,8 +507,8 @@ test RISC deep nested frame copy 2 [[
 	get [0, 0, 0]
 	print
 	get [1, 0, 0]
-]] transform "Run -> RISC" to "12
-42"
+]] transform "Run -> RISC" to "IntV(12)
+IntV(42)"
 
 test RISC deep linked frame copy 1 [[
 	new 1
@@ -531,8 +531,8 @@ test RISC deep linked frame copy 1 [[
 	get [0, P, 0]
 	print
 	get [1, P, 0]
-]] transform "Run -> RISC" to "42
-12"
+]] transform "Run -> RISC" to "IntV(42)
+IntV(12)"
 
 test RISC deep linked frame copy 2 [[
 	new 1
@@ -555,5 +555,5 @@ test RISC deep linked frame copy 2 [[
 	get [0, P, 0]
 	print
 	get [1, P, 0]
-]] transform "Run -> RISC" to "12
-42"
+]] transform "Run -> RISC" to "IntV(12)
+IntV(42)"
