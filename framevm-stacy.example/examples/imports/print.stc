@@ -1,9 +1,23 @@
-from stdlib.strings.print import print
+from stdlib.strings import print, from_bool
 
 MAIN:
 	new 1
 	dup
-	spush "abcdefg"
+	spush "abcdefg\n"
+	setr [0]
+	call print MAIN2
+	
+MAIN2:
+	new 1
+	dup
+	ipush 1			// true
+	setr [0]
+	call from_bool MAIN3
+	
+MAIN3:
+	new 1
+	dup
+	swap 2
 	setr [0]
 	call print MAIN_END
 	

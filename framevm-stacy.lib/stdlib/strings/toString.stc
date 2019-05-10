@@ -1,0 +1,17 @@
+from stdlib.strings.fromInt import int_to_string
+export TO_STRING as to_string
+
+// Made by @Geweldig
+
+TO_STRING:
+  get [0]
+  frame?
+  jumpz __IS_INT __IS_STRING
+  
+__IS_INT:
+  get []
+  tailcall int_to_string
+
+__IS_STRING:
+  get[0]
+  return
