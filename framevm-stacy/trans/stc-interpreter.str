@@ -77,7 +77,7 @@ rules
         body' := <bottomup(try(resolve-jump-labels-(|lib)))> body
     
     resolve-jump-labels-(|lib): FVM_Label(lbl) -> FVM_BoundLabel(lib, lbl)
-    resolve-jump-labels-(|l): FVM_ExternalLabel(func_name) -> <debug>FVM_BoundLabel(lib, lbl)
+    resolve-jump-labels-(|l): FVM_ExternalLabel(func_name) -> FVM_BoundLabel(lib, lbl)
       where
         a            := <nabl2-get-ast-analysis> func_name;
         ref-occ      := <nabl2-mk-occurrence(|"ModuleFunc")> func_name;

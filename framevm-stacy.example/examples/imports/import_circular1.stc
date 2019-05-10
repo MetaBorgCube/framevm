@@ -1,0 +1,21 @@
+from examples.imports.import_circular2 import function2
+export FUNC as function
+
+MAIN:
+	new 1
+	
+	dup
+	ipush 42
+	setr [0]
+	call function2 MAIN_END
+
+FUNC:
+	get [0]
+	print
+	
+	cget [c]
+	cret
+	
+MAIN_END:
+	ipush 0
+	return
