@@ -109,7 +109,10 @@ context-free syntax
   
   Import.FVM_Import  = <from <LIB> import <{LIBFUNC ", "}+>>
   Import.FVM_ImportAs = <from <LIB> import <LIBFUNC> as <LIBFUNC>>
-  Import.FVM_Export   = <export <LABEL> as <LIBFUNC>>
+  Import.FVM_Export   = <export <LabelOrLibFunc> as <LIBFUNC>>
+  
+  LabelOrLibFunc.Local    = LABEL
+  LabelOrLibFunc.External = LIBFUNC
   
 /* 
 

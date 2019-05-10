@@ -77,13 +77,13 @@ rules
         body' := <bottomup(try(resolve-jump-labels-(|lib)))> body
     
     resolve-jump-labels-(|lib): FVM_Label(lbl) -> FVM_BoundLabel(lib, lbl)
-    resolve-jump-labels-(|l): FVM_ExternalLabel(func_name) -> FVM_BoundLabel(lib, lbl)
+    resolve-jump-labels-(|l): FVM_ExternalLabel(func_name) -> <debug>FVM_BoundLabel(lib, lbl)
       where
         a            := <nabl2-get-ast-analysis> func_name;
         ref-occ      := <nabl2-mk-occurrence(|"ModuleFunc")> func_name;
         (dec-occ, path) := <nabl2-get-resolved-name(|a)> ref-occ;
-        lib          := <nabl2-get-property(|a, "lib")> dec-occ;
-        lbl          := <nabl2-get-property(|a, "lbl")> dec-occ
+        lib          := <nabl2-get-property(|a, "lib")>   dec-occ;
+        lbl          := <nabl2-get-property(|a, "label")> dec-occ
     
     // Ask next instruction and evaluate it
     // Repeat until no instructions are left

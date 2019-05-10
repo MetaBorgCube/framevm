@@ -49,27 +49,37 @@ rules
   	d ?===> ds,
   	new ns, ns ---> ds,
   	ModuleFunc{func_name} -> ns,
-  	ModuleFunc{func_name} |-> d2 | error $[Function not found: [func_name] [ds]] @func_name,
+  	ModuleFunc{func_name} |-> d2 | error $[Function not found: [func_name]] @func_name,
   	d2.label := lbl,
   	d2.lib := lib,
   	ModuleFunc{func_as} <- prog,
-  	ModuleFunc{func_as}.lbl := lbl,
-  	ModuleFunc{func_as}.lib := lib.
+  	ModuleFunc{func_as}.label := lbl,
+  	ModuleFunc{func_as}.lib   := lib.
   
-  import[[FVM_Export(lib, lbl, func_as) ^(mod, prog)]] :=
+  import[[FVM_Export(lib, Local(lbl), func_as) ^(mod, prog)]] :=
   	ModuleFunc{func_as} <- mod,
   	ModuleFunc{func_as}.label := lbl,
   	ModuleFunc{func_as}.lib   := lib,
   	lbl[[lbl ^(prog)]].
+  
+  import[[FVM_Export(_, External(name), func_as) ^(mod, prog)]] :=
+  	ModuleFunc{name} -> prog,
+  	ModuleFunc{name} |-> d | error $[Function not found: [name]] @name,
+  	d.label := lbl,
+  	d.lib   := lib,
+  	
+  	ModuleFunc{func_as} <- mod,
+  	ModuleFunc{func_as}.label := lbl,
+  	ModuleFunc{func_as}.lib   := lib.
   	
   libfunc[[func_name ^(ds, s)]] :=
   	new ns, ns ---> ds,
   	ModuleFunc{func_name} -> ns,
-  	ModuleFunc{func_name} |-> d | error $[Function not found: [func_name] [ds]] @func_name,
+  	ModuleFunc{func_name} |-> d | error $[Function not found: [func_name]] @func_name,
   	d.label := lbl,
   	d.lib := lib,
   	ModuleFunc{func_name} <- s,
-  	ModuleFunc{func_name}.lbl := lbl,
+  	ModuleFunc{func_name}.label := lbl,
   	ModuleFunc{func_name}.lib := lib.
   	
   	
