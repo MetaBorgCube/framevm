@@ -1,0 +1,22 @@
+from examples.imports.export_package import function, function2
+from stdlib.strings.print import print
+
+MAIN:
+	new 1
+	
+	dup
+	ipush 12
+	setr [0]
+	call function MAIN2
+
+MAIN2:
+	new 1
+	
+	dup
+	spush "abc"
+	setr [0]
+	call function2 MAIN_END
+	
+MAIN_END:
+	ipush 0
+	return
