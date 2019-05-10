@@ -28,6 +28,7 @@ import framevm_stacy.strategies.stack_ops.stack_size_0_1;
 import framevm_stacy.strategies.vm.vm_cont_new_0_1;
 import framevm_stacy.strategies.vm.vm_debug_0_1;
 import framevm_stacy.strategies.vm.vm_execute_1_1;
+import framevm_stacy.strategies.vm.vm_has_lib_0_1;
 import framevm_stacy.strategies.vm.vm_init_0_0;
 import framevm_stacy.strategies.vm.vm_jump_0_1;
 import framevm_stacy.strategies.vm.vm_print_0_1;
@@ -43,6 +44,7 @@ public class InteropRegisterer extends JavaInteropRegisterer {
 				vm_start_0_1.instance,
 				vm_store_block_0_1.instance,
 				vm_stop_0_1.instance,
+				vm_has_lib_0_1.instance,
 
 				vm_print_0_1.instance,
 				vm_print_chars_0_1.instance,

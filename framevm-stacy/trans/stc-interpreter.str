@@ -33,25 +33,43 @@ rules
     
     store-block: (STC_Block(FVM_Label(lbl), STC_Seq(body)), (lib, env)) -> (lib, <vm-store-block(|env)> ((lib, lbl), body))
     
-    import-blocks: (FVM_Import(lib, _), env1) -> env2
+    import-blocks: (FVM_Import(lib, _), env1) -> env3
       where 
-        blocks := <resolve-jump-labels(|lib)> <get-lib-blocks> lib;
-        (_, env2) := <foldl(store-block)> (blocks, (lib, env1))
+        (imports, blocks) := <resolve-jump-labels(|lib)> <get-lib-blocks> lib;
+        (_, env2) := <foldl(store-block)> (blocks, (lib, env1));
+        env3 := <foldl(try-load-import)> (imports, env2)
         
     import-blocks: (FVM_ImportAs(lib, _, _), env1) -> env2
       where 
-        blocks := <resolve-jump-labels(|lib)> <get-lib-blocks> lib;
-        (_, env2) := <foldl(store-block)> (blocks, (lib, env1))
+        (imports, blocks) := <resolve-jump-labels(|lib)> <get-lib-blocks> lib;
+        (_, env2) := <foldl(store-block)> (blocks, (lib, env1));
+        env3 := <foldl(try-load-import)> (imports, env2)
         
     import-blocks: (FVM_Export(_, _, _), env) -> env
     
-    get-lib-blocks: libname -> blocks
+    try-load-import: i@(FVM_ImportAs(lib, _, _), env1) -> env2
+      where
+        <not(vm-has-lib(|env1))> lib;
+        env2 := <import-blocks> i
+    
+    try-load-import: i@(FVM_Import(lib, _), env1) -> env2
+      where
+        <not(vm-has-lib(|env1))> lib;
+        env2 := <import-blocks> i
+    
+    try-load-import: (_, env) -> env
+    
+    
+    
+    get-lib-blocks: libname -> (imports, blocks)
       where
         a            := <nabl2-get-ast-analysis> libname;
-        ref-occ      := <nabl2-mk-occurrence(|"Module")> libname;
+        ref-occ      := <nabl2-mk-occurrence(|"STC_Module")> libname;
         (dec-occ, path) := <nabl2-get-resolved-name(|a)> ref-occ;
-        blocks          := <nabl2-get-property(|a, "blocks")> dec-occ
+        blocks          := <nabl2-get-property(|a, "blocks")>  dec-occ;
+        imports         := <nabl2-get-property(|a, "imports")> dec-occ
     
+    resolve-jump-labels(|lib): (imports, blocks) -> (imports, <resolve-jump-labels(|lib)> blocks)
     resolve-jump-labels(|lib): [] -> []
     resolve-jump-labels(|lib): [b@STC_PseudoCode(_) | t] -> [b | <resolve-jump-labels(|lib)> t]
     resolve-jump-labels(|lib): [STC_Block(lbl, STC_Seq(body), _) | t] -> [STC_Block(lbl, STC_Seq(body')) | <resolve-jump-labels(|lib)> t]
@@ -59,7 +77,7 @@ rules
         body' := <bottomup(try(resolve-jump-labels-(|lib)))> body
     
     resolve-jump-labels-(|lib): FVM_Label(lbl) -> FVM_BoundLabel(lib, lbl)
-    resolve-jump-labels-(|l): FVM_ExternalLabel(func_name) -> <debug> FVM_BoundLabel(lib, lbl)
+    resolve-jump-labels-(|l): FVM_ExternalLabel(func_name) -> FVM_BoundLabel(lib, lbl)
       where
         a            := <nabl2-get-ast-analysis> func_name;
         ref-occ      := <nabl2-mk-occurrence(|"ModuleFunc")> func_name;

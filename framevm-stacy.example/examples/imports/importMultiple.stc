@@ -19,6 +19,7 @@ MAIN2:
 	setr [1]
 	
 	call example MAIN_END
+
 MAIN_END:
 	ipush 0
 	return

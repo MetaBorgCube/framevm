@@ -6,7 +6,7 @@ imports
   analysis/pseudo
   
 signature
-    namespaces Var Module ModuleFunc
+    namespaces Var STC_Module ModuleFunc
 
 name resolution
   labels
@@ -29,22 +29,23 @@ rules
     Map1(block)[[blocks ^(prog)]],
     
     new mod, mod ---> s,
-    Module{fname} <- s,
-    Module{fname}.blocks := blocks,
-    Module{fname} ===> mod,
+    STC_Module{fname} <- s,
+    STC_Module{fname}.blocks := blocks,
+    STC_Module{fname}.imports := imports,
+    STC_Module{fname} ===> mod,
     Map2(import)[[imports ^(mod, prog)]].
     
   
   	
   import[[FVM_Import(lib_name, funcs) ^(s, prog)]] :=
-  	Module{lib_name} -> s,
-  	Module{lib_name} |-> d | error $[Module not found: [lib_name]] @lib_name,
+  	STC_Module{lib_name} -> s,
+  	STC_Module{lib_name} |-> d | error $[Module not found: [lib_name]] @lib_name,
   	d ?===> ds,
   	Map2(libfunc)[[funcs ^(ds, prog)]].
   	
   import[[FVM_ImportAs(lib_name, func_name, func_as) ^(s, prog)]] :=
-  	Module{lib_name} -> s,
-  	Module{lib_name} |-> d | error $[Module not found: [lib_name]] @lib_name,
+  	STC_Module{lib_name} -> s,
+  	STC_Module{lib_name} |-> d | error $[Module not found: [lib_name]] @lib_name,
   	d ?===> ds,
   	new ns, ns ---> ds,
   	ModuleFunc{func_name} -> ns,
