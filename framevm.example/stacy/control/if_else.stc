@@ -1,14 +1,14 @@
 #init 2
-//
-//{
-//	var x := 1
-//	var y := 2
-//	if x == 1:
-//		x := y
-//	else:
-//		x := 10
-//	print(x)			// 10
-//}
+
+{
+	var x := 1
+	var y := 2
+	if (x == 1):
+		x := y
+	else:
+		x := 10
+	print(x)			// 10
+}
 
 MAIN:
 	ipush 1				// 

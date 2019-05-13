@@ -26,15 +26,15 @@ else:
 
   PsdInstr.PsdFor = <for <ID> = <PsdExp> -\> <PsdExp>:
     <body:PsdBody>
-> { layout (indent "for" body && indent "for" body) }
+> { layout (indent "for" body) }
 
   PsdInstr.PsdForIter = <for <ID> in <PsdExp>:
     <body:PsdBody>
-> { layout (indent "for" body && indent "for" body) }
+> { layout (indent "for" body) }
 
   PsdInstr.PsdWhile = <while <PsdExp>:
     <body:PsdBody>
-> { layout (indent "while" body && indent "while" body) }
+> { layout (indent "while" body) }
 
   PsdInstr.PsdDefine = <var <PsdExp> := <PsdExp>>
   PsdInstr.PsdAssign = <<PsdExp> := <PsdExp>>
