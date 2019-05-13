@@ -1,0 +1,49 @@
+module fvm-pp
+
+imports
+
+  libstratego-gpp
+  libspoofax/sdf/pp
+  libspoofax/editor/refactoring/-
+  pp/framevm-parenthesize
+  pp/framevm-pp
+
+rules
+
+  editor-format:
+    (node, _, ast, path, project-path) -> (filename, result)
+    with
+      ext      := <get-extension> path
+    ; filename := <guarantee-extension(|$[pp.[ext]])> path
+    ; result   := <pp-debug-framevm> node
+
+rules
+  
+  pp-framevm-string =
+    parenthesize-framevm
+    ; prettyprint-framevm-start-symbols
+    ; !V([], <id>)
+    ; box2text-string(|120)
+      
+  pp-partial-framevm-string =
+    parenthesize-framevm
+    ; prettyprint-framevm
+    ; !V([], <id>)
+    ; box2text-string(|120)
+    
+  pp-partial-framevm-string(|sort) =
+    parenthesize-framevm
+    ; prettyprint-framevm(|sort)
+    ; !V([], <id>)
+    ; box2text-string(|120)  
+      
+  pp-debug-framevm:
+    ast -> result
+    with
+       result := <pp-framevm-string> ast
+    <+ <bottomup(try(not(is-string); not(is-list); not(pp-framevm-string); debug(!"cannot pp ")))> ast
+    ;  result := ""
+
+rules
+  
+  construct-textual-change = construct-textual-change(pp-partial-framevm-string, parenthesize, override-reconstruction, resugar)

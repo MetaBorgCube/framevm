@@ -1,0 +1,13 @@
+---
+id: org.metaborg.lang:framevm.example:1.0.0
+name: framevm
+dependencies:
+  compile:
+  - org.metaborg.lang:framevm:1.0.0
+debug:
+  typesmart: false
+runtime:
+  nabl2:
+    debug: analysis files
+build:
+  useBuildSystemSpec: true

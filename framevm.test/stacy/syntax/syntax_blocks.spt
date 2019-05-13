@@ -1,0 +1,123 @@
+module parser_blocks
+
+language framevm
+
+test parse minimal [[
+MAIN:
+	ipush 1
+	return
+]] parse succeeds
+
+test label without colon [[
+MAIN
+	ipush 1
+	return
+]] parse fails
+
+test block without indentation [[
+MAIN:
+ipush 1
+return
+]] parse fails
+
+test block mismatched indentation [[
+MAIN:
+	ipush 1
+		return
+]] parse fails
+
+test block without control tail [[
+MAIN:
+	ipush 1
+]] parse fails
+
+test block with two control instructions [[
+MAIN:
+	ipush 1
+	jump A
+	return
+]] parse fails
+
+test parse two minimal blocks 
+[[MAIN:
+	ipush 1
+	return
+	
+MAIN_2:
+	ipush 1
+	jump MAIN
+]] parse succeeds
+
+test parse longer block
+[[MAIN:
+	ipush 1
+	ipush 2
+	addi
+	ipush 3
+	eqi
+	jumpz ELSE THEN
+]] parse succeeds
+
+test parse longer block with whitespace
+[[MAIN:
+	ipush 1
+	ipush 2
+	
+	
+	addi
+	
+	
+	ipush 3
+	eqi
+	jumpz ELSE THEN
+]] parse succeeds
+
+
+test parse comments end of line [[
+MAIN:
+	ipush 1	// aaaa
+	return
+]] parse succeeds
+
+test parse comments end of line 2 [[
+MAIN:
+	ipush 1	/*aaaa*/
+	return
+]] parse succeeds
+
+test parse comments own line [[
+MAIN:
+	ipush 1	
+	// aaaa
+	return
+]] parse succeeds
+
+test parse comments own line 2 [[
+MAIN:
+	ipush 1	
+	/*aaaa*/
+	return
+]] parse succeeds
+
+
+test parse comments multi-line [[
+MAIN:
+	ipush 1	
+	/*aaaa
+	* bbbbbb
+	* ccccc
+	*/
+	return
+]] parse succeeds
+
+test parse commented statement [[
+MAIN:
+	ipush 1	
+	// return
+]] parse fails
+
+test parse commented statement 2 [[
+MAIN:
+	// ipush 1	
+	return
+]] parse succeeds

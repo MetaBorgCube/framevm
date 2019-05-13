@@ -1,0 +1,96 @@
+module interpreter
+
+imports 
+    signatures/fvm-stacy-sig
+    signatures/fvm-common-sig
+    interpreter/stacy/-
+    
+    fvm-common
+    nabl2/api
+    
+rules
+    eval-program-debug = eval-program(debug-eval)
+    debug-eval: t@(e, _) -> t
+      where <topdown(try(rm-annotations)); debug(!"execute: ")> e
+      
+    eval-program = eval-program(id)
+    
+    eval-program(s): p@Program("stacy", fn, i, s, links, blocks) -> <eval-program-(s|"STC")> p
+    
+    eval-program-(s|mode): Program(_, fn, i, s, links, blocks) -> out
+      where 
+        <gti> (<string-length> fn, 1);
+        blocks' := <resolve-jump-labels(|fn)> blocks;
+        
+        env1 := <vm-init> (<length> links, 2, s); 
+        (_, env2) := <foldl(store-block)> (blocks', (fn, env1));
+        (_, env3) := <store-block> (FVM_Block(FVM_Label("_exit"),  FVM_Seq([]), 0), (fn, env2));
+        (_, env4) := <store-block> (FVM_Block(FVM_Label("_catch"), FVM_Seq([]), 0), (fn, env3));
+        env5 := <foldl(import-blocks(|mode))> (i, env4);
+        env6 := <vm-start(|env5)> (fn, "MAIN");
+        env7 := <stc-execute(s|env6)>;
+        out  := <vm-stop(|env7)>
+    
+    store-block: (FVM_Block(FVM_Label(lbl), FVM_Seq(body), _), (lib, env)) -> (lib, <vm-store-block(|env)> ((lib, lbl), body))
+    
+    import-blocks(|mode): (FVM_Import(lib, _), env1) -> env3
+      where 
+        (imports, blocks) := <resolve-jump-labels(|lib)> <get-lib-blocks(|mode)> lib;
+        (_, env2) := <foldl(store-block)> (blocks, (lib, env1));
+        env3 := <foldl(try-load-import(|mode))> (imports, env2)
+        
+    import-blocks(|mode): (FVM_ImportAs(lib, _, _), env1) -> env2
+      where 
+        (imports, blocks) := <resolve-jump-labels(|lib)> <get-lib-blocks(|mode)> lib;
+        (_, env2) := <foldl(store-block)> (blocks, (lib, env1));
+        env3 := <foldl(try-load-import(|mode))> (imports, env2)
+        
+    import-blocks(|mode): (FVM_Export(_, _, _), env) -> env
+    
+    try-load-import(|mode): i@(FVM_ImportAs(lib, _, _), env1) -> env2
+      where
+        <not(vm-has-lib(|env1))> lib;
+        env2 := <import-blocks(|mode)> i
+    
+    try-load-import(|mode): i@(FVM_Import(lib, _), env1) -> env2
+      where
+        <not(vm-has-lib(|env1))> lib;
+        env2 := <import-blocks(|mode)> i
+    
+    try-load-import(|mode): (_, env) -> env
+    
+    
+    
+    get-lib-blocks(|mode): libname -> (imports, blocks)
+      where
+        a            := <nabl2-get-ast-analysis> libname;
+        ref-occ      := <nabl2-mk-occurrence(|$[[mode]_Module])> libname;
+        (dec-occ, path) := <nabl2-get-resolved-name(|a)> ref-occ;
+        blocks          := <nabl2-get-property(|a, "blocks")>  dec-occ;
+        imports         := <nabl2-get-property(|a, "imports")> dec-occ
+    get-lib-blocks: libname -> <fail> where <debug> $[Failed to load [libname]]
+    
+    resolve-jump-labels(|lib): (imports, blocks) -> (imports, <resolve-jump-labels(|lib)> blocks)
+    resolve-jump-labels(|lib): [] -> []
+    resolve-jump-labels(|lib): [FVM_Block(lbl, FVM_Seq(body), d) | t] -> [FVM_Block(lbl, FVM_Seq(body'), d) | <resolve-jump-labels(|lib)> t]
+      where
+        body' := <bottomup(try(resolve-jump-labels-(|lib)))> body
+    
+    resolve-jump-labels-(|lib): FVM_Label(lbl) -> FVM_BoundLabel(lib, lbl)
+    resolve-jump-labels-(|l): FVM_ExternalLabel(func_name) -> FVM_BoundLabel(lib, lbl)
+      where
+        a            := <nabl2-get-ast-analysis> func_name;
+        ref-occ      := <nabl2-mk-occurrence(|"ModuleFunc")> func_name;
+        (dec-occ, path) := <nabl2-get-resolved-name(|a)> ref-occ;
+        lib          := <nabl2-get-property(|a, "lib")>   dec-occ;
+        lbl          := <nabl2-get-property(|a, "label")> dec-occ
+    
+    // Ask next instruction and evaluate it
+    // Repeat until no instructions are left
+    stc-execute(s|env) = vm-execute(s; stc-eval <+ eval | env)
+
+    // Instruction not implemented or execution failed
+    // Catches current instructions and reports them
+    eval: (instr, env) -> <fail>
+      where
+        <debug> ("Execution failed at instruction", instr)

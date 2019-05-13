@@ -1,0 +1,18 @@
+from stacy.imports.export import example as add
+
+MAIN:
+	new 2
+	
+	dup
+	ipush 12
+	setr [0]
+	
+	dup
+	ipush 30
+	setr [1]
+	
+	call add MAIN_END
+	
+MAIN_END:
+	ipush 0
+	return

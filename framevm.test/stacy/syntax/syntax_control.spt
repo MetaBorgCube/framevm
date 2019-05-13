@@ -1,0 +1,108 @@
+module parser_control
+
+language framevm
+
+// Fixture of minimal block
+fixture [[MAIN:
+	[[...]]
+]]
+
+
+test return  [[return]]     parse succeeds
+test ccall   [[ccall LBL1]] parse succeeds
+test cret    [[cret]]       parse succeeds
+test try     [[try LBL]]    parse succeeds
+test throw   [[throw]]      parse succeeds
+
+
+test jump simple     [[jump P]]    parse succeeds
+test jump simple2    [[jump G]]    parse succeeds
+test jump external   [[jump e]]    parse succeeds
+test jump number     [[jump 0]]    parse fails
+test jump char       [[jump 'x']]  parse fails
+
+
+test jumpz single label    [[jumpz P]]      parse fails
+
+test jumpz lbl1 simple     [[jumpz P P]]    parse succeeds
+test jumpz lbl1 simple2    [[jumpz G P]]    parse succeeds
+test jumpz lbl1 external   [[jumpz e P]]    parse succeeds
+test jumpz lbl1 number     [[jumpz 0 P]]    parse fails
+test jumpz lbl1 char       [[jumpz 'x' P]]  parse fails
+
+test jumpz lbl2 simple     [[jumpz P P]]    parse succeeds
+test jumpz lbl2 simple2    [[jumpz P G]]    parse succeeds
+test jumpz lbl2 external   [[jumpz P e]]    parse succeeds
+test jumpz lbl2 number     [[jumpz P 0]]    parse fails
+test jumpz lbl2 char       [[jumpz P 'x']]  parse fails
+
+
+
+test call no label         [[call]]         parse fails
+
+test call single simple    [[call P]]       parse succeeds
+test call single simple2   [[call G]]       parse succeeds
+test call single number    [[call 0]]       parse fails
+test call single external  [[call e]]       parse succeeds
+test call single char      [[call 'x']]     parse fails
+
+test call lbl1 simple      [[call P P]]     parse succeeds
+test call lbl1 simple2     [[call G P]]     parse succeeds
+test call lbl1 number      [[call 0 P]]     parse fails
+test call lbl1 external    [[call e P]]     parse succeeds
+test call lbl1 char        [[call 'x' P]]   parse fails
+
+test call lbl2 simple      [[call P P]]     parse succeeds
+test call lbl2 simple2     [[call P G]]     parse succeeds
+test call lbl2 number      [[call P 0]]     parse fails
+test call lbl2 external    [[call P e]]     parse succeeds
+test call lbl2 char        [[call P 'x']]   parse fails
+
+
+
+test try lbl1 simple       [[try P P P]]    parse succeeds
+test try lbl1 simple2      [[try G P Q]]    parse succeeds
+test try lbl1 number       [[try 0 P P]]    parse fails
+test try lbl1 external     [[try e P P]]    parse succeeds
+test try lbl1 char         [[try 'x' P P]]  parse fails
+
+test try lbl2 simple2      [[try P G P]]    parse succeeds
+test try lbl2 number       [[try P 0 P]]    parse fails
+test try lbl2 external     [[try P e P]]    parse succeeds
+test try lbl2 char         [[try P 'x' P]]  parse fails
+
+test try lbl2 simple2      [[try P P G]]    parse succeeds
+test try lbl2 number       [[try P P 0]]    parse fails
+test try lbl2 external     [[try P P e]]    parse succeeds
+test try lbl2 char         [[try P P 'x']]  parse fails
+
+
+test newscope no label         [[newscope]]         parse fails
+
+test newscope single simple    [[newscope P LBL]]       parse succeeds
+test newscope single simple2   [[newscope G LBL]]       parse succeeds
+test newscope single number    [[newscope 0 LBL]]       parse fails
+test newscope single lower     [[newscope e LBL]]       parse fails
+test newscope single r         [[newscope r LBL]]       parse fails
+test newscope single c         [[newscope c LBL]]       parse fails
+test newscope single x         [[newscope x LBL]]       parse fails
+test newscope invalid lbl      [[newscope x 0]]         parse fails
+
+
+
+test exitscope simple         [[exitscope [] P]]          parse succeeds
+test exitscope path single    [[exitscope [P] P]]         parse succeeds
+test exitscope path multiple  [[exitscope [C, 0] G]]      parse succeeds
+test exitscope path multiple2 [[exitscope [I, 0, L] Q]]   parse succeeds
+
+test exitscope path lower     [[exitscope [e, P] P]]   parse fails
+test exitscope path r         [[exitscope [r] P]]   parse fails
+test exitscope path x         [[exitscope [x] P]]   parse fails
+test exitscope path c         [[exitscope [c] P]]   parse fails
+test exitscope path negative  [[exitscope [-1] P]]  parse fails
+test exitscope no path        [[exitscope P]]       parse fails
+
+test exitscope lbl number     [[exitscope [] 0]]    parse fails
+test exitscope lbl external   [[exitscope [] e]]    parse succeeds
+test exitscope lbl char       [[exitscope [] 'x']]  parse fails
+test exitscope no lbl         [[exitscope [] ]]     parse fails

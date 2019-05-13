@@ -1,0 +1,37 @@
+module fvm-analysis
+
+imports
+  
+  nabl2/api
+  nabl2/runtime
+
+  analysis/static-semantics
+
+  fvm-pp
+  fvm-desugar
+
+rules // Analysis
+  editor-analyze = prefix-filename; nabl2-analyze(desugar)
+  
+  prefix-filename: AnalyzeMulti(p, files) -> AnalyzeMulti(p, <map(prefix-filename)> files)
+  
+  prefix-filename: c@(fname, Cached(_)) -> c
+  prefix-filename: (fname, Added(ast)) -> (fname, Added(<prefix-filename(|fname)> ast))
+  prefix-filename: (fname, Changed(ast, r)) -> (fname, Changed(<prefix-filename(|fname)> ast, r))
+  
+  prefix-filename(|fname): ast -> (module-name, ast)
+    with
+      module-name := <remove-extension; string-replace(|"/", "."); string-replace(|"\\", ".")> fname
+  
+
+rules // Debugging
+
+  // Prints the abstract syntax ATerm of a selection.
+  debug-show-aterm: (selected, _, _, path, project-path) -> (filename, result)
+    with filename := <guarantee-extension(|"aterm")> path
+       ; result   := selected
+
+  // Prints the analyzed annotated abstract syntax ATerm of a selection.
+  debug-show-analyzed: (selected, _, _, path, project-path) -> (filename, result)
+    with filename := <guarantee-extension(|"analyzed.aterm")> path
+       ; result   := selected

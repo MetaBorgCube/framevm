@@ -1,5 +1,0 @@
-from examples.imports.export import function
-from stdlib.strings.print import print
-
-export print as function2
-export function as function

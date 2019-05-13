@@ -1,0 +1,16 @@
+module framevm
+
+imports 
+	fvm-common 
+	fvm-pseudo
+	fvm-stacy
+	fvm-roger
+
+context-free start-symbols Program
+
+sorts Program context-free syntax
+
+Program.STC_Program = <<head:Header>
+<pseudo:PsdBody?>
+<body:SBlock*>
+> { layout (align-list body) }

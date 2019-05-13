@@ -1,0 +1,165 @@
+module interpreter_frame_slots
+
+language framevm
+
+fixture [[MAIN:
+	[[...]]
+	print
+	ipush 0
+	return
+]]
+
+test CISC new no slots[[
+	new
+	dup
+	ipush 10
+	setr [0]
+	getr [0]
+]] transform "Run -> CISC" to "FAIL"
+
+test CISC new one slot 1[[
+	new 1
+	dup
+	ipush 10
+	setr [0]
+	getr [0]
+]] transform "Run -> CISC" to "IntV(10)"
+
+test CISC new one slot 2[[
+	new 1
+	dup
+	ipush 10
+	setr [1]
+	getr [1]
+]] transform "Run -> CISC" to "FAIL"
+
+test CISC new two slots 1[[
+	new 2
+	dup
+	ipush 10
+	setr [1]
+	getr [0]
+]] transform "Run -> CISC" to "FAIL"
+
+test CISC new two slots 2[[
+	new 2
+	dup
+	ipush 10
+	setr [1]
+	getr [1]
+]] transform "Run -> CISC" to "IntV(10)"
+
+test CISC newr one slot 1[[
+	ipush 1
+	newr
+	dup
+	ipush 10
+	setr [0]
+	getr [0]
+]] transform "Run -> CISC" to "IntV(10)"
+
+test CISC newr one slot 2[[
+	ipush 1
+	newr
+	dup
+	ipush 10
+	setr [1]
+	getr [1]
+]] transform "Run -> CISC" to "FAIL"
+
+test CISC newr two slots 1[[
+	ipush 2
+	newr
+	dup
+	ipush 10
+	setr [1]
+	getr [0]
+]] transform "Run -> CISC" to "FAIL"
+
+test CISC newr two slots 2[[
+	ipush 2
+	newr
+	dup
+	ipush 10
+	setr [1]
+	getr [1]
+]] transform "Run -> CISC" to "IntV(10)"
+
+
+
+
+test RISC new no slots[[
+	new
+	dup
+	ipush 10
+	setr [0]
+	getr [0]
+]] transform "Run -> RISC" to "FAIL"
+
+test RISC new one slot 1[[
+	new 1
+	dup
+	ipush 10
+	setr [0]
+	getr [0]
+]] transform "Run -> RISC" to "IntV(10)"
+
+test RISC new one slot 2[[
+	new 1
+	dup
+	ipush 10
+	setr [1]
+	getr [1]
+]] transform "Run -> RISC" to "FAIL"
+
+test RISC new two slots 1[[
+	new 2
+	dup
+	ipush 10
+	setr [1]
+	getr [0]
+]] transform "Run -> RISC" to "FAIL"
+
+test RISC new two slots 2[[
+	new 2
+	dup
+	ipush 10
+	setr [1]
+	getr [1]
+]] transform "Run -> RISC" to "IntV(10)"
+
+test RISC newr one slot 1[[
+	ipush 1
+	newr
+	dup
+	ipush 10
+	setr [0]
+	getr [0]
+]] transform "Run -> RISC" to "IntV(10)"
+
+test RISC newr one slot 2[[
+	ipush 1
+	newr
+	dup
+	ipush 10
+	setr [1]
+	getr [1]
+]] transform "Run -> RISC" to "FAIL"
+
+test RISC newr two slots 1[[
+	ipush 2
+	newr
+	dup
+	ipush 10
+	setr [1]
+	getr [0]
+]] transform "Run -> RISC" to "FAIL"
+
+test RISC newr two slots 2[[
+	ipush 2
+	newr
+	dup
+	ipush 10
+	setr [1]
+	getr [1]
+]] transform "Run -> RISC" to "IntV(10)"

@@ -1,0 +1,153 @@
+module smoke_loops
+
+language framevm
+
+test Loops example [[#init 1
+MAIN:
+	ipush 0
+	set [0]
+	new 2
+	newscope P FOR_INIT
+	
+FOR_INIT:
+	ipush 0
+	set [0]
+	jump FOR
+
+FOR:
+	get[0]
+	ipush 3
+	lti
+	jumpz FOR_END FOR_BODY
+	
+FOR_BODY:
+	get [0]
+	set [1]
+	
+	new
+	newscope P WHILE
+
+WHILE:
+	get [P, 1]
+	ipush 4
+	eqi
+	jumpz WHILE_BODY WHILE_END 
+	
+WHILE_BODY:
+	get [P, 1]
+	dup
+	print
+	ipush 1
+	addi
+	set [P, 1]
+	get [P, P, 0]
+	ipush 1
+	addi
+	set [P, P, 0]
+	jump WHILE
+	
+WHILE_END:
+	exitscope [P] FOR_INC
+	
+FOR_INC:
+	get [0]
+	ipush 1
+	addi
+	set [0]
+	jump FOR
+	
+	
+FOR_END:
+	exitscope [P] MAIN_END
+
+MAIN_END:
+	get[0]
+	print
+	ipush 0
+	return
+]] transform "Run -> RISC" to "IntV(0)
+IntV(1)
+IntV(2)
+IntV(3)
+IntV(1)
+IntV(2)
+IntV(3)
+IntV(2)
+IntV(3)
+IntV(9)"
+
+test Loops example CISC [[#init 1
+MAIN:
+	ipush 0
+	set [0]
+	new 2
+	newscope P FOR_INIT
+	
+FOR_INIT:
+	ipush 0
+	set [0]
+	jump FOR
+
+FOR:
+	get[0]
+	ipush 3
+	lti
+	jumpz FOR_END FOR_BODY
+	
+FOR_BODY:
+	get [0]
+	set [1]
+	
+	new
+	newscope P WHILE
+
+WHILE:
+	get [P, 1]
+	ipush 4
+	eqi
+	jumpz WHILE_BODY WHILE_END 
+	
+WHILE_BODY:
+	get [P, 1]
+	dup
+	print
+	ipush 1
+	addi
+	set [P, 1]
+	get [P, P, 0]
+	ipush 1
+	addi
+	set [P, P, 0]
+	jump WHILE
+	
+WHILE_END:
+	exitscope [P] FOR_INC
+	
+FOR_INC:
+	get [0]
+	ipush 1
+	addi
+	set [0]
+	jump FOR
+	
+	
+FOR_END:
+	exitscope [P] MAIN_END
+
+MAIN_END:
+	get[0]
+	print
+	ipush 0
+	return
+]] transform "Run -> CISC" to "IntV(0)
+IntV(1)
+IntV(2)
+IntV(3)
+IntV(1)
+IntV(2)
+IntV(3)
+IntV(2)
+IntV(3)
+IntV(9)"	
+	
+	

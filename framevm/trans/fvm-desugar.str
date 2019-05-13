@@ -1,0 +1,49 @@
+module fvm-desugar
+
+imports
+    signatures/framevm-sig
+    signatures/fvm-stacy-sig
+    signatures/fvm-roger-sig
+    signatures/fvm-common-sig
+    
+    fvm-common
+    
+    desugar/fixSeq
+    desugar/register
+    desugar/strings
+   
+rules
+    desugar = split-header; apply-aliasses; fix-seq; fix-strings
+       
+    resugar = resugar-seq; resugar-aliasses; resugar-strings; unify-header
+	
+   	split-header: prog@STC_Program(_, _ , _) -> <split-header> ("", prog)
+   	  	
+    split-header: (fname, STC_Program(FVM_Header(headeritems), _, blocks)) -> Program("stacy", fname, imports, initsize, aliasses, blocks)
+   	  with
+   	  	imports := <map(try(apply-export(|fname)))> <filter(is-import)> headeritems;
+   	  	aliasses := <filter(is-alias)> headeritems;
+   	  	initsize := <getfirst(is-init) <+ !0> headeritems
+   	 
+//   	 split-header: (fname, RGR_Program(FVM_Header(headeritems), _, blocks)) -> Program("roger", fname, imports, initsize, aliasses, blocks)
+//   	  with
+//   	  	imports := <map(try(apply-export(|fname)))> <filter(is-import)> headeritems;
+//   	  	aliasses := <filter(is-alias)> headeritems;
+//   	  	initsize := <getfirst(is-init) <+ !0> headeritems
+   	  	
+   	unify-header: Program("stacy", fname, imports, n, aliasses, blocks) 
+   		-> STC_Program(FVM_Header(<concat> [imports, [FVM_InitSize(<int-to-string> n)], aliasses]), None(), blocks)
+//   	unify-header: Program("roger", fname, imports, n, aliasses, blocks) 
+//   		-> RGR_Program(FVM_Header(<concat> [imports, [FVM_InitSize(<int-to-string> n)], aliasses]), None(), blocks)
+   	 
+   	is-import: i@FVM_Import(_, _) -> i
+   	is-import: i@FVM_ImportAs(_, _, _) -> i
+   	is-import: i@FVM_Export(_, _) -> i
+   	
+   	apply-export(|lib): FVM_Export(lbl, name) -> FVM_Export(lib, lbl, name)
+   	
+   	is-alias: f@FVM_LinkAlias(_, _) -> f
+   	is-alias: f@FVM_ContAlias(_, _) -> f
+   	
+   	is-init: FVM_InitSize(s) -> <string-to-int> s
+   	

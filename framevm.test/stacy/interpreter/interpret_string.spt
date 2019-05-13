@@ -1,0 +1,163 @@
+module interpreter_string
+
+language framevm
+
+fixture [[MAIN:
+	[[...]]
+
+EXIT:
+	ipush 0
+	return
+	
+PRINT:
+	get [0]
+	ipush 0
+	jump PRINT_LOOP
+	
+PRINT_LOOP:
+	dup 2
+	dup 2
+	eqi
+	jumpz PRINT_CHAR PRINT_END
+	
+PRINT_END:
+	pop
+	pop
+	cget [c]
+	cret
+	
+PRINT_CHAR:
+	ipush 1
+	addi
+	dup
+	get
+	printc
+	jump PRINT_LOOP
+]]
+
+test CISC Hello World! [[
+	spush "Hello World!"
+	call PRINT EXIT
+]] transform "Run -> CISC" to "Hello World!"
+
+test CISC Hello World newline [[
+	spush "Hello\nWorld!"
+	call PRINT EXIT
+]] transform "Run -> CISC" to "Hello
+World!"
+
+test CISC print char unicode [[
+	ipush 128539
+	printc
+	jump EXIT
+]] transform "Run -> CISC" to ""
+
+test CISC print char [[
+	ipush 65
+	printc
+	jump EXIT
+]] transform "Run -> CISC" to "A"
+
+test CISC print char [[
+	cpush 'A'
+	printc
+	jump EXIT
+]] transform "Run -> CISC" to "A"
+
+test CISC print char 2 [[
+	cpush 'Q'
+	printc
+	jump EXIT
+]] transform "Run -> CISC" to "Q"
+
+test CISC print char whitespace [[
+	cpush ' '
+	printc
+	cpush 'B'
+	printc
+	cpush ' '
+	printc
+	cpush 'C'
+	printc
+	cpush ' '
+	printc
+	jump EXIT
+]] transform "Run -> CISC" to " B C "
+
+
+test CISC empty string 1 [[
+	new 1
+	dup
+	ipush 0
+	setr [0]
+	call PRINT EXIT
+]] transform "Run -> CISC" to ""
+
+test CISC empty string 2 [[
+	spush ""
+	call PRINT EXIT
+]] transform "Run -> CISC" to ""
+
+test RISC Hello World! [[
+	spush "Hello World!"
+	call PRINT EXIT
+]] transform "Run -> RISC" to "Hello World!"
+
+test RISC Hello World newline [[
+	spush "Hello\nWorld!"
+	call PRINT EXIT
+]] transform "Run -> RISC" to "Hello
+World!"
+
+test RISC print char unicode [[
+	ipush 128539
+	printc
+	jump EXIT
+]] transform "Run -> RISC" to ""
+
+test RISC print char [[
+	ipush 65
+	printc
+	jump EXIT
+]] transform "Run -> RISC" to "A"
+
+test RISC print char [[
+	cpush 'A'
+	printc
+	jump EXIT
+]] transform "Run -> RISC" to "A"
+
+test RISC print char 2 [[
+	cpush 'Q'
+	printc
+	jump EXIT
+]] transform "Run -> RISC" to "Q"
+
+
+test RISC print char whitespace [[
+	cpush ' '
+	printc
+	cpush 'B'
+	printc
+	cpush ' '
+	printc
+	cpush 'C'
+	printc
+	cpush ' '
+	printc
+	jump EXIT
+]] transform "Run -> RISC" to " B C "
+
+
+test RISC empty string 1 [[
+	new 1
+	dup
+	ipush 0
+	setr [0]
+	call PRINT EXIT
+]] transform "Run -> RISC" to ""
+
+test RISC empty string 2 [[
+	spush ""
+	call PRINT EXIT
+]] transform "Run -> RISC" to ""

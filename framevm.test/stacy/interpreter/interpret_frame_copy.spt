@@ -1,0 +1,559 @@
+module interpreter_frame_copy
+
+language framevm
+
+fixture [[#init 2
+MAIN:
+	[[...]]
+	print
+	
+	ipush 0
+	return
+]]
+
+test CISC shallow frame copy 1 [[
+	new 1
+	dup
+	ipush 12
+	setr [0]
+	dup
+	set [0]
+	
+	copyr shallow
+	set [1]
+	
+	ipush 42
+	set [0, 0]
+
+	get [0, 0]
+	print
+	get [1, 0]
+]] transform "Run -> CISC" to "IntV(42)
+IntV(42)"
+
+test CISC shallow frame copy 2 [[
+	new 1
+	dup
+	ipush 12
+	setr [0]
+	dup
+	set [0]
+	
+	copyr shallow
+	set [1]
+	
+	ipush 42
+	set [1, 0]
+
+	get [0, 0]
+	print
+	get [1, 0]
+]] transform "Run -> CISC" to "IntV(42)
+IntV(42)"
+
+test CISC shallow nested frame copy 1 [[
+	new 1
+	dup
+	
+	new 1
+	dup
+	ipush 12
+	setr [0]
+	setr [0]
+	dup
+	set [0]
+	
+	copyr shallow
+	set [1]
+	
+	ipush 42
+	set [0, 0, 0]
+
+	get [0, 0, 0]
+	print
+	get [1, 0, 0]
+]] transform "Run -> CISC" to "IntV(42)
+IntV(42)"
+
+test CISC shallow nested frame copy 2 [[
+	new 1
+	dup
+	
+	new 1
+	dup
+	ipush 12
+	setr [0]
+	setr [0]
+	dup
+	set [0]
+	
+	copyr shallow
+	set [1]
+	
+	ipush 42
+	set [1, 0, 0]
+
+	get [0, 0, 0]
+	print
+	get [1, 0, 0]
+]] transform "Run -> CISC" to "IntV(42)
+IntV(42)"
+
+test CISC shallow linked frame copy 1 [[
+	new 1
+	dup
+	
+	new 1
+	dup
+	ipush 12
+	setr [0]
+	linkr P
+	dup
+	set [0]
+	
+	copyr shallow
+	set [1]
+	
+	ipush 42
+	set [0, P, 0]
+
+	get [0, P, 0]
+	print
+	get [1, P, 0]
+]] transform "Run -> CISC" to "IntV(42)
+IntV(42)"
+
+test CISC shallow linked frame copy 1 [[
+	new 1
+	dup
+	
+	new 1
+	dup
+	ipush 12
+	setr [0]
+	linkr P
+	dup
+	set [0]
+	
+	copyr shallow
+	set [1]
+	
+	ipush 42
+	set [1, P, 0]
+
+	get [0, P, 0]
+	print
+	get [1, P, 0]
+]] transform "Run -> CISC" to "IntV(42)
+IntV(42)"
+
+
+test CISC deep frame copy 1 [[
+	new 1
+	dup
+	ipush 12
+	setr [0]
+	dup
+	set [0]
+	
+	copyr deep
+	set [1]
+	
+	ipush 42
+	set [0, 0]
+
+	get [0, 0]
+	print
+	get [1, 0]
+]] transform "Run -> CISC" to "IntV(42)
+IntV(12)"
+
+test CISC deep frame copy 2 [[
+	new 1
+	dup
+	ipush 12
+	setr [0]
+	dup
+	set [0]
+	
+	copyr deep
+	set [1]
+	
+	ipush 42
+	set [1, 0]
+
+	get [0, 0]
+	print
+	get [1, 0]
+]] transform "Run -> CISC" to "IntV(12)
+IntV(42)"
+
+test CISC deep nested frame copy 1 [[
+	new 1
+	dup
+	
+	new 1
+	dup
+	ipush 12
+	setr [0]
+	setr [0]
+	dup
+	set [0]
+	
+	copyr deep
+	set [1]
+	
+	ipush 42
+	set [0, 0, 0]
+
+	get [0, 0, 0]
+	print
+	get [1, 0, 0]
+]] transform "Run -> CISC" to "IntV(42)
+IntV(12)"
+
+test CISC deep nested frame copy 2 [[
+	new 1
+	dup
+	
+	new 1
+	dup
+	ipush 12
+	setr [0]
+	setr [0]
+	dup
+	set [0]
+	
+	copyr deep
+	set [1]
+	
+	ipush 42
+	set [1, 0, 0]
+
+	get [0, 0, 0]
+	print
+	get [1, 0, 0]
+]] transform "Run -> CISC" to "IntV(12)
+IntV(42)"
+
+test CISC deep linked frame copy 1 [[
+	new 1
+	dup
+	
+	new 1
+	dup
+	ipush 12
+	setr [0]
+	linkr P
+	dup
+	set [0]
+	
+	copyr deep
+	set [1]
+	
+	ipush 42
+	set [0, P, 0]
+
+	get [0, P, 0]
+	print
+	get [1, P, 0]
+]] transform "Run -> CISC" to "IntV(42)
+IntV(12)"
+
+test CISC deep linked frame copy 2 [[
+	new 1
+	dup
+	
+	new 1
+	dup
+	ipush 12
+	setr [0]
+	linkr P
+	dup
+	set [0]
+	
+	copyr deep
+	set [1]
+	
+	ipush 42
+	set [1, P, 0]
+
+	get [0, P, 0]
+	print
+	get [1, P, 0]
+]] transform "Run -> CISC" to "IntV(12)
+IntV(42)"
+
+
+test RISC shallow frame copy 1 [[
+	new 1
+	dup
+	ipush 12
+	setr [0]
+	dup
+	set [0]
+	
+	copyr shallow
+	set [1]
+	
+	ipush 42
+	set [0, 0]
+
+	get [0, 0]
+	print
+	get [1, 0]
+]] transform "Run -> RISC" to "IntV(42)
+IntV(42)"
+
+test RISC shallow frame copy 2 [[
+	new 1
+	dup
+	ipush 12
+	setr [0]
+	dup
+	set [0]
+	
+	copyr shallow
+	set [1]
+	
+	ipush 42
+	set [1, 0]
+
+	get [0, 0]
+	print
+	get [1, 0]
+]] transform "Run -> RISC" to "IntV(42)
+IntV(42)"
+
+test RISC shallow nested frame copy 1 [[
+	new 1
+	dup
+	
+	new 1
+	dup
+	ipush 12
+	setr [0]
+	setr [0]
+	dup
+	set [0]
+	
+	copyr shallow
+	set [1]
+	
+	ipush 42
+	set [0, 0, 0]
+
+	get [0, 0, 0]
+	print
+	get [1, 0, 0]
+]] transform "Run -> RISC" to "IntV(42)
+IntV(42)"
+
+test RISC shallow nested frame copy 2 [[
+	new 1
+	dup
+	
+	new 1
+	dup
+	ipush 12
+	setr [0]
+	setr [0]
+	dup
+	set [0]
+	
+	copyr shallow
+	set [1]
+	
+	ipush 42
+	set [1, 0, 0]
+
+	get [0, 0, 0]
+	print
+	get [1, 0, 0]
+]] transform "Run -> RISC" to "IntV(42)
+IntV(42)"
+
+test RISC shallow linked frame copy 1 [[
+	new 1
+	dup
+	
+	new 1
+	dup
+	ipush 12
+	setr [0]
+	linkr P
+	dup
+	set [0]
+	
+	copyr shallow
+	set [1]
+	
+	ipush 42
+	set [0, P, 0]
+
+	get [0, P, 0]
+	print
+	get [1, P, 0]
+]] transform "Run -> RISC" to "IntV(42)
+IntV(42)"
+
+test RISC shallow linked frame copy 1 [[
+	new 1
+	dup
+	
+	new 1
+	dup
+	ipush 12
+	setr [0]
+	linkr P
+	dup
+	set [0]
+	
+	copyr shallow
+	set [1]
+	
+	ipush 42
+	set [1, P, 0]
+
+	get [0, P, 0]
+	print
+	get [1, P, 0]
+]] transform "Run -> RISC" to "IntV(42)
+IntV(42)"
+
+
+test RISC deep frame copy 1 [[
+	new 1
+	dup
+	ipush 12
+	setr [0]
+	dup
+	set [0]
+	
+	copyr deep
+	set [1]
+	
+	ipush 42
+	set [0, 0]
+
+	get [0, 0]
+	print
+	get [1, 0]
+]] transform "Run -> RISC" to "IntV(42)
+IntV(12)"
+
+test RISC deep frame copy 2 [[
+	new 1
+	dup
+	ipush 12
+	setr [0]
+	dup
+	set [0]
+	
+	copyr deep
+	set [1]
+	
+	ipush 42
+	set [1, 0]
+
+	get [0, 0]
+	print
+	get [1, 0]
+]] transform "Run -> RISC" to "IntV(12)
+IntV(42)"
+
+test RISC deep nested frame copy 1 [[
+	new 1
+	dup
+	
+	new 1
+	dup
+	ipush 12
+	setr [0]
+	setr [0]
+	dup
+	set [0]
+	
+	copyr deep
+	set [1]
+	
+	ipush 42
+	set [0, 0, 0]
+
+	get [0, 0, 0]
+	print
+	get [1, 0, 0]
+]] transform "Run -> RISC" to "IntV(42)
+IntV(12)"
+
+test RISC deep nested frame copy 2 [[
+	new 1
+	dup
+	
+	new 1
+	dup
+	ipush 12
+	setr [0]
+	setr [0]
+	dup
+	set [0]
+	
+	copyr deep
+	set [1]
+	
+	ipush 42
+	set [1, 0, 0]
+
+	get [0, 0, 0]
+	print
+	get [1, 0, 0]
+]] transform "Run -> RISC" to "IntV(12)
+IntV(42)"
+
+test RISC deep linked frame copy 1 [[
+	new 1
+	dup
+	
+	new 1
+	dup
+	ipush 12
+	setr [0]
+	linkr P
+	dup
+	set [0]
+	
+	copyr deep
+	set [1]
+	
+	ipush 42
+	set [0, P, 0]
+
+	get [0, P, 0]
+	print
+	get [1, P, 0]
+]] transform "Run -> RISC" to "IntV(42)
+IntV(12)"
+
+test RISC deep linked frame copy 2 [[
+	new 1
+	dup
+	
+	new 1
+	dup
+	ipush 12
+	setr [0]
+	linkr P
+	dup
+	set [0]
+	
+	copyr deep
+	set [1]
+	
+	ipush 42
+	set [1, P, 0]
+
+	get [0, P, 0]
+	print
+	get [1, P, 0]
+]] transform "Run -> RISC" to "IntV(12)
+IntV(42)"
