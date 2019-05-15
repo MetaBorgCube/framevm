@@ -4,6 +4,7 @@ imports
     signatures/fvm-stacy-sig
     signatures/fvm-common-sig
     interpreter/stacy/-
+    interpreter/external
     
     fvm-common
     nabl2/api
