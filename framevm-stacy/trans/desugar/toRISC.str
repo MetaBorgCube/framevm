@@ -182,7 +182,7 @@ rules
     
     // STC_Continuations to relative STC_Continuations
     r-relative: STC_ContCopy(policy1, policy2)  -> [STC_ContThis(), STC_ContCopyR(policy1, policy2)]
-    r-relative: STC_FrameCopy(policy) -> [STC_Get(FVM_Self()), STC_FrameCopyR(policy)]
+    r-relative: STC_FrameCopy(policy) -> [STC_ScopeGetCurrent(), STC_FrameCopyR(policy)]
     
     r-relative: STC_ContGet(FVM_Cont(Bind(name, n))) -> [STC_IPush(<int-to-string> n), STC_ContGet()]
     r-relative: STC_ContGetR(FVM_Cont(Bind(name, n))) -> [STC_IPush(<int-to-string> n), STC_ContGetR()]
@@ -191,13 +191,13 @@ rules
     r-relative: STC_ContSetR(FVM_Cont(Bind(name, n))) -> [STC_IPush(<int-to-string> n), STC_Swap(), STC_ContSetR()]
     
     // Get/Set unfolding to single segment paths and only relative gets/sets
-    r-relative: STC_Get() -> [STC_Get(FVM_Self()), STC_Swap(), STC_GetR()]
-    r-relative: STC_Set() -> [STC_Get(FVM_Self()), STC_SwapN("2"), STC_Swap(), STC_SetR()]
+    r-relative: STC_Get() -> [STC_ScopeGetCurrent(), STC_Swap(), STC_GetR()]
+    r-relative: STC_Set() -> [STC_ScopeGetCurrent(), STC_SwapN("2"), STC_Swap(), STC_SetR()]
     
-    r-relative: STC_Get(path) -> [STC_Get(FVM_Self()) | <r-relative> STC_GetR(path)]
+    r-relative: STC_Get(path) -> [STC_ScopeGetCurrent() | <r-relative> STC_GetR(path)]
     r-relative: STC_GetR(FVM_Path(path)) -> <foldr(![], r-relative-get)> path
     
-    r-relative: STC_Set(FVM_Path(path)) -> <concat> [[STC_Get(FVM_Self()) | <r-relative> STC_GetR(FVM_Path(body))] , [STC_Swap(), STC_SetR(FVM_Path([last]))]]
+    r-relative: STC_Set(FVM_Path(path)) -> <concat> [[STC_ScopeGetCurrent() | <r-relative> STC_GetR(FVM_Path(body))] , [STC_Swap(), STC_SetR(FVM_Path([last]))]]
       where
         (body, last) := <split-init-last> path
     r-relative: STC_SetR(FVM_Path(path)) -> <concat> [<r-relative> STC_GetR(FVM_Path(body)) , [STC_SetR(FVM_Path([last]))]]

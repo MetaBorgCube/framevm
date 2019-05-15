@@ -77,7 +77,7 @@ rules
     // STC_GetR/1
     // Push a value on the stack, this value is found by 
     // following arg1 (starting from the frame on top of the stack)
-    eval: (STC_GetR(FVM_Self()), env1) -> env1      // This connamd litterally does nothing
+    eval: (STC_GetR(FVM_Self()), env1) -> env1      // This command litterally does nothing
     eval: (STC_GetR(FVM_Path(p)), env1) -> env3
       where
         (env2, frame) := <stack-pop-frame(|env1)>;

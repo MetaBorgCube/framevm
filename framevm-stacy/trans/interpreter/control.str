@@ -131,6 +131,12 @@ rules
         env3 := <frame-link(|env2)> (frame_to, frame_this, (lbl, idx));
         env4 := <frame-set-current(|env3)> (<cont-this(|env3)>, frame_to)
           
+    // STC_ScopeGetCurrent/0
+    // Get the current data frame
+    eval: (STC_ScopeGetCurrent(), env1) -> env2
+      where
+        env2 := <stack-push(|env1)> FrameRef(<frame-this(|env1)>)
+        
     // STC_ScopeSetCurrent/0
     // Set the frame on top of the stack as new execution frame (make sure its properly linked)
     eval: (STC_ScopeSetCurrent(), env1) -> env3
