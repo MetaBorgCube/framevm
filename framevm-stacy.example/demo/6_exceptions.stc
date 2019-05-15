@@ -7,23 +7,21 @@
 		throw new A(1)
 	catch A as e:
 		print(e.m)	// print 1
-	print(0)		// print 0
 }
 
 MAIN:
 	new						// Try frame
 	dup						//
 	link [] P				//
-	cnew MAIN_TRY 3			//
 							//
 	new						// Catch frame
 	dup						//
 	link [] P				//
-	cnew MAIN_CATCH 3		//
 							//
-	try	MAIN_END			//
+	try	MAIN_TRY MAIN_CATCH MAIN_END
 	
 MAIN_TRY:
+//	debug!
 	new	1					// New A() frame
 	dup						//
 	link [P] P				//
@@ -43,7 +41,6 @@ MAIN_CATCH:
 	
 MAIN_END:
 	ipush 0					//
-	print					// print(0)
-							//
-	ipush 0					//
-	return					// Exitcode = 0
+	return					// Exitcode 0
+	
+	

@@ -7,16 +7,20 @@
 }
 
 MAIN:
-//	new 		// Is this needed?
-//	mkcurrent	// Same here
 	ipush 10
 	set [0] 
+	
 	ipush 11
 	set [1]
+	
 	get [0]
 	print
+	
 	get [1]
 	print
 	
+//	debug!
 	ipush 0		// load exitcode 0
 	return		// exit
+	
+	

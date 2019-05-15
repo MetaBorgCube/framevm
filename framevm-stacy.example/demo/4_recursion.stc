@@ -53,8 +53,15 @@ FUNC_FALSE:
 	addi				//
 	setr [1]			//
 						//
-	tailcall FUNC		// Recursive call
+	call FUNC FUNC_END	// Recursive call
+	
+FUNC_END:
+	rget				// Return recursion result
+//	debug!
+	return				//
 	
 FUNC_TRUE:
 	get [1]				// Return acc
 	return				//
+	
+	

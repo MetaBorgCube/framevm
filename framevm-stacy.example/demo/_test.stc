@@ -1,0 +1,5 @@
+MAIN:
+	ipush 0
+	return
+	
+	
