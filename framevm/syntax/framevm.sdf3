@@ -11,6 +11,6 @@ context-free start-symbols Program
 sorts Program context-free syntax
 
 Program.STC_Program = <<head:Header>
-<pseudo:PsdBody?>
+<pseudo:PsdBlock?>
 <body:SBlock*>
 > { layout (align-list body) }

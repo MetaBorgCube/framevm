@@ -2,13 +2,15 @@ module fvm-pseudo
 
 imports fvm-common
 
-context-free start-symbols PsdBody
+context-free start-symbols PsdBlock
 
-sorts Psdbody context-free syntax
+sorts PsdBlock context-free syntax
   
-  PsdBody.Seq = <{
-    <instr:PsdInstr+>
-}> { layout (indent "{" instr && align-list instr) }
+  PsdBlock.Block = <{
+    <instr:PsdBody>
+}> { layout (indent "{" instr) }
+
+  PsdBody.Seq = <<instr:PsdInstr*>> { layout (align-list instr) }
   
   
 sorts PsdInstr context-free syntax
