@@ -15,7 +15,8 @@ public class DotBlockFactory extends DotFactory {
 	private final static String[] REPLACE_TO   = {"[]"        };
  
 	private final static String[] REGEX_UNPACK = {"\"([^\"]*)\"", "Bind\\((\\w+),\\d+\\)", "FVM_Link\\((\\w+)\\)", "FVM_Slot\\((\\w+)\\)", "FVM_Cont\\((\\w+)\\)", "FVM_Path\\((\\[.+\\])\\)"};
-	private final static Pattern PATTERN = Pattern.compile("FVM_Label\\(([\\w]+)\\)");
+	private final static Pattern PATTERN = Pattern.compile("FVM_BoundLabel\\([\\w\\.]+,(\\w+)\\)");
+	private final static Pattern TERM_INDEX_PATTERN = Pattern.compile("\\{TermIndex\\([^\\}]+\\)\\}");
 	
 	/**
 	 * Convert a block to DOT representation.
@@ -54,6 +55,8 @@ public class DotBlockFactory extends DotFactory {
 	 */
 	private static String sanitize(String instr, int idx, String block, List<String> links) {
 		String out = instr.substring(4);
+		out = TERM_INDEX_PATTERN.matcher(out).replaceAll("");
+
 		for (int i = 0; i < REPLACE_FROM.length; i++) {
 			out = out.replaceAll(REPLACE_FROM[i], REPLACE_TO[i]);
 		}
