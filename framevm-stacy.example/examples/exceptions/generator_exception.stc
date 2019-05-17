@@ -73,7 +73,7 @@ FUNC_1:
 	setr [0]				// Result = 1
 							//
 	dup						//
-	cget []					// Create continuation
+	cgetcurrent					// Create continuation
 	setr [1]				// Store in return object
 							//
 	transfer 1 [c]			// Yield
@@ -91,7 +91,7 @@ FUNC_3:
 	setr [0]				// Result = 1
 							//
 	dup						//
-	cget []					// Create continuation
+	cgetcurrent					// Create continuation
 	setr [1]				// Store in return object
 							//
 	transfer 1 [c]			// Yield

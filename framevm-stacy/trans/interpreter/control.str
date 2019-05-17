@@ -137,6 +137,12 @@ rules
       where
         (env2, FrameRef(frame_to)) := <stack-pop-frame(|env1)>;
         env3 := <frame-set-current(|env2)> (<cont-this(|env2)>, frame_to)
+    
+    // STC_ScopeGetCurrent/0
+    // Get the current data frame
+    eval: (STC_ScopeGetCurrent(), env1) -> env2
+      where
+        env2 := <stack-push(|env1)> FrameRef(<frame-this(|env1)>)
           
     // Resolve which label to pick
     jump-eval: (0, then, _) -> then

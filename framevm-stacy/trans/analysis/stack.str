@@ -112,6 +112,7 @@ rules
     stack-delta: STC_ScopeNew(_, lbl)  -> -1
     stack-delta: STC_ScopeNew(_)       -> -1
     stack-delta: STC_ScopeSetCurrent() -> -1
+    stack-delta: STC_ScopeGetCurrent() -> 1
     
     stack-delta: STC_ScopeExit(path)      -> 0
     stack-delta: STC_ScopeExit(path, lbl) -> 0
