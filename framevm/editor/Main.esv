@@ -8,7 +8,7 @@ imports
 
 language
 
-  extensions : stc
+  extensions : stc, rgr
 
   provider : target/metaborg/stratego.ctree
   provider : target/metaborg/stratego-javastrat.jar

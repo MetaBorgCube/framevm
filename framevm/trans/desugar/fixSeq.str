@@ -3,6 +3,7 @@ module fixSeq
 imports
     signatures/framevm-sig
     signatures/fvm-stacy-sig
+    signatures/fvm-roger-sig
     signatures/fvm-common-sig
     
     fvm-common
@@ -18,6 +19,14 @@ rules
         seq := <concat> [body, [jump]]
         
     fix-seq: STC_Block(lbl, Some(rget), body, jump) -> FVM_Block(lbl, FVM_Seq(seq), <stack-calc-stc> seq)
+      with
+        seq := <concat> [[rget], body, [jump]]
+        
+    fix-seq: RGR_Block(lbl, None(), body, jump)     -> FVM_Block(lbl, FVM_Seq(seq), <stack-calc-stc> seq)
+      with
+        seq := <concat> [body, [jump]]
+        
+    fix-seq: RGR_Block(lbl, Some(rget), body, jump) -> FVM_Block(lbl, FVM_Seq(seq), <stack-calc-stc> seq)
       with
         seq := <concat> [[rget], body, [jump]]
     

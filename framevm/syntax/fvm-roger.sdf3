@@ -1,6 +1,108 @@
 module fvm-roger
 
 imports
+	fvm-common
   
-sorts Body context-free syntax
-    
+sorts RBlock context-free syntax
+
+	RBlock.RGR_Block = <
+<lbl:Label>: 
+    <ret:OnReturnInstr?>
+	<instr:Instr*> 
+	<jump:ControlInstr>
+>			{ layout (indent lbl ret && align-list instr && align instr jump && align ret instr) }
+
+	ControlInstr.Control = <<ControlTerminal>>
+	ControlInstr.Control = <<ControlTerminal> | <{Exp ","}+>>
+	
+	OnReturnInstr.OnReturn = <<{ID ","}+> \<- <OnReturnExp>>
+
+	Instr.RGR_PureAssign = <<ID> \<- <Exp> @inline>
+	Instr.RGR_Terminal = ExpTerminal
+	Instr.RGR_Assign = <<ID> \<- <Exp>>
+	Instr.RGR_PathAlias = <path <ID> := <Path>>
+	
+sorts Exp context-free syntax
+		Exp.RGR_Ref    = <<ID>>
+	
+	Exp = IntOpExp
+	IntOpExp.RGR_IPush  = <ipush(<INT>)>
+	IntOpExp.RGR_INeg   = <negi(<Exp>)>
+	IntOpExp.RGR_IAdd   = <addi(<Exp>, <Exp>)>
+	IntOpExp.RGR_IMul   = <muli(<Exp>, <Exp>)>
+	IntOpExp.RGR_ISub   = <subi(<Exp>, <Exp>)>
+	IntOpExp.RGR_IDiv   = <divi(<Exp>, <Exp>)>
+	IntOpExp.RGR_IMod   = <modi(<Exp>, <Exp>)>
+	
+	IntOpExp.RGR_IEq    = <eqi(<Exp>, <Exp>)>
+	IntOpExp.RGR_ILt    = <lti(<Exp>, <Exp>)>
+	IntOpExp.RGR_IGt    = <gti(<Exp>, <Exp>)>
+	IntOpExp.RGR_IOr    = <ori(<Exp>, <Exp>)>
+	IntOpExp.RGR_IXor   = <xori(<Exp>, <Exp>)>
+	IntOpExp.RGR_IAnd   = <andi(<Exp>, <Exp>)>	
+	
+	Exp = TypeExp
+	TypeExp.RGR_IsInt   = <int?(<Exp>)>
+	TypeExp.RGR_IsCont  = <cont?(<Exp>)>
+	TypeExp.RGR_IsFrame = <frame?(<Exp>)>
+	
+	Exp = FrameExp
+	FrameExp.RGR_New    = <new(<IntExp>)>
+	FrameExp.RGR_New    = <new()>
+	
+	ExpTerminal.RGR_Link  = <link(<Exp>, <PathExp>, <LinkRef>)>
+ 
+	ExpTerminal.RGR_Set   = <set(<PathExp>, <Exp>)>
+	ExpTerminal.RGR_SetR  = <setr(<Exp>, <PathExp>, <Exp>)>
+	FrameExp.RGR_Get      = <get(<PathExp>)>
+	FrameExp.RGR_GetR     = <getr(<Exp>, <PathExp>)>		
+	
+	Exp = ContExp
+	OnReturnExp.RGR_ContRGet = <rget(<INTLEZ>)>
+	ContExp.RGR_ContThis     = <cgetcurrent()>
+	ContExp.RGR_ContNew      = <cnew(<Label>, <INTLEZ>)>
+	ContExp.RGR_ContTransfer = <transfer(<ContRefExp>, <INTLEZ>)>
+	
+	ExpTerminal.RGR_ContSet  = <cset([<ContRef>], <Exp>)>
+	ExpTerminal.RGR_ContSetR = <csetr(<Exp>, [<ContRef>], <Exp>)>
+	ContExp.RGR_ContGet      = <cget([<ContRef>])>
+	ContExp.RGR_ContGetR     = <cgetr(<Exp>, [<ContRef>])>
+	
+	
+	ControlTerminal.RGR_Return     = <return(<{Exp ","}+>)>
+	ControlTerminal.RGR_Yield      = <yield(<{Exp ","}+>, <Label>)>
+	ControlTerminal.RGR_JumpZ      = <jumpz(<Exp>, <Label>, <Label>)>
+	ControlTerminal.RGR_Jump       = <jump(<Label>)>
+	ControlTerminal.RGR_Call       = <call(<Exp>, <Label>, <Label>)>
+	ControlTerminal.RGR_Call       = <call(<Exp>, <Label>)>
+	ControlTerminal.RGR_TailCall   = <tailcall(<Exp>, <Label>)>
+	ControlTerminal.RGR_TailCall   = <tailcall(<Exp>)>
+	ControlTerminal.RGR_ContCall   = <ccall(<ContRefExp>, <Label>)>
+	ControlTerminal.RGR_ContReturn = <cret(<Exp>, [<ContRef>])>
+	ControlTerminal.RGR_ContReturn = <cret(<Exp>)>
+	
+	ControlTerminal.RGR_Try        = <try(<Exp>, <Label>, <Exp>, <Label>, <Label>)>
+	ControlTerminal.RGR_Try        = <try(<Exp>, <Exp>, <Label>)>
+	ControlTerminal.RGR_Throw      = <throw(<Exp>)>
+	
+	ExpTerminal.RGR_ScopeExit       = <exitscope(<Path>)>
+	ExpTerminal.RGR_ScopeNew        = <newscope(<Exp>, <LinkRef>)>
+	ControlTerminal.RGR_ScopeExit   = <exitscope(<Path>, <Label>)>
+	ControlTerminal.RGR_ScopeNew    = <newscope(<Exp>, <LinkRef>, <Label>)>
+	ExpTerminal.RGR_ScopeSetCurrent = <mkcurrent(<Exp>)>
+	Exp.RGR_ScopegetCurrent         = <mkcurrent()>
+	ExpTerminal.RGR_Print           = <print(<Exp>)>	
+	ExpTerminal.RGR_Debug           = <debug()>	
+	
+	
+	
+	ContRefExp = Exp
+	ContRefExp.Cont = <[<ContRef>]>
+		
+	PathExp = Path
+	PathExp = Exp
+	
+	IntExp.IntLEZ = INTLEZ
+	IntExp = Exp
+	
+	
