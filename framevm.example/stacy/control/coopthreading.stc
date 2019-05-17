@@ -12,7 +12,7 @@ MAIN:
 	new					//
 	cnew THREAD1 1		// Thread 1
 	dup					//
-	cget []				//
+	cgetcurrent				//
 	csetr [p]			// Set pause/exit handler to the scheduler
 	setr [1]			// Store in array
 						//
@@ -20,7 +20,7 @@ MAIN:
 	new					//
 	cnew THREAD2 1		// Thread 2
 	dup					//
-	cget []				//
+	cgetcurrent				//
 	csetr [p]			// Set pause/exit handler to the scheduler
 	setr [2]			// Store in array
 						//

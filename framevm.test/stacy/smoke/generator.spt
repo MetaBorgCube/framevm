@@ -27,7 +27,7 @@ FOR_START:
 	cget [x]
 	csetr [x]
 	dup
-	cget []
+	cgetcurrent
 	csetr [c]
 
 	jump FOR
@@ -47,7 +47,7 @@ FOR_END:
 	jump MAIN_END
 	
 FUNC:
-	cget []
+	cgetcurrent
 	ipush 1
 	cget [c]
 	transfer 2
@@ -99,7 +99,7 @@ FOR_START:
 	cget [x]
 	csetr [x]
 	dup
-	cget []
+	cgetcurrent
 	csetr [c]
 
 	jump FOR
@@ -119,7 +119,7 @@ FOR_END:
 	jump MAIN_END
 	
 FUNC:
-	cget []
+	cgetcurrent
 	ipush 1
 	cget [c]
 	transfer 2

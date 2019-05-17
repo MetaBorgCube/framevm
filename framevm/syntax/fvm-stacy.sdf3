@@ -73,7 +73,7 @@ sorts SInstr context-free syntax
   
   
   SInstr = SContInstr
-  SContInstr.STC_ContThis      = <cget []>                        // Create a new continuation for the current execution point
+  SContInstr.STC_ContThis      = <cgetcurrent>                    // Create a new continuation for the current execution point
   SContInstr.STC_ContNew       = <cnew <Label> <INTLEZ>>          // Create a continuation for a frame on the stack at a new execution point
   SContInstr.STC_ContTransfer  = <transfer <INTLEZ> [<ContRef>]>  // Transfer n elements as returned values to the given continuation
   SContInstr.STC_ContTransfer  = <transfer <INTLEZ>>              // Transfer n elements as returned values to the continuation on top of the stack
@@ -114,6 +114,7 @@ sorts SInstr context-free syntax
   SFrameInstr.STC_ScopeNew     = <newscope <LinkRef>>             // Set the current frame
   SControlInstr.STC_ScopeNew   = <newscope <LinkRef> <Label>>     // Move execution to another scope and copy over the current continuation
   SFrameInstr.STC_ScopeSetCurrent = <mkcurrent>                   // Set the frame on top of the stack as the current dataframe
+  SFrameInstr.STC_ScopeGetCurrent = <getcurrent>                  // Get the current dataframe
 
   SInstr = SClosInstr
   SClosInstr.STC_ClosNew      = <newc <CopyPolicy> <Label>>       // Create a new closure form the frame on top of the stack and the given label. Use the given copy policy
