@@ -7,8 +7,6 @@ dependencies:
   - org.metaborg:org.metaborg.meta.lang.template:${metaborgVersion}
   - org.metaborg:org.metaborg.meta.nabl2.lang:${metaborgVersion}
   - org.metaborg:dynsem:${metaborgVersion}
-  java:
-  - org.metaborg.lang:framevm-core:1.0.0
   source:
   - org.metaborg:meta.lib.spoofax:${metaborgVersion}
   - org.metaborg:org.metaborg.meta.nabl2.shared:${metaborgVersion}

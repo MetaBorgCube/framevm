@@ -60,15 +60,15 @@
 		<type>spoofax-language</type>
     </dependency>
     <dependency>
-      <groupId>org.metaborg.lang</groupId>
+      <groupId>org.metaborg</groupId>
         <artifactId>framevm-core</artifactId>
 		<version>1.0.0</version>
     </dependency>
   </dependencies>
   
   <build>
-  <plugins>
-        <plugin>
+    <plugins>
+      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
         <executions>
@@ -83,7 +83,7 @@
         <configuration>
           <artifactItems>
             <artifactItem>
-              <groupId>org.metaborg.lang</groupId>
+              <groupId>org.metaborg</groupId>
               <artifactId>framevm-core</artifactId>
               <type>jar</type>
               <overWrite>false</overWrite>
@@ -96,8 +96,8 @@
           <overWriteSnapshots>true</overWriteSnapshots>
         </configuration>
       </plugin>
-  </plugins>
-</build>
+    </plugins>
+  </build>
   
   <repositories>
     <repository>
