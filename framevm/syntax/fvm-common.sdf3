@@ -2,7 +2,6 @@ module fvm-common
 
 lexical syntax
 
-  ID             = [a-zA-Z\_] [a-zA-Z0-9\_]*
   LIB            = [a-z] [a-zA-Z0-9\_\.]*
   LIBFUNC        = [a-z] [a-zA-Z0-9\_]*
   LABEL          = [A-Z\_] [A-Z0-9\_]* 
@@ -36,18 +35,77 @@ lexical syntax
   NewLineEOF     = EOF 
   EOF            =  
 
-//  LABEL =     "MAIN"         {reject}
-  ID =         "addi"        {reject}
-  ID =         "jump"        {reject}
-  ID =         "jumpz"       {reject}
-  ID =         "dup"         {reject}
-  ID =         "new"         {reject}
-  ID =         "pushi"       {reject}
-  ID =         "MAIN"        {reject}
-  ID =         "true"        {reject}
-  ID =         "false"       {reject}
+lexical syntax
+  LIBFUNC = "ipush"     {reject}
+  LIBFUNC = "addi"      {reject}
+  LIBFUNC = "subi"      {reject}
+  LIBFUNC = "muli"      {reject}
+  LIBFUNC = "divi"      {reject}
+  LIBFUNC = "modi"      {reject}
+  LIBFUNC = "eqi"       {reject}
+  LIBFUNC = "lti"       {reject}
+  LIBFUNC = "gti"       {reject}
+  LIBFUNC = "ori"       {reject}
+  LIBFUNC = "xori"      {reject}
+  LIBFUNC = "andi"      {reject}
   
+  LIBFUNC = "print"     {reject}
+  LIBFUNC = "debug"     {reject}
+  LIBFUNC = "debug!"    {reject}
   
+  LIBFUNC = "newc"      {reject}
+  LIBFUNC = "cnew"      {reject}
+  LIBFUNC = "unpack"    {reject}
+  
+  LIBFUNC = "int?"      {reject}
+  LIBFUNC = "cont?"     {reject}
+  LIBFUNC = "frame?"    {reject}
+  LIBFUNC = "closure?"  {reject}
+  
+  LIBFUNC = "new"       {reject}
+  LIBFUNC = "newr"      {reject}
+  LIBFUNC = "link"      {reject}
+  LIBFUNC = "linkr"     {reject}
+  LIBFUNC = "copy"      {reject}
+  LIBFUNC = "copyr"     {reject}
+  LIBFUNC = "size"      {reject}
+  LIBFUNC = "set"       {reject}
+  LIBFUNC = "setr"      {reject}
+  LIBFUNC = "get"       {reject}
+  LIBFUNC = "getr"      {reject}
+  
+  LIBFUNC = "exitscope" {reject}
+  LIBFUNC = "newscope"  {reject}
+  LIBFUNC = "mkcurrent" {reject}
+  LIBFUNC = "getcurrent"{reject}
+  
+  LIBFUNC = "jumpz"     {reject}
+  LIBFUNC = "jump"      {reject}
+  LIBFUNC = "call"      {reject}
+  LIBFUNC = "tailcall"  {reject}
+  LIBFUNC = "return"    {reject}
+  LIBFUNC = "yield"     {reject}
+  LIBFUNC = "rget"      {reject}
+  
+  LIBFUNC = "pop"       {reject}
+  LIBFUNC = "dup"       {reject}
+  LIBFUNC = "swap"      {reject}
+  
+  LIBFUNC = "spush"     {reject}
+  LIBFUNC = "cpush"     {reject}
+  LIBFUNC = "printc"    {reject}
+  LIBFUNC = "cget"      {reject}
+  LIBFUNC = "ccall"     {reject}
+  LIBFUNC = "cret"      {reject}
+  LIBFUNC = "transfer"  {reject}
+  LIBFUNC = "cset"      {reject}
+  LIBFUNC = "csetr"     {reject}
+  LIBFUNC = "cget"      {reject}
+  LIBFUNC = "cgetr"     {reject}
+  
+  LIBFUNC = "throw"     {reject}
+  LIBFUNC = "try"       {reject}
+
 lexical restrictions
 
   // Ensure greedy matching for lexicals

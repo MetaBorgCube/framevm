@@ -1,11 +1,11 @@
-from stdlib.strings import print, from_bool
+from stdlib.strings import print_string, from_bool
 
 MAIN:
 	new 1
 	dup
 	spush "abcdefg\n"
 	setr [0]
-	call print MAIN2
+	call print_string MAIN2
 	
 MAIN2:
 	new 1
@@ -19,7 +19,7 @@ MAIN3:
 	dup
 	swap 2
 	setr [0]
-	call print MAIN_END
+	call print_string MAIN_END
 	
 MAIN_END:
 	ipush 0
