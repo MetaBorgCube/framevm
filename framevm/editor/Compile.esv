@@ -2,7 +2,7 @@ module Compile
 
 menus
   
-  menu: "RISC" (openeditor) (source)
+  menu: "RISC" (openeditor)
     action: "Transform to RISC" = editor-format-desugar
     action: "Show RISC AST"     = debug-show-desugared-full-aterm
   

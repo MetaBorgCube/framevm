@@ -16,20 +16,20 @@ rules // Debugging
     (_, _, ast, path, project-path) -> (filename, result)
     with
       filename := <guarantee-extension(|"aterm")> path
-    ; result   := <desugar> ast
+    ; result   := <strip-annos> ast
 
   debug-show-desugared-full-aterm:
     (_, _, ast, path, project-path) -> (filename, result)
     with
       filename := <guarantee-extension(|"aterm")> path
-    ; result   := <desugar; to-RISC-all> ast
+    ; result   := <debug; desugar; to-RISC-all; strip-annos> ast
     
   editor-format-desugar:
     (_, _, ast, path, project-path) -> (filename, result)
     with
       ext      := <get-extension> path
     ; filename := <guarantee-extension(|$[risc.[ext]])> path
-    ; result   := <pp-debug-framevm> <resugar> <to-RISC-all> <desugar> ast
+    ; result   := <to-RISC-all; resugar; pp-debug-framevm> ast
     
   
   
