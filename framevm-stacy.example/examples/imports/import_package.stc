@@ -1,5 +1,5 @@
 from examples.imports.export_package import function, function2
-from stdlib.strings.print import print
+from stdlib.strings.print import print_string
 
 MAIN:
 	new 1
