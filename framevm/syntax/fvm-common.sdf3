@@ -97,7 +97,7 @@ context-free syntax
   ContRef.FVM_ContIdx = <_c<INTLEZ>>
   
   CopyPolicy.FVM_DeepCopy    = <deep>
-  CopyPolicy.FVM_ShallowCopy = <shallow>
+  CopyPolicy.FVM_ShallowCopy = <{<{Path ","}*>}>
   
   Header.FVM_Header = items:HeaderItem* { layout (align-list items) }
   HeaderItem = Import

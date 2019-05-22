@@ -107,7 +107,7 @@ rules
     // Copy the current frame and push the copy on the stack
     stc-eval: (STC_FrameCopy(policy), env1) -> env3
       where
-        (env2, copy) := <frame-copy(|env1)> (<frame-this(|env1)>, <policy-to-string> policy);
+        (env2, copy) := <frame-copy(|env1)> (<frame-this(|env1)>, policy);
         env3 := <stack-push(|env2)> FrameRef(copy)
    
     // STC_FrameCopyR/1
@@ -115,7 +115,7 @@ rules
     stc-eval: (STC_FrameCopyR(policy), env1) -> env4
       where
         (env2, FrameRef(frame)) := <stack-pop-frame(|env1)>;
-        (env3, copy) := <frame-copy(|env2)> (frame, <policy-to-string> policy);
+        (env3, copy) := <frame-copy(|env2)> (frame, policy);
         env4 := <stack-push(|env2)> FrameRef(copy)
       
     // STC_Link/2

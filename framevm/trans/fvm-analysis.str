@@ -21,7 +21,7 @@ rules // Analysis
   
   prefix-filename(|fname): ast -> (module-name, ast)
     with
-      module-name := <remove-extension; string-replace(|"/", "."); string-replace(|"\\", ".")> fname
+      module-name := <string-replace(|"/", "."); string-replace(|"\\", ".")> fname
   
 
 rules // Debugging

@@ -4,6 +4,7 @@ imports
     nabl2/api
   
     signatures/fvm-stacy-sig
+    signatures/framevm-sig
     signatures/fvm-common-sig
     fvm-common
     fvm-desugar

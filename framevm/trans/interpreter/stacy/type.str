@@ -44,5 +44,5 @@ rules
         (env2, val) := <stack-pop-any(|env1)>;
         env3 := <stack-push(|env2)> <is-clos> val
     
-    is-clos: ClosV(_, _) -> IntV(1)
-    is-clos: _           -> IntV(0)
+    is-clos: ClosV(_, _, _) -> IntV(1)
+    is-clos: _              -> IntV(0)

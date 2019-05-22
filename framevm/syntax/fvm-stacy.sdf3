@@ -117,9 +117,9 @@ sorts SInstr context-free syntax
   SFrameInstr.STC_ScopeGetCurrent = <getcurrent>                  // Get the current dataframe
 
   SInstr = SClosInstr
-  SClosInstr.STC_ClosNew      = <newc <CopyPolicy> <Label>>       // Create a new closure form the frame on top of the stack and the given label. Use the given copy policy
-  SClosInstr.STC_ClosNew      = <newc <Label>>                    // Create a new closure form the frame on top of the stack and the given label. Uses shallow copy
-  SClosInstr.STC_ClosToCont   = <cnew <INTLEZ>>                   // Create a continuation from a closure
+  SClosInstr.STC_ClosNew      = <newc <CopyPolicy> <Label> <INTLEZ>> // Create a new closure form the frame on top of the stack and the given label. Use the given copy policy
+  SClosInstr.STC_ClosNew      = <newc <Label> <INTLEZ>>           // Create a new closure form the frame on top of the stack and the given label. Uses shallow copy
+  SClosInstr.STC_ClosToCont   = <cnew>                            // Create a continuation from a closure
   SClosInstr.STC_ClosUnpack   = <unpack>                          // Get the dataframe of the closure on top of the stack
   
   SInstr.STC_StringPush       = <spush <STRING>>                  // Push a string on the stack

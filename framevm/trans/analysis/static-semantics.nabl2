@@ -216,9 +216,9 @@ rules
   instr[[STC_ScopeExit(bind) ^(s)]]      := bind[[bind ^(s)]].
   instr[[STC_ScopeExit(bind, lbl) ^(s)]] := bind[[bind ^(s)]], lbl[[lbl ^(s)]].
   
-  instr[[STC_ClosNew(_, lbl) ^(s)]] := lbl[[lbl ^(s)]].
-  instr[[STC_ClosNew(lbl) ^(s)]]    := lbl[[lbl ^(s)]].
-  instr[[STC_ClosToCont(_) ^(s)]].
+  instr[[STC_ClosNew(_, lbl, _) ^(s)]] := lbl[[lbl ^(s)]].
+  instr[[STC_ClosNew(lbl, _) ^(s)]]    := lbl[[lbl ^(s)]].
+  instr[[STC_ClosToCont() ^(s)]].
   instr[[STC_ClosUnpack() ^(s)]].
     
   instr[[STC_StringPush(_) ^(s)]].

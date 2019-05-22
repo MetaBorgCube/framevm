@@ -4,6 +4,7 @@ imports
     signatures/fvm-stacy-sig
     signatures/fvm-common-sig
     interpreter/stacy/-
+    interpreter/roger/-
     interpreter/external
     
     fvm-common
@@ -16,21 +17,25 @@ rules
       
     eval-program = eval-program(id)
     
-    eval-program(s): p@Program("stacy", fn, i, s, links, blocks) -> <eval-program-(s|"STC")> p
+    eval-program(s): p@Program("stacy", fn, i, s, links, blocks) -> <eval-program-(s, stc-eval)> (p, <vm-init-stc> (<length> links, 2, s))
+    eval-program(s): p@Program("roger", fn, i, s, links, blocks) -> <eval-program-(s, rgr-eval)> (p, <vm-init-rgr> (<length> links, 2, s))
     
-    eval-program-(s|mode): Program(_, fn, i, s, links, blocks) -> out
+    
+    
+    eval-program-(s, mode-eval): (Program(mode, fn, i, s, links, blocks), env1) -> out
       where 
         <gti> (<string-length> fn, 1);
         blocks' := <resolve-jump-labels(|fn)> blocks;
-        
-        env1 := <vm-init> (<length> links, 2, s); 
+
         (_, env2) := <foldl(store-block)> (blocks', (fn, env1));
         (_, env3) := <store-block> (FVM_Block(FVM_Label("_exit"),  FVM_Seq([]), 0), (fn, env2));
         (_, env4) := <store-block> (FVM_Block(FVM_Label("_catch"), FVM_Seq([]), 0), (fn, env3));
         env5 := <foldl(import-blocks(|mode))> (i, env4);
         env6 := <vm-start(|env5)> (fn, "MAIN");
-        env7 := <stc-execute(s|env6)>;
+        env7 := <fvm-execute(s, mode-eval|env6)>;
         out  := <vm-stop(|env7)>
+    
+    
     
     store-block: (FVM_Block(FVM_Label(lbl), FVM_Seq(body), _), (lib, env)) -> (lib, <vm-store-block(|env)> ((lib, lbl), body))
     
@@ -88,7 +93,7 @@ rules
     
     // Ask next instruction and evaluate it
     // Repeat until no instructions are left
-    stc-execute(s|env) = vm-execute(s; stc-eval <+ eval | env)
+    fvm-execute(s, e|env) = vm-execute(s; e <+ eval | env)
 
     // Instruction not implemented or execution failed
     // Catches current instructions and reports them

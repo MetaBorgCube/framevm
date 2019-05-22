@@ -23,10 +23,10 @@ sorts RBlock context-free syntax
 	Instr.RGR_PathAlias = <path <ID> := <Path>>
 	
 sorts Exp context-free syntax
-		Exp.RGR_Ref    = <<ID>>
+    Exp.RGR_Ref    = <<ID>>
 	
 	Exp = IntOpExp
-	IntOpExp.RGR_IPush  = <ipush(<INT>)>
+	IntOpExp.RGR_ILoad  = <iload(<INT>)>
 	IntOpExp.RGR_INeg   = <negi(<Exp>)>
 	IntOpExp.RGR_IAdd   = <addi(<Exp>, <Exp>)>
 	IntOpExp.RGR_IMul   = <muli(<Exp>, <Exp>)>
@@ -47,26 +47,26 @@ sorts Exp context-free syntax
 	TypeExp.RGR_IsFrame = <frame?(<Exp>)>
 	
 	Exp = FrameExp
-	FrameExp.RGR_New    = <new(<IntExp>)>
+	FrameExp.RGR_New    = <new(<Exp>)>
 	FrameExp.RGR_New    = <new()>
 	
-	ExpTerminal.RGR_Link  = <link(<Exp>, <PathExp>, <LinkRef>)>
+	ExpTerminal.RGR_Link  = <link(<Exp>, <Exp>, <LinkRef>)>
  
-	ExpTerminal.RGR_Set   = <set(<PathExp>, <Exp>)>
-	ExpTerminal.RGR_SetR  = <setr(<Exp>, <PathExp>, <Exp>)>
-	FrameExp.RGR_Get      = <get(<PathExp>)>
-	FrameExp.RGR_GetR     = <getr(<Exp>, <PathExp>)>		
+	ExpTerminal.RGR_Set   = <set(<Exp>, <Exp>)>
+	ExpTerminal.RGR_SetR  = <set(<Exp>, <Exp>, <Exp>)>
+	FrameExp.RGR_Get      = <get(<Exp>)>
+	FrameExp.RGR_GetR     = <get(<Exp>, <Exp>)>		
 	
 	Exp = ContExp
 	OnReturnExp.RGR_ContRGet = <rget(<INTLEZ>)>
 	ContExp.RGR_ContThis     = <cgetcurrent()>
 	ContExp.RGR_ContNew      = <cnew(<Label>, <INTLEZ>)>
-	ContExp.RGR_ContTransfer = <transfer(<ContRefExp>, <INTLEZ>)>
+	ContExp.RGR_ContTransfer = <transfer(<{Exp ","}+>, <INTLEZ>)>
 	
-	ExpTerminal.RGR_ContSet  = <cset([<ContRef>], <Exp>)>
-	ExpTerminal.RGR_ContSetR = <csetr(<Exp>, [<ContRef>], <Exp>)>
-	ContExp.RGR_ContGet      = <cget([<ContRef>])>
-	ContExp.RGR_ContGetR     = <cgetr(<Exp>, [<ContRef>])>
+	ExpTerminal.RGR_ContSet  = <cset(<Exp>, <Exp>)>
+	ExpTerminal.RGR_ContSetR = <csetr(<Exp>, <Exp>, <Exp>)>
+	ContExp.RGR_ContGet      = <cget(<Exp>)>
+	ContExp.RGR_ContGetR     = <cgetr(<Exp>, <Exp>)>
 	
 	
 	ControlTerminal.RGR_Return     = <return(<{Exp ","}+>)>
@@ -77,8 +77,7 @@ sorts Exp context-free syntax
 	ControlTerminal.RGR_Call       = <call(<Exp>, <Label>)>
 	ControlTerminal.RGR_TailCall   = <tailcall(<Exp>, <Label>)>
 	ControlTerminal.RGR_TailCall   = <tailcall(<Exp>)>
-	ControlTerminal.RGR_ContCall   = <ccall(<ContRefExp>, <Label>)>
-	ControlTerminal.RGR_ContReturn = <cret(<Exp>, [<ContRef>])>
+	ControlTerminal.RGR_ContCall   = <ccall(<Exp>, <Label>)>
 	ControlTerminal.RGR_ContReturn = <cret(<Exp>)>
 	
 	ControlTerminal.RGR_Try        = <try(<Exp>, <Label>, <Exp>, <Label>, <Label>)>
@@ -93,16 +92,5 @@ sorts Exp context-free syntax
 	Exp.RGR_ScopegetCurrent         = <mkcurrent()>
 	ExpTerminal.RGR_Print           = <print(<Exp>)>	
 	ExpTerminal.RGR_Debug           = <debug()>	
-	
-	
-	
-	ContRefExp = Exp
-	ContRefExp.Cont = <[<ContRef>]>
-		
-	PathExp = Path
-	PathExp = Exp
-	
-	IntExp.IntLEZ = INTLEZ
-	IntExp = Exp
 	
 	

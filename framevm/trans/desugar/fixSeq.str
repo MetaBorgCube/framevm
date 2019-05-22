@@ -8,7 +8,7 @@ imports
     
     fvm-common
     
-    analysis/stack
+    analysis/stc-stack
     
 rules
 
@@ -22,11 +22,11 @@ rules
       with
         seq := <concat> [[rget], body, [jump]]
         
-    fix-seq: RGR_Block(lbl, None(), body, jump)     -> FVM_Block(lbl, FVM_Seq(seq), <stack-calc-stc> seq)
+    fix-seq: RGR_Block(lbl, None(), body, jump)     -> FVM_Block(lbl, FVM_Seq(seq), 0)
       with
         seq := <concat> [body, [jump]]
         
-    fix-seq: RGR_Block(lbl, Some(rget), body, jump) -> FVM_Block(lbl, FVM_Seq(seq), <stack-calc-stc> seq)
+    fix-seq: RGR_Block(lbl, Some(rget), body, jump) -> FVM_Block(lbl, FVM_Seq(seq), 0)
       with
         seq := <concat> [[rget], body, [jump]]
     
