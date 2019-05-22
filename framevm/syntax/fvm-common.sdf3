@@ -2,6 +2,7 @@ module fvm-common
 
 lexical syntax
 
+  ID             = LIB
   LIB            = [a-z] [a-zA-Z0-9\_\.]*
   LIBFUNC        = [a-z] [a-zA-Z0-9\_]*
   LABEL          = [A-Z\_] [A-Z0-9\_]* 
