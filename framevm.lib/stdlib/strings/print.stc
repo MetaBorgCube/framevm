@@ -1,4 +1,4 @@
-export PRINT_STRING as print
+export PRINT_STRING as print_string
 	
 PRINT_STRING:
 	get [0, 0]			// Size

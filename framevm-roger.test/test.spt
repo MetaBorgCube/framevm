@@ -1,7 +1,0 @@
-module test
-
-language framevm-roger
-
-test parse [[
-
-]] parse succeeds

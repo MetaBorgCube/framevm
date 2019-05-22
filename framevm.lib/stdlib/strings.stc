@@ -1,5 +1,5 @@
-from stdlib.strings.print import print
-export print as print
+from stdlib.strings.print import print_string
+export print_string as print_string
 
 from stdlib.strings.concat import concat_strings
 export concat_strings as concat
