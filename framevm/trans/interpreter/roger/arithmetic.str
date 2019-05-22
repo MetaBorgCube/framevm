@@ -1,0 +1,17 @@
+module arithmetic
+
+imports 
+    signatures/fvm-roger-sig
+    interpreter/external
+    
+    fvm-common
+
+rules
+	rgr-eval: (RGR_Return(exps), env) -> env2
+	  where
+	    vals := <map(rgr-eval-exp(|env))> exps;
+	    env2 := <cont-transfer(|env)> vals
+	
+	
+	
+    rgr-eval-exp(|env): RGR_ILoad(i) -> IntV(<string-to-int> i)
