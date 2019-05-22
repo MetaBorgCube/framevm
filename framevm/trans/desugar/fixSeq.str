@@ -12,7 +12,8 @@ imports
     
 rules
 
-    fix-seq: Program(type, fn, i, s, a, blocks) -> Program(type, fn, i, s, a, <map(fix-seq)> blocks)
+    fix-seq: STC_Program(fn, i, s, a, blocks) -> STC_Program(fn, i, s, a, <map(fix-seq)> blocks)
+    fix-seq: RGR_Program(fn, i, s, a, blocks) -> RGR_Program(fn, i, s, a, <map(fix-seq)> blocks)
     
     fix-seq: STC_Block(lbl, None(), body, jump)     -> FVM_Block(lbl, FVM_Seq(seq), <stack-calc-stc> seq)
       with
@@ -33,7 +34,8 @@ rules
     
     
     
-    resugar-seq: Program("stacy", fn, i, s, a, blocks) -> Program("stacy", fn, i, s, a, <map(resugar-seq-stc)> blocks)
+    resugar-seq: STC_Program(fn, i, s, a, blocks) -> STC_Program(fn, i, s, a, <map(resugar-seq-stc)> blocks)
+    resugar-seq: RGR_Program(fn, i, s, a, blocks) -> RGR_Program(fn, i, s, a, <map(resugar-seq-stc)> blocks)
     
     resugar-seq-stc: FVM_Block(lbl, FVM_Seq([h|tail]), s) -> STC_Block(lbl, Some(h), body, jump)
       where

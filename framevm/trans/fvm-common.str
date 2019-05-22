@@ -12,7 +12,8 @@ signature
     FVM_Export : STRING * STRING * STRING -> S
     FVM_Seq : [Instr] -> S
     FVM_Block : FVM_Label * FVM_Seq * INT -> S
-    Program: STRING * STRING * [Import] * INT * [Alias] * [STC_Block] -> S
+    STC_Program: STRING * [Import] * INT * [Alias] * [STC_Block] -> S
+    RGR_Program: STRING * [Import] * INT * [Alias] * [STC_Block] -> S
 
 signature
   sorts V

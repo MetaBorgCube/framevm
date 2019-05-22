@@ -7,11 +7,18 @@ imports
     fvm-common
 
 rules
-    apply-aliasses: Program(type, fn, i, s, aliasses, blocks) -> Program(type, fn, i, s, link_addresses, bound_blocks)
+    apply-aliasses: STC_Program(fn, i, s, aliasses, blocks) -> STC_Program(fn, i, s, link_addresses, bound_blocks)
       where
         all_aliasses   := <insert-standards> aliasses;
         link_addresses := <foldl(extract-links)> (all_aliasses, []);
         bound_blocks   := <fix-missing-aliasses> <foldl(apply-aliasses)> (all_aliasses, blocks)
+
+    apply-aliasses: RGR_Program(fn, i, s, aliasses, blocks) -> RGR_Program(fn, i, s, link_addresses, bound_blocks)
+      where
+        all_aliasses   := <insert-standards> aliasses;
+        link_addresses := <foldl(extract-links)> (all_aliasses, []);
+        bound_blocks   := <fix-missing-aliasses> <foldl(apply-aliasses)> (all_aliasses, blocks)
+
 
     extract-links: (l@FVM_LinkAlias(FVM_Link(name), _), links) -> [l | links]
       where
@@ -57,7 +64,13 @@ rules
     apply-alias(|alias): FVM_Cont(name) -> FVM_Cont(Bind(name, <string-to-int> idx)) where FVM_ContAlias(FVM_Cont(name), idx) := alias
     
     
-    resugar-aliasses: Program(type, fn, i, s, old_aliasses, bound_blocks) -> Program(type, fn, i, s, aliasses, blocks)
+    resugar-aliasses: STC_Program(fn, i, s, old_aliasses, bound_blocks) -> STC_Program(fn, i, s, aliasses, blocks)
+      where
+        blocks := <topdown(try(resugar-alias))> bound_blocks;
+        (new_aliasses, _) := <foldl(resugar-alias)>(<collect-all(is-alias)> bound_blocks, ([], []));
+        aliasses := <list-merge> (old_aliasses, new_aliasses)
+    
+    resugar-aliasses: RGR_Program(fn, i, s, old_aliasses, bound_blocks) -> RGR_Program(fn, i, s, aliasses, blocks)
       where
         blocks := <topdown(try(resugar-alias))> bound_blocks;
         (new_aliasses, _) := <foldl(resugar-alias)>(<collect-all(is-alias)> bound_blocks, ([], []));

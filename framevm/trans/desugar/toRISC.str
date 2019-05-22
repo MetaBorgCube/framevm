@@ -8,8 +8,8 @@ imports
     interpreter/util
 
 rules
-    to-RISC-all: Program("stacy", fn, i, s, a, blocks) -> Program("stacy", fn, i, s, a, <map(to-RISC-all)> blocks)
-    to-RISC-all: p@Program("roger", _, _, _, _, _) -> p
+    to-RISC-all: STC_Program(fn, i, s, a, blocks) -> STC_Program(fn, i, s, a, <map(to-RISC-all)> blocks)
+    to-RISC-all: p@RGR_Program(_, _, _, _, _) -> p
     
     to-RISC-all: FVM_Block(lbl, FVM_Seq(body), d) -> FVM_Block(lbl, FVM_Seq(body_risc), d)
       where
