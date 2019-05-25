@@ -3,15 +3,67 @@ module arithmetic
 imports 
     signatures/fvm-roger-sig
     interpreter/external
+    interpreter/util
     
     fvm-common
 
 rules
-	rgr-eval: (RGR_Return(exps), env) -> env2
-	  where
-	    vals := <map(rgr-eval-exp(|env))> exps;
-	    env2 := <cont-transfer(|env)> vals
-	
-	
-	
     rgr-eval-exp(|env): RGR_ILoad(i) -> IntV(<string-to-int> i)
+    
+    rgr-eval-exp(|env): RGR_IAdd(a, b) -> IntV(<addi> (a', b'))
+      where
+        IntV(a') := <rgr-eval-exp(|env)> a;
+        IntV(b') := <rgr-eval-exp(|env)> b
+    
+    rgr-eval-exp(|env): RGR_ISub(a, b) -> IntV(<subti> (a', b'))
+      where
+        IntV(a') := <rgr-eval-exp(|env)> a;
+        IntV(b') := <rgr-eval-exp(|env)> b
+    
+    rgr-eval-exp(|env): RGR_IMul(a, b) -> IntV(<muli> (a', b'))
+      where
+        IntV(a') := <rgr-eval-exp(|env)> a;
+        IntV(b') := <rgr-eval-exp(|env)> b
+    
+    rgr-eval-exp(|env): RGR_IDiv(a, b) -> IntV(<divi> (a', b'))
+      where
+        IntV(a') := <rgr-eval-exp(|env)> a;
+        IntV(b') := <rgr-eval-exp(|env)> b
+    
+    rgr-eval-exp(|env): RGR_IMod(a, b) -> IntV(<modi> (a', b'))
+      where
+        IntV(a') := <rgr-eval-exp(|env)> a;
+        IntV(b') := <rgr-eval-exp(|env)> b
+    
+    rgr-eval-exp(|env): RGR_IEq(a, b) -> IntV(<eval-eq> (a', b'))
+      where
+        IntV(a') := <rgr-eval-exp(|env)> a;
+        IntV(b') := <rgr-eval-exp(|env)> b
+    
+    rgr-eval-exp(|env): RGR_ILt(a, b) -> IntV(<eval-lt> (a', b'))
+      where
+        IntV(a') := <rgr-eval-exp(|env)> a;
+        IntV(b') := <rgr-eval-exp(|env)> b
+    
+    rgr-eval-exp(|env): RGR_IGt(a, b) -> IntV(<eval-lt> (b', a'))
+      where
+        IntV(a') := <rgr-eval-exp(|env)> a;
+        IntV(b') := <rgr-eval-exp(|env)> b
+    
+    rgr-eval-exp(|env): RGR_IOr(a, b) -> IntV(<iori> (a', b'))
+      where
+        IntV(a') := <rgr-eval-exp(|env)> a;
+        IntV(b') := <rgr-eval-exp(|env)> b
+    
+    rgr-eval-exp(|env): RGR_IXor(a, b) -> IntV(<xori> (a', b'))
+      where
+        IntV(a') := <rgr-eval-exp(|env)> a;
+        IntV(b') := <rgr-eval-exp(|env)> b
+    
+    rgr-eval-exp(|env): RGR_IAnd(a, b) -> IntV(<andi> (a', b'))
+      where
+        IntV(a') := <rgr-eval-exp(|env)> a;
+        IntV(b') := <rgr-eval-exp(|env)> b
+        
+        
+        
