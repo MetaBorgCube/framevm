@@ -1,0 +1,17 @@
+module control
+
+imports 
+    signatures/fvm-roger-sig
+    interpreter/external
+    
+    interpreter/roger/exp/-
+    
+    fvm-common
+
+rules
+    rgr-eval: (RGR_Return(exps), env) -> env2
+      where
+        vals := <map(rgr-eval-exp(|env))> exps;
+        continuation := <cont-get-cc(|env)> <cont-this(|env)>;
+        env2 := <cont-transfer(|env)> (continuation, vals);
+        env3 := <cont-call(|env2)> continuation
