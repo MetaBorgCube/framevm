@@ -11,7 +11,7 @@ rules
     
     new mod, mod ---> s,
     STC_Module{fname} <- s,
-    STC_Module{fname}.blocks := blocks,
+    STC_Module{fname}.blocks  := blocks,
     STC_Module{fname}.imports := imports,
     STC_Module{fname} ===> mod,
     initBlock[[b ^(prog)]],
@@ -36,16 +36,19 @@ rules
   	ModuleFunc{func_name} |-> d2 | error $[Function not found: [func_name]] @func_name,
   	d2.label := lbl,
   	d2.lib := lib,
+  	d2.size := size,
+  	
   	ModuleFunc{func_as} <- prog,
   	ModuleFunc{func_as}.label := lbl,
-  	ModuleFunc{func_as}.lib   := lib.
+  	ModuleFunc{func_as}.lib   := lib,
+  	ModuleFunc{func_as}.size  := size.
   
-  stcImport[[FVM_Export(lib, Local(lbl), func_as) ^(mod, prog)]] :=
+  stcImport[[FVM_Export(lib, Local(name), func_as) ^(mod, prog)]] :=
   	Block{name} -> prog,
     Block{name} |-> d | error $[Unknown jump label [name]] @name,
-    Block{lbl}.size := size,
+    d.size := size,
   	ModuleFunc{func_as} <- mod,
-  	ModuleFunc{func_as}.label := lbl,
+  	ModuleFunc{func_as}.label := name,
   	ModuleFunc{func_as}.lib   := lib,
   	ModuleFunc{func_as}.size  := size.
   
@@ -66,10 +69,12 @@ rules
   	ModuleFunc{func_name} -> ns,
   	ModuleFunc{func_name} |-> d | error $[Function not found: [func_name]] @func_name,
   	d.label := lbl,
-  	d.lib := lib,
+  	d.lib   := lib,
+  	d.size  := size,
   	ModuleFunc{func_name} <- s,
   	ModuleFunc{func_name}.label := lbl,
-  	ModuleFunc{func_name}.lib := lib.
+  	ModuleFunc{func_name}.lib   := lib,
+  	ModuleFunc{func_name}.size  := size.
   	
   	
   	
