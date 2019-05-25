@@ -120,14 +120,9 @@ public class MachineState {
 		return res;
 	}
 
-	public ControlFrame newStackControlFrame(int contSize, Block block) {
+	public ControlFrame newStackControlFrame(int contSize, int stackSize, Block block) {
 		String id = "controlFrame_" + controlCount++;
-		return new StackControlFrame(contSize, block, id);
-	}
-
-	public ControlFrame newStackControlFrame(int contSize, Frame frame, Block block) {
-		String id = "controlFrame_" + controlCount++;
-		return new StackControlFrame(contSize, frame, block, id);
+		return new StackControlFrame(contSize, stackSize, block, id);
 	}
 
 	public void putBlock(String libName, String blockName, IStrategoTerm[] instrs) {
@@ -137,7 +132,8 @@ public class MachineState {
 		blocks.get(libName).put(blockName, new Block(blockName, instrs));
 	}
 
-	public ControlFrame newRogerControlFrame(int cont_size, Object object) {
-		throw new NotImplementedException();
+	public ControlFrame newRegisterControlFrame(int contSize, int locals, Block block) {
+		String id = "controlFrame_" + controlCount++;
+		return new RegisterControlFrame(contSize, locals, block, id);
 	}
 }

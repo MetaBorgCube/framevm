@@ -10,18 +10,15 @@ import org.spoofax.interpreter.terms.IStrategoTerm;
  */
 public class StackControlFrame extends ControlFrame {
 	private Stack<IStrategoTerm> stack;
+	private int maxStack;
 	
 	/**
 	 * Create an operand stack.
 	 */
-	public StackControlFrame(int contSize, Block block, String id) {
+	public StackControlFrame(int contSize, int maxStack, Block block, String id) {
 		super(contSize, block, id);
-		this.stack = new Stack<>(); //TODO: pre-allocate block.max-stack
-	}
-	
-	public StackControlFrame(int contSize, Frame frame, Block block, String id) {
-		super(contSize, frame, block, id);
-		this.stack = new Stack<>(); //TODO: pre-allocate block.max-stack
+		this.stack = new Stack<>();
+		this.maxStack = maxStack;
 	}
 
 	/**
@@ -33,6 +30,9 @@ public class StackControlFrame extends ControlFrame {
 	 * 		The term pushed on the stack
 	 */
 	public IStrategoTerm push(IStrategoTerm term) {
+		if (stack.size() == this.maxStack) {
+			throw new StackOverflowError("Max size of " + this.maxStack + " exceeded");
+		}
 		return stack.push(term);
 	}
 	
@@ -54,5 +54,20 @@ public class StackControlFrame extends ControlFrame {
 	
 	public Stack<IStrategoTerm> getStack() {
 		return stack;
+	}
+
+	@Override
+	public void pushReturn(IStrategoTerm result) {
+		this.push(result);
+	}
+
+	@Override
+	public IStrategoTerm popReturn() {
+		return this.pop();
+	}
+
+	@Override
+	public boolean hasReturn() {
+		return this.hasNext();
 	}
 }

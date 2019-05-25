@@ -60,4 +60,12 @@ public class MachineThread {
 	public MachineState getEnv() {
 		return env;
 	}
+
+	public RegisterControlFrame getRegisterControlFrame() {
+		if (env.mode != VMMode.REGISTER || controlFrame instanceof StackControlFrame) {
+			return (RegisterControlFrame) controlFrame;
+		} else {
+			return null;
+		}
+	}
 }

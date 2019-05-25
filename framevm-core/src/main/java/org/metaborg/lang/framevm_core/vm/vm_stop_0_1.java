@@ -11,8 +11,6 @@ import org.metaborg.lang.framevm_core.FVMStrategy;
 import org.metaborg.lang.framevm_core.util.ControlFrame;
 import org.metaborg.lang.framevm_core.util.Frame;
 import org.metaborg.lang.framevm_core.util.MachineState;
-import org.metaborg.lang.framevm_core.util.RegisterControlFrame;
-import org.metaborg.lang.framevm_core.util.StackControlFrame;
 
 
 public class vm_stop_0_1 extends FVMStrategy {
@@ -27,15 +25,7 @@ public class vm_stop_0_1 extends FVMStrategy {
 		if (currentFrame.getId().equals("_exit") || currentFrame.getId().equals("_catch")) {
 			
 			ControlFrame controlFrame = env.currentThread.getControlFrame();
-			IStrategoTerm returnVal;
-			if (controlFrame instanceof StackControlFrame) {
-				returnVal = ((StackControlFrame) controlFrame).pop();
-			} else if (controlFrame instanceof RegisterControlFrame) {
-				returnVal = ((RegisterControlFrame) controlFrame).getReturn();
-			} else {
-				io.printError("Unrecognized mode, this should never happen");
-				returnVal = null;
-			}
+			IStrategoTerm returnVal = controlFrame.popReturn();
 			
 			if (returnVal != null) {
 				String exitObj = returnVal.toString();

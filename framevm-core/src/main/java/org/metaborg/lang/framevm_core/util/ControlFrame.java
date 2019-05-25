@@ -118,4 +118,8 @@ public abstract class ControlFrame {
 	public String getId() {
 		return this.id;
 	}
+
+	public abstract void pushReturn(IStrategoTerm result);
+	public abstract IStrategoTerm popReturn();
+	public abstract boolean hasReturn();
 }

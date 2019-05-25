@@ -9,21 +9,22 @@
 }
 
 ADD:
+    locals := 2
   	a <- get([0]) @inline
-  	c <- addi(a, get([1])) @inline // i + j
-  	return(c)
+  	b <- addi(a, get([1])) @inline // i + j
+  	return(b)
 
 MAIN:
-	p <- ipush(42)
-	set([0], ipush(10)) 		// store value of x in current frame
-	callF <- new(2)				// create new call frame
-	link(callF, [], P)			// Link function scope to local scope
-	setr(callF, [0], ipush(1)) 	// j := 2 // assign to formal parameter j in call frame
-	setr(callF, [1], ipush(3)) 	// j := 2 // assign to formal parameter j in call frame
-	call(callF, ADD, CONT2)	| p
-	
-CONT2:
-	r, p <- rget(2)
-	print(r)
-	print(addi(ipush(12), ipush(30)))
-	return(ipush(0))			// exit with exitcode 0
+	p <- iload(42)
+	set([0], iload(10)) 		// store value of x in current frame
+	call <- iload(1)			// create new call frame
+	link(call, [], P)			// Link function scope to local scope
+	set(call, [0], iload(1)) 	// j := 2 // assign to formal parameter j in call frame
+	set(call, [1], iload(3)) 	// j := 2 // assign to formal parameter j in call frame
+	call(call, ADD, CONT2)
+//	
+//CONT2:
+//	r, p <- rget(2)
+//	print(r)
+//	print(addi(ipush(12), ipush(30)))
+//	return(ipush(0))			// exit with exitcode 0

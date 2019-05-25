@@ -12,7 +12,6 @@ import org.metaborg.lang.framevm_core.util.Block;
 import org.metaborg.lang.framevm_core.util.ControlFrame;
 import org.metaborg.lang.framevm_core.util.Frame;
 import org.metaborg.lang.framevm_core.util.MachineState;
-import org.metaborg.lang.framevm_core.util.RegisterControlFrame;
 import mb.nabl2.stratego.StrategoBlob;
 
 
@@ -46,13 +45,17 @@ public class vm_cont_new_0_1 extends FVMStrategy {
 		return factory.makeTuple(new StrategoBlob(env), new StrategoBlob(cont));
 	}
 
-	private RegisterControlFrame makeRegister(MachineState env, IStrategoTerm iStrategoTerm, Block block) {
-		// TODO Auto-generated method stub
-		return null;
+	private ControlFrame makeRegister(MachineState env, IStrategoTerm size, Block block) {
+		StrategoTuple tuple = (StrategoTuple) size;
+		int contSize = ((StrategoInt) tuple.get(0)).intValue();
+		int localSize = ((StrategoInt) tuple.get(1)).intValue();
+		return env.newRegisterControlFrame(contSize, localSize, block);
 	}
 
 	public ControlFrame makeStack(MachineState env, IStrategoTerm size, Block block) {
-		int contSize = ((StrategoInt) size).intValue();
-		return env.newStackControlFrame(contSize, block);
+		StrategoTuple tuple = (StrategoTuple) size;
+		int contSize = ((StrategoInt) tuple.get(0)).intValue();
+		int stackSize = ((StrategoInt) tuple.get(1)).intValue();
+		return env.newStackControlFrame(contSize, stackSize, block);
 	}
 }
