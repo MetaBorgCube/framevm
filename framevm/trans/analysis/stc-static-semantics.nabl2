@@ -38,20 +38,25 @@ rules
   	ModuleFunc{func_as}.lib   := lib.
   
   stcImport[[FVM_Export(lib, Local(lbl), func_as) ^(mod, prog)]] :=
+  	Block{name} -> prog,
+    Block{name} |-> d | error $[Unknown jump label [name]] @name,
+    Block{lbl}.size := size,
   	ModuleFunc{func_as} <- mod,
   	ModuleFunc{func_as}.label := lbl,
   	ModuleFunc{func_as}.lib   := lib,
-  	lbl[[lbl ^(prog)]].
+  	ModuleFunc{func_as}.size  := size.
   
   stcImport[[FVM_Export(_, External(name), func_as) ^(mod, prog)]] :=
   	ModuleFunc{name} -> prog,
   	ModuleFunc{name} |-> d | error $[Function not found: [name]] @name,
   	d.label := lbl,
   	d.lib   := lib,
+  	d.size  := size,
   	
   	ModuleFunc{func_as} <- mod,
   	ModuleFunc{func_as}.label := lbl,
-  	ModuleFunc{func_as}.lib   := lib.
+  	ModuleFunc{func_as}.lib   := lib,
+  	ModuleFunc{func_as}.size  := size.
   	
   libfunc[[func_name ^(ds, s)]] :=
   	new ns, ns ---> ds,
@@ -65,9 +70,20 @@ rules
   	
   	
   	
-  block[[FVM_Block(FVM_Label(name), FVM_Seq(body), size) ^(s)]] :=
+  block[[FVM_Block(FVM_Label(name), Some(stack), FVM_Seq(body), delta) ^(s)]] :=
     new block, 
     Block{name} <- s,
+    Block{name}.size := stack,
+    distinct/name D(s)/Block | error $[Redefinition of label] @name,
+    Block{name} ===> block,
+    block ---> s,
+    Map1(instr)[[body ^(block)]],
+    delta == 0 | warning $[Stack delta is non-zero: [size]] @name.
+  
+  block[[FVM_Block(FVM_Label(name), None(), FVM_Seq(body), size) ^(s)]] :=
+    new block, 
+    Block{name} <- s,
+    Block{name}.size := -1,
     distinct/name D(s)/Block | error $[Redefinition of label] @name,
     Block{name} ===> block,
     block ---> s,

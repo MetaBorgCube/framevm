@@ -32,8 +32,8 @@ rules
     // STC_ClosToCont/0
     stc-eval: (STC_ClosToCont(), env1) -> env4
       where
-        (env2, ClosV(frame, FVM_BoundLabel(lib, lbl), size)) := <stack-pop-closure(|env1)>;
-        (env3, cont) := <vm-cont-new(|env2)> (frame, (lib, lbl), size);
+        (env2, ClosV(frame, FVM_BoundLabel(lib, lbl, Some(s2)), s1)) := <stack-pop-closure(|env1)>;
+        (env3, cont) := <vm-cont-new(|env2)> (frame, (lib, lbl), (s1, s2));
         env4 := <stack-push(|env3)> Continuation(cont)
           
     // STC_ClosUnpack/0

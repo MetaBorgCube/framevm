@@ -146,7 +146,7 @@ rules
     // Move execution to a parent scope without actually returning
     // Can be seen as functioning like a break statement
     // Breaks to the scpoe at the provided path and move execution to the given block
-    stc-eval: (STC_ScopeExit(FVM_Path(path), FVM_BoundLabel(lib, lbl)), env1) -> env2
+    stc-eval: (STC_ScopeExit(FVM_Path(path), FVM_BoundLabel(lib, lbl, _)), env1) -> env2
       where
         (frame, FVM_Link(Bind(link_id, idx))) := <resolve> (path, FrameRef(<frame-this(|env1)>), env1);
         env2 := <frame-set-current(|env1)> (<cont-this(|env1)>, <frame-get-link(|env1)> (frame, (link_id, idx)));

@@ -22,8 +22,8 @@ rules
       
     eval-program = eval-program(id)
     
-    eval-program(s): STC_Program(fn, i, s, links, blocks) -> <eval-program-(s, stc-eval | "STC")> (Program(fn, i, s, links, blocks), <vm-init-stc> (<length> links, 2, s))
-    eval-program(s): RGR_Program(fn, i, s, links, blocks) -> <eval-program-(s, rgr-eval | "RGR")> (Program(fn, i, s, links, blocks), <vm-init-rgr> (<length> links, 2, s))
+    eval-program(s): STC_Program(fn, i, size, links, blocks) -> <eval-program-(s, stc-eval | "STC")> (Program(fn, i, size, links, blocks), <vm-init-stc> (<length> links, 2, size))
+    eval-program(s): RGR_Program(fn, i, size, links, blocks) -> <eval-program-(s, rgr-eval | "RGR")> (Program(fn, i, size, links, blocks), <vm-init-rgr> (<length> links, 2, size))
     
     
     
@@ -33,8 +33,8 @@ rules
         blocks' := <resolve-jump-labels(|fn)> blocks;
 
         (_, env2) := <foldl(store-block)> (blocks', (fn, env1));
-        (_, env3) := <store-block> (FVM_Block(FVM_Label("_exit"),  FVM_Seq([]), 0), (fn, env2));
-        (_, env4) := <store-block> (FVM_Block(FVM_Label("_catch"), FVM_Seq([]), 0), (fn, env3));
+        (_, env3) := <store-block> (FVM_Block(FVM_Label("_exit"),  None(), FVM_Seq([]), 0), (fn, env2));
+        (_, env4) := <store-block> (FVM_Block(FVM_Label("_catch"), None(), FVM_Seq([]), 0), (fn, env3));
         env5 := <foldl(import-blocks(|mode))> (i, env4);
         env6 := <vm-start(|env5)> (fn, "MAIN");
         env7 := <fvm-execute(s, mode-eval|env6)>;
@@ -42,7 +42,7 @@ rules
     
     
     
-    store-block: (FVM_Block(FVM_Label(lbl), FVM_Seq(body), _), (lib, env)) -> (lib, <vm-store-block(|env)> ((lib, lbl), body))
+    store-block: (FVM_Block(FVM_Label(lbl), _, FVM_Seq(body), _), (lib, env)) -> (lib, <vm-store-block(|env)> ((lib, lbl), body))
     
     import-blocks(|mode): (FVM_Import(lib, _), env1) -> env3
       where 
@@ -83,18 +83,28 @@ rules
     
     resolve-jump-labels(|lib): (imports, blocks) -> (imports, <resolve-jump-labels(|lib)> blocks)
     resolve-jump-labels(|lib): [] -> []
-    resolve-jump-labels(|lib): [FVM_Block(lbl, FVM_Seq(body), d) | t] -> [FVM_Block(lbl, FVM_Seq(body'), d) | <resolve-jump-labels(|lib)> t]
+    resolve-jump-labels(|lib): [FVM_Block(lbl, s, FVM_Seq(body), d) | t] -> [FVM_Block(lbl, s, FVM_Seq(body'), d) | <resolve-jump-labels(|lib)> t]
       where
         body' := <bottomup(try(resolve-jump-labels-(|lib)))> body
     
-    resolve-jump-labels-(|lib): FVM_Label(lbl) -> FVM_BoundLabel(lib, lbl)
-    resolve-jump-labels-(|l): FVM_ExternalLabel(func_name) -> FVM_BoundLabel(lib, lbl)
+    resolve-jump-labels-(|lib): l@FVM_Label(lbl) -> FVM_BoundLabel(lib, lbl, size)
+      where
+        a            := <nabl2-get-ast-analysis> l;
+        ref-occ      := <nabl2-mk-occurrence(|"Block")> lbl;
+        (dec-occ, _) := <nabl2-get-resolved-name(|a)> ref-occ;
+        size         := <get-size(|a)> dec-occ
+    
+    resolve-jump-labels-(|l): FVM_ExternalLabel(func_name) -> FVM_BoundLabel(lib, lbl, size)
       where
         a            := <nabl2-get-ast-analysis> func_name;
         ref-occ      := <nabl2-mk-occurrence(|"ModuleFunc")> func_name;
         (dec-occ, path) := <nabl2-get-resolved-name(|a)> ref-occ;
         lib          := <nabl2-get-property(|a, "lib")>   dec-occ;
-        lbl          := <nabl2-get-property(|a, "label")> dec-occ
+        lbl          := <nabl2-get-property(|a, "label")> dec-occ;
+        size         := <get-size(|a)> dec-occ
+        
+    get-size(|a): occ -> Some(size) where size := <nabl2-get-property(|a, "size")> occ
+    get-size(|a): occ -> None()
     
     // Ask next instruction and evaluate it
     // Repeat until no instructions are left

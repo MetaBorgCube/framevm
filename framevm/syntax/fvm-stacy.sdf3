@@ -5,10 +5,11 @@ imports
   
 sorts Body context-free syntax
   SBlock.STC_Block = <<lbl:BlockLabel>:
+    <size:CFSize?>
     <ret:SOnReturnInstr?>
     <instr:SInstr*> 
     <jump:SControlInstr>
-> { layout (indent lbl ret && align-list instr && align instr jump && align ret instr) }
+> { layout (indent lbl size && align-list instr && align instr jump && align ret instr && align size ret) }
   
 sorts SInstr context-free syntax
   SInstr.STC_Print       = <print>                 // Prints value on the stack

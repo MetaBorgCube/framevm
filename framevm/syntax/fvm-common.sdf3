@@ -2,6 +2,8 @@ module fvm-common
 
 lexical syntax
 
+  LOCAL          = "l" [0-9]+
+  REGISTER       = [a-z]+
   ID             = LIB
   LIB            = [a-z] [a-zA-Z0-9\_\.]*
   LIBFUNC        = [a-z] [a-zA-Z0-9\_]*
@@ -38,6 +40,7 @@ lexical syntax
 
 lexical syntax
   LIBFUNC = "ipush"     {reject}
+  LIBFUNC = "iload"     {reject}
   LIBFUNC = "addi"      {reject}
   LIBFUNC = "subi"      {reject}
   LIBFUNC = "muli"      {reject}
@@ -171,10 +174,13 @@ context-free syntax
   LabelOrLibFunc.External = LIBFUNC
   
   InitSize.FVM_InitSize = <#init <INTLEZ>>
+  InitSize.RGR_InitSize = <#init <INTLEZ?> <RGRInit>>
+  RGRInit.RGR_RegisterSize = <<INTLEZ>x<INTLEZ>>
   Alias.FVM_LinkAlias = <#link <LinkRef> -\> <INTLEZ>>
   Alias.FVM_ContAlias = <#cont <ContRef> -\> <INTLEZ>>
   
-  
+  CFSize.RGR_Local = <local := <INTLEZ>>
+  CFSize.STC_Stack = <stack := <INTLEZ>>
 /* 
 
 Values 

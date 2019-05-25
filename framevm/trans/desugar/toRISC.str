@@ -11,7 +11,7 @@ rules
     to-RISC-all: STC_Program(fn, i, s, a, blocks) -> STC_Program(fn, i, s, a, <map(to-RISC-all)> blocks)
     to-RISC-all: p@RGR_Program(_, _, _, _, _) -> p
     
-    to-RISC-all: FVM_Block(lbl, FVM_Seq(body), d) -> FVM_Block(lbl, FVM_Seq(body_risc), d)
+    to-RISC-all: FVM_Block(lbl, s, FVM_Seq(body), d) -> FVM_Block(lbl, s, FVM_Seq(body_risc), d)
       where
         body_risc := <to-RISC(r-toN)><to-RISC(r-stack-index)><to-RISC(r-relative)><to-RISC(r-new)><to-RISC(r-link)><to-RISC(r-cont)><to-RISC(r-scope)><to-RISC(r-string)> body
   

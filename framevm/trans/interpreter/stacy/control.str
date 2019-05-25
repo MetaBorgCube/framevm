@@ -12,11 +12,11 @@ rules
     // STC_Call/2
     // Call the block at arg1 using the frame at the top of the stack
     // This function returns to arg2 when finished
-    stc-eval: (STC_Call(FVM_BoundLabel(lib, block), FVM_BoundLabel(retlib, retlbl)), env1) -> env7
+    stc-eval: (STC_Call(FVM_BoundLabel(lib, block, Some(size)), FVM_BoundLabel(retlib, retlbl, _)), env1) -> env7
       where
         (env2, FrameRef(callFrame)) := <stack-pop-frame(|env1)>;      // get the function frame
-        (env3, func) := <vm-cont-new(|env2)> (callFrame, (lib, block), 2);
-         
+        (env3, func) := <vm-cont-new(|env2)> (callFrame, (lib, block), (2, size));
+        
         cont_this := <cont-this(|env3)>;
         env4 := <cont-set-cc(|env2)> (func, cont_this);               // Set the return address
         ex := <ex-get-cx(|env3)> cont_this;
@@ -26,7 +26,7 @@ rules
           
     // STC_Call/1
     // Call the continuation at the top of the stack with return address set to block
-    stc-eval: (STC_Call(FVM_BoundLabel(lib, block)), env1) -> env6
+    stc-eval: (STC_Call(FVM_BoundLabel(lib, block, _)), env1) -> env6
       where
         (env2, Continuation(func)) := <stack-pop-cont(|env1)>;        // get the function continuation
         cont_this := <cont-this(|env2)>;
@@ -39,10 +39,10 @@ rules
     // STC_TailCall/1
     // Call the block at arg1 using the frame at the top of the stack
     // Use tail call optimizations for this call
-    stc-eval: (STC_TailCall(FVM_BoundLabel(lib, block)), env1) -> env6
+    stc-eval: (STC_TailCall(FVM_BoundLabel(lib, block, Some(size))), env1) -> env6
       where
         (env2, FrameRef(callFrame)) := <stack-pop-frame(|env1)>;    // get the function frame
-        (env3, func) := <vm-cont-new(|env2)> (callFrame, (lib, block), 2);
+        (env3, func) := <vm-cont-new(|env2)> (callFrame, (lib, block), (2, size));
           
         cont_this := <cont-this(|env3)>;
         return := <cont-get-cc(|env3)> cont_this;
@@ -85,7 +85,7 @@ rules
     // STC_Yield/1
     // Return the value on top of the stack and the current continuation to the caller.
     // Sets the next instruction to be at the given label
-    stc-eval: (STC_Yield(FVM_BoundLabel(lib, block)), env1) -> env5
+    stc-eval: (STC_Yield(FVM_BoundLabel(lib, block, _)), env1) -> env5
       where
         this := <cont-this(|env1)>;
         (env2, val) := <stack-pop-any(|env1)>;
@@ -96,14 +96,14 @@ rules
    
     // STC_Jump/1
     // Unconditional jump to a new block at the given label
-    stc-eval: (STC_Jump(FVM_BoundLabel(lib, block)), env1) -> env2
+    stc-eval: (STC_Jump(FVM_BoundLabel(lib, block, _)), env1) -> env2
       where
         env2 := <vm-jump(|env1)> (lib, block)
     
     // STC_JumpZ/2
     // Conditional jump. 
     // Checks top of the stack, when zero goes to arg1 else to arg2
-    stc-eval: (STC_JumpZ(FVM_BoundLabel(thenlib, thenlbl), FVM_BoundLabel(elselib, elselbl)), env1) -> env3
+    stc-eval: (STC_JumpZ(FVM_BoundLabel(thenlib, thenlbl, _), FVM_BoundLabel(elselib, elselbl, _)), env1) -> env3
       where
         (env2, IntV(val)) := <stack-pop-int(|env1)>;
         trgt := <jump-eval> (val, (thenlib, thenlbl), (elselib, elselbl));
@@ -113,7 +113,7 @@ rules
     // Move execution to a new scope, for example when entering a for loop
     // Uses the frame on top of the stack as new execution frame
     // Jumps the execution to the given block
-    stc-eval: (STC_ScopeNew(FVM_Link(Bind(lbl, idx)), FVM_BoundLabel(lib, block)), env1) -> env5
+    stc-eval: (STC_ScopeNew(FVM_Link(Bind(lbl, idx)), FVM_BoundLabel(lib, block, _)), env1) -> env5
       where
         frame_this := <frame-this(|env1)>;
         (env2, FrameRef(frame_to)) := <stack-pop-frame(|env1)>;

@@ -11,7 +11,7 @@ rules
     // STC_Try/3
     // Takes two frames from the stack and sets them up to be a try-catch block
     // Moves execution to the try-block with the catch block as exception handler
-    stc-eval: (STC_Try(FVM_BoundLabel(lib_try, lbl_try), FVM_BoundLabel(lib_catch, lbl_catch), FVM_BoundLabel(lib_cont, lbl_cont)), env1) -> env13
+    stc-eval: (STC_Try(FVM_BoundLabel(lib_try, lbl_try, Some(s1)), FVM_BoundLabel(lib_catch, lbl_catch, Some(s2)), FVM_BoundLabel(lib_cont, lbl_cont, _)), env1) -> env13
       where
         this := <cont-this(|env1)>;
         cont := <cont-get-cc(|env1)> this;
@@ -20,8 +20,8 @@ rules
         (env2, FrameRef(frame_catch)) := <stack-pop-frame(|env1)>;
         (env3, FrameRef(frame_try))   := <stack-pop-frame(|env2)>;
           
-        (env4, catch) := <vm-cont-new(|env3)> (frame_catch, (lib_catch, lbl_catch), 3);
-        (env5, try)   := <vm-cont-new(|env4)> (frame_try,   (lib_try, lbl_try), 3);
+        (env4, catch) := <vm-cont-new(|env3)> (frame_catch, (lib_catch, lbl_catch), (3, s1));
+        (env5, try)   := <vm-cont-new(|env4)> (frame_try,   (lib_try, lbl_try), (3, s2));
           
         env6 := <cont-set-cc(|env5)> (try, cont);
         env7 := <ex-set-cx(|env6)>   (try, catch);
@@ -37,7 +37,7 @@ rules
     // STC_Try/1
     // Takes two continuation from the stack and sets them up to be a try-catch block
     // Moves execution to the try-block with the catch block as exception handler
-    stc-eval: (STC_Try(FVM_BoundLabel(lib_cont, lbl_cont)), env1) -> env11
+    stc-eval: (STC_Try(FVM_BoundLabel(lib_cont, lbl_cont, _)), env1) -> env11
       where
         this := <cont-this(|env1)>;
         cont := <cont-get-cc(|env1)> this;

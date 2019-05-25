@@ -23,3 +23,14 @@ rules
     // Resolve which label to pick
     jump-eval: (0, then, _) -> then
     jump-eval: (_, _, else) -> else        // Catch all other than 0
+    
+    
+    // Check if the to given values are equal
+    eval-eq: (e1, e2) -> IntV(1)
+      where <equal> (e1, e2)
+    eval-eq: _ -> IntV(0)    
+    
+    // Check if the to given values are equal
+    eval-lt: (e1, e2) -> IntV(1)
+      where <lt> (e1, e2)
+    eval-lt: _ -> IntV(0)

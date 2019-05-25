@@ -8,10 +8,10 @@ signature
   sorts S
   constructors    
     Bind : STRING * INT -> S
-    FVM_BoundLabel : STRING * FVM_Label -> S
+    FVM_BoundLabel : STRING * FVM_Label * INT -> S
     FVM_Export : STRING * STRING * STRING -> S
     FVM_Seq : [Instr] -> S
-    FVM_Block : FVM_Label * FVM_Seq * INT -> S
+    FVM_Block : FVM_Label * INT * FVM_Seq * INT -> S
     STC_Program: STRING * [Import] * INT * [Alias] * [STC_Block] -> S
     RGR_Program: STRING * [Import] * INT * [Alias] * [STC_Block] -> S
 

@@ -3,6 +3,7 @@ module arithmetic
 imports 
     signatures/fvm-stacy-sig
     interpreter/external
+    interpreter/util
     
     fvm-common
 
@@ -122,15 +123,4 @@ rules
       where
         (env1, IntV(e1)) := <stack-pop-int(|env)>;
         (env2, IntV(e2)) := <stack-pop-int(|env1)>;
-        env3 := <stack-push(|env2)> IntV(<andi> (e1, e2))
-
-
-    // Check if the to given values are equal
-    eval-eq: (e1, e2) -> IntV(1)
-      where <equal> (e1, e2)
-    eval-eq: _ -> IntV(0)    
-    
-    // Check if the to given values are equal
-    eval-lt: (e1, e2) -> IntV(1)
-      where <lt> (e1, e2)
-    eval-lt: _ -> IntV(0)    
+        env3 := <stack-push(|env2)> IntV(<andi> (e1, e2))    

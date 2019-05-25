@@ -2,15 +2,16 @@ module Compile
 
 menus
   
-  menu: "RISC" (openeditor)
-    action: "Transform to RISC" = editor-format-desugar
-    action: "Show RISC AST"     = debug-show-desugared-full-aterm
+  menu: "Transform" (openeditor)
+    action: "Transform"            = editor-format-desugar
+    action: "Show transformed AST" = debug-show-desugared-full-aterm
   
   menu: "Run" (openeditor)  
-    action: "CISC"    = run-program-cisc
-    action: "RISC"    = run-program-risc
-    action: "Compare" = run-program-compare
+    action: "Run"   = run-program-cisc
+    action: "Debug" = run-program-cisc-debug
+//    action: "RISC"    = run-program-risc
+//    action: "Compare" = run-program-compare
     
-  menu: "Debug" (openeditor)
-    action: "CISC"    = run-program-cisc-debug
-    action: "RISC"    = run-program-risc-debug
+//  menu: "Debug" (openeditor)
+//    action: "CISC"    = run-program-cisc-debug
+//    action: "RISC"    = run-program-risc-debug

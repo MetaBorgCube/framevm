@@ -67,4 +67,4 @@ rules    // Util
     val-to-string: IntV(v) -> IntV(v)
     val-to-string: FrameRef(frame) -> frame
     val-to-string: Continuation(cont) -> cont
-    val-to-string: ClosV(frame, FVM_BoundLabel(lib, lbl), _) -> (frame, lbl)
+    val-to-string: ClosV(frame, FVM_BoundLabel(lib, lbl, _), _) -> (frame, lbl)

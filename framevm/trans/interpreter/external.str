@@ -4,8 +4,8 @@ imports
     signatures/fvm-common-sig
 
 rules 
-    external vm-init-stc(|)           // (links, conts, slots) -> env
-    external vm-init-rgr(|)           // (links, conts, slots) -> env
+    external vm-init-stc(|)           // (links, conts, (slots, stack)) -> env
+    external vm-init-rgr(|)           // (links, conts, (slots, locals)) -> env
     external vm-store-block(|env)     // env| ((lib, lbl), [instr]) -> env' 
     external vm-has-lib(|env)         // env| lib
     external vm-start(|env)           // env| (lib, block) -> env'
@@ -22,13 +22,13 @@ rules
     external stack-pop-closure(|env)  // env| -> (env', closure)
     external stack-size(|env)         // env| -> int
     
-    external rgr-size(|env)           // env| -> int
-    external rgr-set(|env)            // env| val -> env'
-    external rgr-get-any(|env)        // env| -> (env', val)
-    external rgr-get-int(|env)        // env| -> (env', int)
-    external rgr-get-cont(|env)       // env| -> (env', continuation)
-    external rgr-get-frame(|env)      // env| -> (env', frame)
-    external rgr-get-closure(|env)    // env| -> (env', closure)
+    external rgr-size(|env)           // env| -> (int, int)
+    external rgr-set(|env)            // env| (slot, val) -> env'
+    external rgr-get-any(|env)        // env| slot -> (env', val)
+    external rgr-get-int(|env)        // env| slot -> (env', int)
+    external rgr-get-cont(|env)       // env| slot -> (env', continuation)
+    external rgr-get-frame(|env)      // env| slot -> (env', frame)
+    external rgr-get-closure(|env)    // env| slot -> (env', closure)
     
     external frame-get-slot(|env)     // env| (frame, slot) -> val
     external frame-get-link(|env)     // env| (frame, (link_id, idx)) -> frame
