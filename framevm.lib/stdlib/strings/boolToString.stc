@@ -1,6 +1,7 @@
 export TO_STRING as bool_to_string
 
 TO_STRING:
+  stack := 3
   get [0]
   jumpz __FALSE __TRUE
   

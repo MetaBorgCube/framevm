@@ -1,7 +1,8 @@
-from examples.imports.import_circular1 import function
+from stacy.imports.import_circular1 import function
 export FUNC as function2
 
 FUNC:
+	stack := 3
 	get [0]
 	print
 	

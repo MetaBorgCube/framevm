@@ -1,9 +1,10 @@
 export PRINT_STRING as print_string
 	
 PRINT_STRING:
+	stack := 4
 	get [0, 0]			// Size
 	ipush 0				// Idx
-	jump __PRINT_LOOP		//
+	jump __PRINT_LOOP	//
 	
 __PRINT_LOOP:
 	dup 2				// Size

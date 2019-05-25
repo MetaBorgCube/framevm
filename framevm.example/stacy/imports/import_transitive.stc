@@ -1,6 +1,7 @@
-from examples.imports.export_transitive import function_trans as func
+from stacy.imports.export_transitive import function_trans as func
 
 MAIN:
+	stack := 3
 	new 1
 	
 	dup

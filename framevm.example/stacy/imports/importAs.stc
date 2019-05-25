@@ -1,6 +1,7 @@
 from stacy.imports.export import example as add
 
 MAIN:
+	stack := 3
 	new 2
 	
 	dup

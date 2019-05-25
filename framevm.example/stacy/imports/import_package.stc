@@ -1,7 +1,8 @@
-from examples.imports.export_package import function, function2
-from stdlib.strings.print import print
+from stacy.imports.export_package import function, function2
+from stdlib.strings.print import print_string
 
 MAIN:
+	stack := 3
 	new 1
 	
 	dup

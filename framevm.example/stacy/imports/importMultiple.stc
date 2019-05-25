@@ -1,6 +1,7 @@
-from examples.imports.export import example, function
+from stacy.imports.export import example, function
 
 MAIN:
+	stack := 3
 	new 1
 	dup
 	ipush 1

@@ -1,7 +1,8 @@
-from examples.imports.export import function as func
+from stacy.imports.export import function as func
 export FUNC1 as function_trans
 
 FUNC1:
+	stack := 3
 	get [0]
 	print
 	new 1
