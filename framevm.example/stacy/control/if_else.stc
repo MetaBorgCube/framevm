@@ -11,6 +11,7 @@
 }
 
 MAIN:
+	stack := 99
 	ipush 1				// 
 	set [0]				// x := 1
 	ipush 2				//

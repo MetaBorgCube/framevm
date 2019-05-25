@@ -35,42 +35,42 @@ PRINT_CHAR:
 	jump PRINT_LOOP
 ]]
 
-test CISC Hello World! [[
+test Hello World! [[
 	spush "Hello World!"
 	call PRINT EXIT
-]] transform "Run -> CISC" to "Hello World!"
+]] transform "Run -> Run" to "Hello World!"
 
-test CISC Hello World newline [[
+test Hello World newline [[
 	spush "Hello\nWorld!"
 	call PRINT EXIT
-]] transform "Run -> CISC" to "Hello
+]] transform "Run -> Run" to "Hello
 World!"
 
-test CISC print char unicode [[
+test print char unicode [[
 	ipush 128539
 	printc
 	jump EXIT
-]] transform "Run -> CISC" to ""
+]] transform "Run -> Run" to ""
 
-test CISC print char [[
+test print char [[
 	ipush 65
 	printc
 	jump EXIT
-]] transform "Run -> CISC" to "A"
+]] transform "Run -> Run" to "A"
 
-test CISC print char [[
+test print char [[
 	cpush 'A'
 	printc
 	jump EXIT
-]] transform "Run -> CISC" to "A"
+]] transform "Run -> Run" to "A"
 
-test CISC print char 2 [[
+test print char 2 [[
 	cpush 'Q'
 	printc
 	jump EXIT
-]] transform "Run -> CISC" to "Q"
+]] transform "Run -> Run" to "Q"
 
-test CISC print char whitespace [[
+test print char whitespace [[
 	cpush ' '
 	printc
 	cpush 'B'
@@ -82,82 +82,18 @@ test CISC print char whitespace [[
 	cpush ' '
 	printc
 	jump EXIT
-]] transform "Run -> CISC" to " B C "
+]] transform "Run -> Run" to " B C "
 
 
-test CISC empty string 1 [[
+test empty string 1 [[
 	new 1
 	dup
 	ipush 0
 	setr [0]
 	call PRINT EXIT
-]] transform "Run -> CISC" to ""
+]] transform "Run -> Run" to ""
 
-test CISC empty string 2 [[
+test empty string 2 [[
 	spush ""
 	call PRINT EXIT
-]] transform "Run -> CISC" to ""
-
-test RISC Hello World! [[
-	spush "Hello World!"
-	call PRINT EXIT
-]] transform "Run -> RISC" to "Hello World!"
-
-test RISC Hello World newline [[
-	spush "Hello\nWorld!"
-	call PRINT EXIT
-]] transform "Run -> RISC" to "Hello
-World!"
-
-test RISC print char unicode [[
-	ipush 128539
-	printc
-	jump EXIT
-]] transform "Run -> RISC" to ""
-
-test RISC print char [[
-	ipush 65
-	printc
-	jump EXIT
-]] transform "Run -> RISC" to "A"
-
-test RISC print char [[
-	cpush 'A'
-	printc
-	jump EXIT
-]] transform "Run -> RISC" to "A"
-
-test RISC print char 2 [[
-	cpush 'Q'
-	printc
-	jump EXIT
-]] transform "Run -> RISC" to "Q"
-
-
-test RISC print char whitespace [[
-	cpush ' '
-	printc
-	cpush 'B'
-	printc
-	cpush ' '
-	printc
-	cpush 'C'
-	printc
-	cpush ' '
-	printc
-	jump EXIT
-]] transform "Run -> RISC" to " B C "
-
-
-test RISC empty string 1 [[
-	new 1
-	dup
-	ipush 0
-	setr [0]
-	call PRINT EXIT
-]] transform "Run -> RISC" to ""
-
-test RISC empty string 2 [[
-	spush ""
-	call PRINT EXIT
-]] transform "Run -> RISC" to ""
+]] transform "Run -> Run" to ""

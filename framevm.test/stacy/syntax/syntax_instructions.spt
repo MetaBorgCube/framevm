@@ -130,5 +130,4 @@ test getr path negative  [[getr [-1] ]]    parse fails
 test cnew simple      [[cnew LBL 0]]  parse succeeds
 test cnew negative    [[cnew LBL -1]] parse fails
 test cnew only label  [[cnew LBL]]    parse fails
-test cnew closure     [[cnew 0]]      parse succeeds
-test cnew empty       [[cnew]]        parse fails
+test cnew closure     [[cnew]]        parse succeeds

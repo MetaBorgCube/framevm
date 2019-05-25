@@ -2,7 +2,7 @@ module smoke_exception
 
 language framevm
 
-test Simple exception example RISC [[MAIN:
+test Simple exception example [[MAIN:
 	new
 	dup
 	link [] P
@@ -33,39 +33,5 @@ MAIN_END:
 	print
 	ipush 0
 	return
-]] transform "Run -> RISC" to "IntV(1)
-IntV(0)"
-
-test Simple exception example CISC [[MAIN:
-	new
-	dup
-	link [] P
-	cnew MAIN_TRY 3
-	new
-	dup
-	link [] P
-	cnew MAIN_CATCH 3
-	try MAIN_END
-	
-MAIN_TRY:
-	new 1
-	dup
-	link [P] P
-	dup
-	ipush 1
-	setr [0]
-	throw
-	
-MAIN_CATCH:
-	rget
-	getr [0]
-	print
-	cret [n]
-	
-MAIN_END:
-	ipush 0
-	print
-	ipush 0
-	return
-]] transform "Run -> CISC" to "IntV(1)
+]] transform "Run -> Run" to "IntV(1)
 IntV(0)"

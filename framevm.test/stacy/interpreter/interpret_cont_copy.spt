@@ -11,7 +11,7 @@ MAIN:
 	return
 ]]
 
-test CISC shallow shallow cont copy 1 [[
+test shallow shallow cont copy 1 [[
 	new 1
 	dup
 	ipush 12
@@ -26,5 +26,5 @@ test CISC shallow shallow cont copy 1 [[
 	ccall CONT
 	
 	
-]] transform "Run -> CISC" to "42
+]] transform "Run -> Run" to "42
 42"
