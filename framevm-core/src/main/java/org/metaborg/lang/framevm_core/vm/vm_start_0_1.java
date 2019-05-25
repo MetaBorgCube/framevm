@@ -3,6 +3,7 @@ package org.metaborg.lang.framevm_core.vm;
 import org.spoofax.interpreter.library.IOAgent;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermFactory;
+import org.spoofax.terms.StrategoInt;
 import org.spoofax.terms.StrategoString;
 import org.spoofax.terms.StrategoTuple;
 
@@ -21,12 +22,14 @@ public class vm_start_0_1 extends FVMStrategy {
 	public static vm_start_0_1 instance = new vm_start_0_1();
 
 	@Override
-	// env| (lib, block) -> env'
+	// env| (lib, block, size) -> env'
 	// Start the vm by setting the initial frame as executable and running the MAIN block
 	protected IStrategoTerm invoke(IOAgent io, ITermFactory factory, MachineState env, IStrategoTerm arg) {
 		StrategoTuple tuple = (StrategoTuple) arg;
-		String blockName = ((StrategoString) tuple.get(1)).stringValue();
 		String libName = ((StrategoString) tuple.get(0)).stringValue();
+		String blockName = ((StrategoString) tuple.get(1)).stringValue();
+		int size = ((StrategoInt) tuple.get(2)).intValue();
+		
 		Block block = env.getBlock(libName, blockName);
 		
 		if (block == null) {
@@ -35,6 +38,7 @@ public class vm_start_0_1 extends FVMStrategy {
 		}
 		
 		ControlFrame controlFrame = env.currentThread.getControlFrame();
+		controlFrame.setSize(size);
 		controlFrame.jump(block);
 		env.currentThread.initThread();
 		

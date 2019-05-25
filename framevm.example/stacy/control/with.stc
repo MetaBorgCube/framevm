@@ -10,6 +10,7 @@
 }
 
 MAIN:
+	stack := 3
 	new 3					// With i frame
 	newscope P WITH_I_INIT	//
 	

@@ -55,5 +55,7 @@ rules
     // If the current instruction is a label, close the block (we are going bottom to top)
     // Else just store the instruction and continue
     // TODO: infer limits
-    from-flat-fold: (FVM_Label(lbl), (blocks, instrs)) -> ([FVM_Block(FVM_Label(lbl), Some("99"), FVM_Seq(instrs), 0) | blocks], [])
+    from-flat-fold: (FVM_Label(lbl), (blocks, instrs)) -> ([FVM_Block(FVM_Label(lbl), None(), FVM_Seq(instrs), 0) | blocks], [])
+    from-flat-fold: ((FVM_Label(lbl), size), (blocks, instrs)) -> ([FVM_Block(FVM_Label(lbl), Some(<int-to-string> size), FVM_Seq(instrs), 0) | blocks], []) where <is-int> size
+    
     from-flat-fold: (instr, (blocks, instrs)) -> (blocks, [instr | instrs])

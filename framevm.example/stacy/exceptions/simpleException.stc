@@ -1,16 +1,17 @@
 {
-	rec A ={
-		int:m
-	}
+//	rec A ={
+//		int:m
+//	}
 	
-	try:
-		throw new A(1)
-	catch A as e:
-		print(e.m)	// print 1
+//	try:
+//		throw new A(1)
+//	catch A as e:
+//		print(e.m)	// print 1
 	print(0)		// print 0
 }
 
 MAIN:
+	stack := 3
 	new						// Try frame
 	dup						//
 	link [] P				//
@@ -24,6 +25,7 @@ MAIN:
 	try	MAIN_END			//
 	
 MAIN_TRY:
+	stack := 3
 	new	1					// New A() frame
 	dup						//
 	link [P] P				//
@@ -34,6 +36,7 @@ MAIN_TRY:
 	throw					// Throw A
 
 MAIN_CATCH:
+	stack := 1
 	rget
 	getr [0]				// Get ex.m
 	print					//

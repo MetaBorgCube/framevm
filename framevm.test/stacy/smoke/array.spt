@@ -4,6 +4,7 @@ language framevm
 
 test Array example [[#init 2
 MAIN:
+	stack := 3
 	new 4
 	dup
 	ipush 5

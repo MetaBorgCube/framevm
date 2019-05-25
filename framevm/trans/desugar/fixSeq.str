@@ -12,8 +12,8 @@ imports
     
 rules
 
-    fix-seq: STC_Program(fn, i, s, a, blocks) -> STC_Program(fn, i, s, a, <map(fix-seq)> blocks)
-    fix-seq: RGR_Program(fn, i, s, a, blocks) -> RGR_Program(fn, i, s, a, <map(fix-seq)> blocks)
+    fix-seq: STC_Program(fn, i, s, b, a, blocks) -> STC_Program(fn, i, s, b, a, <map(fix-seq)> blocks)
+    fix-seq: RGR_Program(fn, i, s, b, a, blocks) -> RGR_Program(fn, i, s, b, a, <map(fix-seq)> blocks)
     
     fix-seq: STC_Block(lbl, s, None(), body, jump)     -> FVM_Block(lbl, <fix-init> s, FVM_Seq(seq), <stack-calc-stc> seq)
       with
@@ -39,8 +39,8 @@ rules
     unfix-init: Some(n) -> Some(STC_Stack(<int-to-string> n))
     
     
-    resugar-seq: STC_Program(fn, i, s, a, blocks) -> STC_Program(fn, i, s, a, <map(resugar-seq-stc)> blocks)
-    resugar-seq: RGR_Program(fn, i, s, a, blocks) -> RGR_Program(fn, i, s, a, <map(resugar-seq-stc)> blocks)
+    resugar-seq: STC_Program(fn, i, s, b, a, blocks) -> STC_Program(fn, i, s, b, a, <map(resugar-seq-stc)> blocks)
+    resugar-seq: RGR_Program(fn, i, s, b, a, blocks) -> RGR_Program(fn, i, s, b, a, <map(resugar-seq-stc)> blocks)
     
     resugar-seq-stc: FVM_Block(lbl, size, FVM_Seq([h|tail]), s) -> STC_Block(lbl, <unfix-init> size, Some(h), body, jump)
       where

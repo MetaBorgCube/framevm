@@ -3,6 +3,7 @@ module smoke_generator
 language framevm
 
 test Generator example [[MAIN:
+	stack := 3
 	new
 	newscope P FOR_INIT
 	
@@ -18,6 +19,7 @@ FOR_INIT:
 	try FOR_START FOR_TERM FOR_END
 	
 FOR_START:
+	stack := 3
 	new 0
 	dup
 	link [] P
@@ -41,12 +43,14 @@ FOR_RET:
 	jump FOR
 	
 FOR_TERM:
+	stack := 1
 	cret [n]
 	
 FOR_END:
 	jump MAIN_END
 	
 FUNC:
+	stack := 3
 	cgetcurrent
 	ipush 1
 	cget [c]

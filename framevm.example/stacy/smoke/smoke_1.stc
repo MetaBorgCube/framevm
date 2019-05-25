@@ -1,11 +1,11 @@
 #init 1
 {
-	rec A = {
-		int: i
-		int: j
-	}
-	
-	var a := new A(1, 1)
+//	rec A = {
+//		int: i
+//		int: j
+//	}
+//	
+//	var a := new A(1, 1)
 	a.i := 1 + 1
 	a.j := 12
 	
@@ -16,6 +16,7 @@
 }
 
 MAIN:
+	stack := 2
 	new	2			// Create new  call-frame
 	dup				//
 	link [] P		// Link to main frame

@@ -4,6 +4,7 @@ language framevm
 
 test simple print [[
 MAIN:
+	stack := 1
 	ipush 1
 	print
 	ipush 0

@@ -3,6 +3,7 @@ module interpreter_string
 language framevm
 
 fixture [[MAIN:
+	stack := 99
 	[[...]]
 
 EXIT:
@@ -10,6 +11,7 @@ EXIT:
 	return
 	
 PRINT:
+	stack := 4
 	get [0]
 	ipush 0
 	jump PRINT_LOOP

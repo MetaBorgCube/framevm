@@ -3,6 +3,7 @@ module smoke_exception
 language framevm
 
 test Simple exception example [[MAIN:
+	stack := 3
 	new
 	dup
 	link [] P
@@ -14,6 +15,7 @@ test Simple exception example [[MAIN:
 	try MAIN_END
 	
 MAIN_TRY:
+	stack := 3
 	new 1
 	dup
 	link [P] P
@@ -23,6 +25,7 @@ MAIN_TRY:
 	throw
 	
 MAIN_CATCH:
+	stack := 1
 	rget
 	getr [0]
 	print

@@ -3,6 +3,7 @@ module interpreter_jump
 language framevm
 
 fixture [[MAIN:
+	stack := 99
 	[[...]]
 
 LBL1:

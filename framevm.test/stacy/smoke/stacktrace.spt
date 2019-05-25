@@ -3,6 +3,7 @@ module smoke_exception_trace
 language framevm
 
 test Exception trace example [[MAIN:
+	stack := 3
 	new
 	dup
 	link [] P
@@ -14,12 +15,14 @@ test Exception trace example [[MAIN:
 	try MAIN_END
 	
 MAIN_TRY:
+	stack := 2
 	new
 	dup
 	link [P] P
 	call FUNC1 MAIN_END
 	
 FUNC1:
+	stack := 2
 	new
 	dup
 	link [] P
@@ -30,6 +33,7 @@ FUNC1_END:
 	return
 	
 FUNC2:
+	stack := 3
 	new 2
 	dup
 	get []
@@ -40,6 +44,7 @@ FUNC2:
 	throw
 	
 MAIN_CATCH:
+	stack := 2
 	rget
 	dup
 	getr [1]

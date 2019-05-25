@@ -4,6 +4,7 @@ language framevm
 
 fixture [[#link Q -> 1
 MAIN:
+	stack := 99
 	[[...]]
 	print
 	ipush 0

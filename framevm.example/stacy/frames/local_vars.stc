@@ -7,6 +7,7 @@
 }
 
 MAIN:
+	stack := 1
 //	new 		// Is this needed?
 //	mkcurrent	// Same here
 	ipush 10

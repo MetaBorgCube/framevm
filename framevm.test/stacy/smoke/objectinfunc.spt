@@ -4,6 +4,7 @@ language framevm
 
 test Object in function example [[#init 1
 MAIN:
+	stack := 3
 	new 3
 	dup
 	link [] P
@@ -13,6 +14,7 @@ MAIN:
 	call FUNC MAIN_END
 	
 FUNC:
+	stack := 3
 	new 1
 	dup
 	link [P] P

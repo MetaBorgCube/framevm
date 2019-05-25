@@ -3,6 +3,7 @@ module interpreter_arithmetic_int
 language framevm
 
 fixture [[MAIN:
+	stack := 99
 	[[...]]
 	print
 	ipush 0

@@ -10,6 +10,7 @@
 }
 	
 MAIN:
+	stack := 3
 	new 1			// create new call frame
 	dup				//	
 	link [] P		// Link function scope to local scope
@@ -20,6 +21,7 @@ MAIN:
 						// Returns to END
 
 SUMTO:
+	stack := 4
   	get [0] 		// i
   	ipush 0			//
   	eqi				// i == 0

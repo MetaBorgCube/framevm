@@ -5,7 +5,7 @@ imports
   signatures/-
   
 rules
-  prog[[STC_Program(fname, imports, size, a, blocks) ^(s)]] :=
+  prog[[STC_Program(fname, imports, size, b, a, blocks) ^(s)]] :=
     new prog,
     Map1(block)[[blocks ^(prog)]],
     
@@ -14,8 +14,11 @@ rules
     STC_Module{fname}.blocks := blocks,
     STC_Module{fname}.imports := imports,
     STC_Module{fname} ===> mod,
+    initBlock[[b ^(prog)]],
     Map2(stcImport)[[imports ^(mod, prog)]].
     
+  initBlock[[FVM_InitBlock(block) ^(prog)]] := 
+    lbl[[block ^(prog)]].
   
   	
   stcImport[[FVM_Import(lib_name, funcs) ^(s, prog)]] :=

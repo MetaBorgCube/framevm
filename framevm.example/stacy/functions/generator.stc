@@ -10,6 +10,7 @@
 }
 
 MAIN:
+	stack := 3
 	new						// For frame
 	newscope P FOR_INIT		// Enter for loop
 	
@@ -25,6 +26,7 @@ FOR_INIT:
 	try FOR_START FOR_TERM FOR_END
 	
 FOR_START:
+	stack := 3
 	new 0					// Func call frame
 	dup						//
 	link [] P				//
@@ -34,7 +36,7 @@ FOR_START:
 	cget [x]				// Copy over exception handler
 	csetr [x]				//
 	dup						//
-	cgetcurrent					// Set the return address
+	cgetcurrent				// Set the return address
 	csetr [c]				//
 							//
 	jump FOR				// Start actual for loop
@@ -48,12 +50,14 @@ FOR_RET:
 	jump FOR				// Start the loop again
 	
 FOR_TERM:
+	stack := 1
 	cret [n]				// Return to the fallthrough continuation
 	
 FOR_END:
 	jump MAIN_END			// For loop is finished
 	
 FUNC:
+	stack := 3
 	cgetcurrent					// Yield a value and a continuation
 	ipush 1					// The value
 	cget [c]				// 

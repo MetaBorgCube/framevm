@@ -4,6 +4,7 @@ language framevm
 
 test if else example [[#init 2
 MAIN:
+	stack := 2
 	ipush 1
 	set [0]
 	ipush 2

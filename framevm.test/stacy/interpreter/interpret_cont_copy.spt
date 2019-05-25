@@ -4,6 +4,7 @@ language framevm
 
 fixture [[#init 2
 MAIN:
+	stack := 99
 	[[...]]
 	print
 	

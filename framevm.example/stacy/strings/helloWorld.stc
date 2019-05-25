@@ -1,4 +1,5 @@
 MAIN:
+	stack := 1
 	spush "Hello World!"
 	call PRINT MAIN_END
 
@@ -7,6 +8,7 @@ MAIN_END:
 	return
 	
 PRINT:
+	stack := 4
 	get [0]				// Size
 	ipush 0				// Idx
 	jump PRINT_LOOP		//

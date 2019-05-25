@@ -4,6 +4,7 @@ language framevm
 
 test Jump example [[#init 2
 MAIN:
+	stack := 2
 	jump START
   
 START :

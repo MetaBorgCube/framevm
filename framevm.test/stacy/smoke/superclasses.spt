@@ -4,6 +4,7 @@ language framevm
 
 test Superclasses example [[#init1
 MAIN:
+	stack := 4
 	new
 	dup
 	new 1
@@ -48,12 +49,14 @@ MAIN_CONT2:
 	return
 	
 FUNC_2:
+	stack := 2
 	get [0]
 	ipush 1
 	addi
 	return
 	
 FUNC_1:
+	stack := 4
 	new 2
 	dup
 	link [P,P] P

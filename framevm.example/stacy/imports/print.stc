@@ -1,6 +1,7 @@
 from stdlib.strings import print_string, from_bool
 
 MAIN:
+	stack := 3
 	new 1
 	dup
 	spush "abcdefg\n"

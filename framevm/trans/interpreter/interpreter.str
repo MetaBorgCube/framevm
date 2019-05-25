@@ -13,7 +13,7 @@ imports
 signature
   sorts S
   constructors
-    Program: STRING * [Import] * INT * [Alias] * [STC_Block] -> S  
+    Program: STRING * [Import] * INT * STRING * [Alias] * [STC_Block] -> S  
 
 rules
     eval-program-debug = eval-program(debug-eval)
@@ -22,12 +22,12 @@ rules
       
     eval-program = eval-program(id)
     
-    eval-program(s): STC_Program(fn, i, size, links, blocks) -> <eval-program-(s, stc-eval | "STC")> (Program(fn, i, size, links, blocks), <vm-init-stc> (<length> links, 2, size))
-    eval-program(s): RGR_Program(fn, i, size, links, blocks) -> <eval-program-(s, rgr-eval | "RGR")> (Program(fn, i, size, links, blocks), <vm-init-rgr> (<length> links, 2, size))
+    eval-program(s): STC_Program(fn, i, size, block, links, blocks) -> <eval-program-(s, stc-eval | "STC")> (Program(fn, i, size, block, links, blocks), <vm-init-stc> (<length> links, 2, size))
+    eval-program(s): RGR_Program(fn, i, size, block, links, blocks) -> <eval-program-(s, rgr-eval | "RGR")> (Program(fn, i, size, block, links, blocks), <vm-init-rgr> (<length> links, 2, size))
     
     
     
-    eval-program-(s, mode-eval | mode): (Program(fn, i, s, links, blocks), env1) -> out
+    eval-program-(s, mode-eval | mode): (Program(fn, i, s, block, links, blocks), env1) -> out
       where 
         <gti> (<string-length> fn, 1);
         blocks' := <resolve-jump-labels(|fn)> blocks;
@@ -36,7 +36,8 @@ rules
         (_, env3) := <store-block> (FVM_Block(FVM_Label("_exit"),  None(), FVM_Seq([]), 0), (fn, env2));
         (_, env4) := <store-block> (FVM_Block(FVM_Label("_catch"), None(), FVM_Seq([]), 0), (fn, env3));
         env5 := <foldl(import-blocks(|mode))> (i, env4);
-        env6 := <vm-start(|env5)> (fn, "MAIN");
+        (init_block, size) := <get-block-size> block;
+        env6 := <vm-start(|env5)> (fn, init_block, size);
         env7 := <fvm-execute(s, mode-eval|env6)>;
         out  := <vm-stop(|env7)>
     
@@ -87,6 +88,13 @@ rules
       where
         body' := <bottomup(try(resolve-jump-labels-(|lib)))> body
     
+    get-block-size: b@FVM_InitBlock(name) -> (name, size)
+      where
+        a            := <nabl2-get-ast-analysis> b;
+        ref-occ      := <nabl2-mk-occurrence(|"Block")> name;
+        (dec-occ, _) := <nabl2-get-resolved-name(|a)> ref-occ;
+        Some(size)   := <get-size(|a)> dec-occ
+        
     resolve-jump-labels-(|lib): l@FVM_Label(lbl) -> FVM_BoundLabel(lib, lbl, size)
       where
         a            := <nabl2-get-ast-analysis> l;

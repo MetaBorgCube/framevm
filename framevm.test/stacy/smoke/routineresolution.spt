@@ -2,8 +2,9 @@ module smoke_routineres
 
 language framevm
 
-test Routine resolution example [[#init2
+test Routine resolution example [[#init 2
 MAIN:
+	stack := 3
 	new
 	dup
 	link [] P
@@ -26,12 +27,14 @@ MAIN_CONT:
 	return
 	
 FUNC:
+	stack := 4
 	get [0]
 	ipush 0
 	eqi
 	jumpz FUNC_ELSE FUNC_THEN
 	
 FUNC_THEN:
+	stack := 1
 	ipush 42
 	return
 	

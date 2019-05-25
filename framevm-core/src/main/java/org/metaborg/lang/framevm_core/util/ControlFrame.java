@@ -122,4 +122,6 @@ public abstract class ControlFrame {
 	public abstract void pushReturn(IStrategoTerm result);
 	public abstract IStrategoTerm popReturn();
 	public abstract boolean hasReturn();
+
+	public abstract void setSize(int size);
 }

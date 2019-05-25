@@ -2,6 +2,7 @@
 #cont p -> 0
 
 MAIN:
+	stack := 6
 	ipush 10
 	new 3				// Create array containing the threads
 	dup					//
@@ -97,6 +98,7 @@ SCHEDULER_EXIT:
 	jump MAIN_END		// We are done
 	
 THREAD1:
+	stack := 3
 	ipush 0				// Store counter on stack
 	jump THREAD1_CONT	// Start main execution of the thread
 	
@@ -129,6 +131,7 @@ THREAD1_EXIT:
     cret				// Signal EXIT
     
 THREAD2:
+	stack := 3
 	ipush 0				// Store counter on stack
 	jump THREAD2_CONT	// Start main execution of the thread
 	

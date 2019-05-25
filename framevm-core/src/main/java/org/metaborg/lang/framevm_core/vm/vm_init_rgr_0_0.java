@@ -17,19 +17,16 @@ public class vm_init_rgr_0_0 extends Strategy {
 	public static vm_init_rgr_0_0 instance = new vm_init_rgr_0_0();
 
 	@Override
-	// (links, conts, (slots, locals)) -> env
+	// (links, conts, slots) -> env
 	// Set up the vm by making a new environment
 	public IStrategoTerm invoke(Context context, IStrategoTerm arg) {
 		StrategoTuple tuple = (StrategoTuple) arg;
 		int link_size = ((StrategoInt) tuple.get(0)).intValue();
 		int cont_size = ((StrategoInt) tuple.get(1)).intValue();
-		
-		StrategoTuple sizes = (StrategoTuple) tuple.get(2);
-		int slot_size = ((StrategoInt) sizes.get(0)).intValue();
-		int locals    = ((StrategoInt) sizes.get(1)).intValue();
+		int slot_size = ((StrategoInt) tuple.get(2)).intValue();
 		
 		MachineState env = new MachineState(link_size, VMMode.REGISTER);
-		ControlFrame controlFrame = env.newRegisterControlFrame(cont_size, locals, null);
+		ControlFrame controlFrame = env.newRegisterControlFrame(cont_size, -1, null);
 		controlFrame.setCurrentFrame(env.newFrame(slot_size));
 		env.addThread(new MachineThread(controlFrame, env));
 		

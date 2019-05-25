@@ -10,6 +10,7 @@
 }
 	
 MAIN:
+	stack := 3
 	new 2				// Call frame
 	dup					//
 	link [] P			//
@@ -31,6 +32,7 @@ MAIN_END:
 	return				//
 	
 FUNC:
+	stack := 4
 	ipush 0				//
 	get [0]				//
 	eqi					// If x == 0

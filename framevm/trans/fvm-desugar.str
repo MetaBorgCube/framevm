@@ -25,24 +25,24 @@ rules
    	desugar-empty: (fname, prog@RGR_Program(_, _, _)) -> (fname, prog)
    	  
    	split-header: prog@STC_Program(_, _, _) -> <split-header> ("", prog)
-   	split-header: (fname, STC_Program(FVM_Header(headeritems), _, blocks)) -> STC_Program(fname, imports, initsize, aliasses, blocks)
+   	split-header: (fname, STC_Program(FVM_Header(headeritems), _, blocks)) -> STC_Program(fname, imports, initsize, initblock, aliasses, blocks)
    	  with
    	  	imports := <map(try(apply-export(|fname)))> <filter(is-import)> headeritems;
    	  	aliasses := <filter(is-alias)> headeritems;
-   	  	initsize := <getfirst(is-stc-init) <+ !(0, 99)> headeritems
+   	  	initsize := <getfirst(is-init) <+ !0> headeritems;
+   	  	initblock := <getfirst(is-init-block) <+ !FVM_InitBlock("MAIN")> headeritems
    	 
-   	 split-header: (fname, RGR_Program(FVM_Header(headeritems), _, blocks)) -> RGR_Program(fname, imports, initsize, aliasses, blocks)
+   	 split-header: (fname, RGR_Program(FVM_Header(headeritems), _, blocks)) -> RGR_Program(fname, imports, initsize, initblock, aliasses, blocks)
    	  with
    	  	imports := <map(try(apply-export(|<remove-extension> fname)))> <filter(is-import)> headeritems;
    	  	aliasses := <filter(is-alias)> headeritems;
-   	  	initsize := <getfirst(is-rgr-init) <+ !(0, 99)> headeritems
+   	  	initsize := <getfirst(is-init) <+ !0> headeritems;
+   	  	initblock := <getfirst(is-init-block) <+ !FVM_InitBlock("MAIN")> headeritems
    	  	
-   	unify-header: STC_Program(fname, imports, (n, _), aliasses, blocks) 
-   		-> STC_Program(FVM_Header(<concat> [imports, [FVM_InitSize(<int-to-string> n)], aliasses]), None(), blocks)
-   	unify-header: RGR_Program(fname, imports, (n, _), aliasses, blocks) 
-   		-> RGR_Program(FVM_Header(<concat> [imports, [FVM_InitSize(<int-to-string> n)], aliasses]), None(), blocks)
-   	 
-   	unify-header: b@STC_Program(fname, imports, n, aliasses, blocks) -> <debug; fail> b
+   	unify-header: STC_Program(fname, imports, n, block, aliasses, blocks) 
+   		-> STC_Program(FVM_Header(<concat> [imports, [FVM_InitSize(<int-to-string> n), block], aliasses]), None(), blocks)
+   	unify-header: RGR_Program(fname, imports, n, block, aliasses, blocks) 
+   		-> RGR_Program(FVM_Header(<concat> [imports, [FVM_InitSize(<int-to-string> n), block], aliasses]), None(), blocks)
    	
    	is-import: i@FVM_Import(_, _) -> i
    	is-import: i@FVM_ImportAs(_, _, _) -> i
@@ -53,7 +53,6 @@ rules
    	is-alias: f@FVM_LinkAlias(_, _) -> f
    	is-alias: f@FVM_ContAlias(_, _) -> f
    	
-   	is-stc-init: FVM_InitSize(s) -> (<string-to-int> s, 99)
-   	is-rgr-init: RGR_InitSize(Some(s), RGR_RegisterSize(r, l)) -> (<string-to-int> s, <string-to-int> l)
-   	is-rgr-init: RGR_InitSize(None(),  RGR_RegisterSize(r, l)) -> (0, <string-to-int> l)
+   	is-init: FVM_InitSize(s) -> <string-to-int> s
+   	is-init-block: b@FVM_InitBlock(name) -> b
    	

@@ -6,6 +6,7 @@ test Threading example [[#init 3
 #cont p -> 0
 
 MAIN:
+	stack := 5
 	new 3
 	dup
 	ipush 2
@@ -100,6 +101,7 @@ SCHEDULER_EXIT:
 	jump MAIN_END
 	
 THREAD1:
+	stack := 3
 	ipush 0
 	jump THREAD1_CONT
 	
@@ -132,6 +134,7 @@ THREAD1_EXIT:
     cret
     
 THREAD2:
+	stack := 3
 	ipush 0
 	jump THREAD2_CONT
 	

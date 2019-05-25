@@ -3,6 +3,7 @@ module smoke_sum_to
 language framevm
 
 test Sum to example [[MAIN:
+	stack := 3
 	new 1
 	dup
 	link [] P
@@ -12,6 +13,7 @@ test Sum to example [[MAIN:
 	call SUMTO MAIN_END
 
 SUMTO:
+	stack := 4
   	get [0]
   	ipush 0
   	eqi

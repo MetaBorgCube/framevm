@@ -13,6 +13,7 @@
 }
 
 MAIN:
+	stack := 3
 	new						// For frame
 	newscope P FOR_INIT		// Enter for loop
 	
@@ -34,6 +35,7 @@ FOR_INIT:
 	try FOR_START FOR_END MAIN_END	// Create try-catch blocks and run
 	
 FOR_START:
+	stack := 2
 	new						// Call frame for generator
 	dup						//
 	link [] P				// Link it
@@ -53,6 +55,7 @@ FOR_BODY:
 	call FOR_BODY			// Call it
 
 FOR_END:
+	stack := 3
 	rget						//
 	dup							//
 	ipush -1					//
@@ -67,6 +70,7 @@ FOR_EXIT:
 	exitscope [P] MAIN_END	// just go back to the main
 	
 FUNC_1:
+	stack := 3
 	new	2					// Return object frame
 	dup						//
 	ipush 1					//

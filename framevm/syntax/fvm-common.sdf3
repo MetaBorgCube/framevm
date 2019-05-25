@@ -165,6 +165,7 @@ context-free syntax
   HeaderItem = Import
   HeaderItem = InitSize
   HeaderItem = Alias
+  HeaderItem = InitialBlock
   
   Import.FVM_Import  = <from <LIB> import <{LIBFUNC ", "}+>>
   Import.FVM_ImportAs = <from <LIB> import <LIBFUNC> as <LIBFUNC>>
@@ -174,10 +175,10 @@ context-free syntax
   LabelOrLibFunc.External = LIBFUNC
   
   InitSize.FVM_InitSize = <#init <INTLEZ>>
-  InitSize.RGR_InitSize = <#init <INTLEZ?> <RGRInit>>
-  RGRInit.RGR_RegisterSize = <<INTLEZ>x<INTLEZ>>
+  
   Alias.FVM_LinkAlias = <#link <LinkRef> -\> <INTLEZ>>
   Alias.FVM_ContAlias = <#cont <ContRef> -\> <INTLEZ>>
+  InitialBlock.FVM_InitBlock = <#start <LABEL>>
   
   CFSize.RGR_Local = <local := <INTLEZ>>
   CFSize.STC_Stack = <stack := <INTLEZ>>

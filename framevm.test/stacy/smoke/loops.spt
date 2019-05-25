@@ -4,6 +4,7 @@ language framevm
 
 test Loops example [[#init 1
 MAIN:
+	stack := 2
 	ipush 0
 	set [0]
 	new 2

@@ -10,6 +10,7 @@
 }
 
 MAIN:
+	stack := 3
 	new	4			//
 	dup				//
 	ipush 3			//

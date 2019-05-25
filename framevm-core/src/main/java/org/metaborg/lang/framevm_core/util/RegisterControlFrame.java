@@ -15,7 +15,11 @@ public class RegisterControlFrame extends ControlFrame {
 	public RegisterControlFrame(int contSize, int locals, Block block, String id) {
 		super(contSize, block, id);
 		this.returnStack = new Stack<>(); //TODO: pre-allocate block.max-stack
-		this.locals    = new IStrategoTerm[locals];
+		if (locals >= 0) {
+			this.locals = new IStrategoTerm[locals];
+		} else {
+			this.locals = null;
+		}
 	}
 	
 	private int slotId(String slot) {
@@ -51,5 +55,12 @@ public class RegisterControlFrame extends ControlFrame {
 	@Override
 	public IStrategoTerm popReturn() {
 		return returnStack.pop();
+	}
+
+	@Override
+	public void setSize(int size) {
+		if (this.locals != null) throw new IllegalStateException("Local size already set!");
+		
+		this.locals = new IStrategoTerm[size];
 	}
 }

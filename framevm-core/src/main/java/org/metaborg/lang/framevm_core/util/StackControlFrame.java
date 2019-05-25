@@ -30,8 +30,11 @@ public class StackControlFrame extends ControlFrame {
 	 * 		The term pushed on the stack
 	 */
 	public IStrategoTerm push(IStrategoTerm term) {
-		if (stack.size() == this.maxStack) {
-			throw new StackOverflowError("Max size of " + this.maxStack + " exceeded");
+		if (this.maxStack == -1) {
+			throw new IllegalStateException("No stack limits set");
+		}
+		if (stack.size() >= this.maxStack) {
+			throw new IllegalStateException("Max stack size of " + this.maxStack + " exceeded");
 		}
 		return stack.push(term);
 	}
@@ -69,5 +72,12 @@ public class StackControlFrame extends ControlFrame {
 	@Override
 	public boolean hasReturn() {
 		return this.hasNext();
+	}
+
+	@Override
+	public void setSize(int size) {
+		if (this.maxStack != -1) throw new IllegalStateException("Max stack size already set!");
+		
+		this.maxStack = size;
 	}
 }

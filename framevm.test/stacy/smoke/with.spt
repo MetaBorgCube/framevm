@@ -3,6 +3,7 @@ module smoke_with
 language framevm
 
 test with example [[MAIN:
+	stack := 3
 	new 3
 	newscope P WITH_I_INIT
 	
