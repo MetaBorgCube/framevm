@@ -1,30 +1,30 @@
 #init 2
 {  
-	add (int:i, int:j):int = { 
-  		return i + j
-	}
-	var x := 10
-	var y := add(1, 3)
+//	add (int:i, int:j):int = { 
+//  		return i + j
+//	}
+//	var x := 10
+//	var y := add(1, 3)
 	print(y)		// print 4
 }
 
 ADD:
-    locals := 2
-  	a <- get([0]) @inline
-  	b <- addi(a, get([1])) @inline // i + j
-  	return(b)
+	local := 2
+	r0 <- get([0])
+	r1 <- addi(r0, get([1]))
+	return(r1)
 
 MAIN:
-	p <- iload(42)
-	set([0], iload(10)) 		// store value of x in current frame
-	call <- iload(1)			// create new call frame
-	link(call, [], P)			// Link function scope to local scope
-	set(call, [0], iload(1)) 	// j := 2 // assign to formal parameter j in call frame
-	set(call, [1], iload(3)) 	// j := 2 // assign to formal parameter j in call frame
-	call(call, ADD, CONT2)
-//	
-//CONT2:
-//	r, p <- rget(2)
-//	print(r)
-//	print(addi(ipush(12), ipush(30)))
-//	return(ipush(0))			// exit with exitcode 0
+	local := 2
+	r0 <- iload(42)
+	set([0], iload(10)) 
+	r1 <- new(iload(2))
+	link(r1, [], P)
+	set(r1, [0], iload(1))
+	set(r1, [1], iload(3))
+	call(r1, ADD, CONT2)
+	
+CONT2:
+	r1 <- rget()
+	print(r0)
+	return(iload(0))			// exit with exitcode 0

@@ -12,7 +12,7 @@ imports
 rules
     rgr-eval-exp(|env): RGR_Get(FVM_Self()) -> (env, FrameRef(<frame-this(|env)>))
     
-    rgr-eval-exp(|env): RGR_Get(FVM_Path(path)) -> (env, <rgr-get-path(|env)> (<frame-this(|env)>, path))
+    rgr-eval-exp(|env): RGR_Get(FVM_Path(path)) -> (env, <rgr-get-path(|env)> (FrameRef(<frame-this(|env)>), path))
     
     rgr-eval-exp(|env): RGR_Get(exp) -> (env2, val)
       where
@@ -38,10 +38,10 @@ rules
       where
         (env2, frame) := <frame-new(|env)> 0
         
-    rgr-eval-exp(|env): RGR_New(exp) -> (env2, FrameRef(frame))
+    rgr-eval-exp(|env): RGR_New(exp) -> (env3, FrameRef(frame))
       where
-        IntV(size) := <rgr-eval-exp(|env)> exp;
-        (env2, frame) := <frame-new(|env)> size
+        (env2, IntV(size)) := <rgr-eval-exp(|env)> exp;
+        (env3, frame) := <frame-new(|env2)> size
         
     rgr-eval-exp(|env): RGR_FSize(exp) -> (env2, IntV(size))
       where

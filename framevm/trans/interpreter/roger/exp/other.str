@@ -27,9 +27,9 @@ rules
       where
         env2 := <frame-set-slot(|env1)> (frame, idx, IntV(char))
         
-    rgr-eval-instr: (RGR_ContRGet(), env) -> <rgr-eval-return> (-1, ([], env))
-    rgr-eval-instr: (RGR_ContRGet(n), env) -> <for(rgr-eval-return| 1, <string-to-int> n)> ([], env)
+    rgr-eval-instr: (RGR_ContRGet(), env) -> <rgr-eval-return> (-1, (env, []))
+    rgr-eval-instr: (RGR_ContRGet(n), env) -> <for(rgr-eval-return| 1, <string-to-int> n)> (env, [])
         
-    rgr-eval-return: (_, (vals, env1)) -> ([val | vals], env2)
+    rgr-eval-return: (_, (env1, vals)) -> (env2, [val | vals])
       where
         (env2, val) := <cont-receive(|env1)> <cont-this(|env1)>
