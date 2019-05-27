@@ -62,7 +62,7 @@ public class MachineThread {
 	}
 
 	public RegisterControlFrame getRegisterControlFrame() {
-		if (env.mode != VMMode.REGISTER || controlFrame instanceof StackControlFrame) {
+		if (env.mode != VMMode.REGISTER || controlFrame instanceof RegisterControlFrame) {
 			return (RegisterControlFrame) controlFrame;
 		} else {
 			return null;

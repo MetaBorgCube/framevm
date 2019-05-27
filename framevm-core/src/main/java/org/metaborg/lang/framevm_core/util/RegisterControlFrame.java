@@ -10,7 +10,7 @@ public class RegisterControlFrame extends ControlFrame {
 	private Stack<IStrategoTerm> returnStack;
 	private IStrategoTerm[] locals;
 	
-	private static final Pattern LOCAL = Pattern.compile("l([0-9]+)");
+	private static final Pattern LOCAL = Pattern.compile("\\w([0-9]+)");
 	
 	public RegisterControlFrame(int contSize, int locals, Block block, String id) {
 		super(contSize, block, id);
@@ -24,6 +24,8 @@ public class RegisterControlFrame extends ControlFrame {
 	
 	private int slotId(String slot) {
 		Matcher matcher = LOCAL.matcher(slot);
+		matcher.matches();
+		matcher.group();
 		return Integer.valueOf(matcher.group(1));
 	}
 	

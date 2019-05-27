@@ -122,4 +122,4 @@ rules
     // Catches current instructions and reports them
     eval: (instr, env) -> <fail>
       where
-        <debug> ("Execution failed at instruction", instr)
+        <debug> ("Execution failed at instruction", <strip-annos> instr)

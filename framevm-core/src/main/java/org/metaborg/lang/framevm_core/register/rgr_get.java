@@ -7,16 +7,13 @@ import org.spoofax.interpreter.terms.ITermFactory;
 import org.spoofax.terms.StrategoAppl;
 import org.spoofax.terms.StrategoString;
 
-import mb.nabl2.stratego.StrategoBlob;
-
 import org.metaborg.lang.framevm_core.FVMStrategy;
 import org.metaborg.lang.framevm_core.util.MachineState;
 import org.metaborg.lang.framevm_core.util.RegisterControlFrame;
 
 public abstract class rgr_get extends FVMStrategy {
 	@Override
-	// env| slot -> (env', val)
-	// Pop a value from the stack
+	// env| slot -> val
 	protected IStrategoTerm invoke(IOAgent io, ITermFactory factory, MachineState env, IStrategoTerm arg) {
 		RegisterControlFrame cf = env.currentThread.getRegisterControlFrame();
 		if (cf == null) {
@@ -35,7 +32,7 @@ public abstract class rgr_get extends FVMStrategy {
 				name = term.toString();
 			}
 			if(accepted(name)) {
-				return factory.makeTuple(new StrategoBlob(env), term);			
+				return term;			
 			} else {
 				io.printError(term + " is not a valid " + accepted());
 				return null;

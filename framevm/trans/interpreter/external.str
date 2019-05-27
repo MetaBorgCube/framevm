@@ -24,11 +24,11 @@ rules
     
     external rgr-size(|env)           // env| -> (int, int)
     external rgr-set(|env)            // env| (slot, val) -> env'
-    external rgr-get-any(|env)        // env| slot -> (env', val)
-    external rgr-get-int(|env)        // env| slot -> (env', int)
-    external rgr-get-cont(|env)       // env| slot -> (env', continuation)
-    external rgr-get-frame(|env)      // env| slot -> (env', frame)
-    external rgr-get-closure(|env)    // env| slot -> (env', closure)
+    external rgr-get-any(|env)        // env| slot -> val
+    external rgr-get-int(|env)        // env| slot -> int
+    external rgr-get-cont(|env)       // env| slot -> continuation
+    external rgr-get-frame(|env)      // env| slot -> frame
+    external rgr-get-closure(|env)    // env| slot -> closure
     
     external frame-get-slot(|env)     // env| (frame, slot) -> val
     external frame-get-link(|env)     // env| (frame, (link_id, idx)) -> frame
@@ -50,6 +50,7 @@ rules
     external cont-get(|env)           // env| (cont, (cont_id, idx)) -> cont
     external cont-this(|env)          // env| -> cont
     external cont-transfer(|env)      // env| (cont, [val])-> env'
+    external cont-receive(|env)       // env| cont-> (env', val)
     external cont-copy(|env)          // env| (cont, policy) -> (env', cont)
     
 rules
