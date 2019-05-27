@@ -18,9 +18,93 @@ rules
     initBlock[[b ^(prog)]],
     Map2(rgrImport)[[imports ^(mod, prog)]].
       
-
+rules
   instr[[RGR_OnReturn(vars, exp) ^(s)]] := rgrExp[[exp ^(s)]].
   instr[[RGR_Terminal(exp) ^(s)]]       := rgrExp[[exp ^(s)]].
   instr[[RGR_Assign(var, exp) ^(s)]]    := rgrExp[[exp ^(s)]].
   
+rules // Exp
+
+  
+  rgrExp[[RGR_Ref(_) ^(s)]].
   rgrExp[[RGR_ILoad(_) ^(s)]].
+  rgrExp[[RGR_INeg(exp) ^(s)]]    := rgrExp[[exp ^(s)]].
+  rgrExp[[RGR_IAdd(e1, e2) ^(s)]] := rgrExp[[e1 ^(s)]], rgrExp[[e2 ^(s)]].
+  rgrExp[[RGR_IMul(e1, e2) ^(s)]] := rgrExp[[e1 ^(s)]], rgrExp[[e2 ^(s)]].
+  rgrExp[[RGR_ISub(e1, e2) ^(s)]] := rgrExp[[e1 ^(s)]], rgrExp[[e2 ^(s)]].
+  rgrExp[[RGR_IDiv(e1, e2) ^(s)]] := rgrExp[[e1 ^(s)]], rgrExp[[e2 ^(s)]].
+  rgrExp[[RGR_IMod(e1, e2) ^(s)]] := rgrExp[[e1 ^(s)]], rgrExp[[e2 ^(s)]].
+  
+  rgrExp[[RGR_IEq(e1, e2) ^(s)]]  := rgrExp[[e1 ^(s)]], rgrExp[[e2 ^(s)]].
+  rgrExp[[RGR_ILt(e1, e2) ^(s)]]  := rgrExp[[e1 ^(s)]], rgrExp[[e2 ^(s)]].
+  rgrExp[[RGR_IGt(e1, e2) ^(s)]]  := rgrExp[[e1 ^(s)]], rgrExp[[e2 ^(s)]].
+  rgrExp[[RGR_IOr(e1, e2) ^(s)]]  := rgrExp[[e1 ^(s)]], rgrExp[[e2 ^(s)]].
+  rgrExp[[RGR_IXor(e1, e2) ^(s)]] := rgrExp[[e1 ^(s)]], rgrExp[[e2 ^(s)]].
+  rgrExp[[RGR_IAnd(e1, e2) ^(s)]] := rgrExp[[e1 ^(s)]], rgrExp[[e2 ^(s)]].
+
+
+  rgrExp[[RGR_IsInt(exp) ^(s)]]   := rgrExp[[exp ^(s)]].
+  rgrExp[[RGR_IsCont(exp) ^(s)]]  := rgrExp[[exp ^(s)]].
+  rgrExp[[RGR_IsFrame(exp) ^(s)]] := rgrExp[[exp ^(s)]].
+  rgrExp[[RGR_IsClos(exp) ^(s)]]  := rgrExp[[exp ^(s)]].
+  
+  rgrExp[[RGR_New(exp) ^(s)]]  := rgrExp[[exp ^(s)]].
+  rgrExp[[RGR_New() ^(s)]].
+  rgrExp[[RGR_FSize(exp) ^(s)]]  := rgrExp[[exp ^(s)]].
+
+  rgrExp[[RGR_Link(e1, e2, _) ^(s)]] := rgrExp[[e1 ^(s)]], rgrExp[[e2 ^(s)]].
+  
+  rgrExp[[RGR_Set(e1, e2) ^(s)]]     := rgrExp[[e1 ^(s)]], rgrExp[[e2 ^(s)]].
+  rgrExp[[RGR_Set(e1, e2, e3) ^(s)]] := rgrExp[[e1 ^(s)]], rgrExp[[e2 ^(s)]], rgrExp[[e3 ^(s)]].
+  rgrExp[[RGR_Get(exp) ^(s)]]        := rgrExp[[exp ^(s)]].
+  rgrExp[[RGR_Get(e1, e2) ^(s)]]     := rgrExp[[e1 ^(s)]], rgrExp[[e2 ^(s)]].
+  
+  rgrExp[[RGR_ContRGet(_) ^(s)]].
+  rgrExp[[RGR_ContRGet() ^(s)]].
+  rgrExp[[RGR_ContThis() ^(s)]].
+  rgrExp[[RGR_ContNew(e1, lbl, e2) ^(s)]]   := rgrExp[[e1 ^(s)]], rgrExp[[e2 ^(s)]], lbl[[lbl ^(s)]].
+  rgrExp[[RGR_ContTransfer(e1, e2) ^(s)]] := Map1(rgrExp)[[e1 ^(s)]], rgrExp[[e2 ^(s)]].
+  
+  rgrExp[[RGR_ContSet(e1, e2) ^(s)]]      := rgrExp[[e1 ^(s)]], rgrExp[[e2 ^(s)]].
+  rgrExp[[RGR_ContSet(e1, e2, e3) ^(s)]]  := rgrExp[[e1 ^(s)]], rgrExp[[e2 ^(s)]], rgrExp[[e3 ^(s)]].
+  rgrExp[[RGR_ContGet(exp) ^(s)]]         := rgrExp[[exp ^(s)]].
+  rgrExp[[RGR_ContGet(e1, e2) ^(s)]]      := rgrExp[[e1 ^(s)]], rgrExp[[e2 ^(s)]].
+  
+rules // Instructions
+  instr[[RGR_Return(exps) ^(s)]]           := Map1(rgrExp)[[exps ^(s)]].
+  instr[[RGR_Yield(exps, lbl) ^(s)]]       := Map1(rgrExp)[[exps ^(s)]], lbl[[lbl ^(s)]].
+  instr[[RGR_JumpZ(exp, lbl1, lbl2) ^(s)]] := rgrExp[[exp ^(s)]], lbl[[lbl1 ^(s)]], lbl[[lbl2 ^(s)]].
+  instr[[RGR_Jump(lbl) ^(s)]]              := lbl[[lbl ^(s)]].
+  
+  instr[[RGR_Call(exp, lbl1, lbl2) ^(s)]]     := rgrExp[[exp ^(s)]], lbl[[lbl1 ^(s)]], lbl[[lbl2 ^(s)]].
+  instr[[RGR_Call(exp, lbl) ^(s)]]            := rgrExp[[exp ^(s)]], lbl[[lbl ^(s)]].
+  instr[[RGR_TailCall(exp, lbl) ^(s)]]        := rgrExp[[exp ^(s)]], lbl[[lbl ^(s)]].
+  instr[[RGR_TailCall(exp) ^(s)]]             := rgrExp[[exp ^(s)]].
+  instr[[RGR_ContCall(exp, lbl) ^(s)]]        := rgrExp[[exp ^(s)]], lbl[[lbl ^(s)]].
+  instr[[RGR_ContReturn(exp) ^(s)]]           := rgrExp[[exp ^(s)]].
+  
+  instr[[RGR_Try(e1, lbl1, e2, lbl1, lbl3) ^(s)]] := rgrExp[[e1 ^(s)]], rgrExp[[e2 ^(s)]], lbl[[lbl1 ^(s)]], lbl[[lbl2 ^(s)]], lbl[[lbl3 ^(s)]].
+  instr[[RGR_Try(e1, e2, lbl) ^(s)]]              := rgrExp[[e1 ^(s)]], rgrExp[[e2 ^(s)]], lbl[[lbl ^(s)]].
+  instr[[RGR_Throw(exps) ^(s)]]                   := Map1(rgrExp)[[exps ^(s)]].
+  
+  
+  rgrExp[[RGR_ScopeExit(_) ^(s)]].
+  rgrExp[[RGR_ScopeNew(exp, _) ^(s)]]     := rgrExp[[exp ^(s)]].
+  instr[[RGR_ScopeExit(_, lbl) ^(s)]]     := lbl[[lbl ^(s)]].
+  instr[[RGR_ScopeNew(exp, _, lbl) ^(s)]] := rgrExp[[exp ^(s)]], lbl[[lbl ^(s)]].
+  rgrExp[[RGR_ScopeSetCurrent(exp) ^(s)]] := rgrExp[[exp ^(s)]].
+  rgrExp[[RGR_ScopeGetCurrent() ^(s)]].
+  
+  rgrExp[[RGR_Print(exp) ^(s)]]     := rgrExp[[exp ^(s)]].
+  rgrExp[[RGR_PrintChar(exp) ^(s)]] := rgrExp[[exp ^(s)]].
+  rgrExp[[RGR_Debug() ^(s)]].
+  rgrExp[[RGR_DebugKill() ^(s)]].
+  rgrExp[[RGR_StringLoad(_) ^(s)]].
+  rgrExp[[RGR_CharLoad(_) ^(s)]].
+
+//    ClosExp.RGR_ClosNew      = <newc(<CopyPolicy>, <Label>, <IntOrExp>)>
+//    ClosExp.RGR_ClosNew      = <newc(<Label>, <IntOrExp>)>
+//    ClosExp.RGR_ClosToCont   = <cnew(<Exp>)>
+//    ClosExp.RGR_ClosUnpack   = <unpack(<Exp>)>
+   
+  

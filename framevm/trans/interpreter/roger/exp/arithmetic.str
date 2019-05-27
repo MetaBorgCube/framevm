@@ -10,6 +10,10 @@ imports
 rules
     rgr-eval-exp(|env): RGR_ILoad(i) -> (env, IntV(<string-to-int> i))
     
+    rgr-eval-exp(|env): RGR_INeg(exp) -> (env2, IntV(<subti> (0, i)))
+      where
+        (env2, IntV(i)) := <rgr-eval-exp(|env)> exp
+    
     rgr-eval-exp(|env): RGR_IAdd(a, b) -> (env3, IntV(<addi> (a', b')))
       where
         (env2, IntV(a')) := <rgr-eval-exp(|env)>  a;
