@@ -34,3 +34,24 @@ rules
     eval-lt: (e1, e2) -> IntV(1)
       where <lt> (e1, e2)
     eval-lt: _ -> IntV(0)
+    
+rules
+    is-intV: IntV(_) -> IntV(1)
+    is-intV: _       -> IntV(0)
+    
+    is-clos: ClosV(_, _, _) -> IntV(1)
+    is-clos: _              -> IntV(0)
+    
+    is-cont: Continuation(_) -> IntV(1)
+    is-cont: _               -> IntV(0)
+    
+    is-frame: FrameRef(_) -> IntV(1)
+    is-frame: _           -> IntV(0)
+             
+rules    // Util
+    // Convert a value to a displayable string 
+    val-to-string: IntV(v) -> IntV(v)
+    val-to-string: FrameRef(frame) -> frame
+    val-to-string: Continuation(cont) -> cont
+    val-to-string: ClosV(frame, FVM_BoundLabel(lib, lbl, _), _) -> (frame, lbl)
+    

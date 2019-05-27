@@ -1,0 +1,64 @@
+module frame
+
+imports 
+    signatures/fvm-common-sig
+    signatures/fvm-roger-sig
+    
+    interpreter/external
+    interpreter/util
+    
+    fvm-common
+
+rules
+    rgr-eval-exp(|env): RGR_Get(FVM_Self()) -> (env, FrameRef(<frame-this(|env)>))
+    
+    rgr-eval-exp(|env): RGR_Get(FVM_Path(path)) -> (env, <rgr-get-path(|env)> (<frame-this(|env)>, path))
+    
+    rgr-eval-exp(|env): RGR_Get(exp) -> (env2, val)
+      where
+        (env2, IntV(slotId)) := <rgr-eval-exp(|env)> exp;
+        val := <frame-get-slot(|env2)> (<frame-this(|env2)>, slotId)
+
+    
+    rgr-eval-exp(|env): RGR_Get(exp, FVM_Self()) -> (env2, FrameRef(frame))
+      where
+        (env2, FrameRef(frame)) := <rgr-eval-exp(|env)> exp
+    
+    rgr-eval-exp(|env): RGR_Get(exp, FVM_Path(path)) -> (env2, <rgr-get-path(|env2)> (FrameRef(frame), path))
+      where
+        (env2, FrameRef(frame)) := <rgr-eval-exp(|env)> exp
+    
+    rgr-eval-exp(|env): RGR_Get(exp1, exp2) -> (env3, val)
+      where
+        (env2, FrameRef(frame)) := <rgr-eval-exp(|env)> exp1;
+        (env3, IntV(slotId)) := <rgr-eval-exp(|env2)> exp2;
+        val := <frame-get-slot(|env3)> (frame, slotId)
+        
+    rgr-eval-exp(|env): RGR_New() -> (env2, FrameRef(frame))
+      where
+        (env2, frame) := <frame-new(|env)> 0
+        
+    rgr-eval-exp(|env): RGR_New(exp) -> (env2, FrameRef(frame))
+      where
+        IntV(size) := <rgr-eval-exp(|env)> exp;
+        (env2, frame) := <frame-new(|env)> size
+        
+    rgr-eval-exp(|env): RGR_FSize(exp) -> (env2, IntV(size))
+      where
+        (env2, FrameRef(frame)) := <rgr-eval-exp(|env)> exp;
+        size := <frame-size(|env2)> frame
+        
+    rgr-eval-exp(|env): (RGR_ScopeGetCurrent(), env) -> (env, FrameRef(<frame-this(|env)>))
+        
+    
+
+rules
+    rgr-get-path(|env): (val, []) -> val
+    rgr-get-path(|env): (FrameRef(frame), [FVM_Link(Bind(link_id, idx)) | path]) -> <rgr-get-path(|env)> (frame', path)
+      where
+        frame' := FrameRef(<frame-get-link(|env)> (frame, (link_id, idx)))
+        
+    rgr-get-path(|env): (FrameRef(frame), [FVM_Slot(slot_id) | path]) -> <rgr-get-path(|env)> (val, path)
+      where
+        val := <frame-get-slot(|env)> (frame, <string-to-int> slot_id)
+    

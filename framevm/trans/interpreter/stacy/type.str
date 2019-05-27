@@ -3,6 +3,7 @@ module type
 imports 
     signatures/fvm-stacy-sig
     interpreter/external
+    interpreter/util
     
     fvm-common
 
@@ -14,18 +15,13 @@ rules
         (env2, val) := <stack-pop-any(|env1)>;
         env3 := <stack-push(|env2)> <is-intV> val
     
-    is-intV: IntV(_) -> IntV(1)
-    is-intV: _       -> IntV(0)
-    
     // STC_IsFrame/0
     // Checks if the element on top of the stack is a Frame
     stc-eval: (STC_IsFrame(), env1) -> env3
       where
         (env2, val) := <stack-pop-any(|env1)>;
         env3 := <stack-push(|env2)> <is-frame> val
-    
-    is-frame: FrameRef(_) -> IntV(1)
-    is-frame: _           -> IntV(0)
+        
     
     // STC_IsCont/0
     // Checks if the element on top of the stack is a Continuation
@@ -34,8 +30,6 @@ rules
         (env2, val) := <stack-pop-any(|env1)>;
         env3 := <stack-push(|env2)> <is-cont> val
     
-    is-cont: Continuation(_) -> IntV(1)
-    is-cont: _               -> IntV(0)
     
     // STC_IsClos/0
     // Checks if the element on top of the stack is a closure
@@ -44,5 +38,3 @@ rules
         (env2, val) := <stack-pop-any(|env1)>;
         env3 := <stack-push(|env2)> <is-clos> val
     
-    is-clos: ClosV(_, _, _) -> IntV(1)
-    is-clos: _              -> IntV(0)

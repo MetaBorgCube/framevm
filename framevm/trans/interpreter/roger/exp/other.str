@@ -1,0 +1,35 @@
+module other
+
+imports 
+    signatures/fvm-roger-sig
+    interpreter/external
+    interpreter/util
+    
+    fvm-common
+
+rules
+    rgr-eval-exp(|env): RGR_Ref(ref) -> (env, <rgr-get-any(|env)> ref)
+    
+    rgr-eval-exp(|env): RGR_CharLoad(char) -> (env, IntV(char'))
+      where
+        [char' |_] := <explode-string> <fix-string-escaping> char
+        
+    rgr-eval-exp(|env): RGR_StringLoad(string) -> (env4, FrameRef(frame))
+      where
+        string' := <fix-string-escaping> string;
+        chars := <explode-string> string';
+        size := <length> chars;
+        (env2, frame) :=  <frame-new(|env)> <inc> size;
+        env3 := <frame-set-slot(|env2)> (frame, 0, IntV(size));
+        (env4, _, _) := <foldl(char-store)> (chars, (env3, 1, frame))
+    
+    char-store: (char, (env1, idx, frame)) -> (env2, <inc> idx, frame)
+      where
+        env2 := <frame-set-slot(|env1)> (frame, idx, IntV(char))
+        
+    rgr-eval-instr: (RGR_ContRGet(), env) -> <rgr-eval-return> (-1, ([], env))
+    rgr-eval-instr: (RGR_ContRGet(n), env) -> <for(rgr-eval-return| 1, <string-to-int> n)> ([], env)
+        
+    rgr-eval-return: (_, (vals, env1)) -> ([val | vals], env2)
+      where
+        (env2, val) := <cont-receive(|env1)> <cont-this(|env1)>

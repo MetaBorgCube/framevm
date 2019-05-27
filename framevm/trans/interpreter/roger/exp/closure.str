@@ -1,0 +1,11 @@
+module closure
+
+imports 
+    signatures/fvm-roger-sig
+    interpreter/external
+    interpreter/util
+    
+    fvm-common
+
+rules
+    rgr-eval-exp(|env): RGR_ClosNew(_, _, _) -> <fail>

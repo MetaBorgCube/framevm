@@ -1,0 +1,147 @@
+module instr
+
+imports 
+    signatures/fvm-roger-sig
+    signatures/fvm-common-sig
+    
+    interpreter/external
+    interpreter/util
+    interpreter/roger/exp/-
+    interpreter/roger/roger
+    
+    fvm-common
+
+rules
+    rgr-eval-instr: (RGR_Print(exp), env1) -> env3
+      where
+        (env2, val) := <rgr-eval-exp(|env1)> exp;
+        (env3, out) := <vm-print(|env2)> <val-to-string> val;
+        <debug> out
+        
+        
+    rgr-eval-instr: (RGR_PrintChar(exp), env1) -> env3
+      where
+        (env2, IntV(char)) := <rgr-eval-exp(|env1)> exp;
+        (env3, out) := <vm-print-chars(|env2)> [char];
+        <debug> out
+
+    rgr-eval-instr: (RGR_Debug(),     env1) ->        <vm-debug(|env1)>
+    rgr-eval-instr: (RGR_DebugKill(), env1) -> <fail> <vm-debug(|env1)>
+
+    rgr-eval-instr: (RGR_Set(FVM_Self(), val), env1)   -> <frame-set-current(|env2)> (<cont-this(|env2)>, frame)
+      where
+        (env2, FrameRef(frame)) := <rgr-eval-exp(|env1)> val
+        
+    rgr-eval-instr: (RGR_Set(FVM_Path([]), val), env1) -> <frame-set-current(|env2)> (<cont-this(|env2)>, frame)    
+      where
+        (env2, FrameRef(frame)) := <rgr-eval-exp(|env1)> val
+    
+    rgr-eval-instr: (RGR_Set(FVM_Path(path), val), env1) -> env2
+      where
+        (init, FVM_Slot(idx)) := <split-init-last> path;
+        FrameRef(frame) := <rgr-get-path(|env1)> (<frame-this(|env1)>, init);
+        env2 := <frame-set-slot(|env1)> (frame, <string-to-int> idx, val)
+        
+
+    rgr-eval-instr: (RGR_Set(exp, val), env1) -> env3
+      where
+        (env2, IntV(slotId)) := <rgr-eval-exp(|env1)> exp;
+        env3 := <frame-set-slot(|env2)> (<frame-this(|env2)>, slotId, <rgr-eval-exp(|env2)> val)
+        
+        
+        
+    rgr-eval-instr: (RGR_Set(exp1, FVM_Path(path), exp2), env1) -> env5
+      where
+        (init, FVM_Slot(idx)) := <split-init-last> path;
+        (env2, FrameRef(frame)) := <rgr-eval-exp(|env1)> exp1;
+        (env3, FrameRef(frame')) := <rgr-get-path(|env2)> (FrameRef(frame), init);
+        (env4, val) := <rgr-eval-exp(|env3)> exp2;
+        env5 := <frame-set-slot(|env4)> (frame', <string-to-int> idx, val)
+        
+    rgr-eval-instr: (RGR_Set(exp1, exp2, exp3), env1) -> env5
+      where
+        (env2, FrameRef(frame)) := <rgr-eval-exp(|env1)> exp1;
+        (env3, IntV(slotId)) := <rgr-eval-exp(|env2)> exp2;
+        (env4, val) := <rgr-eval-exp(|env3)> exp3;
+        env5 := <frame-set-slot(|env4)> (frame, slotId, <rgr-eval-exp(|env4)> val)
+        
+        
+        
+    rgr-eval-instr: (RGR_Link(ff, FVM_Path(path), FVM_Link(Bind(lbl, idx))), env1) -> env3
+      where
+        (env2, FrameRef(frame_from)) := <rgr-eval-exp(|env1)>;
+        frame_to := <rgr-get-path(|env2)> (<frame-this(|env2)>, path);
+        env3 := <frame-link(|env2)> (frame_from, frame_to, (lbl, idx))
+        
+    rgr-eval-instr: (RGR_Link(ff, FVM_Self(), FVM_Link(Bind(lbl, idx))), env1) -> env3
+      where
+        (env2, FrameRef(frame_from)) := <rgr-eval-exp(|env1)>;
+        frame_to := <frame-this(|env2)>;
+        env3 := <frame-link(|env2)> (frame_from, frame_to, (lbl, idx))
+        
+    rgr-eval-instr: (RGR_Link(ff, ft, FVM_Link(Bind(lbl, idx))), env1) -> env4
+      where
+        (env2, FrameRef(frame_from)) := <rgr-eval-exp(|env1)> ff;
+        (env3, FrameRef(frame_to))   := <rgr-eval-exp(|env2)> ft;
+        env4 := <frame-link(|env3)> (frame_from, frame_to, (lbl, idx))
+        
+        
+    
+    rgr-eval-instr: (RGR_ContTransfer(exps, c), env1) -> env3
+      where
+        cont := <cont-get(|env1)> (<cont-this(|env1)>, <cont-resolve> c);
+        (env2, vals) := <rgr-eval-exp-fold(|env1)> exps;
+        env3 := <cont-transfer(|env2)> (cont, vals)
+        
+    rgr-eval-instr: (RGR_ContTransfer(exps, exp), env1) -> env4
+      where
+        (env2, Continuation(cont)) := <rgr-eval-exp(|env1)> exp;
+        (env3, vals) := <rgr-eval-exp-fold(|env2)> exps;
+        env4 := <cont-transfer(|env3)> (cont, vals)
+        
+    
+    rgr-eval-instr: (RGR_ContSet(exp1, exp2), env1) -> env4 
+      where
+        (env2, IntV(slot)) := <rgr-eval-exp(|env1)> exp1;
+        (env3, value@Continuation(_)) := <rgr-eval-exp(|env2)> exp2;
+        env4 := <cont-set(|env3)> (<cont-this(|env3)>, slot, value)
+        
+    rgr-eval-instr: (RGR_ContSet(c, exp), env1) -> env3 
+      where
+        (env2, value@Continuation(_)) := <rgr-eval-exp(|env1)> exp;
+        (cont, slot) := (<cont-this(|env2)>, <cont-resolve> c);
+        env3 := <cont-set(|env2)> (cont, slot, value)
+        
+    
+    rgr-eval-instr: (RGR_ContSet(exp1, exp2, exp3), env1) -> env5 
+      where
+        (env2, Continuation(cf)) := <rgr-eval-exp(|env1)> exp1;
+        (env3, IntV(slot)) := <rgr-eval-exp(|env2)> exp2;
+        (env4, value@Continuation(_)) := <rgr-eval-exp(|env3)> exp3;
+        env5 := <cont-set(|env4)> (cf, slot, value)
+        
+    rgr-eval-instr: (RGR_ContSet(exp1, c, exp2), env1) -> env4 
+      where
+        (env2, Continuation(cf)) := <rgr-eval-exp(|env1)> exp1;
+        (env3, value@Continuation(_)) := <rgr-eval-exp(|env2)> exp2;
+        (cont, slot) := (cf, <cont-resolve> c);
+        env4 := <cont-set(|env3)> (cont, slot, value)
+
+	rgr-eval-instr: (RGR_ScopeNew(exp, FVM_Link(Bind(lbl, idx))), env) -> env4
+	  where
+	    frame_this := <frame-this(|env)>;
+        (env2, FrameRef(frame_to)) := <rgr-eval-exp(|env)> exp;
+        env3 := <frame-link(|env2)> (frame_to, frame_this, (lbl, idx));
+        env4 := <frame-set-current(|env3)> (<cont-this(|env3)>, frame_to)
+
+	rgr-eval-instr: (RGR_ScopeExit(FVM_Path(path)), env) -> env3
+	  where
+	    (env2, FrameRef(frame)) := <rgr-get-path(|env)> (<frame-this(|env)>, path);
+	    env3 := <frame-set-current(|env2)> (<cont-this(|env2)>, frame)
+	    
+	    
+
+	rgr-eval-instr: (RGR_ScopeSetCurrent(exp), env) -> env3
+	  where
+        (env2, FrameRef(frame)) := <rgr-eval-exp(|env)> exp;
+        env3 := <frame-set-current(|env2)> (<cont-this(|env2)>, frame)

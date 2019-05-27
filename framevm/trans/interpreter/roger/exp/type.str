@@ -1,0 +1,25 @@
+module type
+
+imports 
+    signatures/fvm-roger-sig
+    interpreter/external
+    interpreter/util
+    
+    fvm-common
+
+rules
+    rgr-eval-exp(|env): RGR_IsInt(exp)   -> (env2, <is-intV> val)
+      where
+       (env2, val) := <rgr-eval-exp(|env)> exp
+    
+    rgr-eval-exp(|env): RGR_IsCont(exp)  -> (env2, <is-cont> val)
+      where
+       (env2, val) := <rgr-eval-exp(|env)> exp
+    
+    rgr-eval-exp(|env): RGR_IsFrame(exp) -> (env2, <is-frame> val)
+      where
+       (env2, val) := <rgr-eval-exp(|env)> exp
+    
+    rgr-eval-exp(|env): RGR_IsClos(exp)  -> (env2, <is-clos> val)
+      where
+       (env2, val) := <rgr-eval-exp(|env)> exp

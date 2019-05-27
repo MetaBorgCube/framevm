@@ -1,0 +1,44 @@
+module continuation
+
+imports 
+    signatures/fvm-roger-sig
+    interpreter/external
+    interpreter/util
+    
+    fvm-common
+
+rules
+    rgr-eval-exp(|env): RGR_ContThis() -> (env, Continuation(<cont-this(|env)>))
+    
+    
+    rgr-eval-exp(|env): RGR_ContNew(exp, FVM_BoundLabel(lib, lbl, Some(locals_size)), cont_size) -> (env3, Continuation(cont))
+      where
+        <is-string> cont_size;
+        (env2, FrameRef(frame)) :=  <rgr-eval-exp(|env)> exp;
+        (env3, cont) := <vm-cont-new(|env2)> (frame, (lib, lbl), (<string-to-int> cont_size, locals_size))
+        
+    rgr-eval-exp(|env): RGR_ContNew(exp1, FVM_BoundLabel(lib, lbl, Some(locals_size)), exp2) -> (env4, Continuation(cont))
+      where
+        <not(is-string)> exp2;
+        (env2, FrameRef(frame)) := <rgr-eval-exp(|env)> exp1;
+        (env3, IntV(cont_size)) := <rgr-eval-exp(|env2)> exp2;
+        (env4, cont) := <vm-cont-new(|env3)> (frame, (lib, lbl), (<string-to-int> cont_size, locals_size))
+    
+    rgr-eval-exp(|env): RGR_ContGet(c) -> (env, Continuation(<cont-get(|env)> (<cont-this(|env)>, <cont-resolve> c)))
+
+    rgr-eval-exp(|env): RGR_ContGet(exp) -> (env2, Continuation(<cont-get(|env)> (<cont-this(|env)>, ($[_c[idx]], idx))))
+      where
+        (env2, IntV(idx)) := <rgr-eval-exp(|env)> exp
+        
+    rgr-eval-exp(|env): RGR_ContGet(exp, c) -> (env2, Continuation(<cont-get(|env)> (cf, <cont-resolve> c)))
+      where
+        (env2, Continuation(cf)) := <rgr-eval-exp(|env)> exp
+
+    rgr-eval-exp(|env): RGR_ContGet(exp1, exp2) -> (env3, Continuation(<cont-get(|env)> (cf, ($[_c[idx]], idx))))
+      where
+        (env2, Continuation(cf)) := <rgr-eval-exp(|env)> exp1;
+        (env3, IntV(idx)) := <rgr-eval-exp(|env2)> exp2
+      
+        
+        
+        

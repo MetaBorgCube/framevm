@@ -2,16 +2,21 @@ module strings
 
 imports
     signatures/fvm-stacy-sig
+    signatures/fvm-roger-sig
     
 rules
     fix-strings = topdown(try(fix-string))
       
     fix-string: STC_StringPush(string) -> STC_StringPush(<unquote(!"\"")> string)
-    fix-string: STC_CharPush(char) -> STC_CharPush(<unquote(!"'")> char)
+    fix-string: STC_CharPush(char)     -> STC_CharPush(<unquote(!"'")> char)
+    fix-string: RGR_StringLoad(string) -> RGR_StringLoad(<unquote(!"\"")> string)
+    fix-string: RGR_CharLoad(char)     -> RGR_CharLoad(<unquote(!"'")> char)
       
     resugar-strings = topdown(try(resugar-string))
       
     resugar-string: STC_StringPush(string) -> STC_StringPush(<escape-input(|"\"")> string)
-    resugar-string: STC_CharPush(char) -> STC_CharPush(<escape-input(|"'")> char)
+    resugar-string: STC_CharPush(char)     -> STC_CharPush(<escape-input(|"'")> char)
+    resugar-string: RGR_StringLoad(string) -> RGR_StringLoad(<escape-input(|"\"")> string)
+    resugar-string: RGR_CharLoad(char)     -> RGR_CharLoad(<escape-input(|"'")> char)
       
     escape-input(|char): string -> <concat-strings> [char, <escape> string, char]

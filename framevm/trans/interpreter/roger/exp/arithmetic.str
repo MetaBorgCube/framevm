@@ -8,62 +8,62 @@ imports
     fvm-common
 
 rules
-    rgr-eval-exp(|env): RGR_ILoad(i) -> IntV(<string-to-int> i)
+    rgr-eval-exp(|env): RGR_ILoad(i) -> (env, IntV(<string-to-int> i))
     
-    rgr-eval-exp(|env): RGR_IAdd(a, b) -> IntV(<addi> (a', b'))
+    rgr-eval-exp(|env): RGR_IAdd(a, b) -> (env3, IntV(<addi> (a', b')))
       where
-        IntV(a') := <rgr-eval-exp(|env)> a;
-        IntV(b') := <rgr-eval-exp(|env)> b
+        (env2, IntV(a')) := <rgr-eval-exp(|env)>  a;
+        (env3, IntV(b')) := <rgr-eval-exp(|env2)> b
     
-    rgr-eval-exp(|env): RGR_ISub(a, b) -> IntV(<subti> (a', b'))
+    rgr-eval-exp(|env): RGR_ISub(a, b) -> (env3, IntV(<subti> (a', b')))
       where
-        IntV(a') := <rgr-eval-exp(|env)> a;
-        IntV(b') := <rgr-eval-exp(|env)> b
+        (env2, IntV(a')) := <rgr-eval-exp(|env)>  a;
+        (env3, IntV(b')) := <rgr-eval-exp(|env2)> b
     
-    rgr-eval-exp(|env): RGR_IMul(a, b) -> IntV(<muli> (a', b'))
+    rgr-eval-exp(|env): RGR_IMul(a, b) -> (env3, IntV(<muli> (a', b')))
       where
-        IntV(a') := <rgr-eval-exp(|env)> a;
-        IntV(b') := <rgr-eval-exp(|env)> b
+        (env2, IntV(a')) := <rgr-eval-exp(|env)> a;
+        (env3, IntV(b')) := <rgr-eval-exp(|env2)> b
     
-    rgr-eval-exp(|env): RGR_IDiv(a, b) -> IntV(<divi> (a', b'))
+    rgr-eval-exp(|env): RGR_IDiv(a, b) -> (env3, IntV(<divi> (a', b')))
       where
-        IntV(a') := <rgr-eval-exp(|env)> a;
-        IntV(b') := <rgr-eval-exp(|env)> b
+        (env2, IntV(a')) := <rgr-eval-exp(|env)> a;
+        (env3, IntV(b')) := <rgr-eval-exp(|env2)> b
     
-    rgr-eval-exp(|env): RGR_IMod(a, b) -> IntV(<modi> (a', b'))
+    rgr-eval-exp(|env): RGR_IMod(a, b) -> (env3, IntV(<modi> (a', b')))
       where
-        IntV(a') := <rgr-eval-exp(|env)> a;
-        IntV(b') := <rgr-eval-exp(|env)> b
+        (env2, IntV(a')) := <rgr-eval-exp(|env)> a;
+        (env3, IntV(b')) := <rgr-eval-exp(|env2)> b
     
-    rgr-eval-exp(|env): RGR_IEq(a, b) -> IntV(<eval-eq> (a', b'))
+    rgr-eval-exp(|env): RGR_IEq(a, b) -> (env, IntV(<eval-eq> (a', b')))
       where
-        IntV(a') := <rgr-eval-exp(|env)> a;
-        IntV(b') := <rgr-eval-exp(|env)> b
+        (env2, IntV(a')) := <rgr-eval-exp(|env)> a;
+        (env3, IntV(b')) := <rgr-eval-exp(|env2)> b
     
-    rgr-eval-exp(|env): RGR_ILt(a, b) -> IntV(<eval-lt> (a', b'))
+    rgr-eval-exp(|env): RGR_ILt(a, b) -> (env, IntV(<eval-lt> (a', b')))
       where
-        IntV(a') := <rgr-eval-exp(|env)> a;
-        IntV(b') := <rgr-eval-exp(|env)> b
+        (env2, IntV(a')) := <rgr-eval-exp(|env)> a;
+        (env3, IntV(b')) := <rgr-eval-exp(|env2)> b
     
-    rgr-eval-exp(|env): RGR_IGt(a, b) -> IntV(<eval-lt> (b', a'))
+    rgr-eval-exp(|env): RGR_IGt(a, b) -> (env3, IntV(<eval-lt> (b', a')))
       where
-        IntV(a') := <rgr-eval-exp(|env)> a;
-        IntV(b') := <rgr-eval-exp(|env)> b
+        (env2, IntV(a')) := <rgr-eval-exp(|env)> a;
+        (env3, IntV(b')) := <rgr-eval-exp(|env2)> b
     
-    rgr-eval-exp(|env): RGR_IOr(a, b) -> IntV(<iori> (a', b'))
+    rgr-eval-exp(|env): RGR_IOr(a, b) -> (env, IntV(<iori> (a', b')))
       where
-        IntV(a') := <rgr-eval-exp(|env)> a;
-        IntV(b') := <rgr-eval-exp(|env)> b
+        (env2, IntV(a')) := <rgr-eval-exp(|env)> a;
+        (env3, IntV(b')) := <rgr-eval-exp(|env2)> b
     
-    rgr-eval-exp(|env): RGR_IXor(a, b) -> IntV(<xori> (a', b'))
+    rgr-eval-exp(|env): RGR_IXor(a, b) -> (env, IntV(<xori> (a', b')))
       where
-        IntV(a') := <rgr-eval-exp(|env)> a;
-        IntV(b') := <rgr-eval-exp(|env)> b
+        (env2, IntV(a')) := <rgr-eval-exp(|env)> a;
+        (env3, IntV(b')) := <rgr-eval-exp(|env2)> b
     
-    rgr-eval-exp(|env): RGR_IAnd(a, b) -> IntV(<andi> (a', b'))
+    rgr-eval-exp(|env): RGR_IAnd(a, b) -> (env3, IntV(<andi> (a', b')))
       where
-        IntV(a') := <rgr-eval-exp(|env)> a;
-        IntV(b') := <rgr-eval-exp(|env)> b
+        (env2, IntV(a')) := <rgr-eval-exp(|env)> a;
+        (env3, IntV(b')) := <rgr-eval-exp(|env2)> b
         
         
         

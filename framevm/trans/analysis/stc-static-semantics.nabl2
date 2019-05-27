@@ -3,6 +3,7 @@ module analysis/stc-static-semantics
 imports
 
   signatures/-
+  analysis/static-semantics-common
   
 rules
   prog[[STC_Program(fname, imports, size, b, a, blocks) ^(s)]] :=
@@ -16,111 +17,6 @@ rules
     STC_Module{fname} ===> mod,
     initBlock[[b ^(prog)]],
     Map2(stcImport)[[imports ^(mod, prog)]].
-    
-  initBlock[[FVM_InitBlock(block) ^(prog)]] := 
-    lbl[[block ^(prog)]].
-  
-  	
-  stcImport[[FVM_Import(lib_name, funcs) ^(s, prog)]] :=
-  	STC_Module{lib_name} -> s,
-  	STC_Module{lib_name} |-> d | error $[Module not found: [lib_name]] @lib_name,
-  	d ?===> ds,
-  	Map2(libfunc)[[funcs ^(ds, prog)]].
-  	
-  stcImport[[FVM_ImportAs(lib_name, func_name, func_as) ^(s, prog)]] :=
-  	STC_Module{lib_name} -> s,
-  	STC_Module{lib_name} |-> d | error $[Module not found: [lib_name]] @lib_name,
-  	d ?===> ds,
-  	new ns, ns ---> ds,
-  	ModuleFunc{func_name} -> ns,
-  	ModuleFunc{func_name} |-> d2 | error $[Function not found: [func_name]] @func_name,
-  	d2.label := lbl,
-  	d2.lib := lib,
-  	d2.size := size,
-  	
-  	ModuleFunc{func_as} <- prog,
-  	ModuleFunc{func_as}.label := lbl,
-  	ModuleFunc{func_as}.lib   := lib,
-  	ModuleFunc{func_as}.size  := size.
-  
-  stcImport[[FVM_Export(lib, Local(name), func_as) ^(mod, prog)]] :=
-  	Block{name} -> prog,
-    Block{name} |-> d | error $[Unknown jump label [name]] @name,
-    d.size := size,
-  	ModuleFunc{func_as} <- mod,
-  	ModuleFunc{func_as}.label := name,
-  	ModuleFunc{func_as}.lib   := lib,
-  	ModuleFunc{func_as}.size  := size.
-  
-  stcImport[[FVM_Export(_, External(name), func_as) ^(mod, prog)]] :=
-  	ModuleFunc{name} -> prog,
-  	ModuleFunc{name} |-> d | error $[Function not found: [name]] @name,
-  	d.label := lbl,
-  	d.lib   := lib,
-  	d.size  := size,
-  	
-  	ModuleFunc{func_as} <- mod,
-  	ModuleFunc{func_as}.label := lbl,
-  	ModuleFunc{func_as}.lib   := lib,
-  	ModuleFunc{func_as}.size  := size.
-  	
-  libfunc[[func_name ^(ds, s)]] :=
-  	new ns, ns ---> ds,
-  	ModuleFunc{func_name} -> ns,
-  	ModuleFunc{func_name} |-> d | error $[Function not found: [func_name]] @func_name,
-  	d.label := lbl,
-  	d.lib   := lib,
-  	d.size  := size,
-  	ModuleFunc{func_name} <- s,
-  	ModuleFunc{func_name}.label := lbl,
-  	ModuleFunc{func_name}.lib   := lib,
-  	ModuleFunc{func_name}.size  := size.
-  	
-  	
-  	
-  block[[FVM_Block(FVM_Label(name), Some(stack), FVM_Seq(body), delta) ^(s)]] :=
-    new block, 
-    Block{name} <- s,
-    Block{name}.size := stack,
-    distinct/name D(s)/Block | error $[Redefinition of label] @name,
-    Block{name} ===> block,
-    block ---> s,
-    Map1(instr)[[body ^(block)]],
-    delta == 0 | warning $[Stack delta is non-zero: [size]] @name.
-  
-  block[[FVM_Block(FVM_Label(name), None(), FVM_Seq(body), size) ^(s)]] :=
-    new block, 
-    Block{name} <- s,
-    Block{name}.size := -1,
-    distinct/name D(s)/Block | error $[Redefinition of label] @name,
-    Block{name} ===> block,
-    block ---> s,
-    Map1(instr)[[body ^(block)]],
-    size == 0 | warning $[Stack delta is non-zero: [size]] @name.
-  
-  lbl[[FVM_ExternalLabel(name) ^(s)]] :=
-    ModuleFunc{name} -> s,
-    ModuleFunc{name} |-> d | error $[Unknown imported function [name]] @name.
-      
-  lbl[[FVM_Label(name) ^(s)]] := lbl[[name^(s)]].
-  lbl[[name ^(s)]] :=
-    Block{name} -> s,
-    Block{name} |-> d | error $[Unknown jump label [name]] @name.
-    
-      
-  bind[[Bind(name, idx) ^(s)]] :=
-    idx != -1 | error $[Unbound identifier [name]] @name.
-      
-  bind[[FVM_Path(path) ^(s)]] :=
-    Map1(bind)[[path ^(s)]].
- 
-  bind[[FVM_Self() ^(s)]].
-  bind[[FVM_Link(link) ^(s)]] :=
-    bind[[link ^(s)]].
-  bind[[FVM_Cont(cont) ^(s)]] :=
-    bind[[cont ^(s)]].
-  bind[[FVM_Slot(slot) ^(s)]].
-      
       
 
   instr[[STC_CharPush(_) ^(s)]].

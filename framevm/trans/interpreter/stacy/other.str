@@ -61,10 +61,3 @@ rules    // Other instructions
     char-store: (char, (env1, idx, frame)) -> (env2, <inc> idx, frame)
       where
         env2 := <frame-set-slot(|env1)> (frame, idx, IntV(char))
-          
-rules    // Util
-    // Convert a value to a displayable string 
-    val-to-string: IntV(v) -> IntV(v)
-    val-to-string: FrameRef(frame) -> frame
-    val-to-string: Continuation(cont) -> cont
-    val-to-string: ClosV(frame, FVM_BoundLabel(lib, lbl, _), _) -> (frame, lbl)

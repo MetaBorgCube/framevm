@@ -1,0 +1,26 @@
+module analysis/rgr-static-semantics
+
+imports
+
+  signatures/-
+  analysis/static-semantics-common
+  
+rules
+  prog[[RGR_Program(fname, imports, size, b, a, blocks) ^(s)]] :=
+    new prog,
+    Map1(block)[[blocks ^(prog)]],
+    
+    new mod, mod ---> s,
+    RGR_Module{fname} <- s,
+    RGR_Module{fname}.blocks  := blocks,
+    RGR_Module{fname}.imports := imports,
+    RGR_Module{fname} ===> mod,
+    initBlock[[b ^(prog)]],
+    Map2(rgrImport)[[imports ^(mod, prog)]].
+      
+
+  instr[[RGR_OnReturn(vars, exp) ^(s)]] := rgrExp[[exp ^(s)]].
+  instr[[RGR_Terminal(exp) ^(s)]]       := rgrExp[[exp ^(s)]].
+  instr[[RGR_Assign(var, exp) ^(s)]]    := rgrExp[[exp ^(s)]].
+  
+  rgrExp[[RGR_ILoad(_) ^(s)]].
