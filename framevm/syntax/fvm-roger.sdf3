@@ -13,18 +13,18 @@ sorts RBlock context-free syntax
 	<jump:ControlTerminal>
 >			{ layout (indent lbl size && align-list instr && align size ret && align instr jump && align ret instr) }
 	
-	OnReturnInstr.OnReturn = <<{RGRVar ","}+> \<- <OnReturnExp>>
+	OnReturnInstr.RGR_OnReturn = <<{RGRVar ","}+> \<- <OnReturnExp>>
 
-	Instr.RGR_PureAssign = <<RGRVar> \<- <Exp> @inline>
+//	Instr.RGR_PureAssign = <<RGRVar> \<- <Exp> @inline>
 	Instr.RGR_Terminal = ExpTerminal
 	Instr.RGR_Assign = <<RGRVar> \<- <Exp>>
 	Instr.RGR_PathAlias = <path <ID> := <Path>>
 	
 	RGRVar = LOCAL
-	RGRVar = REGISTER
+//	RGRVar = REGISTER
 	
 sorts Exp context-free syntax
-    Exp.RGR_Ref    = <<ID>>
+    Exp.RGR_Ref    = <<RGRVar>>
 	
 	Exp = IntOpExp
 	IntOpExp.RGR_ILoad  = <iload(<INT>)>
@@ -46,28 +46,31 @@ sorts Exp context-free syntax
 	TypeExp.RGR_IsInt   = <int?(<Exp>)>
 	TypeExp.RGR_IsCont  = <cont?(<Exp>)>
 	TypeExp.RGR_IsFrame = <frame?(<Exp>)>
+	TypeExp.RGR_IsClos  = <closure?(<Exp>)>
 	
 	Exp = FrameExp
 	FrameExp.RGR_New    = <new(<IntOrExp>)>
 	FrameExp.RGR_New    = <new()>
+	FrameExp.RGR_FSize  = <size(<Exp>)>
 	
 	ExpTerminal.RGR_Link  = <link(<Exp>, <PathOrExp>, <LinkRef>)>
  
 	ExpTerminal.RGR_Set   = <set(<PathOrExp>, <Exp>)>
-	ExpTerminal.RGR_SetR  = <set(<Exp>, <PathOrExp>, <Exp>)>
+	ExpTerminal.RGR_Set   = <set(<Exp>, <PathOrExp>, <Exp>)>
 	FrameExp.RGR_Get      = <get(<PathOrExp>)>
-	FrameExp.RGR_GetR     = <get(<Exp>, <PathOrExp>)>		
+	FrameExp.RGR_Get      = <get(<Exp>, <PathOrExp>)>		
 	
 	Exp = ContExp
-	OnReturnExp.RGR_ContRGet = <rget(<IntOrExp>)>
+	OnReturnExp.RGR_ContRGet = <rget(<INTLEZ>)>
+	OnReturnExp.RGR_ContRGet = <rget()>
 	ContExp.RGR_ContThis     = <cgetcurrent()>
-	ContExp.RGR_ContNew      = <cnew(<Label>, <IntOrExp>)>
+	ContExp.RGR_ContNew      = <cnew(<Exp>, <Label>, <IntOrExp>)>
 	ContExp.RGR_ContTransfer = <transfer(<{Exp ","}+>, <ContOrExp>)>
 	
 	ExpTerminal.RGR_ContSet  = <cset(<ContOrExp>, <Exp>)>
-	ExpTerminal.RGR_ContSetR = <cset(<Exp>, <ContOrExp>, <Exp>)>
+	ExpTerminal.RGR_ContSet  = <cset(<Exp>, <ContOrExp>, <Exp>)>
 	ContExp.RGR_ContGet      = <cget(<ContOrExp>)>
-	ContExp.RGR_ContGetR     = <cget(<Exp>, <ContOrExp>)>
+	ContExp.RGR_ContGet      = <cget(<Exp>, <ContOrExp>)>
 	
 	
 	ControlTerminal.RGR_Return     = <return(<{Exp ","}+>)>
@@ -90,12 +93,23 @@ sorts Exp context-free syntax
 	ControlTerminal.RGR_ScopeExit   = <exitscope(<Path>, <Label>)>
 	ControlTerminal.RGR_ScopeNew    = <newscope(<Exp>, <LinkRef>, <Label>)>
 	ExpTerminal.RGR_ScopeSetCurrent = <mkcurrent(<Exp>)>
-	Exp.RGR_ScopegetCurrent         = <mkcurrent()>
-	ExpTerminal.RGR_Print           = <print(<Exp>)>	
+	Exp.RGR_ScopeGetCurrent         = <getcurrent()>
+	
+	ExpTerminal.RGR_Print           = <print(<Exp>)>
+	ExpTerminal.RGR_PrintChar       = <printc(<Exp>)>
 	ExpTerminal.RGR_Debug           = <debug()>		
-	ExpTerminal.RGR_DebugKill       = <debug!()>	
+	ExpTerminal.RGR_DebugKill       = <debug!()>
 	
+	Exp.RGR_StringLoad       = <sload(<STRING>)>
+	Exp.RGR_CharLoad         = <cload(<CHAR>)>	
 	
+	Exp = ClosExp
+    ClosExp.RGR_ClosNew      = <newc(<CopyPolicy>, <Label>, <IntOrExp>)>
+    ClosExp.RGR_ClosNew      = <newc(<Label>, <IntOrExp>)>
+    ClosExp.RGR_ClosToCont   = <cnew(<Exp>)>
+    ClosExp.RGR_ClosUnpack   = <unpack(<Exp>)>
+  
+  
 	
 	IntOrExp = Exp
 	IntOrExp = INTLEZ

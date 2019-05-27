@@ -2,7 +2,7 @@ module fvm-common
 
 lexical syntax
 
-  LOCAL          = "l" [0-9]+
+  LOCAL          = "r" [0-9]+
   REGISTER       = [a-z]+
   ID             = LIB
   LIB            = [a-z] [a-zA-Z0-9\_\.]*
@@ -96,7 +96,9 @@ lexical syntax
   LIBFUNC = "swap"      {reject}
   
   LIBFUNC = "spush"     {reject}
+  LIBFUNC = "sload"     {reject}
   LIBFUNC = "cpush"     {reject}
+  LIBFUNC = "cload"     {reject}
   LIBFUNC = "printc"    {reject}
   LIBFUNC = "cget"      {reject}
   LIBFUNC = "ccall"     {reject}
