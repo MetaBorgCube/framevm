@@ -1,0 +1,80 @@
+module rgr_interpreter_type
+
+language framevm
+
+fixture [[MAIN:
+	local := 99
+	[[...]]
+	print(r0)
+	return(iload(0))
+]]
+
+test int =? int [[
+	r0 <- int?(iload(1))
+]] transform "Run -> Run" to "IntV(1)"
+
+test frame =? int [[
+	r0 <- int?(new(1))
+]] transform "Run -> Run" to "IntV(0)"
+
+test cont =? int [[
+	r0 <- int?(cnew(new(), MAIN, 1))
+]] transform "Run -> Run" to "IntV(0)"
+
+//test clos =? int [[
+//	r0 <- int?(newc(MAIN, 1))
+//]] transform "Run -> Run" to "IntV(0)"
+
+
+
+test int =? frame [[
+	r0 <- frame?(iload(1))
+]] transform "Run -> Run" to "IntV(0)"
+
+test frame =? frame [[
+	r0 <- frame?(new(1))
+]] transform "Run -> Run" to "IntV(1)"
+
+test cont =? frame [[
+	r0 <- frame?(cnew(new(), MAIN, 1))
+]] transform "Run -> Run" to "IntV(0)"
+
+//test clos =? frame [[
+//	r0 <- frame?(newc(MAIN, 1))
+//]] transform "Run -> Run" to "IntV(0)"
+
+
+
+test int =? cont [[
+	r0 <- cont?(iload(1))
+]] transform "Run -> Run" to "IntV(0)"
+
+test frame =? cont [[
+	r0 <- cont?(new(1))
+]] transform "Run -> Run" to "IntV(0)"
+
+test cont =? cont [[
+	r0 <- cont?(cnew(new(), MAIN, 1))
+]] transform "Run -> Run" to "IntV(1)"
+
+//test clos =? cont [[
+//	r0 <- cont?(newc(MAIN, 1))
+//]] transform "Run -> Run" to "IntV(0)"
+
+
+
+test int =? clos [[
+	r0 <- closure?(iload(1))
+]] transform "Run -> Run" to "IntV(0)"
+
+test frame =? clos [[
+	r0 <- closure?(new(1))
+]] transform "Run -> Run" to "IntV(0)"
+
+test cont =? clos [[
+	r0 <- closure?(cnew(new(), MAIN, 1))
+]] transform "Run -> Run" to "IntV(0)"
+
+//test clos =? clos [[
+//	r0 <- closure?(newc(MAIN, 1))
+//]] transform "Run -> Run" to "IntV(1)"

@@ -48,9 +48,10 @@ rules // Exp
   rgrExp[[RGR_IsFrame(exp) ^(s)]] := rgrExp[[exp ^(s)]].
   rgrExp[[RGR_IsClos(exp) ^(s)]]  := rgrExp[[exp ^(s)]].
   
-  rgrExp[[RGR_New(exp) ^(s)]]  := rgrExp[[exp ^(s)]].
+  rgrExp[[RGR_New(exp) ^(s)]]     := rgrExp[[exp ^(s)]].
+  rgrExp[[RGR_NewRec(exps) ^(s)]] := Map1(rgrExp)[[exps ^(s)]].
   rgrExp[[RGR_New() ^(s)]].
-  rgrExp[[RGR_FSize(exp) ^(s)]]  := rgrExp[[exp ^(s)]].
+  rgrExp[[RGR_FSize(exp) ^(s)]]   := rgrExp[[exp ^(s)]].
 
   rgrExp[[RGR_Link(e1, e2, _) ^(s)]] := rgrExp[[e1 ^(s)]], rgrExp[[e2 ^(s)]].
   

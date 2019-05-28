@@ -51,6 +51,7 @@ sorts Exp context-free syntax
 	Exp = FrameExp
 	FrameExp.RGR_New    = <new(<IntOrExp>)>
 	FrameExp.RGR_New    = <new()>
+	FrameExp.RGR_NewRec = <new{<{Exp ","}+>}>
 	FrameExp.RGR_FSize  = <size(<Exp>)>
 	
 	ExpTerminal.RGR_Link  = <link(<Exp>, <PathOrExp>, <LinkRef>)>
@@ -73,7 +74,7 @@ sorts Exp context-free syntax
 	ContExp.RGR_ContGet      = <cget(<Exp>, <ContOrExp>)>
 	
 	
-	ControlTerminal.RGR_Return     = <return(<{Exp ","}+>)>
+	ControlTerminal.RGR_Return     = <return(<{Exp ","}*>)>
 	ControlTerminal.RGR_Yield      = <yield(<{Exp ","}+>, <Label>)>
 	ControlTerminal.RGR_JumpZ      = <jumpz(<Exp>, <Label>, <Label>)>
 	ControlTerminal.RGR_Jump       = <jump(<Label>)>

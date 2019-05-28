@@ -1,0 +1,55 @@
+module rgr_interpreter_scopes
+
+language framevm
+
+fixture [[#init 2
+MAIN:
+	local := 99
+	set([0], iload(12))
+	[[...]]
+	return(iload(0))
+]]
+
+test new scope [[
+	newscope(new(1), P)
+	print(get([P, 0]))
+]] transform "Run -> Run" to "IntV(12)"
+
+test make current [[
+	r0 <- new(1)
+	set(r0, [0], iload(13))
+	mkcurrent(r0)
+	print(get([0]))
+]] transform "Run -> Run" to "IntV(13)"
+
+test get current [[
+	r0 <- new(1)
+	link(r0, getcurrent(), P)
+	mkcurrent(r0)
+	print(get([P, 0]))
+]] transform "Run -> Run" to "IntV(12)"
+
+test new scope jump [[
+	newscope(new(1), P, MAIN2)
+MAIN2:
+	print(get([P, 0]))
+]] transform "Run -> Run" to "IntV(12)"
+
+test exit scope [[
+	newscope(new(1), P)
+	set(get([]), [0], iload(42))
+	print(get([0]))
+	exitscope([P])
+	print(get([0]))
+]] transform "Run -> Run" to "IntV(42)
+IntV(12)"
+
+test exit scope jump [[
+	newscope(new(1), P)
+	set(get([]), [0], iload(42))
+	print(get([0]))
+	exitscope([P], MAIN2)
+MAIN2:
+	print(get([0]))
+]] transform "Run -> Run" to "IntV(42)
+IntV(12)"

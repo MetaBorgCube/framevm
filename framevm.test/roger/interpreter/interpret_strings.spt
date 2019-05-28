@@ -1,0 +1,45 @@
+module rgr_interpreter_strings
+
+language framevm
+
+fixture [[MAIN:
+	local := 99
+	[[...]]
+	return(iload(0))
+]]
+
+test String size [[
+	r0 <- sload("Hello World")
+	print(size(r0))
+	printc(get(r0, iload(5)))
+]] transform "Run -> Run" to "IntV(12)
+o"
+
+test chars [[
+	printc(cload('x'))
+]] transform "Run -> Run" to "x"
+
+test chars newline [[
+	printc(cload('x'))
+	printc(cload('\n'))
+	printc(cload('x'))
+]] transform "Run -> Run" to "x
+x"
+
+test chars tab [[
+	printc(cload('x'))
+	printc(cload('\t'))
+	printc(cload('x'))
+]] transform "Run -> Run" to "x	x"
+
+test chars special [[
+	printc(iload(16759))
+]] transform "Run -> Run" to "䅷"
+
+test chars as int [[
+	print(cload('A'))
+]] transform "Run -> Run" to "IntV(65)"
+
+test chars addition [[
+	printc(addi(cload('a'), iload(1)))
+]] transform "Run -> Run" to "b"

@@ -1,0 +1,177 @@
+module rgr_interpreter_frame
+
+language framevm
+
+fixture [[#init 2
+#link Q -> 1
+MAIN:
+	local := 99
+	[[...]]
+	return(iload(0))
+]]
+
+test new empty [[
+	r0 <- new()
+	print(r0)
+	print(size(r0))
+]] transform "Run -> Run" to "Frame(frame_1)
+IntV(0)"
+
+test new single [[
+	r0 <- new(1)
+	print(r0)
+	print(size(r0))
+]] transform "Run -> Run" to "Frame(frame_1)
+IntV(1)"
+
+test new 5 [[
+	r0 <- new(5)
+	print(size(r0))
+]] transform "Run -> Run" to "IntV(5)"
+
+test new complex [[
+	r0 <- new(addi(iload(5), iload(2)))
+	print(size(r0))
+]] transform "Run -> Run" to "IntV(7)"
+
+test new record [[
+	r0 <- new{iload(0), iload(1), iload(2)}
+	print(size(r0))
+	print(get(r0, [0]))
+	print(get(r0, [1]))
+	print(get(r0, [2]))
+]] transform "Run -> Run" to "IntV(3)
+IntV(0)
+IntV(1)
+IntV(2)"
+
+
+
+test simple get/set [[
+	set([0], iload(1))
+	print(get([0]))
+]] transform "Run -> Run" to "IntV(1)"
+
+test get before set [[
+	print(get([0]))
+]] transform "Run -> Run" to "FAIL"
+
+test simple get/set 2 [[
+	set([1], iload(12))
+	print(get([1]))
+]] transform "Run -> Run" to "IntV(12)"
+
+test set overwrite [[
+	set([0], iload(1))
+	set([0], iload(2))
+	print(get([0]))
+]] transform "Run -> Run" to "IntV(2)"
+
+test double get [[
+	set([0], iload(1))
+	print(get([0]))
+	print(get([0]))
+]] transform "Run -> Run" to "IntV(1)
+IntV(1)"
+
+
+
+
+test simple getr/setr [[
+	r1 <- new(2)
+	set(r1, [0], iload(1))
+	print(get(r1, [0]))
+]] transform "Run -> Run" to "IntV(1)"
+
+test getr/setr on int[[
+	r1 <- iload(2)
+	set(r1, [0], iload(1))
+	print(get(r1, [0]))
+]] transform "Run -> Run" to "FAIL"
+
+test get before set [[
+	r1 <- new(2)
+	print(get(r1, [0]))
+]] transform "Run -> Run" to "FAIL"
+
+test simple get/set 2 [[
+	r1 <- new(2)
+	set(r1, [1], iload(12))
+	print(get(r1, [1]))
+]] transform "Run -> Run" to "IntV(12)"
+
+test set overwrite [[
+	r1 <- new(2)
+	set(r1, [0], iload(1))
+	set(r1, [0], iload(2))
+	print(get(r1, [0]))
+]] transform "Run -> Run" to "IntV(2)"
+
+test double get [[
+	r1 <- new(2)
+	set(r1, [0], iload(1))
+	print(get(r1, [0]))
+	print(get(r1, [0]))
+]] transform "Run -> Run" to "IntV(1)
+IntV(1)"
+
+test set current [[
+	r1 <- new(1)
+	set(r1, [0], iload(12))
+	set([], r1)
+	print(get([0]))
+]] transform "Run -> Run" to "IntV(12)"
+
+
+
+test link to current [[
+	set([0], iload(12))
+	r1 <- new(2)
+	link(r1, [], P)
+	print(get(r1, [P, 0]))
+]] transform "Run -> Run" to "IntV(12)"
+
+test link unknown label [[
+	set([0], iload(12))
+	r1 <- new(2)
+	link(r1, [], S)
+	print(get(r1, [S, 0]))
+]] transform "Run -> Run" to "FAIL"
+
+test link to current 2 [[
+	set([0], iload(12))
+	r1 <- new(2)
+	link(r1, get([]), Q)
+	print(get(r1, [Q, 0]))
+]] transform "Run -> Run" to "IntV(12)"
+
+test link path [[
+	set([0], iload(12))
+	r0 <- new(2)
+	link(r0, [], P)
+	mkcurrent(r0)
+	r1 <- new(2)
+	link(r1, [P], P)
+	print(get(r1, [P, 0]))
+]] transform "Run -> Run" to "IntV(12)"
+
+test linkr [[
+	r0 <- new(2)
+	set(r0, [0], iload(12))
+	r1 <- new(2)
+	link(r1, r0, P)
+	print(get(r1, [P, 0]))
+]] transform "Run -> Run" to "IntV(12)"
+
+test link int [[
+	r0 <- new(2)
+	r1 <- iload(1)
+	link(r1, r0, P)
+]] transform "Run -> Run" to "FAIL"
+
+test link int 2 [[
+	r0 <- iload(1)
+	r1 <- new(1)
+	link(r1, r0, P)
+]] transform "Run -> Run" to "FAIL"
+
