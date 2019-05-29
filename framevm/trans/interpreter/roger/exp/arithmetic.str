@@ -39,17 +39,17 @@ rules
         (env2, IntV(a')) := <rgr-eval-exp(|env)> a;
         (env3, IntV(b')) := <rgr-eval-exp(|env2)> b
     
-    rgr-eval-exp(|env): RGR_IEq(a, b) -> (env, IntV(<eval-eq> (a', b')))
+    rgr-eval-exp(|env): RGR_IEq(a, b) -> (env, <eval-eq> (a', b'))
       where
         (env2, IntV(a')) := <rgr-eval-exp(|env)> a;
         (env3, IntV(b')) := <rgr-eval-exp(|env2)> b
     
-    rgr-eval-exp(|env): RGR_ILt(a, b) -> (env, IntV(<eval-lt> (a', b')))
+    rgr-eval-exp(|env): RGR_ILt(a, b) -> (env, <eval-lt> (a', b'))
       where
         (env2, IntV(a')) := <rgr-eval-exp(|env)> a;
         (env3, IntV(b')) := <rgr-eval-exp(|env2)> b
     
-    rgr-eval-exp(|env): RGR_IGt(a, b) -> (env3, IntV(<eval-lt> (b', a')))
+    rgr-eval-exp(|env): RGR_IGt(a, b) -> (env3, <eval-lt> (b', a'))
       where
         (env2, IntV(a')) := <rgr-eval-exp(|env)> a;
         (env3, IntV(b')) := <rgr-eval-exp(|env2)> b

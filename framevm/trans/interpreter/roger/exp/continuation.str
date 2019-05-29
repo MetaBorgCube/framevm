@@ -22,7 +22,7 @@ rules
         <not(is-string)> exp2;
         (env2, FrameRef(frame)) := <rgr-eval-exp(|env)> exp1;
         (env3, IntV(cont_size)) := <rgr-eval-exp(|env2)> exp2;
-        (env4, cont) := <vm-cont-new(|env3)> (frame, (lib, lbl), (<string-to-int> cont_size, locals_size))
+        (env4, cont) := <vm-cont-new(|env3)> (frame, (lib, lbl), (cont_size, locals_size))
     
     rgr-eval-exp(|env): RGR_ContGet(c) -> (env, Continuation(<cont-get(|env)> (<cont-this(|env)>, <cont-resolve> c)))
 

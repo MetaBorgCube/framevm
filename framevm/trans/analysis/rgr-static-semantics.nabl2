@@ -84,7 +84,7 @@ rules // Instructions
   instr[[RGR_ContCall(exp, lbl) ^(s)]]        := rgrExp[[exp ^(s)]], lbl[[lbl ^(s)]].
   instr[[RGR_ContReturn(exp) ^(s)]]           := rgrExp[[exp ^(s)]].
   
-  instr[[RGR_Try(e1, lbl1, e2, lbl1, lbl3) ^(s)]] := rgrExp[[e1 ^(s)]], rgrExp[[e2 ^(s)]], lbl[[lbl1 ^(s)]], lbl[[lbl2 ^(s)]], lbl[[lbl3 ^(s)]].
+  instr[[RGR_Try(e1, lbl1, e2, lbl2, lbl3) ^(s)]] := rgrExp[[e1 ^(s)]], rgrExp[[e2 ^(s)]], lbl[[lbl1 ^(s)]], lbl[[lbl2 ^(s)]], lbl[[lbl3 ^(s)]].
   instr[[RGR_Try(e1, e2, lbl) ^(s)]]              := rgrExp[[e1 ^(s)]], rgrExp[[e2 ^(s)]], lbl[[lbl ^(s)]].
   instr[[RGR_Throw(exps) ^(s)]]                   := Map1(rgrExp)[[exps ^(s)]].
   

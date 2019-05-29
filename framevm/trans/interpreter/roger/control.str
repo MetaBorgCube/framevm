@@ -35,14 +35,13 @@ rules
         
     rgr-eval: (RGR_JumpZ(exp, FVM_BoundLabel(thenlib, thenlbl, _), FVM_BoundLabel(elselib, elselbl, _)), env1) -> env3
       where
-        (env2, IntV(val)) := <rgr-eval-exp(|env1)>;
+        (env2, IntV(val)) := <rgr-eval-exp(|env1)> exp;
         trgt := <jump-eval> (val, (thenlib, thenlbl), (elselib, elselbl));
         env3 := <vm-jump(|env2)> trgt
         
-    rgr-eval: (RGR_Jump(FVM_BoundLabel(lib, lbl, _)), env1) -> env3
+    rgr-eval: (RGR_Jump(FVM_BoundLabel(lib, lbl, _)), env) -> env2
       where
-        (env2, IntV(val)) := <rgr-eval-exp(|env1)>;
-        env3 := <vm-jump(|env2)> (lib, lbl)
+        env2 := <vm-jump(|env)> (lib, lbl)
         
     rgr-eval: (RGR_Call(exp, FVM_BoundLabel(flib, flbl, Some(fsize)), FVM_BoundLabel(rlib, rlbl, _)), env) -> env7
       where
@@ -153,9 +152,9 @@ rules
         env4 := <frame-set-current(|env3)> (<cont-this(|env3)>, frame_to);
         env5 := <vm-jump(|env4)> (lib, block)
 
-	rgr-eval: (RGR_ScopeExit(FVM_Path(path), FVM_BoundLabel(lib, block, _)), env) -> env4
+	rgr-eval: (RGR_ScopeExit(FVM_Path(path), FVM_BoundLabel(lib, block, _)), env) -> env3
 	  where
-	    (env2, FrameRef(frame)) := <rgr-get-path(|env)> (<frame-this(|env)>, path);
-	    env3 := <frame-set-current(|env2)> (<cont-this(|env2)>, frame);
-        env4 := <vm-jump(|env3)> (lib, block)
+	    FrameRef(frame) := <rgr-get-path(|env)> (FrameRef(<frame-this(|env)>), path);
+	    env2 := <frame-set-current(|env)>  (<cont-this(|env)>, frame);
+        env3 := <vm-jump(|env2)> (lib, block)
         

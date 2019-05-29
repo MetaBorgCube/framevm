@@ -66,7 +66,7 @@ sorts Exp context-free syntax
 	OnReturnExp.RGR_ContRGet = <rget()>
 	ContExp.RGR_ContThis     = <cgetcurrent()>
 	ContExp.RGR_ContNew      = <cnew(<Exp>, <Label>, <IntOrExp>)>
-	ContExp.RGR_ContTransfer = <transfer(<{Exp ","}+>, <ContOrExp>)>
+	ExpTerminal.RGR_ContTransfer = <transfer(<{Exp ","}+>, <ContOrExp>)>
 	
 	ExpTerminal.RGR_ContSet  = <cset(<ContOrExp>, <Exp>)>
 	ExpTerminal.RGR_ContSet  = <cset(<Exp>, <ContOrExp>, <Exp>)>

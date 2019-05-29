@@ -117,9 +117,9 @@ rules
     rgr-eval-instr: (RGR_ContSet(exp1, exp2, exp3), env1) -> env5 
       where
         (env2, Continuation(cf)) := <rgr-eval-exp(|env1)> exp1;
-        (env3, IntV(slot)) := <rgr-eval-exp(|env2)> exp2;
+        (env3, IntV(idx)) := <rgr-eval-exp(|env2)> exp2;
         (env4, Continuation(value)) := <rgr-eval-exp(|env3)> exp3;
-        env5 := <cont-set(|env4)> (cf, slot, value)
+        env5 := <cont-set(|env4)> (cf, ($[_c[idx]], idx), value)
         
     rgr-eval-instr: (RGR_ContSet(exp1, c, exp2), env1) -> env4 
       where

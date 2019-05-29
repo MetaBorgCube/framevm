@@ -21,7 +21,7 @@ rules
       where
         (env2, vals) := <rgr-eval-instr> (exp, env1);
         <equal> (<length> vals, <length> vars);
-        zipped := <zip> (vars, vals);
+        zipped := <zip> (<reverse> vars, vals);
         env3 := <foldl(return-fold)> (zipped, env2)
         
     return-fold: ((slot, var), env1) -> <rgr-set(|env1)> (slot, var)

@@ -6,6 +6,7 @@ imports
     
     interpreter/external
     interpreter/util
+    interpreter/roger/roger
     
     fvm-common
 
@@ -40,15 +41,31 @@ rules
         
     rgr-eval-exp(|env): RGR_New(exp) -> (env3, FrameRef(frame))
       where
+        <not(is-string)> exp;
         (env2, IntV(size)) := <rgr-eval-exp(|env)> exp;
         (env3, frame) := <frame-new(|env2)> size
+        
+    rgr-eval-exp(|env): RGR_New(exp) -> (env2, FrameRef(frame))
+      where
+        <is-string> exp;
+        (env2, frame) := <frame-new(|env)> <string-to-int> exp
+        
+    rgr-eval-exp(|env): RGR_NewRec(exps) -> (env4, FrameRef(frame))
+      where
+        (env2, frame) := <frame-new(|env)> <length> exps;
+        (env3, vals)  := <rgr-eval-exp-fold(|env2)> exps;
+        (env4, _, _) := <foldl(rgr-fold-rec)> (vals, (env3, frame, 0))
+        
+    rgr-fold-rec: (val, (env, frame, idx)) -> (env', frame, <inc> idx)
+      where
+        env' := <frame-set-slot(|env)> (frame, idx, val)
         
     rgr-eval-exp(|env): RGR_FSize(exp) -> (env2, IntV(size))
       where
         (env2, FrameRef(frame)) := <rgr-eval-exp(|env)> exp;
         size := <frame-size(|env2)> frame
         
-    rgr-eval-exp(|env): (RGR_ScopeGetCurrent(), env) -> (env, FrameRef(<frame-this(|env)>))
+    rgr-eval-exp(|env): RGR_ScopeGetCurrent() -> (env, FrameRef(<frame-this(|env)>))
         
     
 

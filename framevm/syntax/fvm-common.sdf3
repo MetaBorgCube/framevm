@@ -8,7 +8,7 @@ lexical syntax
   LIB            = [a-z] [a-zA-Z0-9\_\.]*
   LIBFUNC        = [a-z] [a-zA-Z0-9\_]*
   LABEL          = [A-Z\_] [A-Z0-9\_]* 
-  CONTSLOT       = [a-z\_] [a-z0-9\_]* 
+  CONTSLOT       = [a-z\_] [a-z\_]* 
   INT            = "-"? [0-9]+ 
   INTLZ          = [1-9][0-9]* 
   INTLEZ         = [0-9]+ 
