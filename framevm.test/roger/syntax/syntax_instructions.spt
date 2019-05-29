@@ -1,0 +1,105 @@
+module rgr_parser_instructions
+
+language framevm
+
+fixture [[
+MAIN:
+	[[...]]
+	return(iload(0))
+]]
+
+test assign single    [[r0 <- iload(0)]]      parse succeeds
+test assign multiple  [[r0, r1 <- iload(0)]]  parse fails
+test assign none      [[ <- iload(0)]]        parse fails
+test just exp         [[iload(0)]]            parse fails
+
+
+test rget single      [[r0 <- rget()]]       parse succeeds
+test rget single 2    [[r0 <- rget(1)]]      parse succeeds
+test rget single 2    [[r0 <- rget(0)]]      parse fails
+test rget multiple    [[r0, r1 <- rget(2)]]  parse succeeds
+
+
+test link self          [[link(new(), [], P)]]             parse succeeds
+test link complex lbl   [[link(new(), [], QR0)]]           parse succeeds
+test link complex path  [[link(new(), [P], P)]]            parse succeeds
+test link complex path  [[link(new(), [P, 0, Q2, 4], P)]]  parse succeeds
+test link invalid path  [[link(new(), [-1, i, 3P], P)]]    parse fails
+
+test linkr      [[link(new(), new(), P)]]  parse succeeds
+test link int   [[link(0, [], P)]]         parse fails
+
+
+test set self           [[set([], iload(0))]]             parse succeeds
+test set complex path   [[set([P], iload(0))]]            parse succeeds
+test set complex path   [[set([P, 0, Q2, 4], iload(0))]]  parse succeeds
+test set invalid path   [[set([-1, i, 3P], iload(0))]]    parse fails
+test set invalid exp    [[set([-1, i, 3P], 0)]]           parse fails
+test set exp            [[set(iload(0), iload(0))]]       parse succeeds
+
+test setr self          [[set(new(), [], iload(0))]]             parse fails
+test setr complex path  [[set(new(), [P], iload(0))]]            parse succeeds
+test setr complex path  [[set(new(), [P, 0, Q2, 4], iload(0))]]  parse succeeds
+test setr invalid path  [[set(new(), [-1, i, 3P], iload(0))]]    parse fails
+test setr invalid exp   [[set(new(), [-1, i, 3P], 0)]]           parse fails
+test setr invalid exp 2 [[set(0, [-1, i, 3P], 0)]]               parse fails
+test setr exp           [[set(new(), iload(0), iload(0))]]       parse succeeds
+
+
+test transfer           [[transfer(new(), c)]]                    parse succeeds
+test transfer int       [[transfer(new(), 0)]]                    parse fails
+test transfer int2      [[transfer(0, c)]]                        parse fails
+test transfer none      [[transfer(new())]]                       parse fails
+test transfer exp       [[transfer(new(), cnew(new(), LBL, 2))]]  parse succeeds
+test transfer multiple  [[transfer(new(), iload(1), c)]]          parse succeeds
+
+
+test cset           [[cset(c, iload(0))]]        parse succeeds
+test cset exp       [[cset(cget(c), iload(0))]]  parse succeeds
+test cset invalid   [[cset(C, 0)]]               parse fails
+
+test csetr          [[cset(cget(c), c, iload(0))]]        parse succeeds
+test csetr exp      [[cset(cget(c), cget(c), iload(0))]]  parse succeeds
+test csetr invalid  [[cset(cget(c), C, 0)]]               parse fails
+test csetr invalid  [[cset(c, x, 0)]]                     parse fails
+
+
+test exitscope self          [[exitscope([])]]                     parse succeeds
+test exitscope complex path  [[exitscope([P])]]                    parse succeeds
+test exitscope complex path  [[exitscope([P, 0, Q2, 4])]]          parse succeeds
+test exitscope invalid path  [[exitscope([-1, i, 3P])]]            parse fails
+test exitscope extra arg     [[exitscope([-1, i, 3P], iload(0))]]  parse fails
+
+
+test newscope              [[newscope(new(), P)]]    parse succeeds
+test newscope complex lbl  [[newscope(new(), QR0)]]  parse succeeds
+test newscope invalid lbl  [[newscope(new(), 0P)]]   parse fails
+test newscope invalid exp  [[newscope(0, P)]]        parse fails
+
+
+test mkcurrent           [[mkcurrent(new())]]         parse succeeds
+test mkcurrent two exps  [[mkcurrent(new(), new())]]  parse fails
+test mkcurrent int       [[mkcurrent(0)]]             parse fails
+test mkcurrent empty     [[mkcurrent()]]              parse fails
+
+
+test print exp        [[print(iload(0))]]          parse succeeds
+test print int        [[print(0)]]                 parse fails
+test print empty      [[print()]]                  parse fails
+test print multiple   [[print(new(), iload(0))]]   parse fails
+
+
+test printc exp       [[printc(iload(0))]]         parse succeeds
+test printc int       [[printc(0)]]                parse fails
+test printc empty     [[printc()]]                 parse fails
+test printc multiple  [[printc(new(), iload(0))]]  parse fails
+
+
+test debug       [[debug()]]           parse succeeds
+test debug exp   [[debug(iload(0))]]   parse fails
+test debug int   [[debug(0)]]          parse fails
+
+
+test debug!      [[debug!()]]          parse succeeds
+test debug! exp  [[debug!(iload(0))]]  parse fails
+test debug! int  [[debug!(0)]]         parse fails

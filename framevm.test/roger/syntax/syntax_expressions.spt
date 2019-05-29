@@ -1,0 +1,251 @@
+module rgr_parser_expressions
+
+language framevm
+
+fixture [[
+MAIN:
+	return([[...]])
+]]
+
+test ref                 [[r0]]   parse succeeds
+test ref muliple digits  [[r123]] parse succeeds
+test ref char            [[rc]]   parse fails
+test ref _               [[r_0]]  parse fails
+test ref wrong letter    [[l0]]   parse fails
+test ref no letter       [[0]]    parse fails
+
+
+test iload int                [[iload(0)]]   parse succeeds
+test iload int muliple digits [[iload(123)]] parse succeeds
+test iload char               [[iload(c)]]   parse fails
+test iload char 2             [[iload('c')]] parse fails
+test iload string             [[iload("c")]] parse fails
+test iload non-number         [[iload(1_3)]] parse fails
+
+
+test addi int            [[addi(iload(0), iload(0))]]                 parse succeeds
+test addi nested left    [[addi(addi(iload(0), iload(0)), iload(0))]] parse succeeds
+test addi nested right   [[addi(iload(0), addi(iload(0), iload(0)))]] parse succeeds
+test addi 1 exp          [[addi(iload(1))]]                           parse fails
+test addi 3 exp          [[addi(iload(0), iload(0), iload(0))]]       parse fails
+test addi non-exp left   [[addi(i2@3, iload(0))]]                     parse fails
+test addi non-exp right  [[addi(iload(0), 12@3)]]                     parse fails
+
+
+test muli int            [[muli(iload(0), iload(0))]]                 parse succeeds
+test muli nested left    [[muli(muli(iload(0), iload(0)), iload(0))]] parse succeeds
+test muli nested right   [[muli(iload(0), muli(iload(0), iload(0)))]] parse succeeds
+test muli 1 exp          [[muli(iload(1))]]                           parse fails
+test muli 3 exp          [[muli(iload(0), iload(0), iload(0))]]       parse fails
+test muli non-exp left   [[muli(i2@3, iload(0))]]                     parse fails
+test muli non-exp right  [[muli(iload(0), 12@3)]]                     parse fails
+
+
+test subi int            [[subi(iload(0), iload(0))]]                 parse succeeds
+test subi nested left    [[subi(subi(iload(0), iload(0)), iload(0))]] parse succeeds
+test subi nested right   [[subi(iload(0), subi(iload(0), iload(0)))]] parse succeeds
+test subi 1 exp          [[subi(iload(1))]]                           parse fails
+test subi 3 exp          [[subi(iload(0), iload(0), iload(0))]]       parse fails
+test subi non-exp left   [[subi(i2@3, iload(0))]]                     parse fails
+test subi non-exp right  [[subi(iload(0), 12@3)]]                     parse fails
+
+
+test divi int            [[divi(iload(0), iload(0))]]                 parse succeeds
+test divi nested left    [[divi(divi(iload(0), iload(0)), iload(0))]] parse succeeds
+test divi nested right   [[divi(iload(0), divi(iload(0), iload(0)))]] parse succeeds
+test divi 1 exp          [[divi(iload(1))]]                           parse fails
+test divi 3 exp          [[divi(iload(0), iload(0), iload(0))]]       parse fails
+test divi non-exp left   [[divi(i2@3, iload(0))]]                     parse fails
+test divi non-exp right  [[divi(iload(0), 12@3)]]                     parse fails
+
+
+test modi int            [[modi(iload(0), iload(0))]]                 parse succeeds
+test modi nested left    [[modi(modi(iload(0), iload(0)), iload(0))]] parse succeeds
+test modi nested right   [[modi(iload(0), modi(iload(0), iload(0)))]] parse succeeds
+test modi 1 exp          [[modi(iload(1))]]                           parse fails
+test modi 3 exp          [[modi(iload(0), iload(0), iload(0))]]       parse fails
+test modi non-exp left   [[modi(i2@3, iload(0))]]                     parse fails
+test modi non-exp right  [[modi(iload(0), 12@3)]]                     parse fails
+
+
+test eqi int             [[eqi(iload(0), iload(0))]]                  parse succeeds
+test eqi nested left     [[eqi(eqi(iload(0), iload(0)), iload(0))]]   parse succeeds
+test eqi nested right    [[eqi(iload(0), eqi(iload(0), iload(0)))]]   parse succeeds
+test eqi 1 exp           [[eqi(iload(1))]]                            parse fails
+test eqi 3 exp           [[eqi(iload(0), iload(0), iload(0))]]        parse fails
+test eqi non-exp left    [[eqi(i2@3, iload(0))]]                      parse fails
+test eqi non-exp right   [[eqi(iload(0), 12@3)]]                      parse fails
+
+
+test lti int             [[lti(iload(0), iload(0))]]                  parse succeeds
+test lti nested left     [[lti(lti(iload(0), iload(0)), iload(0))]]   parse succeeds
+test lti nested right    [[lti(iload(0), lti(iload(0), iload(0)))]]   parse succeeds
+test lti 1 exp           [[lti(iload(1))]]                            parse fails
+test lti 3 exp           [[lti(iload(0), iload(0), iload(0))]]        parse fails
+test lti non-exp left    [[lti(i2@3, iload(0))]]                      parse fails
+test lti non-exp right   [[lti(iload(0), 12@3)]]                      parse fails
+
+
+test gti int             [[gti(iload(0), iload(0))]]                  parse succeeds
+test gti nested left     [[gti(gti(iload(0), iload(0)), iload(0))]]   parse succeeds
+test gti nested right    [[gti(iload(0), gti(iload(0), iload(0)))]]   parse succeeds
+test gti 1 exp           [[gti(iload(1))]]                            parse fails
+test gti 3 exp           [[gti(iload(0), iload(0), iload(0))]]        parse fails
+test gti non-exp left    [[gti(i2@3, iload(0))]]                      parse fails
+test gti non-exp right   [[gti(iload(0), 12@3)]]                      parse fails
+
+
+test ori int             [[ori(iload(0), iload(0))]]                  parse succeeds
+test ori nested left     [[ori(ori(iload(0), iload(0)), iload(0))]]   parse succeeds
+test ori nested right    [[ori(iload(0), ori(iload(0), iload(0)))]]   parse succeeds
+test ori 1 exp           [[ori(iload(1))]]                            parse fails
+test ori 3 exp           [[ori(iload(0), iload(0), iload(0))]]        parse fails
+test ori non-exp left    [[ori(i2@3, iload(0))]]                      parse fails
+test ori non-exp right   [[ori(iload(0), 12@3)]]                      parse fails
+
+
+test xori int            [[xori(iload(0), iload(0))]]                 parse succeeds
+test xori nested left    [[xori(xori(iload(0), iload(0)), iload(0))]] parse succeeds
+test xori nested right   [[xori(iload(0), xori(iload(0), iload(0)))]] parse succeeds
+test xori 1 exp          [[xori(iload(1))]]                           parse fails
+test xori 3 exp          [[xori(iload(0), iload(0), iload(0))]]       parse fails
+test xori non-exp left   [[xori(i2@3, iload(0))]]                     parse fails
+test xori non-exp right  [[xori(iload(0), 12@3)]]                     parse fails
+
+
+test andi int            [[andi(iload(0), iload(0))]]                 parse succeeds
+test andi nested left    [[andi(andi(iload(0), iload(0)), iload(0))]] parse succeeds
+test andi nested right   [[andi(iload(0), andi(iload(0), iload(0)))]] parse succeeds
+test andi 1 exp          [[andi(iload(1))]]                           parse fails
+test andi 3 exp          [[andi(iload(0), iload(0), iload(0))]]       parse fails
+test andi non-exp left   [[andi(i2@3, iload(0))]]                     parse fails
+test andi non-exp right  [[andi(iload(0), 12@3)]]                     parse fails
+
+
+test negi int          [[negi(iload(0))]]                parse succeeds
+test negi nested       [[negi(negi(iload(0)))]]          parse succeeds
+test negi 0 exp        [[negi()]]                        parse fails
+test negi 2 exp        [[negi(iload(0), iload(0))]]      parse fails
+test negi non-exp      [[negi(i2@3, iload(0))]]          parse fails
+
+
+test int? int          [[int?(iload(0))]]                parse succeeds
+test int? nested       [[int?(int?(iload(0)))]]          parse succeeds
+test int? 0 exp        [[int?()]]                        parse fails
+test int? 2 exp        [[int?(iload(0), iload(0))]]      parse fails
+test int? non-exp      [[int?(i2@3, iload(0))]]          parse fails
+
+
+test cont? int         [[cont?(iload(0))]]               parse succeeds
+test cont? nested      [[cont?(cont?(iload(0)))]]        parse succeeds
+test cont? 0 exp       [[cont?()]]                       parse fails
+test cont? 2 exp       [[cont?(iload(0), iload(0))]]     parse fails
+test cont? non-exp     [[cont?(i2@3, iload(0))]]         parse fails
+
+
+test frame? int        [[frame?(iload(0))]]              parse succeeds
+test frame? nested     [[frame?(frame?(iload(0)))]]      parse succeeds
+test frame? 0 exp      [[frame?()]]                      parse fails
+test frame? 2 exp      [[frame?(iload(0), iload(0))]]    parse fails
+test frame? non-exp    [[frame?(i2@3, iload(0))]]        parse fails
+
+
+test closure? int      [[closure?(iload(0))]]            parse succeeds
+test closure? nested   [[closure?(closure?(iload(0)))]]  parse succeeds
+test closure? 0 exp    [[closure?()]]                    parse fails
+test closure? 2 exp    [[closure?(iload(0), iload(0))]]  parse fails
+test closure? non-exp  [[closure?(i2@3, iload(0))]]      parse fails
+
+
+test new empty     [[new()]]                          parse succeeds
+test new int       [[new(0)]]                         parse succeeds
+test new longint   [[new(123)]]                       parse succeeds
+test new two ints  [[new(0, 1)]]                      parse fails
+
+test new exp       [[new(iload(0))]]                  parse succeeds
+test new compexp   [[new(addi(iload(0), iload(0)))]]  parse succeeds
+test new two exps  [[new(iload(0), iload(1))]]        parse fails
+
+test new rec          [[new{iload(0)}]]                  parse succeeds
+test new rec compexp  [[new{addi(iload(0), iload(0))}]]  parse succeeds
+test new rec two exps [[new{iload(0), iload(1)}]]        parse succeeds
+test new rec non-exp  [[new{0, iload(1)}]]               parse fails
+test new rec non-exp  [[new{iload(1), 0}]]               parse fails
+test new rec empty    [[new{}]]                          parse fails
+
+
+test size int      [[size(iload(0))]]            parse succeeds
+test size nested   [[size(size(iload(0)))]]      parse succeeds
+test size 0 exp    [[size()]]                    parse fails
+test size 2 exp    [[size(iload(0), iload(0))]]  parse fails
+test size non-exp  [[size(i2@3, iload(0))]]      parse fails
+
+
+test get empty          [[get()]]                          parse fails
+test get exp            [[get(iload(0))]]                  parse succeeds
+test get nested         [[get(addi(iload(0), iload(2)))]]  parse succeeds
+test get path single    [[get([0])]]                       parse succeeds
+test get path long      [[get([0, PP, Q0, Q, 3])]]         parse succeeds
+test get path invalid   [[get([i, -1, 1i, i1])]]           parse fails
+test get path empty     [[get([])]]                        parse succeeds
+
+test getr exp           [[get(new(), iload(0))]]                  parse succeeds
+test getr non-exp       [[get(0, iload(0))]]                      parse fails
+test getr nested        [[get(new(), addi(iload(0), iload(2)))]]  parse succeeds
+test getr path single   [[get(new(), [0])]]                       parse succeeds
+test getr path long     [[get(new(), [0, PP, Q0, Q, 3])]]         parse succeeds
+test getr path invalid  [[get(new(), [i, -1, 1i, i1])]]           parse fails
+test getr path empty    [[get(new(), [])]]                        parse succeeds
+test getr 3 exps        [[get(new(), [], iload(1))]]              parse fails
+
+
+test cgetcurrent exp      [[cgetcurrent(new())]]  parse fails
+test cgetcurrent int      [[cgetcurrent(0)]]      parse fails
+test cgetcurrent non-exp  [[cgetcurrent()]]       parse succeeds
+
+test getcurrent exp      [[getcurrent(new())]]  parse fails
+test getcurrent int      [[getcurrent(0)]]      parse fails
+test getcurrent non-exp  [[getcurrent()]]       parse succeeds
+
+
+test cnew exp          [[cnew(new(), LBL, iload(0))]]                          parse succeeds
+test cnew non-exp      [[cnew(0, LBL, iload(0))]]                              parse fails
+test cnew nested       [[cnew(new(iload(0)), LBL, addi(iload(0), iload(2)))]]  parse succeeds
+test cnew non-exp      [[cnew(new(), LBL, 0)]]                                 parse succeeds
+test cnew invalid lbl  [[cnew(new(), 4LBL, 0)]]                                parse fails
+test cnew wrong order  [[cnew(new(), iload(0), LBL)]]                          parse fails
+test cnew wrong order  [[cnew(LBL, new(), iload(0))]]                          parse fails
+
+
+test cget empty      [[cget()]]                          parse fails
+test cget cont       [[cget(c)]]                         parse succeeds
+test cget stc cont   [[cget([c])]]                       parse fails
+test cget int        [[cget(0)]]                         parse fails
+test cget exp        [[cget(iload(0))]]                  parse succeeds
+test cget exp        [[cget(addi(iload(0), iload(1)))]]  parse succeeds
+
+test cgetr cont      [[cget(cget(c), c)]]                         parse succeeds
+test cgetr stc cont  [[cget(cget(c), [c])]]                       parse fails
+test cgetr int       [[cget(cget(c), 0)]]                         parse fails
+test cgetr exp       [[cget(cget(c), iload(0))]]                          parse succeeds
+test cgetr exp       [[cget(cget(c), addi(iload(0), iload(1)))]]  parse succeeds
+test cgetr 3 exps    [[cget(cget(c), iload(0), iload(1))]]        parse fails
+test cgetr non-exp   [[cget(c, iload(0))]]                        parse fails
+
+
+test sload empty    [[sload("")]]      parse succeeds
+test sload single   [[sload("a")]]     parse succeeds
+test sload long     [[sload("abc")]]   parse succeeds
+test sload special  [[sload("a\nb")]]  parse succeeds
+test sload char     [[sload(c)]]       parse fails
+test sload char 2   [[sload('c')]]     parse fails
+test sload int      [[sload(1)]]       parse fails
+
+
+test cload empty    [[cload('')]]      parse fails
+test cload single   [[cload('a')]]     parse succeeds
+test cload long     [[cload('abc')]]   parse fails
+test cload special  [[cload('\n')]]    parse succeeds
+test cload char     [[cload(c)]]       parse fails
+test cload string   [[cload("c")]]     parse fails
+test cload int      [[cload(1)]]       parse fails

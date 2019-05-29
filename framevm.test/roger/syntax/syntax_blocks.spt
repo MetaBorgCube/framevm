@@ -1,0 +1,165 @@
+module rgr_parser_blocks
+
+language framevm
+
+test parse minimal [[
+MAIN:
+	return(iload(0))
+]] parse succeeds
+
+test label without colon [[
+MAIN
+	return(iload(0))
+]] parse fails
+
+test block without indentation [[
+MAIN:
+return(iload(0))
+]] parse fails
+
+test block mismatched indentation [[
+MAIN:
+	r0 <- iload(1)
+		return(iload(0))
+]] parse fails
+
+test block without control tail [[
+MAIN:
+	r0 <- iload(1)
+]] parse fails
+
+test block with two control instructions [[
+MAIN:
+	r0 <- iload(1)
+	jump(A)
+	return(r0)
+]] parse fails
+
+test parse two minimal blocks 
+[[MAIN:
+	return(iload(0))
+	
+MAIN_2:
+	r0 <- iload(0)
+	jump(MAIN)
+]] parse succeeds
+
+test parse longer block
+[[MAIN:
+	r0 <- iload(1)
+	r1 <- iload(2)
+	r0 <- addi(r0, r1)
+	jumpz(eqi(r0, iload(3)), ELSE, THEN)
+]] parse succeeds
+
+test parse longer block with whitespace
+[[MAIN:
+	r0 <- iload(1)
+	
+	
+	r1 <- iload(2)
+	
+	r0 <- addi(r0, r1)
+	
+	
+	jumpz(eqi(r0, iload(3)), ELSE, THEN)
+]] parse succeeds
+
+
+test parse comments end of line [[
+MAIN:
+	return(iload(1))	// aaaa
+]] parse succeeds
+
+test parse comments end of line 2 [[
+MAIN:
+	return(iload(1))	/*aaaa*/
+]] parse succeeds
+
+test parse comments own line [[
+MAIN:
+	r0 <- iload(1)	
+	// aaaa
+	return(r0)
+]] parse succeeds
+
+test parse comments own line 2 [[
+MAIN:
+	r0 <- iload(1)
+	/*aaaa*/
+	return(r0)
+]] parse succeeds
+
+
+test parse comments multi-line [[
+MAIN:
+	r0 <- iload(1)
+	/*aaaa
+	* bbbbbb
+	* ccccc
+	*/
+	return(r0)
+]] parse succeeds
+
+test parse commented statement [[
+MAIN:
+	r0 <- iload(1)
+	// return
+]] parse fails
+
+test parse commented statement 2 [[
+MAIN:
+//	r0 <- iload(1)	
+	return(r0)
+]] parse succeeds
+
+test rget [[
+MAIN:
+	r0 <- rget()
+	r0 <- iload(1)	
+	return(r0)
+]] parse succeeds
+
+test rget non-first [[
+MAIN:
+	r0 <- iload(1)	
+	r0 <- rget()
+	return(r0)
+]] parse fails
+
+test rget multiple [[
+MAIN:
+	r0, r1 <- rget(2)
+	r0 <- iload(1)	
+	return(r0)
+]] parse succeeds
+
+test rget and locals [[
+MAIN:
+	local := 12
+	r0 <- rget()
+	r0 <- iload(1)	
+	return(r0)
+]] parse succeeds
+
+test rget and locals [[
+MAIN:
+	r0 <- rget()
+	local := 12
+	r0 <- iload(1)	
+	return(r0)
+]] parse fails
+
+test set locals 1 [[
+MAIN:
+	local := 12
+	r0 <- iload(1)	
+	return(r0)
+]] parse succeeds
+
+test set locals 2 [[
+MAIN:
+	stack := 12
+	r0 <- iload(1)	
+	return(r0)
+]] parse fails

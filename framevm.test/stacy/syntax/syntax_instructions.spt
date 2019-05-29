@@ -91,7 +91,7 @@ test set path c          [[set [c] ]]      parse fails
 test set path negative   [[set [-1] ]]     parse fails
 
 
-test setr simple         [[setr [] ]]         parse succeeds
+test setr overwrite self [[setr [] ]]         parse fails
 test setr path single    [[setr [P] ]]        parse succeeds
 test setr path multiple  [[setr [C, 0] ]]     parse succeeds
 test setr path multiple2 [[setr [I, 0, L] ]]  parse succeeds
