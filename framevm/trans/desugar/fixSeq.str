@@ -35,23 +35,25 @@ rules
     fix-init: Some(RGR_Local(n)) -> Some(<string-to-int> n)
     fix-init: Some(STC_Stack(n)) -> Some(<string-to-int> n)
     
-    unfix-init: None() -> None()
-    unfix-init: Some(n) -> Some(STC_Stack(<int-to-string> n))
+    unfix-init-stc: None() -> None()
+    unfix-init-stc: Some(n) -> Some(STC_Stack(<try(int-to-string)> n))
+    
+    unfix-init-rgr: None() -> None()
+    unfix-init-rgr: Some(n) -> Some(STC_Stack(<try(int-to-string)> n))
     
     
     resugar-seq: STC_Program(fn, i, s, b, a, blocks) -> STC_Program(fn, i, s, b, a, <map(resugar-seq-stc)> blocks)
     resugar-seq: RGR_Program(fn, i, s, b, a, blocks) -> RGR_Program(fn, i, s, b, a, <map(resugar-seq-stc)> blocks)
     
-    resugar-seq-stc: FVM_Block(lbl, size, FVM_Seq([h|tail]), s) -> STC_Block(lbl, <unfix-init> size, Some(h), body, jump)
+    resugar-seq-stc: FVM_Block(lbl, size, FVM_Seq([h|tail]), s) -> STC_Block(lbl, <unfix-init-stc> size, Some(h), body, jump)
       where
-        <is-ret> h;
+        <is-ret> h
+      with
         (body, jump) := <split-init-last> tail
         
-    resugar-seq-stc: FVM_Block(lbl, size, FVM_Seq(instrs), s) -> STC_Block(lbl, <unfix-init> size, None(), body, jump)
-      where
+    resugar-seq-stc: FVM_Block(lbl, size, FVM_Seq(instrs), s) -> STC_Block(lbl, <unfix-init-stc> size, None(), body, jump)
+      with
         (body, jump) := <split-init-last> instrs
-        
-    resugar-seq-stc: b@FVM_Block(lbl, s, _, _) -> <debug; fail> b
       
    
     is-ret: r@STC_ContRGetN(_) -> r
