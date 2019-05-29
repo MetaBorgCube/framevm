@@ -1,0 +1,23 @@
+module Syntax
+
+imports 
+
+  libspoofax/color/default
+  completion/colorer/framevm-cc-esv
+
+colorer
+  green        = 0 80 0
+  green_italic = 0 80 0 italic
+  green_bold   = 0 80 0 bold
+  
+  
+  black_bold = 0 0 0 bold
+  
+  layout     : green_italic
+  
+  PseudoCode: green_italic
+  PsdInstr: green_bold
+  PsdType: green_bold
+  PsdExp: green_italic
+  
+  LABEL: black_bold
