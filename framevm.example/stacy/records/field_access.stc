@@ -1,11 +1,11 @@
 #init 1
 { 
-//  rec Point = {
-//  	int: x // [0] 
-//  	int: y // [1]
-//  }
-//  
-//  var p := new Point(0, 0) 	// [0]
+  rec Point = {
+  	int: x // [0] 
+  	int: y // [1]
+  }
+  
+  var p := new Point(0, 0) 	// [0]
   p.x := 10  				// [0, 0]
   p.y := p.x + 1			// [0, 1]
   print(p.y)				// print 11

@@ -4,7 +4,7 @@ lexical syntax
 
   LOCAL          = "r" [0-9]+
   REGISTER       = [a-z]+
-  ID             = LIB
+  ID             = [a-zA-Z] [a-zA-Z0-9\_\.]*
   LIB            = [a-z] [a-zA-Z0-9\_\.]*
   LIBFUNC        = [a-z] [a-zA-Z0-9\_]*
   LABEL          = [A-Z\_] [A-Z0-9\_]* 

@@ -1,11 +1,11 @@
 #init 1
 {
-//	rec A = {
-//		int: i
-//		int: j
-//	}
-//	
-//	var a := new A(1, 1)
+	rec A = {
+		int: i
+		int: j
+	}
+	
+	var a := new A(1, 1)
 	a.i := 1 + 1
 	a.j := 12
 	

@@ -1,5 +1,4 @@
 #init 2
-//#start MAIN
 
 {
 	var x := 1

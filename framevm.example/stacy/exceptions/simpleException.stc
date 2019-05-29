@@ -1,12 +1,12 @@
 {
-//	rec A ={
-//		int:m
-//	}
+	rec A ={
+		int:m
+	}
 	
-//	try:
-//		throw new A(1)
-//	catch A as e:
-//		print(e.m)	// print 1
+	try:
+		throw new A(1)
+	catch A as e:
+		print(e.m)	// print 1
 	print(0)		// print 0
 }
 

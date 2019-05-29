@@ -1,10 +1,10 @@
 #init 2
 {
-//	rec A ={
-//		int:i
-//	}
+	rec A = {
+		int:i
+	}
 	var a := 1 + 2
-//	var b := new A(0)
+	var b := new A(0)
 	
 	b.i := a + 3
 	print(b.i)	// 6

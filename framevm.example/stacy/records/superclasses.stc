@@ -1,24 +1,24 @@
 #init 2
 {
-//	rec A = {
-//		int: a
-//		func (int:i, int:j):C = { 
-//  			return new C(i, j + a)
-//		}
-//	}
-//	
-//	rec B:A = {
-//		func2 (int:i):int = { 
-//  			return i + 1
-//  		}
-//	}
-//	
-//	rec C = {
-//		i: int
-//		j: int
-//	}
+	rec A = {
+		int: a
+		func (int:i, int:j):C = { 
+  			return new C(i, j + a)
+		}
+	}
 	
-//	a := new B()
+	rec B:A = {
+		func2 (int:i):int = { 
+  			return i + 1
+  		}
+	}
+	
+	rec C = {
+		i: int
+		j: int
+	}
+	
+	a := new B()
 	a.a := 1
 	b := a.func(1, a.func2(2))
 	print(b.i)	 				// print 1

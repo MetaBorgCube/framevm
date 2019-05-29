@@ -1,15 +1,15 @@
 #init 1
 {
-//	rec A = {
-//		int:x
-//	}
-//	
-//	func(int:i):int = {
-//		var j := new A(i)
-//		var k := 3
-//		
-//		return j.x + k
-//	}
+	rec A = {
+		int:x
+	}
+	
+	func(int:i):int = {
+		var j := new A(i)
+		var k := 3
+		
+		return j.x + k
+	}
 	var x := func(2)
 	print(x)				// print(5)
 }

@@ -1,15 +1,15 @@
 #init 2
 {
-//	rec A = {
-//		func (int:i):int = { 
-//			if (i) == 0:
-//				return 42
-//			else:
-//  				return new A().func(i - 1)
-//		}
-//	}
+	rec A = {
+		func (int:i):int = { 
+			if (i) == 0:
+				return 42
+			else:
+  				return new A().func(i - 1)
+		}
+	}
 	
-//	var x := new A()
+	var x := new A()
 	var y := x.func(2)
 	print(y)  			// print 42	
 }
