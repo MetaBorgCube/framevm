@@ -147,7 +147,10 @@ context-free syntax
   Label = BlockLabel
   Label.FVM_ExternalLabel = LIBFUNC
   
-  Path.FVM_Self  = <[]>
+  PathOrEmpty = EmptyPath
+  PathOrEmpty = Path
+  
+  EmptyPath.FVM_Self  = <[]>
   Path.FVM_Path  = <[<{PathRef ","}+>]>
   
   PathRef = SlotRef
@@ -182,8 +185,8 @@ context-free syntax
   Alias.FVM_ContAlias = <#cont <ContRef> -\> <INTLEZ>>
   InitialBlock.FVM_InitBlock = <#start <LABEL>>
   
-  CFSize.RGR_Local = <local := <INTLEZ>>
-  CFSize.STC_Stack = <stack := <INTLEZ>>
+  CFRSize.RGR_Local = <local := <INTLEZ>>
+  CFSSize.STC_Stack = <stack := <INTLEZ>>
 /* 
 
 Values 

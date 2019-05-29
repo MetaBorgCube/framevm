@@ -7,7 +7,7 @@ sorts RBlock context-free syntax
 
 	RBlock.RGR_Block = <
 <lbl:Label>: 
-    <size:CFSize?>
+    <size:CFRSize?>
     <ret:OnReturnInstr?>
 	<instr:Instr*> 
 	<jump:ControlTerminal>
@@ -18,7 +18,6 @@ sorts RBlock context-free syntax
 //	Instr.RGR_PureAssign = <<RGRVar> \<- <Exp> @inline>
 	Instr.RGR_Terminal = ExpTerminal
 	Instr.RGR_Assign = <<RGRVar> \<- <Exp>>
-	Instr.RGR_PathAlias = <path <ID> := <Path>>
 	
 	RGRVar = LOCAL
 //	RGRVar = REGISTER
@@ -57,12 +56,12 @@ sorts Exp context-free syntax
 	ExpTerminal.RGR_Link  = <link(<Exp>, <PathOrExp>, <LinkRef>)>
  
 	ExpTerminal.RGR_Set   = <set(<PathOrExp>, <Exp>)>
-	ExpTerminal.RGR_Set   = <set(<Exp>, <PathOrExp>, <Exp>)>
+	ExpTerminal.RGR_Set   = <set(<Exp>, <NEPathOrExp>, <Exp>)>
 	FrameExp.RGR_Get      = <get(<PathOrExp>)>
 	FrameExp.RGR_Get      = <get(<Exp>, <PathOrExp>)>		
 	
 	Exp = ContExp
-	OnReturnExp.RGR_ContRGet = <rget(<INTLEZ>)>
+	OnReturnExp.RGR_ContRGet = <rget(<INTLZ>)>
 	OnReturnExp.RGR_ContRGet = <rget()>
 	ContExp.RGR_ContThis     = <cgetcurrent()>
 	ContExp.RGR_ContNew      = <cnew(<Exp>, <Label>, <IntOrExp>)>
@@ -89,9 +88,9 @@ sorts Exp context-free syntax
 	ControlTerminal.RGR_Try        = <try(<Exp>, <Exp>, <Label>)>
 	ControlTerminal.RGR_Throw      = <throw(<Exp>)>
 	
-	ExpTerminal.RGR_ScopeExit       = <exitscope(<Path>)>
+	ExpTerminal.RGR_ScopeExit       = <exitscope(<PathOrEmpty>)>
 	ExpTerminal.RGR_ScopeNew        = <newscope(<Exp>, <LinkRef>)>
-	ControlTerminal.RGR_ScopeExit   = <exitscope(<Path>, <Label>)>
+	ControlTerminal.RGR_ScopeExit   = <exitscope(<PathOrEmpty>, <Label>)>
 	ControlTerminal.RGR_ScopeNew    = <newscope(<Exp>, <LinkRef>, <Label>)>
 	ExpTerminal.RGR_ScopeSetCurrent = <mkcurrent(<Exp>)>
 	Exp.RGR_ScopeGetCurrent         = <getcurrent()>
@@ -104,11 +103,11 @@ sorts Exp context-free syntax
 	Exp.RGR_StringLoad       = <sload(<STRING>)>
 	Exp.RGR_CharLoad         = <cload(<CHAR>)>	
 	
-	Exp = ClosExp
-    ClosExp.RGR_ClosNew      = <newc(<CopyPolicy>, <Label>, <IntOrExp>)>
-    ClosExp.RGR_ClosNew      = <newc(<Label>, <IntOrExp>)>
-    ClosExp.RGR_ClosToCont   = <cnew(<Exp>)>
-    ClosExp.RGR_ClosUnpack   = <unpack(<Exp>)>
+//	Exp = ClosExp
+//    ClosExp.RGR_ClosNew      = <newc(<CopyPolicy>, <Label>, <IntOrExp>)>
+//    ClosExp.RGR_ClosNew      = <newc(<Label>, <IntOrExp>)>
+//    ClosExp.RGR_ClosToCont   = <cnew(<Exp>)>
+//    ClosExp.RGR_ClosUnpack   = <unpack(<Exp>)>
   
   
 	
@@ -116,7 +115,10 @@ sorts Exp context-free syntax
 	IntOrExp = INTLEZ
 	
 	PathOrExp = Exp
-	PathOrExp = Path
+	PathOrExp = PathOrEmpty
+	
+	NEPathOrExp = Exp
+	NEPathOrExp = Path
 	
 	ContOrExp = Exp
 	ContOrExp = ContRef

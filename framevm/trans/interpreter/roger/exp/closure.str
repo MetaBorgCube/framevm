@@ -8,4 +8,4 @@ imports
     fvm-common
 
 rules
-    rgr-eval-exp(|env): RGR_ClosNew(_, _, _) -> <fail>
+//    rgr-eval-exp(|env): RGR_ClosNew(_, _, _) -> <fail>

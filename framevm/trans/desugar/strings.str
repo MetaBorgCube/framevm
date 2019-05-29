@@ -7,6 +7,8 @@ imports
 rules
     fix-strings = topdown(try(fix-string))
       
+    fix-string: FVM_Path([]) -> FVM_Self()
+    
     fix-string: STC_StringPush(string) -> STC_StringPush(<unquote(!"\"")> string)
     fix-string: STC_CharPush(char)     -> STC_CharPush(<unquote(!"'")> char)
     fix-string: RGR_StringLoad(string) -> RGR_StringLoad(<unquote(!"\"")> string)
