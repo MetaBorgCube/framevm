@@ -38,7 +38,13 @@ public class vm_start_0_1 extends FVMStrategy {
 		}
 		
 		ControlFrame controlFrame = env.currentThread.getControlFrame();
-		controlFrame.setSize(size);
+		try {
+			controlFrame.setSize(size);
+		} catch (IllegalStateException ex) {
+			io.printError(ex.getMessage());
+		} catch (NegativeArraySizeException ex) {
+			io.printError("No local size set for initial block " + blockName);
+		}
 		controlFrame.jump(block);
 		env.currentThread.initThread();
 		

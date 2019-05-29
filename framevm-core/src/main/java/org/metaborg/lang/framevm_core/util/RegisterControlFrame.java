@@ -14,7 +14,7 @@ public class RegisterControlFrame extends ControlFrame {
 	
 	public RegisterControlFrame(int contSize, int locals, Block block, String id) {
 		super(contSize, block, id);
-		this.returnStack = new Stack<>(); //TODO: pre-allocate block.max-stack
+		this.returnStack = new Stack<>();
 		if (locals >= 0) {
 			this.locals = new IStrategoTerm[locals];
 		} else {
@@ -30,10 +30,12 @@ public class RegisterControlFrame extends ControlFrame {
 	}
 	
 	public void set(String slot, IStrategoTerm term) {
+		if (locals == null) throw new IllegalStateException("Locals not set");
 		locals[slotId(slot)] = term;
 	}
 	
 	public IStrategoTerm get(String slot) {
+		if (locals == null) throw new IllegalStateException("Locals not set");
 		return locals[slotId(slot)];
 	}
 	

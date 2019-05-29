@@ -41,6 +41,9 @@ public abstract class rgr_get extends FVMStrategy {
 			io.printError("SEGFAULT");
 			io.printError("Slot " + slot + " does not exist");
 			return null;
+		} catch (IllegalStateException ex) {
+			io.printError(ex.getMessage());
+			return null;
 		}
 	}
 

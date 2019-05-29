@@ -35,6 +35,9 @@ public class rgr_set_0_1 extends FVMStrategy {
 		} catch (ArrayIndexOutOfBoundsException ex) {
 			io.printError("Slot " + slot + " does not exist");
 			return null;
+		} catch (IllegalStateException ex) {
+			io.printError(ex.getMessage());
+			return null;
 		}
 	}
 }

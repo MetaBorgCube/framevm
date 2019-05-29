@@ -23,8 +23,7 @@ public class cont_transfer_0_1 extends FVMStrategy {
 		
 		StrategoList values = (StrategoList) tuple.get(1);
 				
-		for (int i = values.size()-1; i >= 0; i--) {
-			IStrategoTerm value = values.get(i);
+		for (IStrategoTerm value : values) {
 			cf.pushReturn(value);
 		}
 		return new StrategoBlob(env);

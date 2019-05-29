@@ -124,4 +124,8 @@ public abstract class ControlFrame {
 	public abstract boolean hasReturn();
 
 	public abstract void setSize(int size);
+	
+	public String toString() {
+		return "Continuation(" + this.getId() + ")";
+	}
 }

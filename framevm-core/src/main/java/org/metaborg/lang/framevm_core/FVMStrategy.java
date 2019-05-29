@@ -25,7 +25,7 @@ public abstract class FVMStrategy extends Strategy {
 		try {
 			return this.invoke(context.getIOAgent(), context.getFactory(), environment, current);
 		} catch (Exception ex) {
-			context.getIOAgent().printError("Uncaught exception '" + ex.getMessage() + "'");
+			context.getIOAgent().printError("Uncaught " + ex.getClass().getName() + " '" + ex.getMessage() + "'");
 			
 			StackTraceElement[] trace = ex.getStackTrace();
 			for (int i = 0; i < 7; i++) {
