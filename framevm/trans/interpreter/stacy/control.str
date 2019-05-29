@@ -70,7 +70,7 @@ rules
       where
         (env2, vals) := <pop-list(|env1)> <string-to-int> n;
         continuation := <cont-get-cc(|env2)> <cont-this(|env2)>;
-        env3 := <cont-transfer(|env2)> (continuation, vals);
+        env3 := <cont-transfer(|env2)> (continuation, <reverse> vals);
         env4 := <cont-call(|env3)> continuation
           
     // STC_Return/0
@@ -90,7 +90,7 @@ rules
         this := <cont-this(|env1)>;
         (env2, val) := <stack-pop-any(|env1)>;
         continuation := <cont-get-cc(|env2)> this;
-        env3 := <cont-transfer(|env2)> (continuation, [val, Continuation(this)]);
+        env3 := <cont-transfer(|env2)> (continuation, [Continuation(this), val]);
         env4 := <vm-jump(|env3)> (lib, block);
         env5 := <cont-call(|env4)> continuation
    

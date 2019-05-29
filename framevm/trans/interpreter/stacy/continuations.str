@@ -110,7 +110,7 @@ rules
       where
         cont := <cont-get(|env1)> (<cont-this(|env1)>, <cont-resolve> p);
         (env2, vals) := <pop-list(|env1)> <string-to-int> n;
-        env3 := <cont-transfer(|env2)> (cont, vals)
+        env3 := <cont-transfer(|env2)> (cont, <reverse> vals)
     
     //STC_ContTransfer/1
     // Transfer n elements from the stack to the stack of the continuation on top of the stack
@@ -119,7 +119,7 @@ rules
       where
         (env2, Continuation(cont)) := <stack-pop-cont(|env1)>;
         (env3, vals) := <pop-list(|env2)> <string-to-int> n;
-        env4 := <cont-transfer(|env3)> (cont, vals)
+        env4 := <cont-transfer(|env3)> (cont, <reverse> vals)
           
     // STC_ContCall/1
     // Call the continuation on top of the stack
