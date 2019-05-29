@@ -1,4 +1,4 @@
-module smoke_threads
+module stc_smoke_threads
 
 language framevm
 

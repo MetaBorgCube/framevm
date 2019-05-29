@@ -1,4 +1,4 @@
-module smoke_loops
+module stc_smoke_loops
 
 language framevm
 

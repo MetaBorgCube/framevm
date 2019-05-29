@@ -1,4 +1,4 @@
-module smoke_array
+module stc_smoke_array
 
 language framevm
 

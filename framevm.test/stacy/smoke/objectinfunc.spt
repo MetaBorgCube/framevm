@@ -1,4 +1,4 @@
-module smoke_obj_in_func
+module stc_smoke_obj_in_func
 
 language framevm
 

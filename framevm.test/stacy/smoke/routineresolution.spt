@@ -1,4 +1,4 @@
-module smoke_routineres
+module stc_smoke_routineres
 
 language framevm
 

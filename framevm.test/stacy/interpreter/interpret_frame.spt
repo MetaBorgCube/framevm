@@ -1,4 +1,4 @@
-module interpreter_frame
+module stc_interpreter_frame
 
 language framevm
 

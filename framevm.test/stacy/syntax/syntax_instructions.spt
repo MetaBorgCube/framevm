@@ -1,4 +1,4 @@
-module syntax_instructions
+module stc_syntax_instructions
 
 language framevm
 

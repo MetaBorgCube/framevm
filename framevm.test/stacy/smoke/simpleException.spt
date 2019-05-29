@@ -1,4 +1,4 @@
-module smoke_exception
+module stc_smoke_exception
 
 language framevm
 

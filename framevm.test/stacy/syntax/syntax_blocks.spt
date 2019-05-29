@@ -1,4 +1,4 @@
-module parser_blocks
+module stc_parser_blocks
 
 language framevm
 

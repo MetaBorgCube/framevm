@@ -1,4 +1,4 @@
-module smoke_jump
+module stc_smoke_jump
 
 language framevm
 

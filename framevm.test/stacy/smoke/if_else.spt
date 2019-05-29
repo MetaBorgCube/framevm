@@ -1,4 +1,4 @@
-module smoke_if_else
+module stc_smoke_if_else
 
 language framevm
 

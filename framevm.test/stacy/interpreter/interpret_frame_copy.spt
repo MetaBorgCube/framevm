@@ -1,4 +1,4 @@
-module interpreter_frame_copy
+module stc_interpreter_frame_copy
 
 language framevm
 

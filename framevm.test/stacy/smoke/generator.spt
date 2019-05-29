@@ -1,4 +1,4 @@
-module smoke_generator
+module stc_smoke_generator
 
 language framevm
 

@@ -1,4 +1,4 @@
-module interpreter_arithmetic_int
+module stc_interpreter_arithmetic_int
 
 language framevm
 

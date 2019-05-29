@@ -1,4 +1,4 @@
-module smoke_sum_to
+module stc_smoke_sum_to
 
 language framevm
 

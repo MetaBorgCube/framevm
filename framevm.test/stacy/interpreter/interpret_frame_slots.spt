@@ -1,4 +1,4 @@
-module interpreter_frame_slots
+module stc_interpreter_frame_slots
 
 language framevm
 

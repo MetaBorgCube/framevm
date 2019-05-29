@@ -1,4 +1,4 @@
-module smoke_with
+module stc_smoke_with
 
 language framevm
 

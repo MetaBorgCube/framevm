@@ -1,4 +1,4 @@
-module parser_control
+module stc_parser_control
 
 language framevm
 

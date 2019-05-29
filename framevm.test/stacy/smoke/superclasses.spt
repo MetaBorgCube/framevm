@@ -1,4 +1,4 @@
-module smoke_superclasses
+module stc_smoke_superclasses
 
 language framevm
 

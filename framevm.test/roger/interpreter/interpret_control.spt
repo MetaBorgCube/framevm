@@ -12,6 +12,7 @@ MAIN_END1:
 	print(r0)
 	return(iload(0))
 MAIN_END2:
+	local := 1
 	r0 <- rget()
 	print(iload(2))
 	print(r0)
@@ -51,25 +52,14 @@ MAIN_END:
 	return(iload(0))
 ]] transform "Run -> Run" to "IntV(4)"
 
-test call frame throw 1 [[
+test call frame throw [[
 	r0 <- new(2)
 	set(r0, [0], iload(1))
 	set(r0, [1], iload(3))
-	cset(x, cnew(new(), MAIN_END2, 2))
+	r1 <- cnew(new(), MAIN_END2, 2)
+	cset(x, r1)
+	cset(r1, c, cget(c))
 	call(r0, FUNC, MAIN_END1)
-FUNC:
-	local := 0
-	throw(get([0]))
-]] transform "Run -> Run" to "IntV(2)
-IntV(1)"
-
-test call frame throw 2 [[
-	r0 <- new(2)
-	set(r0, [0], iload(1))
-	set(r0, [1], iload(3))
-	r0 <- cnew(r0, FUNC, 2)
-	cset(x, cnew(new(), MAIN_END2, 2))
-	call(r0, MAIN_END1)
 FUNC:
 	local := 0
 	throw(get([0]))
@@ -136,29 +126,21 @@ test conditional jump then [[
 	jumpz(iload(0), MAIN2, MAIN3)
 MAIN2:
 	print(iload(1))
-	jump(MAIN4)
+	return(iload(0))
 MAIN3:
 	print(iload(2))
-	jump(MAIN4)
-MAIN4:
-	print(iload(3))
 	return(iload(0))
-]] transform "Run -> Run" to "IntV(1)
-IntV(3)"
+]] transform "Run -> Run" to "IntV(1)"
 
 test conditional jump else [[
 	jumpz(iload(1), MAIN2, MAIN3)
 MAIN2:
 	print(iload(1))
-	jump(MAIN4)
+	return(iload(0))
 MAIN3:
 	print(iload(2))
-	jump(MAIN4)
-MAIN4:
-	print(iload(3))
 	return(iload(0))
-]] transform "Run -> Run" to "IntV(2)
-IntV(3)"
+]] transform "Run -> Run" to "IntV(2)"
 
 
 

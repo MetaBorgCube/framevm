@@ -1,4 +1,4 @@
-module interpreter_jump
+module stc_interpreter_jump
 
 language framevm
 
