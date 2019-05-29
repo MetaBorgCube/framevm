@@ -48,7 +48,7 @@ public class DotBlockFactory extends DotFactory {
 	 * 		The idx of this instruction (Needed for labeling)
 	 * @param block
 	 * 		The current block
-	 * @param links
+	 * @param links\{TermIndex\([^}]+\)\}
 	 * 		A mutable list were the links from this instruction are added to		
 	 * @return
 	 * 		The sanitized string representing the instruction
