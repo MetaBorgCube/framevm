@@ -7,7 +7,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.metaborg.lang</groupId>
   <artifactId>framevm</artifactId>
-  <version>1.0.0</version>
+  <version>1.1.0</version>
   <packaging>spoofax-language</packaging>
 
   <parent>
@@ -62,7 +62,7 @@
     <dependency>
       <groupId>org.metaborg</groupId>
         <artifactId>framevm-core</artifactId>
-		<version>1.0.0</version>
+		<version>1.1.0</version>
     </dependency>
   </dependencies>
   
