@@ -64,17 +64,17 @@ rules
     apply-alias(|alias): FVM_Cont(name) -> FVM_Cont(Bind(name, <string-to-int> idx)) where FVM_ContAlias(FVM_Cont(name), idx) := alias
     
     
-    resugar-aliasses: STC_Program(fn, i, s, b, old_aliasses, bound_blocks) -> STC_Program(fn, i, s, b, aliasses, blocks)
+    resugar-aliasses: STC_Program(fn, i, s, b, links, bound_blocks) -> STC_Program(fn, i, s, b, aliasses, blocks)
       where
         blocks := <topdown(try(resugar-alias))> bound_blocks;
         (new_aliasses, _) := <foldl(resugar-alias)>(<collect-all(is-alias)> bound_blocks, ([], []));
-        aliasses := <list-merge> (old_aliasses, new_aliasses)
+        aliasses := <list-merge> (links, new_aliasses)
     
-    resugar-aliasses: RGR_Program(fn, i, s, b, old_aliasses, bound_blocks) -> RGR_Program(fn, i, s, b, aliasses, blocks)
+    resugar-aliasses: RGR_Program(fn, i, s, b, links, bound_blocks) -> RGR_Program(fn, i, s, b, aliasses, blocks)
       where
         blocks := <topdown(try(resugar-alias))> bound_blocks;
         (new_aliasses, _) := <foldl(resugar-alias)>(<collect-all(is-alias)> bound_blocks, ([], []));
-        aliasses := <list-merge> (old_aliasses, new_aliasses)
+        aliasses := <list-merge> (links, new_aliasses)
     
     is-alias: f@FVM_Link(Bind(name, idx)) -> f
     is-alias: f@FVM_Cont(Bind(name, idx)) -> f
@@ -89,5 +89,5 @@ rules
       where
         <not(elem)> (name, ids)
     
-    list-merge: (a, b) -> <concat; make-set> [a, b]
+    list-merge: (a, b) -> <strip-annos; concat; make-set> [a, b]
     
