@@ -9,8 +9,8 @@ Include the following in your projects `pom.xml`:
 <dependencies>
   <dependency>
     <groupId>org.metaborg.lang</groupId>
-    <artifactId>framevm-stacy</artifactId>
-    <version>1.0.0</version>
+    <artifactId>framevm</artifactId>
+    <version>1.1.0</version>
     <type>spoofax-language</type>
   </dependency>
 </dependencies>
@@ -20,7 +20,7 @@ Include the following in your `metaborg.yaml`:
 ```yaml
 dependencies:
   source:
-  - org.metaborg.lang:framevm-stacy:1.0.0
+  - org.metaborg.lang:framevm:1.1.0
 ```
 
 The following files contain the definitions you might want to use when compiling to Stacy:
