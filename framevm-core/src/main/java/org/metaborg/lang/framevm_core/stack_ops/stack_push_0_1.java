@@ -21,8 +21,12 @@ public class stack_push_0_1 extends FVMStrategy {
 			io.printError("Cannot push to a register control frame");
 			return null;
 		}
-		
-		cf.push(arg);
+		try {
+			cf.push(arg);
+		} catch (IllegalStateException ex) {
+			io.printError(ex.getMessage());
+			return null;
+		}
 		return new StrategoBlob(env);
 	}
 }
