@@ -55,3 +55,9 @@ rules    // Util
     val-to-string: Continuation(cont) -> cont
     val-to-string: ClosV(frame, FVM_BoundLabel(lib, lbl, _), _) -> (frame, lbl)
     
+rules
+    apply-until-no-change(s): e -> <apply-until-equal(s)> (e, [])
+    apply-until-equal(s): (e, e) -> e
+    apply-until-equal(s): (input, _) -> <apply-until-equal(s)> (<topdown(try(s))> input, input)
+    
+    

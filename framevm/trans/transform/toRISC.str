@@ -8,76 +8,95 @@ imports
     interpreter/util
 
 rules
-    to-RISC-all: STC_Program(fn, i, s, b, a, blocks) -> STC_Program(fn, i, s, b, a, <map(to-RISC-all)> blocks)
-    to-RISC-all: p@RGR_Program(_, _, _, _, _, _) -> p
-    
-    to-RISC-all: FVM_Block(lbl, s, FVM_Seq(body), d) -> FVM_Block(lbl, s, FVM_Seq(body_risc), d)
+    to-RISC-block: FVM_Block(lbl, s, FVM_Seq(body), d) -> FVM_Block(lbl, <update-RISC-size> s, FVM_Seq(body_risc), d)
       where
-        body_risc := <to-RISC(r-toN)><to-RISC(r-stack-index)><to-RISC(r-relative)><to-RISC(r-new)><to-RISC(r-link)><to-RISC(r-cont)><to-RISC(r-scope)><to-RISC(r-string)> body
-  
-    // Boilerplate to make the desugaring step simpler
-    to-RISC(s): x -> <foldr(![], (fpr(s) <+ idf))> x 
-    fpr(s): (e, body) -> <concat> [<s>e, body]
-    idf: (e, body) -> [e|body]
-      
-      // Link -> LinkR
-    r-link: STC_Link(path, lbl)  -> [STC_Get(path),  STC_LinkR(lbl)]
+        body_risc := <apply-until-no-change(to-RISC); flatten-list> body
+        
+    update-RISC-size: Some(n) -> Some(<addi> (n, 3))	// TODO: is this correct?
+    update-RISC-size: None() -> None()
+        
+        
+rules // to RISC rules
+
+    to-RISC: FVM_Path([]) -> FVM_Self()
+    to-RISC: STC_Dup()    -> STC_DupN("1")
+    to-RISC: STC_Swap()   -> STC_SwapN("1")
+    to-RISC: STC_New()    -> STC_New("0")
+    to-RISC: STC_ContTransfer() -> STC_ContTransfer("1")
     
-    // New/0 -> New/1
-    r-new: STC_New() -> [STC_New("0")]
+    to-RISC: STC_Return()        -> STC_ReturnN("1")
+    to-RISC: STC_CharPush(c)     -> STC_IPush(<int-to-string> <index(|1)> <explode-string> c)
+    to-RISC: STC_Get(FVM_Self()) -> STC_ScopeGetCurrent()
+    to-RISC: STC_Set(FVM_Self()) -> STC_ScopeSetCurrent()
+    to-RISC: STC_ContRGet()      -> STC_ContRGetN("1")
+    
+
+rules
+
+    to-RISC: STC_New(n)          -> [STC_IPush(n), STC_NewR()]
+    to-RISC: STC_Link(path, lbl) -> [STC_Get(path),  STC_LinkR(lbl)]
+    
+    to-RISC: STC_Get() -> [STC_ScopeGetCurrent(), STC_Swap(), STC_GetR()]
+    to-RISC: STC_Get(FVM_Path(path)) -> [STC_ScopeGetCurrent(), STC_GetR(FVM_Path(path))]
+
+    to-RISC: STC_GetR(FVM_Path(path)) -> <map(\e -> STC_GetR(FVM_Path([e]))\)> path where <geq> (<length> path, 2)
+    to-RISC: STC_GetR(FVM_Path([FVM_Slot(slot_id)])) -> [STC_IPush(slot_id), STC_GetR()]
+	 
+	to-RISC: STC_Set() -> [STC_ScopeGetCurrent(), STC_SwapN("2"), STC_Swap(), STC_SetR()]
+	
+	to-RISC: STC_Set(path) -> [STC_ScopeGetCurrent() , STC_Swap(), STC_SetR(path)]
+    
+    to-RISC: STC_SetR(FVM_Path([FVM_Slot(slot_id)])) -> [STC_IPush(slot_id), STC_Swap() , STC_SetR()]
+    
+	to-RISC: STC_SetR(FVM_Path(path)) -> [STC_Swap(), STC_GetR(FVM_Path(init)) , STC_Swap(), STC_SetR(FVM_Path([last]))]
+      where
+        <geq> (<length> path, 2);
+        (init, last) := <split-init-last> path
 
 
-    // Scope operations -> mkcurrent
-    r-scope: STC_ScopeNew(link) ->
+rules
+
+    to-RISC: STC_ContNew(lbl, n) -> [STC_IPush(n), STC_ContNewR(lbl)]
+    to-RISC: STC_ContGet(c)      -> [STC_ContThis(), STC_ContGetR(c)]
+    to-RISC: STC_ContGet()       -> [STC_ContThis(), STC_Swap(), STC_ContGetR()]
+    
+    to-RISC: STC_ContGetR(FVM_Cont(Bind(_, idx))) -> [STC_IPush(<int-to-string> idx), STC_ContGetR()]
+    
+    to-RISC: STC_ContSet(c)      -> [STC_ContThis(), STC_Swap(), STC_ContSetR(c)]
+    to-RISC: STC_ContSet()       -> [STC_ContThis(), STC_SwapN("2"), STC_Swap(), STC_ContSetR()]
+    
+    to-RISC: STC_ContSetR(FVM_Cont(Bind(_, idx))) -> [STC_IPush(<int-to-string> idx), STC_Swap(), STC_ContSetR()]
+    
+    to-RISC: STC_ContTransfer(n, c) -> [STC_ContGet(c), STC_ContTransfer(n)]
+    
+    
+rules
+
+    to-RISC: STC_ScopeExit(path, lbl) -> 
+        [STC_ScopeExit(path),
+         STC_Jump(lbl)
+        ]
+        
+    to-RISC: STC_ScopeExit(path) -> 
+        [STC_Get(path),
+         STC_ScopeSetCurrent()
+        ]
+    
+    to-RISC: STC_ScopeNew(link) ->
         [STC_Dup(),
          STC_Link(FVM_Self(), link),
          STC_ScopeSetCurrent()
         ]
         
-    r-scope: STC_ScopeNew(link, lbl) ->
-        [STC_Dup(),
-         STC_Link(FVM_Self(), link),
-         STC_ScopeSetCurrent(),
+    to-RISC: STC_ScopeNew(link, lbl) ->
+        [STC_ScopeNew(link),
          STC_Jump(lbl)
-        ]
-         
-    r-scope: STC_ScopeExit(path, lbl) -> 
-        [STC_Get(path),
-         STC_ScopeSetCurrent(),
-         STC_Jump(lbl)
-        ]
-        
-    r-scope: STC_ScopeExit(path) -> 
-        [STC_Get(path),
-         STC_ScopeSetCurrent()
-        ]
-        
-        
-    // Implicit STC_Continuations to explicit STC_Continuations
-    r-cont: STC_Return() -> 
-        [STC_ContTransfer("1", FVM_Cont(Bind("c", 0))), 
-         STC_ContGet(FVM_Cont(Bind("c", 0))), 
-         STC_ContReturn()
-        ]
-        
-    r-cont: STC_ReturnN(n) -> 
-        [STC_ContTransfer(n, FVM_Cont(Bind("c", 0))), 
-         STC_ContGet(FVM_Cont(Bind("c", 0))), 
-         STC_ContReturn()
-        ]
-        
-    r-cont: STC_Call(FVM_Label(block), FVM_Label(returnAddr)) -> 
-        [STC_ContNew(FVM_Label(block), "2"), 
-         STC_Dup(),
-         STC_ContThis(),
-         STC_ContSetR(FVM_Cont(Bind("c", 0))),
-         STC_Dup(), 
-         STC_ContGet(FVM_Cont(Bind("x", 1))),
-         STC_ContSetR(FVM_Cont(Bind("x", 1))), 
-         STC_ContCall(FVM_Label(returnAddr))
         ]
     
-    r-cont: STC_Call(FVM_Label(return)) -> 
+
+rules
+        
+    to-RISC: STC_Call(FVM_Label(return)) -> 
         [STC_Dup(), 
          STC_ContGet(FVM_Cont(Bind("x", 1))), 
          STC_ContSetR(FVM_Cont(Bind("x", 1))),
@@ -87,18 +106,7 @@ rules
          STC_ContCall(FVM_Label(return))
         ]
         
-    r-cont: STC_TailCall(FVM_Label(block)) -> 
-        [STC_ContNew(FVM_Label(block), "2"), 
-         STC_Dup(),
-         STC_ContGet(FVM_Cont(Bind("c", 0))),
-         STC_ContSetR(FVM_Cont(Bind("c", 0))),
-         STC_Dup(), 
-         STC_ContGet(FVM_Cont(Bind("x", 1))),
-         STC_ContSetR(FVM_Cont(Bind("x", 1))), 
-         STC_ContReturn()
-        ]
-        
-    r-cont: STC_TailCall() -> 
+    to-RISC: STC_TailCall() -> 
         [STC_Dup(), 
          STC_ContGet(FVM_Cont(Bind("x", 1))), 
          STC_ContSetR(FVM_Cont(Bind("x", 1))),
@@ -107,8 +115,53 @@ rules
          STC_ContSetR(FVM_Cont(Bind("c", 0))),
          STC_ContReturn()
         ]
-         
-    r-cont: STC_Try(lbl_try, lbl_catch, lbl_next) ->
+      
+    to-RISC: STC_Call(FVM_Label(block), FVM_Label(returnAddr)) -> 
+        [STC_ContNew(FVM_Label(block), "2"), 
+         STC_Call(FVM_Label(returnAddr))
+        ]
+        
+    to-RISC: STC_TailCall(FVM_Label(block)) -> 
+        [STC_ContNew(FVM_Label(block), "2"), 
+         STC_TailCall()
+        ]
+
+    to-RISC: STC_ContCall(c, lbl) -> 
+        [STC_ContGet(c),
+         STC_ContCall(lbl)
+        ]
+
+    to-RISC: STC_ContReturn(c) -> 
+        [STC_ContGet(c),
+         STC_ContReturn()
+        ]
+
+    to-RISC: STC_ContTransfer(c, n) -> 
+        [STC_ContGet(c),
+         STC_ContTransfer(n)
+        ]
+
+    to-RISC: STC_ReturnN(n) -> 
+        [STC_ContTransfer(n, FVM_Cont(Bind("c", 0))),
+         STC_ContReturn(FVM_Cont(Bind("c", 0)))
+        ]
+    
+    to-RISC: STC_Yield(lbl) -> 
+        [STC_ContThis(),
+         STC_Swap(),
+         STC_ContTransfer("2", FVM_Cont(Bind("c", 0))),
+         STC_ContCall(FVM_Cont(Bind("c", 0)), lbl)
+        ]
+
+    to-RISC: STC_Throw() -> 
+        [STC_ContTransfer("1", FVM_Cont(Bind("x", 1))),
+         STC_ContReturn(FVM_Cont(Bind("x", 1)))
+        ]
+
+
+rules
+       
+    to-RISC: STC_Try(lbl_try, lbl_catch, lbl_next) ->
         [STC_ContNew(lbl_catch, "3"),
          STC_Dup(),
          STC_ContThis(),
@@ -138,7 +191,7 @@ rules
          STC_ContCall(lbl_next)
         ]
     
-    r-cont: STC_Try(lbl) ->
+    to-RISC: STC_Try(lbl) ->
         [STC_DupN("2"),
          STC_Swap(),
          STC_Dup(),
@@ -160,70 +213,17 @@ rules
          STC_ContSetR(FVM_Cont(Bind("c", 0))),
          STC_ContCall(lbl)
         ]
-        
-    r-cont: STC_Throw() -> 
-        [STC_ContGet(FVM_Cont(Bind("x", 1))),
-         STC_ContTransfer("1"),
-         STC_ContGet(FVM_Cont(Bind("x", 1))),
-         STC_ContReturn()
-        ]
-    
-    r-cont: STC_Yield(lbl) -> 
-        [STC_ContThis(),
-         STC_Swap(),
-         STC_ContGet(FVM_Cont(Bind("c", 0))),
-         STC_ContTransfer("2"),
-         STC_ContGet(FVM_Cont(Bind("c", 0))),
-         STC_ContCall(lbl)
-        ]
-    
-    
-    // STC_Continuations to relative STC_Continuations
-    r-relative: STC_ContCopy(policy1, policy2)  -> [STC_ContThis(), STC_ContCopyR(policy1, policy2)]
-    r-relative: STC_FrameCopy(policy) -> [STC_Get(FVM_Self()), STC_FrameCopyR(policy)]
-    
-    r-relative: STC_ContGet(FVM_Cont(Bind(name, n))) -> [STC_IPush(<int-to-string> n), STC_ContGet()]
-    r-relative: STC_ContGetR(FVM_Cont(Bind(name, n))) -> [STC_IPush(<int-to-string> n), STC_ContGetR()]
-    
-    r-relative: STC_ContSet(FVM_Cont(Bind(name, n))) -> [STC_IPush(<int-to-string> n), STC_Swap(), STC_ContSet()]
-    r-relative: STC_ContSetR(FVM_Cont(Bind(name, n))) -> [STC_IPush(<int-to-string> n), STC_Swap(), STC_ContSetR()]
-    
-    // Get/Set unfolding to single segment paths and only relative gets/sets
-    r-relative: STC_Get() -> [STC_Get(FVM_Self()), STC_Swap(), STC_GetR()]
-    r-relative: STC_Set() -> [STC_Get(FVM_Self()), STC_SwapN("2"), STC_Swap(), STC_SetR()]
-    
-    r-relative: STC_Get(path) -> [STC_Get(FVM_Self()) | <r-relative> STC_GetR(path)]
-    r-relative: STC_GetR(FVM_Path(path)) -> <foldr(![], r-relative-get)> path
-    
-    r-relative: STC_Set(FVM_Path(path)) -> <concat> [[STC_Get(FVM_Self()) | <r-relative> STC_GetR(FVM_Path(body))] , [STC_Swap(), STC_SetR(FVM_Path([last]))]]
-      where
-        (body, last) := <split-init-last> path
-    r-relative: STC_SetR(FVM_Path(path)) -> <concat> [<r-relative> STC_GetR(FVM_Path(body)) , [STC_SetR(FVM_Path([last]))]]
-      where
-        (body, last) := <split-init-last> path
-    
-    r-relative-get: (e, list) -> [STC_GetR(FVM_Path([e])) | list]
-    
-    // Reduce relative gets and sets of slots to getR/0 and setR/0
-    // I don't know why you would want to do this, but you can if you really want to
-    r-stack-index: STC_New(n)                              -> [STC_IPush(n), STC_NewR()]
-    r-stack-index: STC_GetR(FVM_Path([FVM_Slot(slot_id)])) -> [STC_IPush(slot_id), STC_GetR()]
-    r-stack-index: STC_SetR(FVM_Path([FVM_Slot(slot_id)])) -> [STC_IPush(slot_id), STC_Swap(), STC_SetR()]
-    
-    r-toN: STC_Dup()  -> [STC_DupN("1")]
-    r-toN: STC_Swap() -> [STC_SwapN("1")]
-    
-    
-    r-string: STC_StringPush(string) -> <concat> [[
+
+rules
+
+    to-RISC: STC_StringPush(string) -> <concat> [[
         STC_New(<int-to-string> <inc> length),
         STC_Dup(),
         STC_IPush(<int-to-string> length),
-        STC_SetR(FVM_Path([FVM_Slot("0")]))], chars]
-        
+        STC_SetR(FVM_Path([FVM_Slot("0")]))], chars]  
       where
         string' := <fix-string-escaping> string;
         length := <string-length> string';
-        chars := <concat> <map-with-index(r-char)> <explode-string> string'
+        chars := <concat> <map-with-index(to-char)> <explode-string> string'
           
-    r-char: (idx, char) -> [STC_Dup(), STC_IPush(<int-to-string> char), STC_SetR(FVM_Path([FVM_Slot(<int-to-string> idx)]))]
-    
+    to-char: (idx, char) -> [STC_Dup(), STC_IPush(<int-to-string> char), STC_SetR(FVM_Path([FVM_Slot(<int-to-string> idx)]))]

@@ -72,6 +72,7 @@ rules
     stc-stack-delta: STC_ContGetR()     -> -1
     stc-stack-delta: STC_ContGetR(path) -> 0
     
+    stc-stack-delta: STC_ContTransfer()     -> -2
     stc-stack-delta: STC_ContTransfer(n)    -> <dec> <subti> (0, <string-to-int> n)
     stc-stack-delta: STC_ContTransfer(n, _) -> <subti> (0, <string-to-int> n)
     

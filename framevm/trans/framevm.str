@@ -7,63 +7,67 @@ imports
   outline
   fvm-analysis
   fvm-desugar
-  desugar/toRISC
+  reduce/reduce
+  transform/transform
   interpreter/interpreter
 
-rules // Debugging
-  
+rules // Syntax  
   debug-show-desugared-aterm:
     (_, _, ast, path, project-path) -> (filename, result)
     with
       filename := <guarantee-extension(|"aterm")> path
     ; result   := <strip-annos> ast
 
-  debug-show-desugared-full-aterm:
+
+rules // Reduce
+  debug-show-reduced-aterm:
     (_, _, ast, path, project-path) -> (filename, result)
     with
       filename := <guarantee-extension(|"aterm")> path
-    ; result   := <debug; desugar; to-RISC-all; strip-annos> ast
+    ; result   := <fvm-reduce; strip-annos> ast
     
-  editor-format-desugar:
+  editor-format-reduce:
     (_, _, ast, path, project-path) -> (filename, result)
     with
       ext      := <get-extension> path
-    ; filename := <guarantee-extension(|$[risc.[ext]])> path
-    ; result   := <to-RISC-all; resugar; pp-debug-framevm> ast
+    ; filename := <guarantee-extension(|$[red.[ext]])> path
+    ; result   := <fvm-reduce; resugar; pp-debug-framevm> ast
     
-  
-  
-  
-  run-program-cisc:
+
+rules // Transform
+  debug-show-transformed-aterm:
+    (_, _, ast, path, project-path) -> (filename, result)
+    with
+      filename := <guarantee-extension(|"aterm")> path
+    ; result   := <fvm-transform; strip-annos> ast
+    
+  editor-format-transform:
+    (_, _, ast, path, project-path) -> (filename, result)
+    where
+      "stc" := <get-extension> path
+    with
+      filename := <guarantee-extension(|"risc.stc")> path
+    ; result   := <fvm-transform; resugar; pp-debug-framevm> ast
+    
+  editor-format-transform:
+    (_, _, ast, path, project-path) -> (filename, result)
+    where
+      "rgr" := <get-extension> path
+    with
+      filename := <guarantee-extension(|"stc")> path
+    ; result   := <fvm-transform; resugar; pp-debug-framevm> ast
+    
+    
+rules //run  
+  run-program:
     (_, _, ast, path, project-path) -> (filename, result)
     with
       filename := <guarantee-extension(|"value")> path
     ; result   := <eval-program> ast
     
-  run-program-risc:
-    (_, _, ast, path, project-path) -> (filename, result)
-    with
-      filename := <guarantee-extension(|"value")> path
-    ; result   := <eval-program> <to-RISC-all> ast
-    
-  run-program-cisc-debug:
+  run-program-debug:
     (_, _, ast, path, project-path) -> (filename, result)
     with
       filename := <guarantee-extension(|"value")> path
     ; result   := <eval-program-debug> ast
-    
-  run-program-risc-debug:
-    (_, _, ast, path, project-path) -> (filename, result)
-    with
-      filename := <guarantee-extension(|"value")> path
-    ; result   := <eval-program-debug> <to-RISC-all> ast
-    
-  run-program-compare:
-    (_, _, ast, path, project-path) -> (filename, out)
-    with
-      filename := <guarantee-extension(|"value")> path
-    ; result1  := <eval-program> ast
-    ; result2  := <eval-program> <to-RISC-all> ast
-    ; out      := <compare-output> (result1, result2)
-    
-  compare-output = equal < !"Yes" + !"No"
+ 

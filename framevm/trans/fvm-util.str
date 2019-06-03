@@ -31,6 +31,23 @@ rules
     stc-from-flat: body -> <stc-from-flat> (FVM_Header([]), body) where <is-list> body
    
    
+    rgr-from-flat: (h@FVM_Header(items), [f|body]) -> <rgr-from-flat> (h, [(FVM_Label("MAIN"), 99), f | body])
+      where
+        <not(?(FVM_Label(_)) + ?( (_, _) ))> f
+    
+    rgr-from-flat: (h@FVM_Header(items), [f|body]) -> <rgr-from-flat> (h, [(FVM_Label("MAIN"), f) | body])
+      where
+        <is-int> f
+        
+    rgr-from-flat: (h@FVM_Header(items), body) -> <resugar> <split-header> RGR_Program(h, None(), blocks)
+      where
+        <is-list> body
+      with
+        (blocks, []) := <foldr(!([], []), from-flat-fold)> body
+        
+    rgr-from-flat: body -> <rgr-from-flat> (FVM_Header([]), body) where <is-list> body
+   
+   
     // Convert the path from an nabl2 lookup to one that can be interpreted by the VM  
     framevm-path-from-nabl2: (name, namespace, property) -> FVM_Path(fvm_path)
       where

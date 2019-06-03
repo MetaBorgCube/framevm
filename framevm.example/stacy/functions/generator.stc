@@ -57,10 +57,7 @@ FOR_END:
 	jump MAIN_END			// For loop is finished
 	
 FUNC:
-<<<<<<< HEAD:framevm.example/stacy/functions/generator.stc
 	stack := 3
-=======
->>>>>>> master:framevm-stacy.example/examples/functions/generator.stc
 	cgetcurrent					// Yield a value and a continuation
 	ipush 1					// The value
 	cget [c]				// 
