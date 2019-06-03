@@ -1,7 +1,7 @@
 export EQUALS as equals
 
 // Given a dataframe of size two, compare the two items in the dataframe
-// WARNING: If you are comparing dataframes with empty slots, this will crash
+// WARNING: If you are comparing dataframes with empty slots this will crash
 // as there (as of writing this) is no way in the VM to account for this
 //
 // Returns 1 if they are equal
