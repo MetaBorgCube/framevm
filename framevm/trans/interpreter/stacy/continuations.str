@@ -22,6 +22,15 @@ rules
         (env2, FrameRef(frame)) := <stack-pop-frame(|env1)>;
         (env3, cont) := <vm-cont-new(|env2)> (frame, (lib, lbl), (<string-to-int> s2, s1));
         env4 := <stack-push(|env3)> Continuation(cont)
+     
+    // STC_ContNewR/1
+    // Create a new ControlFrame at the given label using the frame on top of the stack as data frame
+    stc-eval: (STC_ContNewR(FVM_BoundLabel(lib, lbl, Some(s1))), env1) -> env5
+      where
+        (env2, IntV(s2)) := <stack-pop-int(|env1)>;
+        (env3, FrameRef(frame)) := <stack-pop-frame(|env2)>;
+        (env4, cont) := <vm-cont-new(|env3)> (frame, (lib, lbl), (s2, s1));
+        env5 := <stack-push(|env4)> Continuation(cont)
         
     // STC_ContGet/0
     // Get the continuation from the slot with index found on top of the stack
@@ -120,6 +129,15 @@ rules
         (env2, Continuation(cont)) := <stack-pop-cont(|env1)>;
         (env3, vals) := <pop-list(|env2)> <string-to-int> n;
         env4 := <cont-transfer(|env3)> (cont, <reverse> vals)
+          
+    //STC_ContTransfer
+    // Transfer one element from the stack to the stack of the continuation on top of the stack
+    // The order of elements is preserved
+    stc-eval: (STC_ContTransfer(), env1) -> env4
+      where
+        (env2, Continuation(cont)) := <stack-pop-cont(|env1)>;
+        (env3, val) := <stack-pop-any(|env2)>;
+        env4 := <cont-transfer(|env3)> (cont, [val])
           
     // STC_ContCall/1
     // Call the continuation on top of the stack

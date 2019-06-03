@@ -71,6 +71,7 @@ rules
   instr[[STC_ContGetR() ^(s)]].
   instr[[STC_ContGetR(path) ^(s)]] := bind[[path ^(s)]].
 
+  instr[[STC_ContTransfer() ^(s)]].
   instr[[STC_ContTransfer(n) ^(s)]].
   instr[[STC_ContTransfer(n, path) ^(s)]] := bind[[path ^(s)]].
 
@@ -96,6 +97,7 @@ rules
 
   instr[[STC_ContThis() ^(s)]].
   instr[[STC_ContNew(lbl, _) ^(s)]] := lbl[[lbl ^(s)]].
+  instr[[STC_ContNewR(lbl) ^(s)]] := lbl[[lbl ^(s)]].
   instr[[STC_Yield(lbl) ^(s)]] := lbl[[lbl ^(s)]].
   instr[[STC_ContCall(lbl) ^(s)]] := lbl[[lbl ^(s)]].
   instr[[STC_ContCall(path, lbl) ^(s)]] := lbl[[lbl ^(s)]], bind[[path ^(s)]].

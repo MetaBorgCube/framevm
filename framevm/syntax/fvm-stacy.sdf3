@@ -76,8 +76,10 @@ sorts SInstr context-free syntax
   SInstr = SContInstr
   SContInstr.STC_ContThis      = <cgetcurrent>                    // Create a new continuation for the current execution point
   SContInstr.STC_ContNew       = <cnew <Label> <INTLEZ>>          // Create a continuation for a frame on the stack at a new execution point
+  SContInstr.STC_ContNewR      = <cnewr <Label>>                  // Create a continuation for a frame on the stack at a new execution point
   SContInstr.STC_ContTransfer  = <transfer <INTLEZ> [<ContRef>]>  // Transfer n elements as returned values to the given continuation
   SContInstr.STC_ContTransfer  = <transfer <INTLEZ>>              // Transfer n elements as returned values to the continuation on top of the stack
+  SContInstr.STC_ContTransfer  = <transfer>                       // Transfer one element as returned value to the continuation on top of the stack
   
   SOnReturnInstr.STC_ContRGetN = <rget <INTLEZ>>                  // Get n returned values onto the stack
   SOnReturnInstr.STC_ContRGet  = <rget>                           // Get a return value on the stack

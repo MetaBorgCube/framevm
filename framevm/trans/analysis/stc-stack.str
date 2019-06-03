@@ -99,6 +99,7 @@ rules
     
     stc-stack-delta: STC_ContThis()      -> 1
     stc-stack-delta: STC_ContNew(lbl, _) -> 0
+    stc-stack-delta: STC_ContNewR(lbl)   -> -1
     
     stc-stack-delta: STC_ContCall(_)   -> -1
     stc-stack-delta: STC_ContReturn()  -> -1

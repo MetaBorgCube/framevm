@@ -65,6 +65,11 @@ rules
         (frame, slot) := <resolve> (p, FrameRef(<frame-this(|env1)>), env1);
         (env2, value) := <stack-pop-any(|env1)>;
         env3 := <frame-set(|env2)> (frame, slot, value)
+    
+    stc-eval: (STC_Set(FVM_Self()), env1) -> env3
+      where
+        (env2, FrameRef(frame)) := <stack-pop-frame(|env1)>;
+        env3 := <frame-set-current(|env2)> (<cont-this(|env2)>, frame)
            
     // STC_GetR/0
     // Get index on top of stack in frame on second position
