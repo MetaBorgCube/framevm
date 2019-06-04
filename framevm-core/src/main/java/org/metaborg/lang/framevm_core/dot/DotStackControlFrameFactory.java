@@ -4,16 +4,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Stack;
 import org.spoofax.interpreter.terms.IStrategoTerm;
-import org.metaborg.lang.framevm_core.util.Continuation;
 import org.metaborg.lang.framevm_core.util.ControlFrame;
-import org.metaborg.lang.framevm_core.util.Frame;
 import org.metaborg.lang.framevm_core.util.StackControlFrame;
 
 /**
  * Factory for creating a dotfile representing an {@link ControlFrame}.
  * @see <a href="https://en.wikipedia.org/wiki/DOT_(graph_description_language)">DOT (graph descriptionlanguage)</a>
  */
-public class DotStackControlFrameFactory extends DotFactory {
+public class DotStackControlFrameFactory extends DotControlFrameFactory {
 	
 	/**
 	 * Convert an operandStack to DOT representation.
@@ -25,65 +23,7 @@ public class DotStackControlFrameFactory extends DotFactory {
 	 * @return
 	 * 		A String containing a DOT node representing of the given opstack
 	 */
-	public static String build(StackControlFrame frame, HashMap<String, String> nodes, List<String> links) {
-		String name = controlFrame(frame);
-		if (nodes.containsKey(name)) {
-			return "";
-		} else {
-			nodes.put(name, "");	// Mark this as existing, eventhough we are not finished creating it (This prevents infinite looping)
-		}
-		
-		// Add links to the executing instruction and the stack
-		if (frame.getBlock() != null) {
-			int count = frame.getInstr_count();
-			String target = block(frame.getBlock()) + ":" + (Math.max(0, count - 1));
-			links.add(blockLink(name, target));
-		}
-		links.add(stackLink(name, DotFactory.stack(frame)));
-
-		// Link the continuations
-		String contSlots = "";
-		String contIds = "";
-		Continuation[] continuations = frame.getContinuations();
-		for (int i = 0; i < continuations.length; i++) {
-			Continuation cont = continuations[i];
-			if (cont == null) {
-				contSlots += " | c" + i;
-				contIds += " | null";
-			} else {
-				String target_id = cont.value().getId();
-				contSlots += " | " + cont.id;
-				
-				contIds += " | <cont_" + cont.id + ">";
-				if ("_exit".equals(target_id)) {
-					links.add(continuationLink(name, "finish", cont.id));
-				} else if ("_catch".equals(target_id)) {
-					links.add(continuationLink(name, "exception", cont.id));
-				} else {
-					ControlFrame target = cont.value();
-					if (!nodes.containsKey(controlFrame(target))) {
-						if (target instanceof StackControlFrame) {
-							DotStackControlFrameFactory.build((StackControlFrame) target, nodes, links);
-						} else {
-							//TODO
-//							DotRegisterControlFrame.build((RegisterControlFrame) target, nodes, links);
-						}
-					}
-					links.add(continuationLink(name, controlFrame(target) + ":id", cont.id));
-				}
-			}
-		}
-		if (contSlots.length() == 0) {
-			contSlots = " |";
-		}
-		if (contIds.length() == 0) {
-			contIds = " |";
-		}
-		
-		// Generate main node
-		String dotString = node(name, "{<id>" + frame.getId() + " | {{PC | Frame | Stack" + contSlots + "}| { <pc> | <frame> | <stack>" + contIds + "}}}");
-		nodes.put(name, dotString);
-		
+	public static void buildmemory(StackControlFrame frame, HashMap<String, String> nodes, List<String> links) {
 		// Generate the node for the local stack
 		String stackString = "";
 		
@@ -92,20 +32,16 @@ public class DotStackControlFrameFactory extends DotFactory {
 		Stack<IStrategoTerm> stack = (Stack<IStrategoTerm>) frame.getStack().clone();
 		
 		int count = 0;
-		String stackName = stack(frame);
+		String stackName = memory(frame);
 		
 		while (!stack.isEmpty())  {
 			count++;
 			stackString += "|<" + count + ">" + termToString(stack.pop(), nodes, links, stackName + ":" + count);
 		}
 		nodes.put(stackName, node(stackName, "{<head>" + stackString + "}"));
-		
-		
-		if (frame.getCurrentFrame() != null) {
-			Frame dataFrame = frame.getCurrentFrame();
-			DotFrameFactory.build(dataFrame, nodes, links);
-			links.add(dataFrameLink(name, frame(dataFrame)));
-		}
-		return name;
+	}
+	
+	public static String getMemType() {
+		return "Stack";
 	}
 }

@@ -90,15 +90,15 @@ public abstract class DotFactory {
 	}
 	
 	/**
-	 * Generate the id used in the DOT file for the local stack of the given frame.
+	 * Generate the id used in the DOT file for the local memory of the given frame.
 	 * 
 	 * @param frame
-	 * 		The frame that holds the stack
+	 * 		The frame that holds the memory
 	 * @return
 	 * 		The generated id
 	 */
-	public static String stack(ControlFrame frame) {
-		return "stack_"+ frame.getId();
+	public static String memory(ControlFrame frame) {
+		return "memory_"+ frame.getId();
 	}
 	
 	/**
@@ -174,7 +174,7 @@ public abstract class DotFactory {
 	}
 	
 	/**
-	 * Create a DOT link representing a reference to a stack.
+	 * Create a DOT link representing a reference to the local memory.
 	 * 
 	 * @param from
 	 * 		The from location of the link
@@ -183,8 +183,8 @@ public abstract class DotFactory {
 	 * @return
 	 * 		A string containing the DOT link
 	 */
-	public static String stackLink(String from, String to) {
-		return from + ":stack -> " + to + ":head [color=red, style=dashed];";
+	public static String memLink(String from, String to) {
+		return from + ":mem -> " + to + ":head [color=red, style=dashed];";
 	}
 	
 	/**

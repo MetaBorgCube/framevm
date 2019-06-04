@@ -61,7 +61,7 @@ public class vm_stop_0_1 extends FVMStrategy {
 		} else {
 			ControlFrame frame = env.currentThread.getControlFrame();
 			String instr = frame.getBlock().getInstr(Math.max(0, frame.getInstr_count() - 1)).toString();
-			if (instr.startsWith("STC_DebugKill")) {
+			if (instr.contains("_DebugKill")) {
 				io.printError("Printing debug info, all output is discarded");
 				return factory.makeString(env.debug.trim());
 			} else {
