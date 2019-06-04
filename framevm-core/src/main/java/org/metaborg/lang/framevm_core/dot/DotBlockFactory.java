@@ -15,7 +15,7 @@ public class DotBlockFactory extends DotFactory {
 	private final static String[] REPLACE_TO   = {"[]"        };
  
 	private final static String[] REGEX_UNPACK = {"\"([^\"]*)\"", "Bind\\((\\w+),\\d+\\)", "FVM_Link\\((\\w+)\\)", "FVM_Slot\\((\\w+)\\)", "FVM_Cont\\((\\w+)\\)", "FVM_Path\\((\\[.+\\])\\)"};
-	private final static Pattern PATTERN = Pattern.compile("FVM_BoundLabel\\([\\w\\.]+,(\\w+)\\)");
+	private final static Pattern PATTERN = Pattern.compile("FVM_BoundLabel\\([\\w\\.]+,(\\w+),[\\w]+\\([-]?\\d+\\)\\)");
 	private final static Pattern TERM_INDEX_PATTERN = Pattern.compile("\\{TermIndex\\([^\\}]+\\)\\}");
 	
 	/**
