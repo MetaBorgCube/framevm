@@ -34,7 +34,7 @@ rules
    	 
    	 split-header: (fname, RGR_Program(FVM_Header(headeritems), _, blocks)) -> RGR_Program(fname, imports, initsize, initblock, aliasses, blocks)
    	  with
-   	  	imports := <map(try(apply-export(|<remove-extension> fname)))> <filter(is-import)> headeritems;
+   	  	imports := <map(try(apply-export(|fname)))> <filter(is-import)> headeritems;
    	  	aliasses := <filter(is-alias)> headeritems;
    	  	initsize := <getfirst(is-init) <+ !0> headeritems;
    	  	initblock := <getfirst(is-init-block) <+ !FVM_InitBlock("MAIN")> headeritems
