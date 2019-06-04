@@ -1,0 +1,91 @@
+export EQUALS as equals
+
+// Given a dataframe of size two, compare the two items in the dataframe
+// WARNING: If you are comparing dataframes with empty slots this will crash
+// as there (as of writing this) is no way in the VM to account for this
+//
+// Returns 1 if they are equal
+// Returns 0 otherwise
+// Made by @Geweldig
+
+EQUALS:
+	get [0]
+	frame?
+	jumpz __VAR1_IS_INT __VAR1_IS_FRAME
+
+__VAR1_IS_INT:
+	get [1]
+	frame?
+	jumpz __COMPARE_INTS __RETURN_FALSE
+	
+__VAR1_IS_FRAME:
+	get [1]
+	frame?
+	jumpz __RETURN_FALSE __VAR2_IS_FRAME
+	
+__VAR2_IS_FRAME:
+	get [0]
+	size
+	get [1]
+	size
+	eqi
+	jumpz __RETURN_FALSE __EQUAL_LENGTH
+
+__EQUAL_LENGTH:
+	new 1
+	newscope P
+	ipush 0
+	set [0]
+	jump __COMPARE_FRAMES
+
+__COMPARE_INTS:
+	get [0]
+	get [1]
+	eqi
+	return
+
+__COMPARE_FRAMES:
+	get [P, 0]
+	size
+	get [0]
+	eqi
+	jumpz __COMPARE_IDX __RETURN_TRUE
+	
+__COMPARE_IDX:
+	get [P, 0]
+	get [0]
+	dup
+	get [P, 1]
+	swap
+	getr
+	swap 2
+	swap
+	getr
+	
+	new 2
+	dup
+	swap 2
+	setr [0]
+	dup
+	swap 2
+	setr [1]
+	
+	call EQUALS __COMPARED_IDX
+	
+__COMPARED_IDX:
+	jumpz __RETURN_FALSE __EQUAL_IDX
+
+__EQUAL_IDX:
+	ipush 1
+	get [0]
+	addi
+	set [0]
+	jump __COMPARE_FRAMES
+	
+__RETURN_FALSE:
+	ipush 0
+	return
+	
+__RETURN_TRUE:
+	ipush 1
+	return
