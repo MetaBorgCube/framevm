@@ -1,0 +1,45 @@
+export CONCAT_STRINGS as concat_strings
+
+// Expects a dataframe with two strings, string at index [1] will be appended to string at index [0]
+
+CONCAT_STRINGS:
+	local := 2
+	r0 <- get([0, 0])			// Get length of first string.
+	r1 <- get([1, 0])    		// Get length of second string.
+	
+	r1 <- addi(r0, r1)
+	newscope(new(1), P)
+	set([0], new(addi(r1, iload(1))))
+	set([0, 0], r1)
+	
+	call(new{get([0]), get([P, 0]), iload(1)}, __COPY_STRING, __CONCAT_SECOND)
+
+__CONCAT_SECOND:
+	r0 <- rget()
+	set([P, 0, 0], subi(get([P, 0, 0]), iload(1)))
+	call(new{get([0]), get([P, 1]), r0}, __COPY_STRING, __CONCAT_END)
+	
+__CONCAT_END:
+	set([P,1,0], subi(get([0, 0]), get([P,0,0])))
+	return(get([0]))
+	
+__COPY_STRING:
+	local := 1
+	r0 <- new(2)
+	set([1, 0], addi(get([1, 0]), get([2])))
+	newscope(r0, P)
+	set([0], iload(1))
+	set([1], get([P, 2]))
+	jumpz(subi(size(get([P,1])), iload(1)), __COPY_END, __COPY_WHILE) // empty string
+	
+__COPY_WHILE:
+	r0 <- get(get([P, 1]), get([0]))
+	set(get([P, 0]), get([1]), r0)
+	
+	set([0], addi(get([0]), iload(1)))
+	set([1], addi(get([1]), iload(1)))
+	jumpz(eqi(get([P,1,0]), get([1])), __COPY_WHILE, __COPY_END)
+	
+__COPY_END:
+	return(get([1]))
+	

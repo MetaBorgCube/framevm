@@ -1,119 +1,128 @@
 export INT_TO_STRING as int_to_string
 
+// Translated from the Roger implementation
+// The original Stacy implementation required stack proportional to the size of the integer
+
 INT_TO_STRING:
+	stack := 6
+	new 3
+	dup
+	get [0]
+	setr [0]
+	newscope P
+	
+	new 1
+	dup
+	get [0]
+	setr [0]
+	
+	call __CALC_LENGTH __INT_TO_STRING
+
+__INT_TO_STRING:
+	rget
+	set [1]
 	get [0]
 	ipush 0
 	lti
-	new 1
-	newscope P
 	jumpz __POS_INT_TO_STRING __NEG_INT_TO_STRING
 
-__NEG_INT_TO_STRING:
+__CALC_LENGTH:
+	stack := 3
 	ipush 0
-	get [P, 0]
-	subi
-	set [0]
-	ipush 0
-	jump __INT_TO_DIGITS
-
-__POS_INT_TO_STRING:
-	get [P, 0]
-	set [0]
-	ipush 0
-	jump __INT_TO_DIGITS
+	jump __CALC_LENGTH_COMP
 	
-__INT_TO_DIGITS:
+__CALC_LENGTH_COMP:
 	ipush 1
 	addi
-	get [0]
-	ipush 10
-	modi
-	ipush 48
-	addi
-	swap
-	
 	get [0]
 	ipush 10
 	divi
 	dup
 	set [0]
-	jumpz __TO_STRING __INT_TO_DIGITS
 	
-__TO_STRING:
-	new 3
-	dup
-	newscope P
-	
-	dup
-	ipush 1
-	get [P, P, 0]
-	ipush 0
-	lti
-	addi
-	setr [1]
-	
-	dup
-	dup 3
-	ipush 1
-	addi
-	get [P, P, 0]
-	ipush 0
-	lti
-	addi
-	newr
-	setr [0]
-	
-	dup
-	getr [0]
-	dup 3
-	get [P, P, 0]
-	ipush 0
-	lti
-	addi
-	setr [0]
-	
-	swap
-	ipush 1
-	addi
-	get [P, P, 0]
-	ipush 0
-	lti
-	addi
-	setr [2]
-	jump __DIGITS_TO_STRING
-	
-__DIGITS_TO_STRING:
-	get [1]
-	get [2]
-	eqi
-	jumpz __DIGITS_TO_STRING_2 __INT_TO_STRING_END
-	
-__DIGITS_TO_STRING_2:
-	get [0]
-	swap
-	get [1]
-	swap
-	setr
-	
-	ipush 1
-	get [1]
-	addi
-	set [1]
+	jumpz __CALC_LENGTH_END __CALC_LENGTH_COMP
 
-	jump __DIGITS_TO_STRING
-	
-__INT_TO_STRING_END:
-	get [P, P, 0]
-	ipush 0
-	lti
-	jumpz __INT_TO_STRING_END_POS __INT_TO_STRING_END_NEG
-
-__INT_TO_STRING_END_POS:
-	get [0]
+__CALC_LENGTH_END:
 	return
 	
-__INT_TO_STRING_END_NEG:
-	ipush 45
-	set [0, 1]
+__NEG_INT_TO_STRING:
+	get [P, 0]
+	negi
+	set [0]
+	
+	get [1]
+	ipush 2
+	addi
+	newr
+	
+	dup
+	size
+	set [2]
+	
+	dup
+	set [1]
+	
+	dup
+	dup
+	size
+	ipush 1
+	subi
+	setr [0]
+	
+	dup
+	cpush '-'
+	
+	setr [1]
+	jump __INT_TO_DIGITS
+
+__POS_INT_TO_STRING:
+	get [P, 0]
+	set [0]
+	
+	get[1]
+	ipush 1	
+	addi
+	newr
+	
+	dup
+	size
+	set [2]
+	
+	dup
+	set [1]
+	
+	dup
+	size
+	ipush 1
+	subi
+	setr [0]
+	jump __INT_TO_DIGITS
+	
+__INT_TO_DIGITS:
+	get [2]
+	ipush 1
+	subi
+	
+	dup
+	set [2]
+	
+	get[1]
+	swap
+	ipush 48
 	get [0]
+	ipush 10
+	modi
+	addi
+	setr
+	
+	get [0]
+	ipush 10
+	divi
+	set [0]
+	
+	get [0]
+	jumpz __END __INT_TO_DIGITS
+	
+__END:
+	get [1]
 	return

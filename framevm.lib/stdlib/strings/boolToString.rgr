@@ -1,60 +1,11 @@
 export TO_STRING as bool_to_string
 
 TO_STRING:
-  stack := 3
-  get [0]
-  jumpz __FALSE __TRUE
+  local := 0
+  jumpz(get([0]), __FALSE, __TRUE)
   
 __FALSE:
-  new 6
-  
-  dup
-  ipush 5
-  setr [0]
-  
-  dup
-  cpush 'f'
-  setr [1]
-  
-  dup
-  cpush 'a'
-  setr [2]
-  
-  dup
-  cpush 'l'
-  setr [3]
-  
-  dup
-  cpush 's'
-  setr [4]
-  
-  dup
-  cpush 'e'
-  setr [5]
-  
-  return
+  return(sload("false"))
 
 __TRUE:
-  new 5
-  
-  dup
-  ipush 4
-  setr [0]
-  
-  dup
-  cpush 't'
-  setr [1]
-  
-  dup
-  cpush 'r'
-  setr [2]
-  
-  dup
-  cpush 'u'
-  setr [3]
-  
-  dup
-  cpush 'e'
-  setr [4]
-  
-  return
+  return(sload("true"))

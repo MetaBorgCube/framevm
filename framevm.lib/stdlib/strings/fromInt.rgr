@@ -1,0 +1,53 @@
+export INT_TO_STRING as int_to_string
+
+INT_TO_STRING:
+	local := 1
+	r0 <- new(3)
+	set(r0, [0], get([0]))
+	newscope(r0, P)
+	call(new{get([0])}, __CALC_LENGTH, __INT_TO_STRING)
+
+__INT_TO_STRING:
+	r0 <- rget()
+	set([1], r0)
+	jumpz(lti(get([0]), iload(0)),__POS_INT_TO_STRING, __NEG_INT_TO_STRING)
+
+__CALC_LENGTH:
+	local := 2
+	r0 <- iload(0)
+	jump(__CALC_LENGTH_COMP)
+	
+__CALC_LENGTH_COMP:
+	r0 <- addi(r0, iload(1))
+	set([0], divi(get([0]), iload(10)))
+	jumpz(get([0]), __CALC_LENGTH_END, __CALC_LENGTH_COMP)
+
+__CALC_LENGTH_END:
+	return(r0)
+	
+__NEG_INT_TO_STRING:
+	set([0], negi(get([P, 0])))
+	r0 <- new(addi(get([1]), iload(2)))
+	set([2], size(r0))
+	set([1], r0)
+	set(r0, [0], subi(size(r0), iload(1)))
+	set(r0, [1], cload('-'))
+	jump(__INT_TO_DIGITS)
+
+__POS_INT_TO_STRING:
+	set([0], get([P, 0]))
+	r0 <- new(addi(get([1]), iload(1)))
+	set([2], size(r0))
+	set([1], r0)
+	set(r0, [0], subi(size(r0), iload(1)))
+	jump(__INT_TO_DIGITS)
+	
+__INT_TO_DIGITS:
+	r0 <- subi(get([2]), iload(1))
+	set([2], r0)
+	set(get([1]), r0, addi(iload(48), modi(get([0]), iload(10))))
+	set([0], divi(get([0]), iload(10)))
+	jumpz(get([0]), __END, __INT_TO_DIGITS)
+	
+__END:
+	return(get([1]))

@@ -1,21 +1,47 @@
-from stdlib.strings import print_string, from_bool
+from stdlib.strings import print_string, from_bool, concat, from_int
 
 MAIN:
 	stack := 3
-	new 1
+	new 2
 	dup
 	spush "abcdefg\n"
 	setr [0]
-	call print_string MAIN2
+	dup
+	spush "hijklmno\n"
+	setr [1]
+	call concat MAIN2
 	
 MAIN2:
+	rget
+	new 1
+	dup
+	swap 2
+	setr [0]
+	call print_string MAIN3
+	
+MAIN3:
+	new 1
+	dup
+	ipush -123456
+	setr [0]
+	call from_int MAIN4
+	
+MAIN4:
+	rget
+	new 1
+	dup
+	swap 2
+	setr [0]
+	call print_string MAIN5
+	
+MAIN5:
 	new 1
 	dup
 	ipush 1			// true
 	setr [0]
-	call from_bool MAIN3
+	call from_bool MAIN6
 	
-MAIN3:
+MAIN6:
 	new 1
 	dup
 	swap 2

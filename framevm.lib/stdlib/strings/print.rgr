@@ -1,0 +1,19 @@
+export PRINT_STRING as print_string
+	
+PRINT_STRING:
+	local := 3
+	r0 <- get([0, 0])			// Size
+	r1 <- iload(0)				// Idx
+	jump(__PRINT_LOOP)	//
+	
+__PRINT_LOOP:
+	jumpz(eqi(r0, r1), __PRINT_CHAR, __PRINT_END)
+	
+__PRINT_END:
+	cret(cget(c))				// Return
+	
+__PRINT_CHAR:
+	r1 <- addi(iload(1), r1) // Increment the index
+	printc(get(get([0]), r1))
+	jump(__PRINT_LOOP)		// Goto next character
+	

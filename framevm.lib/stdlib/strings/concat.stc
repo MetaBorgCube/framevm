@@ -4,6 +4,7 @@ export CONCAT_STRINGS as concat_strings
 // Made by @Geweldig
 
 CONCAT_STRINGS:
+	stack := 5
 	get [0, 0]			//Get length of first string.
 	get [1, 0]  		//Get length of second string.
 	addi       		 	//Compute total length of new string.
