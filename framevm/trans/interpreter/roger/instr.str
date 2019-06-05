@@ -64,7 +64,7 @@ rules
         (env2, FrameRef(frame)) := <rgr-eval-exp(|env1)> exp1;
         (env3, IntV(slotId)) := <rgr-eval-exp(|env2)> exp2;
         (env4, val) := <rgr-eval-exp(|env3)> exp3;
-        env5 := <frame-set-slot(|env4)> (frame, slotId, <rgr-eval-exp(|env4)> val)
+        env5 := <frame-set-slot(|env4)> (frame, slotId, val)
         
         
         

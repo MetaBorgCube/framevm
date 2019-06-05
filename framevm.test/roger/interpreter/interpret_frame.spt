@@ -100,6 +100,12 @@ test simple get/set 2 [[
 	print(get(r1, [1]))
 ]] transform "Run -> Run" to "IntV(12)"
 
+test simple get/set 3 [[
+	r1 <- new(2)
+	set(r1, iload(1), iload(12))
+	print(get(r1, [1]))
+]] transform "Run -> Run" to "IntV(12)"
+
 test set overwrite [[
 	r1 <- new(2)
 	set(r1, [0], iload(1))

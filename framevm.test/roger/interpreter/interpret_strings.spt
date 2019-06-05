@@ -15,6 +15,11 @@ test String size [[
 ]] transform "Run -> Run" to "IntV(12)
 o"
 
+test String size slot [[
+	r0 <- sload("Hello World")
+	print(get(r0, [0]))
+]] transform "Run -> Run" to "IntV(11)"
+
 test chars [[
 	printc(cload('x'))
 ]] transform "Run -> Run" to "x"
