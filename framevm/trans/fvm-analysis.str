@@ -1,7 +1,7 @@
 module fvm-analysis
 
 imports
-  
+  signatures/fvm-common-sig
   nabl2/api
   nabl2/runtime
 
@@ -11,7 +11,7 @@ imports
   fvm-desugar
 
 rules // Analysis
-  editor-analyze = prefix-filename; nabl2-analyze(desugar)
+  editor-analyze = prefix-filename; fix-empty-paths; nabl2-analyze(desugar)
   
   prefix-filename: AnalyzeMulti(p, files) -> AnalyzeMulti(p, <map(prefix-filename)> files)
   
@@ -23,6 +23,8 @@ rules // Analysis
     with
       module-name := <string-replace(|"/", "."); string-replace(|"\\", ".")> fname
   
+  fix-empty-paths = topdown(try(replace-empty))
+  replace-empty: FVM_Path([]) -> FVM_Self()
 
 rules // Debugging
 
