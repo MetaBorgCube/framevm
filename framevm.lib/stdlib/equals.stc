@@ -9,6 +9,7 @@ export EQUALS as equals
 // Made by @Geweldig
 
 EQUALS:
+	stack := 4
 	get [0]
 	frame?
 	jumpz __VAR1_IS_INT __VAR1_IS_FRAME

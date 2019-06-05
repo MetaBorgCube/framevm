@@ -1,0 +1,57 @@
+export EQUALS as equals
+
+// Given a dataframe of size two, compare the two items in the dataframe
+// WARNING: If you are comparing dataframes with empty slots this will crash
+// as there (as of writing this) is no way in the VM to account for this
+//
+// Returns 1 if they are equal
+// Returns 0 otherwise
+// Translated from original Stacy version made by @Geweldig
+
+EQUALS:
+	local := 2
+	jumpz(frame?(get([0])), __VAR1_IS_INT, __VAR1_IS_FRAME)
+
+__VAR1_IS_INT:
+	jumpz(frame?(get([1])), __COMPARE_INTS, __RETURN_FALSE)
+	
+__VAR1_IS_FRAME:
+	jumpz(frame?(get([1])), __RETURN_FALSE, __VAR2_IS_FRAME)
+	
+__VAR2_IS_FRAME:
+	r0 <- size(get([0]))
+	r0 <- eqi(r0, size(get([1])))
+	jumpz(r0, __RETURN_FALSE, __EQUAL_LENGTH)
+
+__EQUAL_LENGTH:
+	newscope(new(1), P)
+	set([0], iload(0))
+	jump(__COMPARE_FRAMES)
+
+__COMPARE_INTS:
+	return(eqi(get([0]), get([1])))
+
+__COMPARE_FRAMES:
+	r0 <- size(get([P, 0]))
+	r0 <- eqi(r0, get([0]))
+	jumpz(r0, __COMPARE_IDX, __RETURN_TRUE)
+	
+__COMPARE_IDX:
+	r0 <- get([0])
+	r1 <- get(get([P, 0]), r0)
+	r0 <- get(get([P, 1]), r0)
+	call(new{r1, r0}, EQUALS, __COMPARED_IDX)
+	
+__COMPARED_IDX:
+	r0 <- rget()
+	jumpz(r0, __RETURN_FALSE, __EQUAL_IDX)
+
+__EQUAL_IDX:
+	set([0], addi(iload(1), get([0])))
+	jump(__COMPARE_FRAMES)
+	
+__RETURN_FALSE:
+	return(iload(0))
+	
+__RETURN_TRUE:
+	return(iload(1))
