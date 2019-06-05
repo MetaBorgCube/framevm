@@ -41,6 +41,7 @@ rules
         env7 := <fvm-execute(s, mode-eval|env6)>;
         out  := <vm-stop(|env7)>
     
+    eval-program-(s, mode-eval | mode): _ -> "FAIL"
     
     
     store-block: (FVM_Block(FVM_Label(lbl), _, FVM_Seq(body), _), (lib, env)) -> (lib, <vm-store-block(|env)> ((lib, lbl), body))
@@ -95,6 +96,8 @@ rules
         (dec-occ, _) := <nabl2-get-resolved-name(|a)> ref-occ;
         Some(size)   := <get-size(|a)> dec-occ
         
+    get-block-size: FVM_InitBlock(name) -> <debug; fail> $[Block [name] not found]
+    
     resolve-jump-labels-(|lib): l@FVM_Label(lbl) -> FVM_BoundLabel(lib, lbl, size)
       where
         a            := <nabl2-get-ast-analysis> l;
