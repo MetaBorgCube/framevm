@@ -61,6 +61,16 @@ rules
     stc-stack-delta: STC_Set(path)  -> -1
     stc-stack-delta: STC_SetR()     -> -3
     stc-stack-delta: STC_SetR(path) -> -2
+  
+    stc-stack-delta: STC_IsEmpty()      -> 0
+    stc-stack-delta: STC_IsEmpty(path)  -> 1
+    stc-stack-delta: STC_IsEmptyR()     -> -1
+    stc-stack-delta: STC_IsEmptyR(path) -> 0
+  
+    stc-stack-delta: STC_Empty()      -> -1
+    stc-stack-delta: STC_Empty(path)  -> 0
+    stc-stack-delta: STC_EmptyR()     -> -2
+    stc-stack-delta: STC_EmptyR(path) -> -1
     
     stc-stack-delta: STC_ContSet()      -> -2
     stc-stack-delta: STC_ContSet(cont)  -> -1

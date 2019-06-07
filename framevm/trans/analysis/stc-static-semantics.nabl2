@@ -62,6 +62,15 @@ rules
   instr[[STC_GetR() ^(s)]].
   instr[[STC_GetR(path) ^(s)]] := bind[[path ^(s)]].
 
+  instr[[STC_Empty() ^(s)]].
+  instr[[STC_Empty(path) ^(s)]]  := bind[[path ^(s)]].
+  instr[[STC_EmptyR() ^(s)]].
+  instr[[STC_EmptyR(path) ^(s)]] := bind[[path ^(s)]].
+  instr[[STC_IsEmpty() ^(s)]].
+  instr[[STC_IsEmpty(path) ^(s)]]  := bind[[path ^(s)]].
+  instr[[STC_IsEmptyR() ^(s)]].
+  instr[[STC_IsEmptyR(path) ^(s)]] := bind[[path ^(s)]].
+
   instr[[STC_ContSet() ^(s)]].
   instr[[STC_ContSet(path) ^(s)]]  := bind[[path ^(s)]].
   instr[[STC_ContSetR() ^(s)]].
