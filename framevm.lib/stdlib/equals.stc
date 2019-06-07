@@ -1,15 +1,19 @@
 export EQUALS as equals
 
 // Given a dataframe of size two, compare the two items in the dataframe
-// WARNING: If you are comparing dataframes with empty slots this will crash
-// as there (as of writing this) is no way in the VM to account for this
 //
 // Returns 1 if they are equal
 // Returns 0 otherwise
-// Made by @Geweldig
+// Original by @Geweldig
 
 EQUALS:
 	stack := 4
+	get[0]
+	get[1]
+	eqr
+	jumpz __EQUALS_CONTENT __RETURN_TRUE	// Return true when the same reference
+	
+__EQUALS_CONTENT:
 	get [0]
 	frame?
 	jumpz __VAR1_IS_INT __VAR1_IS_FRAME
@@ -55,25 +59,45 @@ __COMPARE_FRAMES:
 __COMPARE_IDX:
 	get [P, 0]
 	get [0]
-	dup
-	get [P, 1]
-	swap
-	getr
-	swap 2
-	swap
+	emptyr?
+	jumpz __COMPARE_IDX_F_NE __COMPARE_IDX_F_E
+
+__COMPARE_IDX_F_NE:
+	get[P, 1]
+	get [0]
+	emptyr?
+	jumpz __COMPARE_IDX_S_NE __RETURN_FALSE
+
+__COMPARE_IDX_F_E:
+	get[P, 1]
+	get [0]
+	emptyr?
+	jumpz __RETURN_FALSE __EQUAL_IDX
+
+__COMPARE_IDX_S_NE:		
+	new 2
+	get [0]
+	get [P, 0]
+	dup 2
 	getr
 	
-	new 2
-	dup
+	get [P, 1]
+	swap
 	swap 2
-	setr [0]
-	dup
-	swap 2
+	getr
+	
+	dup 3
+	swap
 	setr [1]
+	
+	dup 2
+	swap
+	setr [0]
 	
 	call EQUALS __COMPARED_IDX
 	
 __COMPARED_IDX:
+	rget
 	jumpz __RETURN_FALSE __EQUAL_IDX
 
 __EQUAL_IDX:

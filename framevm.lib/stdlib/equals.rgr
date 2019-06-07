@@ -1,8 +1,6 @@
 export EQUALS as equals
 
 // Given a dataframe of size two, compare the two items in the dataframe
-// WARNING: If you are comparing dataframes with empty slots this will crash
-// as there (as of writing this) is no way in the VM to account for this
 //
 // Returns 1 if they are equal
 // Returns 0 otherwise
@@ -10,6 +8,9 @@ export EQUALS as equals
 
 EQUALS:
 	local := 2
+	jumpz(eqr(get([0]), get([1])), __EQUALS_CONTENT, __RETURN_TRUE)	// Return true when the same reference
+	
+__EQUALS_CONTENT:
 	jumpz(frame?(get([0])), __VAR1_IS_INT, __VAR1_IS_FRAME)
 
 __VAR1_IS_INT:
@@ -38,6 +39,15 @@ __COMPARE_FRAMES:
 	
 __COMPARE_IDX:
 	r0 <- get([0])
+	jumpz(empty?(get([P, 0]), r0), __COMPARE_IDX_F_NE, __COMPARE_IDX_F_E)
+
+__COMPARE_IDX_F_NE:
+	jumpz(empty?(get([P, 1]), r0), __COMPARE_IDX_S_NE, __RETURN_FALSE)
+
+__COMPARE_IDX_F_E:
+	jumpz(empty?(get([P, 1]), r0), __RETURN_FALSE, __EQUAL_IDX)
+
+__COMPARE_IDX_S_NE:
 	r1 <- get(get([P, 0]), r0)
 	r0 <- get(get([P, 1]), r0)
 	call(new{r1, r0}, EQUALS, __COMPARED_IDX)
