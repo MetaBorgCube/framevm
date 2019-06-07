@@ -10,6 +10,12 @@ imports
 rules
     rgr-eval-exp(|env): RGR_Ref(ref) -> (env, <rgr-get-any(|env)> ref)
     
+    rgr-eval-exp(|env): RGR_REq(exp1, exp2) -> (env, v)
+      where
+        (env2, v1) := <rgr-eval-exp(|env)>  exp1;
+        (env3, v2) := <rgr-eval-exp(|env2)> exp2;
+        v := <eval-req> (v1, v2)
+    
     rgr-eval-exp(|env): RGR_CharLoad(char) -> (env, IntV(char'))
       where
         [char' |_] := <explode-string> <fix-string-escaping> char

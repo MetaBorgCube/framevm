@@ -24,6 +24,7 @@ sorts RBlock context-free syntax
 	
 sorts Exp context-free syntax
     Exp.RGR_Ref    = <<RGRVar>>
+    Exp.RGR_REq    = <eqr(<Exp>, <Exp>)>
 	
 	Exp = IntOpExp
 	IntOpExp.RGR_ILoad  = <iload(<INT>)>
@@ -59,6 +60,11 @@ sorts Exp context-free syntax
 	ExpTerminal.RGR_Set   = <set(<Exp>, <NEPathOrExp>, <Exp>)>
 	FrameExp.RGR_Get      = <get(<PathOrExp>)>
 	FrameExp.RGR_Get      = <get(<Exp>, <PathOrExp>)>		
+	
+	ExpTerminal.RGR_Empty = <empty(<NEPathOrExp>)>
+	ExpTerminal.RGR_Empty = <empty(<Exp>, <NEPathOrExp>)>
+	FrameExp.RGR_IsEmpty  = <empty?(<NEPathOrExp>)>
+	FrameExp.RGR_IsEmpty  = <empty?(<Exp>, <NEPathOrExp>)>
 	
 	Exp = ContExp
 	OnReturnExp.RGR_ContRGet = <rget(<INTLZ>)>
