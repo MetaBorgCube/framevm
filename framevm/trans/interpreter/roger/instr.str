@@ -32,10 +32,6 @@ rules
       where
         (env2, FrameRef(frame)) := <rgr-eval-exp(|env1)> val
         
-    rgr-eval-instr: (RGR_Set(FVM_Path([]), val), env1) -> <frame-set-current(|env2)> (<cont-this(|env2)>, frame)    
-      where
-        (env2, FrameRef(frame)) := <rgr-eval-exp(|env1)> val
-    
     rgr-eval-instr: (RGR_Set(FVM_Path(path), exp), env1) -> env3
       where
         (init, FVM_Slot(idx)) := <split-init-last> path;
