@@ -132,6 +132,7 @@ rules
     stc-stack-delta: STC_ClosToCont()   -> 0
     
     stc-stack-delta: STC_StringPush(_) -> 1
+    stc-stack-delta: STC_REq()         -> 0
   
     stc-stack-delta: a -> 0
       where

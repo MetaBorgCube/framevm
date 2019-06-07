@@ -70,3 +70,11 @@ rules
         (env2, tmp) := <stack-pop-any(|env1)>;
         (env3, val) := <eval-dup(|env2)> <dec> n;
         env4 := <stack-push(|env3)> tmp
+        
+    // STC_REq/0
+    // Check if two references are equal
+    stc-eval: (STC_REq(), env1) -> env4
+      where
+        (env2, v1) := <stack-pop-any(|env1)>;
+        (env3, v2) := <stack-pop-any(|env2)>;
+        env4 := <stack-push(|env2)> <eval-req> (v1, v2)

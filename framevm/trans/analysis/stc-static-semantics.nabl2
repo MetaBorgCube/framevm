@@ -126,3 +126,4 @@ rules
   instr[[STC_ClosUnpack() ^(s)]].
     
   instr[[STC_StringPush(_) ^(s)]].
+  instr[[STC_REq() ^(s)]].

@@ -16,6 +16,7 @@ sorts SInstr context-free syntax
   SInstr.STC_PrintChar   = <printc>                // Prints character on the stack
   SInstr.STC_Debug       = <debug>                 // Prints the state of the vm
   SInstr.STC_DebugKill   = <debug!>                // Prints the state of the vm and kills execution
+  SInstr.STC_REq         = <eqr>                   // Check whether two references are equal
   
   
   SInstr = SIntInstr
