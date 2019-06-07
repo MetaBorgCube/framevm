@@ -1,0 +1,120 @@
+module stc_interpreter_empty
+
+language framevm
+
+fixture [[#init 2
+MAIN:
+	stack := 99
+	new 2
+	newscope P
+	ipush 1
+	set [0]
+	ipush 1
+	set [P, 0]
+	[[...]]
+	print
+	ipush 0
+	return
+]]
+
+test local filled [[
+	empty? [0]
+]] transform "Run -> Run" to "IntV(0)"
+
+test local empty [[
+	empty? [1]
+]] transform "Run -> Run" to "IntV(1)"
+
+test local filled idx [[
+	ipush 0
+	empty?
+]] transform "Run -> Run" to "IntV(0)"
+
+test local empty idx [[
+	ipush 1
+	empty?
+]] transform "Run -> Run" to "IntV(1)"
+
+test parent filled [[
+	empty? [P, 0]
+]] transform "Run -> Run" to "IntV(0)"
+
+test parent empty [[
+	empty? [P, 1]
+]] transform "Run -> Run" to "IntV(1)"
+
+
+
+test relative local filled [[
+	getcurrent
+	emptyr? [0]
+]] transform "Run -> Run" to "IntV(0)"
+
+test relative local empty [[
+	getcurrent
+	emptyr? [1]
+]] transform "Run -> Run" to "IntV(1)"
+
+test relative local filled idx [[
+	getcurrent
+	ipush 0
+	emptyr?
+]] transform "Run -> Run" to "IntV(0)"
+
+test relative local empty idx [[
+	getcurrent
+	ipush 1
+	emptyr?
+]] transform "Run -> Run" to "IntV(1)"
+
+test relative parent filled [[
+	getcurrent
+	emptyr? [P, 0]
+]] transform "Run -> Run" to "IntV(0)"
+
+test relative parent empty [[
+	getcurrent
+	emptyr? [P, 1]
+]] transform "Run -> Run" to "IntV(1)"
+
+
+
+
+
+
+test set empty local filled [[
+	empty  [0] 
+	empty? [0]
+]] transform "Run -> Run" to "IntV(1)"
+
+test set empty local filled idx [[
+	ipush 0
+	empty
+	empty? [0]
+]] transform "Run -> Run" to "IntV(1)"
+
+test set empty parent filled [[
+	empty  [P, 0]
+	empty? [P, 0]
+]] transform "Run -> Run" to "IntV(1)"
+
+
+
+test set empty relative local filled [[
+	getcurrent
+	emptyr [0]
+	empty? [0]
+]] transform "Run -> Run" to "IntV(1)"
+
+test set empty relative local filled idx [[
+	getcurrent
+	ipush 0
+	emptyr
+	empty? [0]
+]] transform "Run -> Run" to "IntV(1)"
+
+test set empty relative parent filled [[
+	getcurrent
+	emptyr [P, 0]
+	empty? [P, 0]
+]] transform "Run -> Run" to "IntV(1)"

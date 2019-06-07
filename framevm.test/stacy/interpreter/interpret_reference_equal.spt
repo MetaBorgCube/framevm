@@ -1,0 +1,48 @@
+module stc_interpreter_reference_equal
+
+language framevm
+
+fixture [[MAIN:
+	stack := 99
+	[[...]]
+	eqr
+	print
+	ipush 0
+	return
+LBL:
+	return
+]]
+
+test equal int [[
+	ipush 1
+	ipush 1
+]] transform "Run -> Run" to "IntV(1)"
+
+test non-equal int [[
+	ipush 2
+	ipush 1
+]] transform "Run -> Run" to "IntV(0)"
+
+test equal frame [[
+	new
+	dup
+]] transform "Run -> Run" to "IntV(1)"
+
+test non-equal frame [[
+	new
+	new
+]] transform "Run -> Run" to "IntV(0)"
+
+test equal continuation [[
+	new
+	cnew LBL 2
+	dup
+]] transform "Run -> Run" to "IntV(1)"
+
+test non-equal frame [[
+	new
+	dup
+	cnew LBL 2
+	swap
+	cnew LBL 2
+]] transform "Run -> Run" to "IntV(0)"
