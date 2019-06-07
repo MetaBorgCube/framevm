@@ -30,6 +30,8 @@ rules
     external rgr-get-frame(|env)      // env| slot -> frame
     external rgr-get-closure(|env)    // env| slot -> closure
     
+    external frame-is-empty-slot(|env)// env| (frame, slot) -> val
+    external frame-empty-slot(|env)   // env| (frame, slot) -> env'
     external frame-get-slot(|env)     // env| (frame, slot) -> val
     external frame-get-link(|env)     // env| (frame, (link_id, idx)) -> frame
     external frame-set-slot(|env)     // env| (frame, slot, val) -> env'

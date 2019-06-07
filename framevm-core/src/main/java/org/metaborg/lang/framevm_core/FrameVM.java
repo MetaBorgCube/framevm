@@ -10,8 +10,10 @@ import org.metaborg.lang.framevm_core.continuation.cont_set_0_1;
 import org.metaborg.lang.framevm_core.continuation.cont_this_0_1;
 import org.metaborg.lang.framevm_core.continuation.cont_transfer_0_1;
 import org.metaborg.lang.framevm_core.frame_ops.frame_copy_0_1;
+import org.metaborg.lang.framevm_core.frame_ops.frame_empty_slot_0_1;
 import org.metaborg.lang.framevm_core.frame_ops.frame_get_link_0_1;
 import org.metaborg.lang.framevm_core.frame_ops.frame_get_slot_0_1;
+import org.metaborg.lang.framevm_core.frame_ops.frame_is_empty_slot_0_1;
 import org.metaborg.lang.framevm_core.frame_ops.frame_link_0_1;
 import org.metaborg.lang.framevm_core.frame_ops.frame_new_0_1;
 import org.metaborg.lang.framevm_core.frame_ops.frame_set_current_0_1;
@@ -89,6 +91,8 @@ public class FrameVM {
 				frame_link_0_1.instance,
 				frame_this_0_1.instance,
 				frame_copy_0_1.instance,
+				frame_is_empty_slot_0_1.instance,
+				frame_empty_slot_0_1.instance,
 
 				vm_execute_1_1.instance,
 

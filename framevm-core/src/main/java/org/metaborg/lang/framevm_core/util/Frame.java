@@ -127,4 +127,8 @@ public class Frame {
 	public String toString() {
 		return "Frame(" + this.id + ")";
 	}
+
+	public void empty(int idx) {
+		slots[idx] = new Slot(null);
+	}
 }

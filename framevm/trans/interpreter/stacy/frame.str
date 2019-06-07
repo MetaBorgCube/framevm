@@ -173,10 +173,74 @@ rules
         size := <frame-size(|env2)> frame;
         env3 := <stack-push(|env2)> IntV(size)
           
+          
+          
+    // STC_IsEmpty/0
+    // Check if index on top of stack of the current frame is empty
+    stc-eval: (STC_IsEmpty(), env1) -> env3
+      where
+        (env2, IntV(slot)) := <stack-pop-int(|env1)>;
+        env3 := <stack-push(|env2)> IntV(<frame-is-empty-slot(|env2)> (<frame-this(|env2)>, slot))
+            
+    // STC_IsEmpty/1
+    // Check if slot at path is empty
+    stc-eval: (STC_IsEmpty(FVM_Path(p)), env1) -> env2
+      where
+        (frame_id, FVM_Slot(slot)) := <resolve> (p, FrameRef(<frame-this(|env1)>), env1);
+        env2 := <stack-push(|env1)> IntV(<frame-is-empty-slot(|env1)> (frame_id, <string-to-int> slot))
+
+    // STC_Empty/0
+    // Empty index on top of stack of the current frame
+    stc-eval: (STC_Empty(), env1) -> env3
+      where
+        (env2, IntV(slot)) := <stack-pop-int(|env1)>;
+        env3 := <frame-empty-slot(|env1)> (<frame-this(|env1)>, slot)
+            
+    // STC_Empty/1
+    // Empty slot at path
+    stc-eval: (STC_Empty(FVM_Path(p)), env1) -> env2
+      where
+        (frame, FVM_Slot(slot)) := <resolve> (p, FrameRef(<frame-this(|env1)>), env1);
+        env2 := <frame-empty-slot(|env1)> (frame, <string-to-int> slot)
+    
+           
+    // STC_IsEmptyR/0
+    // Check if index on top of stack in frame on second position is empty
+    stc-eval: (STC_IsEmptyR(), env1) -> env4
+      where
+        (env2, IntV(slot)) := <stack-pop-int(|env1)>;
+        (env3, FrameRef(frame)) := <stack-pop-frame(|env2)>;
+        env4 := <stack-push(|env3)> IntV(<frame-is-empty-slot(|env3)> (frame, slot))
+      
+    // STC_IsEmptyR/1
+    // Check if slot at path in frame on top of the stack is empty
+    stc-eval: (STC_IsEmptyR(FVM_Path(p)), env1) -> env3
+      where
+        (env2, frame) := <stack-pop-frame(|env1)>;
+        (frame_id, FVM_Slot(slot)):= <resolve> (p, frame, env2);
+        env3 := <stack-push(|env2)> IntV(<frame-is-empty-slot(|env2)> (frame_id, <string-to-int> slot))
+
+    // STC_EmptyR/0
+    // Empty index on top of stack in frame on second position
+    stc-eval: (STC_EmptyR(), env1) -> env4
+      where
+        (env2, IntV(slot)) := <stack-pop-int(|env1)>;
+        (env3, FrameRef(frame)) := <stack-pop-frame(|env2)>;
+        env4 := <frame-empty-slot(|env3)> (frame, slot)
+     
+    // STC_EmptyR/1
+    // Empty slot at path in frame on top of the stack
+    stc-eval: (STC_EmptyR(FVM_Path(p)), env1) -> env3
+      where
+        (env2, frame_init) := <stack-pop-frame(|env1)>;
+        (frame, FVM_Slot(slot)) := <resolve> (p, frame_init, env1);
+        env3 := <frame-empty-slot(|env2)> (frame, <string-to-int> slot)
+        
+     
     // Get a Slot or Link with the given id and frame
     frame-get: (env, frame, FVM_Link(Bind(link_id, idx))) -> FrameRef(<frame-get-link(|env)> (frame, (link_id, idx)))
-    frame-get: (env, frame, FVM_Slot(slot_id))            -> <frame-get-slot(|env)> (frame, <string-to-int> slot_id)    // Normal slots
-    frame-get: (env, frame, FVM_Cont(Bind(name, idx)))    -> <cont-get(|env)> (frame, (name, idx))                        // Continuation slots
+    frame-get: (env, frame, FVM_Slot(slot_id))            -> <frame-get-slot(|env)> (frame, <string-to-int> slot_id)   // Normal slots
+    frame-get: (env, frame, FVM_Cont(Bind(name, idx)))    -> <cont-get(|env)> (frame, (name, idx))                     // Continuation slots
     
     // Resolve a path
     // returns the frame_id and slot/link of the location pointed to

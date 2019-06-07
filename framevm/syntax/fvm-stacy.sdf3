@@ -56,16 +56,25 @@ sorts SInstr context-free syntax
   SFrameInstr.STC_FSize  = <size>                  // Get the size of the frame on top of the stack
   
   SFrameInstr.STC_Link   = <link <PathOrEmpty> <LinkRef>> // Link frame on stack to given location (Empty path is current frame)
-  SFrameInstr.STC_LinkR  = <linkr <LinkRef>>     // Link frame on second position on the stack to the frame on top
+  SFrameInstr.STC_LinkR  = <linkr <LinkRef>>       // Link frame on second position on the stack to the frame on top
  
   SFrameInstr.STC_Set    = <set>                   // Store value on top of stack in slot on second position of the current frame
-  SFrameInstr.STC_Set    = <set <PathOrEmpty>>            // Set value on the stack at path location
+  SFrameInstr.STC_Set    = <set <PathOrEmpty>>     // Set value on the stack at path location
   SFrameInstr.STC_SetR   = <setr>                  // Store value on top of stack in slot on second position of frame on third position
   SFrameInstr.STC_SetR   = <setr <Path>>           // Set value on the stack at path location starting in frame on stack
   SFrameInstr.STC_Get    = <get>                   // Get index on top of stack of the current frame
-  SFrameInstr.STC_Get    = <get <PathOrEmpty>>            // Store value at path in the stack
+  SFrameInstr.STC_Get    = <get <PathOrEmpty>>     // Store value at path in the stack
   SFrameInstr.STC_GetR   = <getr>                  // Get index on top of stack in frame on second position
-  SFrameInstr.STC_GetR   = <getr <PathOrEmpty>>           // Store value at path from frame on stack on stack
+  SFrameInstr.STC_GetR   = <getr <PathOrEmpty>>    // Store value at path from frame on stack on stack
+  
+  SFrameInstr.STC_IsEmpty  = <empty?>              // Check if index on top of stack of the current frame is empty
+  SFrameInstr.STC_IsEmpty  = <empty? <Path>>       // Check if slot at path is empty
+  SFrameInstr.STC_IsEmptyR = <emptyr?>             // Check if index on top of stack in frame on second position is empty
+  SFrameInstr.STC_IsEmptyR = <emptyr? <Path>>      // Check if slot at path in frame on top of the stack is empty
+  SFrameInstr.STC_Empty    = <empty>               // Empty index on top of stack of the current frame
+  SFrameInstr.STC_Empty    = <empty <Path>>        // Empty slot at path
+  SFrameInstr.STC_EmptyR   = <emptyr>              // Empty index on top of stack in frame on second position
+  SFrameInstr.STC_EmptyR   = <emptyr <Path>>       // Empty slot at path in frame on top of the stack
   
   
   SFrameInstr.STC_FrameCopy  = <copy <CopyPolicy>>                // Copy the current frame using the given policy
