@@ -1,0 +1,101 @@
+module rgr_interpreter_empty
+
+language framevm
+
+fixture [[#init 2
+MAIN:
+	local := 99
+	newscope(new(2), P)
+	set([0], iload(1))
+	set([P, 0], iload(1))
+	[[...]]
+	print(r0)
+	return(iload(0))
+]]
+
+test local filled [[
+	r0 <- empty?([0])
+]] transform "Run -> Run" to "IntV(0)"
+
+test local empty [[
+	r0 <- empty?([1])
+]] transform "Run -> Run" to "IntV(1)"
+
+test local filled idx [[
+	r0 <- empty?(iload(0))
+]] transform "Run -> Run" to "IntV(0)"
+
+test local empty idx [[
+	r0 <- empty?(iload(1))
+]] transform "Run -> Run" to "IntV(1)"
+
+test parent filled [[
+	r0 <- empty?([P, 0])
+]] transform "Run -> Run" to "IntV(0)"
+
+test parent empty [[
+	r0 <- empty?([P, 1])
+]] transform "Run -> Run" to "IntV(1)"
+
+
+
+test relative local filled [[
+	r0 <- empty?(getcurrent(), [0])
+]] transform "Run -> Run" to "IntV(0)"
+
+test relative local empty [[
+	r0 <- empty?(getcurrent(), [1])
+]] transform "Run -> Run" to "IntV(1)"
+
+test relative local filled idx [[
+	r0 <- empty?(getcurrent(), iload(0))
+]] transform "Run -> Run" to "IntV(0)"
+
+test relative local empty idx [[
+	r0 <- empty?(getcurrent(), iload(1))
+]] transform "Run -> Run" to "IntV(1)"
+
+test relative parent filled [[
+	r0 <- empty?(getcurrent(), [P, 0])
+]] transform "Run -> Run" to "IntV(0)"
+
+test relative parent empty [[
+	r0 <- empty?(getcurrent(), [P, 1])
+]] transform "Run -> Run" to "IntV(1)"
+
+
+
+
+
+
+test set empty local filled [[
+	empty([0])
+	r0 <- empty?([0])
+]] transform "Run -> Run" to "IntV(1)"
+
+test set empty local filled idx [[
+	empty(iload(0))
+	r0 <- empty?([0])
+]] transform "Run -> Run" to "IntV(1)"
+
+test set empty parent filled [[
+	empty([P, 0])
+	r0 <- empty?([P, 0])
+]] transform "Run -> Run" to "IntV(1)"
+
+
+
+test set empty relative local filled [[
+	empty(getcurrent(), [0])
+	r0 <- empty?([0])
+]] transform "Run -> Run" to "IntV(1)"
+
+test set empty relative local filled idx [[
+	empty(getcurrent(), iload(0))
+	r0 <- empty?([0])
+]] transform "Run -> Run" to "IntV(1)"
+
+test set empty relative parent filled [[
+	empty(getcurrent(), [P, 0])
+	r0 <- empty?([P, 0])
+]] transform "Run -> Run" to "IntV(1)"

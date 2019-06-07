@@ -1,0 +1,42 @@
+module rgr_interpreter_reference_equal
+
+language framevm
+
+fixture [[MAIN:
+	local := 99	
+	[[...]]
+	print(eqr(r0, r1))
+	return(iload(0))
+LBL:
+	return()
+]]
+
+test equal int [[
+	r0 <- iload(1)
+	r1 <- iload(1)
+]] transform "Run -> Run" to "IntV(1)"
+
+test non-equal int [[
+	r0 <- iload(2)
+	r1 <- iload(1)
+]] transform "Run -> Run" to "IntV(0)"
+
+test equal frame [[
+	r0 <- new()
+	r1 <- r0
+]] transform "Run -> Run" to "IntV(1)"
+
+test non-equal frame [[
+	r0 <- new()
+	r1 <- new()
+]] transform "Run -> Run" to "IntV(0)"
+
+test equal continuation [[
+	r0 <- cnew(new(), LBL, 2)
+	r1 <- r0
+]] transform "Run -> Run" to "IntV(1)"
+
+test non-equal frame [[
+	r0 <- cnew(new(), LBL, 2)
+	r1 <- cnew(new(), LBL, 2)
+]] transform "Run -> Run" to "IntV(0)"
