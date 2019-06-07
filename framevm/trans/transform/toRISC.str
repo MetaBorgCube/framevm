@@ -56,6 +56,30 @@ rules
 
 rules
 
+	to-RISC: STC_IsEmpty() -> [STC_ScopeGetCurrent(), STC_Swap(), STC_IsEmptyR()]
+    to-RISC: STC_IsEmpty(FVM_Path(path)) -> [STC_ScopeGetCurrent(), STC_IsEmptyR(FVM_Path(path))]
+
+    to-RISC: STC_IsEmptyR(FVM_Path(path)) -> [STC_GetR(FVM_Path(init)), STC_IsEmptyR(FVM_Path([last]))]
+      where 
+        <geq> (<length> path, 2);
+        (init, last) := <split-init-last> path
+        
+    to-RISC: STC_IsEmptyR(FVM_Path([FVM_Slot(slot_id)])) -> [STC_IPush(slot_id), STC_IsEmptyR()]
+	 
+	to-RISC: STC_Empty() -> [STC_ScopeGetCurrent(), STC_Swap(), STC_EmptyR()]
+	
+	to-RISC: STC_Empty(path) -> [STC_ScopeGetCurrent() , STC_EmptyR(path)]
+    
+    to-RISC: STC_EmptyR(FVM_Path([FVM_Slot(slot_id)])) -> [STC_IPush(slot_id), STC_EmptyR()]
+    
+	to-RISC: STC_EmptyR(FVM_Path(path)) -> [STC_GetR(FVM_Path(init)) , STC_EmptyR(FVM_Path([last]))]
+      where
+        <geq> (<length> path, 2);
+        (init, last) := <split-init-last> path
+	
+
+rules
+
     to-RISC: STC_ContNew(lbl, n) -> [STC_IPush(n), STC_ContNewR(lbl)]
     to-RISC: STC_ContGet(c)      -> [STC_ContThis(), STC_ContGetR(c)]
     to-RISC: STC_ContGet()       -> [STC_ContThis(), STC_Swap(), STC_ContGetR()]
