@@ -4,6 +4,7 @@ export TO_STRING as to_string
 // Made by @Geweldig
 
 TO_STRING:
+  stack := 1
   get [0]
   frame?
   jumpz __IS_INT __IS_STRING
