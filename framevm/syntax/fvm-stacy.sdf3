@@ -9,6 +9,7 @@ sorts Body context-free syntax
     <ret:SOnReturnInstr?>
     <instr:SInstr*> 
     <jump:SControlInstr>
+
 > { layout (indent lbl size && align-list instr && align instr jump && align ret instr && align size ret) }
   
 sorts SInstr context-free syntax

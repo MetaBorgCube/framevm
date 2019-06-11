@@ -11,15 +11,18 @@ context-free start-symbols Program
 sorts Program context-free syntax
 
 Program.Empty = <<head:Header>
+
 <pseudo:PsdBlock?>
 > {prefer}
 
 Program.STC_Program = <<head:Header>
+
 <pseudo:PsdBlock?>
 <body:SBlock*>
 > { layout (align-list body) }
 
 Program.RGR_Program = <<head:Header>
+
 <pseudo:PsdBlock?>
 <body:RBlock*>
 > { layout (align-list body) }

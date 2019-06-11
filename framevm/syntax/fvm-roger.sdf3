@@ -9,8 +9,9 @@ sorts RBlock context-free syntax
 <lbl:Label>: 
     <size:CFRSize?>
     <ret:OnReturnInstr?>
-	<instr:Instr*> 
-	<jump:ControlTerminal>
+    <instr:Instr*> 
+    <jump:ControlTerminal>
+
 >			{ layout (indent lbl size && align-list instr && align size ret && align instr jump && align ret instr) }
 	
 	OnReturnInstr.RGR_OnReturn = <<{RGRVar ","}+> \<- <OnReturnExp>>
