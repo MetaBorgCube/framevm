@@ -1,4 +1,4 @@
-module stc-util
+module fvm-util
 
 imports
     nabl2/api
