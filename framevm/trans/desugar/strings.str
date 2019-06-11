@@ -3,6 +3,7 @@ module strings
 imports
     signatures/fvm-stacy-sig
     signatures/fvm-roger-sig
+    signatures/fvm-common-sig
     
 rules
     fix-strings = topdown(try(fix-string))

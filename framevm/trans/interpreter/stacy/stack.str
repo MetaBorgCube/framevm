@@ -3,6 +3,7 @@ module stack
 imports 
     signatures/fvm-stacy-sig
     interpreter/external
+    interpreter/util
     
     fvm-common
 
