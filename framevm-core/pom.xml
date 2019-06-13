@@ -10,7 +10,8 @@
   <properties>
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.source>1.8</maven.compiler.source>
-  	<metaborg-version>2.5.4</metaborg-version>
+    <metaborg-version>2.5.4</metaborg-version>
+    <skipTests>true</skipTests>
   </properties>
   
   <dependencies>
