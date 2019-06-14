@@ -60,6 +60,8 @@ rules
         
     import-blocks(|mode): (FVM_Export(_, _, _), env) -> env
     
+    import-blocks(|mode): (i, env) -> <fail> with <debug> "Failed to process import, the reference is probably not resolvable:"; <debug> <strip-annos> i
+    
     try-load-import(|mode): i@(FVM_ImportAs(lib, _, _), env1) -> env2
       where
         <not(vm-has-lib(|env1))> lib;
