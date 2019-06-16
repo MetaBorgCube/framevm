@@ -25,6 +25,7 @@ rules
    	desugar-empty: (fname, prog@RGR_Program(_, _, _)) -> (fname, prog)
    	  
    	split-header: prog@STC_Program(_, _, _) -> <split-header> ("", prog)
+   	split-header: prog@RGR_Program(_, _, _) -> <split-header> ("", prog)
    	split-header: (fname, STC_Program(FVM_Header(headeritems), _, blocks)) -> STC_Program(fname, imports, initsize, initblock, aliasses, blocks)
    	  with
    	  	imports := <map(try(apply-export(|fname)))> <filter(is-import)> headeritems;
