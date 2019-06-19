@@ -1,0 +1,36 @@
+module rgr_interpreter_closure
+
+language framevm
+
+fixture [[MAIN:
+	local := 99
+	[[...]]    
+	
+LBL1:
+	local := 0
+	print(iload(1))
+	return(iload(0))
+	
+LBL2:
+	local := 0
+	print(iload(2))
+	return(iload(0))
+	
+MAIN_END:
+	print(iload(12))
+	return(iload(0))
+]]
+
+test mk closure 1 [[
+	r0 <- cnew(newc(new(), LBL1, 1))
+	cset(r0, c, cgetcurrent())
+	ccall(r0, MAIN_END)
+]] transform "Run -> Run" to "IntV(1)
+IntV(12)"
+
+test mk closure 2 [[
+	r0 <- cnew(newc(new(), LBL2, 1))
+	cset(r0, c, cgetcurrent())
+	ccall(r0, MAIN_END)
+]] transform "Run -> Run" to "IntV(2)
+IntV(12)"

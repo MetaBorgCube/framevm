@@ -54,7 +54,7 @@ rules
     external cont-transfer(|env)      // env| (cont, [val])-> env'
     external cont-receive(|env)       // env| cont-> (env', val)
     external cont-copy(|env)          // env| (cont, policy) -> (env', cont)
-    
+    external cont-get-frame(|env)     // env| cont -> frame
 rules
     ex-set-cx(|env):   (cont, ex)   -> <cont-set(|env)> (cont, ("x", 1), ex)
     cont-set-cc(|env): (cont, ret)  -> <cont-set(|env)> (cont, ("c", 0), ret)

@@ -22,6 +22,12 @@ test return [[
 	cret(cget(c))
 ]] transform "Run -> Run" to ""
 
+test unpack [[
+	print(cunpack(r0))
+	transfer(iload(0), c)
+	cret(cget(c))
+]] transform "Run -> Run" to "Frame(frame_1)"
+
 test ccall 1 [[
 	cset(r0, c, cgetcurrent())
 	ccall(r0, MAIN_END)

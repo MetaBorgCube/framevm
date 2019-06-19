@@ -11,33 +11,21 @@ imports
 rules
     // STC_ClosNew/2
     // Create a closure of a frame and a label
-    stc-eval: (STC_ClosNew(p@FVM_DeepCopy(), lbl, size), env1) -> env4
+    stc-eval: (STC_ClosNew(p, lbl, size), env1) -> env3
       where
         (env2, FrameRef(frame)) := <stack-pop-frame(|env1)>;
-        (env3, copy) := <frame-copy(|env2)> (frame, p);
-        env4 := <stack-push(|env3)> ClosV(copy, lbl, <string-to-int> size)
-          
-    stc-eval: (STC_ClosNew(_, lbl, size), env1) -> env3
-      where
-        (env2, FrameRef(frame)) := <stack-pop-frame(|env1)>;
-        env3 := <stack-push(|env2)> ClosV(frame, lbl, <string-to-int> size)
-          
+        env3 := <stack-push(|env2)> ClosV(frame, p, lbl, <string-to-int> size)
+       
     // STC_ClosNew/1
     // Create a new closure of a frame and label
     stc-eval: (STC_ClosNew(lbl, size), env1) -> env3
       where
         (env2, FrameRef(frame)) := <stack-pop-frame(|env1)>;
-        env3 := <stack-push(|env2)> ClosV(frame, lbl, <string-to-int> size)
+        env3 := <stack-push(|env2)> ClosV(frame, None(), lbl, <string-to-int> size)
           
     // STC_ClosToCont/0
     stc-eval: (STC_ClosToCont(), env1) -> env4
       where
-        (env2, ClosV(frame, FVM_BoundLabel(lib, lbl, Some(s2)), s1)) := <stack-pop-closure(|env1)>;
-        (env3, cont) := <vm-cont-new(|env2)> (frame, (lib, lbl), (s1, s2));
+        (env2, ClosV(frame, _, FVM_BoundLabel(lib, lbl, Some(s2)), s1)) := <stack-pop-closure(|env1)>;
+        (env3, cont) := <vm-cont-new(|env2)>(frame, (lib, lbl), (s1, s2));
         env4 := <stack-push(|env3)> Continuation(cont)
-          
-    // STC_ClosUnpack/0
-    stc-eval: (STC_ClosUnpack(), env1) -> env3
-      where
-        (env2, ClosV(frame, _, _)) := <stack-pop-closure(|env1)>;
-        env3 := <stack-push(|env2)> FrameRef(frame)

@@ -78,6 +78,7 @@ sorts Exp context-free syntax
 	ExpTerminal.RGR_ContSet  = <cset(<Exp>, <ContOrExp>, <Exp>)>
 	ContExp.RGR_ContGet      = <cget(<ContOrExp>)>
 	ContExp.RGR_ContGet      = <cget(<Exp>, <ContOrExp>)>
+    ContExp.RGR_ContUnpack   = <cunpack(<Exp>)>
 	
 	
 	ControlTerminal.RGR_Return     = <return(<{Exp ","}*>)>
@@ -110,11 +111,10 @@ sorts Exp context-free syntax
 	Exp.RGR_StringLoad       = <sload(<STRING>)>
 	Exp.RGR_CharLoad         = <cload(<CHAR>)>	
 	
-//	Exp = ClosExp
-//    ClosExp.RGR_ClosNew      = <newc(<CopyPolicy>, <Label>, <IntOrExp>)>
-//    ClosExp.RGR_ClosNew      = <newc(<Label>, <IntOrExp>)>
-//    ClosExp.RGR_ClosToCont   = <cnew(<Exp>)>
-//    ClosExp.RGR_ClosUnpack   = <unpack(<Exp>)>
+    Exp = ClosExp
+//    ClosExp.RGR_ClosNew      = <newc(<Exp>, <CopyPolicy>, <Label>, <IntOrExp>)>
+    ClosExp.RGR_ClosNew      = <newc(<Exp>, <Label>, <IntOrExp>)>
+    ClosExp.RGR_ClosToCont   = <cnew(<Exp>)>
   
   
 	

@@ -5,6 +5,7 @@ import org.strategoxt.lang.Strategy;
 import org.metaborg.lang.framevm_core.continuation.cont_call_0_1;
 import org.metaborg.lang.framevm_core.continuation.cont_copy_0_1;
 import org.metaborg.lang.framevm_core.continuation.cont_get_0_1;
+import org.metaborg.lang.framevm_core.continuation.cont_get_frame_0_1;
 import org.metaborg.lang.framevm_core.continuation.cont_receive_0_1;
 import org.metaborg.lang.framevm_core.continuation.cont_set_0_1;
 import org.metaborg.lang.framevm_core.continuation.cont_this_0_1;
@@ -96,6 +97,7 @@ public class FrameVM {
 
 				vm_execute_1_1.instance,
 
+				cont_get_frame_0_1.instance,
 				cont_get_0_1.instance,
 				cont_set_0_1.instance,
 				cont_transfer_0_1.instance,

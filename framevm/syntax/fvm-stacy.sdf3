@@ -103,7 +103,8 @@ sorts SInstr context-free syntax
   SContInstr.STC_ContGet       = <cget [<ContRef>]>               // Get the continuation from the given slot
   SContInstr.STC_ContGetR      = <cgetr>                          // Get the continuation from the slot with id on top of the stack from the continuation on second position
   SContInstr.STC_ContGetR      = <cgetr [<ContRef>]>              // Get the continuation from the given slot from the continuation on top of the stack
-  
+   SContInstr.STC_ClosUnpack   = <cunpack>                        // Get the dataframe of the closure on top of the stack
+ 
   
   SControlInstr.STC_Return     = <return>                         // Return the calue on top of the stack
   SControlInstr.STC_ReturnN    = <return <INTLEZ>>                // Return n values
@@ -134,7 +135,6 @@ sorts SInstr context-free syntax
   SClosInstr.STC_ClosNew      = <newc <CopyPolicy> <Label> <INTLEZ>> // Create a new closure form the frame on top of the stack and the given label. Use the given copy policy
   SClosInstr.STC_ClosNew      = <newc <Label> <INTLEZ>>           // Create a new closure form the frame on top of the stack and the given label. Uses shallow copy
   SClosInstr.STC_ClosToCont   = <cnew>                            // Create a continuation from a closure
-  SClosInstr.STC_ClosUnpack   = <unpack>                          // Get the dataframe of the closure on top of the stack
   
   SInstr.STC_StringPush       = <spush <STRING>>                  // Push a string on the stack
   SInstr.STC_CharPush         = <cpush <CHAR>>                    // Push a character value to stack

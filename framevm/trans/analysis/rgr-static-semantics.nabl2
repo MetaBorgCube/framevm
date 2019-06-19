@@ -76,6 +76,7 @@ rules // Exp
   rgrExp[[RGR_ContSet(e1, e2, e3) ^(s)]]  := rgrExp[[e1 ^(s)]], rgrExp[[e2 ^(s)]], rgrExp[[e3 ^(s)]].
   rgrExp[[RGR_ContGet(exp) ^(s)]]         := rgrExp[[exp ^(s)]].
   rgrExp[[RGR_ContGet(e1, e2) ^(s)]]      := rgrExp[[e1 ^(s)]], rgrExp[[e2 ^(s)]].
+  rgrExp[[RGR_ContUnpack(exp) ^(s)]]      := rgrExp[[exp ^(s)]].
   
 rules // Instructions
   instr[[RGR_Return(exps) ^(s)]]           := Map1(rgrExp)[[exps ^(s)]].
@@ -109,9 +110,8 @@ rules // Instructions
   rgrExp[[RGR_StringLoad(_) ^(s)]].
   rgrExp[[RGR_CharLoad(_) ^(s)]].
 
-//    ClosExp.RGR_ClosNew      = <newc(<CopyPolicy>, <Label>, <IntOrExp>)>
-//    ClosExp.RGR_ClosNew      = <newc(<Label>, <IntOrExp>)>
-//    ClosExp.RGR_ClosToCont   = <cnew(<Exp>)>
-//    ClosExp.RGR_ClosUnpack   = <unpack(<Exp>)>
-   
+  rgrExp[[RGR_ClosNew(exp1, lbl, exp2) ^(s)]] := rgrExp[[exp1 ^(s)]], rgrExp[[exp2 ^(s)]], lbl[[lbl ^(s)]].
+//    ClosExp.RGR_ClosNew      = <newc(<Exp>, <CopyPolicy>, <Label>, <IntOrExp>)>
+
+  rgrExp[[RGR_ClosToCont(exp) ^(s)]]     := rgrExp[[exp ^(s)]].
   

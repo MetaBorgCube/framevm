@@ -172,3 +172,9 @@ rules
       where
         cont := <cont-get(|env1)> (<cont-this(|env1)>, <cont-resolve> p);
         env2 := <cont-call(|env1)> cont
+         
+    // STC_ClosUnpack/0
+    stc-eval: (STC_ClosUnpack(), env1) -> env3
+      where
+        (env2, Continuation(cont)) := <stack-pop-cont(|env1)>;
+        env3 := <stack-push(|env2)> FrameRef(<cont-get-frame(|env2)> cont)

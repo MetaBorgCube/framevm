@@ -39,6 +39,12 @@ rules
         (env2, Continuation(cf)) := <rgr-eval-exp(|env)> exp1;
         (env3, IntV(idx)) := <rgr-eval-exp(|env2)> exp2
       
+    rgr-eval-exp(|env): RGR_ContUnpack(exp) -> (env2, FrameRef(frame))
+      where
+        (env2, Continuation(cont)) := <rgr-eval-exp(|env)> exp;
+        frame := <cont-get-frame(|env2)> cont
+        
+      
         
         
         
