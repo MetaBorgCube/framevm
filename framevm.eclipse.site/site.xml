@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <feature url="features/framevm.eclipse.feature_1.1.0.jar" id="framevm.eclipse.feature" version="1.1.0">
+      <category name="framevm"/>
+   </feature>
+   <category-def name="framevm" label="FrameVM language Eclipse plugin">
+      <description>
+         FrameVM language Eclipse plugin.
+      </description>
+   </category-def>
+</site>

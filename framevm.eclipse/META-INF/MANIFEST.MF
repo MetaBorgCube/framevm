@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: FrameVM language Eclipse plugin
+Bundle-SymbolicName: framevm.eclipse;singleton:=true
+Bundle-Version: 1.1.0
+Bundle-Vendor: org.metaborg.lang
+Bundle-ActivationPolicy: lazy
+Require-Bundle: org.metaborg.spoofax.eclipse
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8

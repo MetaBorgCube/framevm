@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+  id="framevm.eclipse.feature"
+  label="FrameVM language Eclipse plugin"
+  version="1.1.0"
+>
+  <plugin id="framevm.eclipse" version="1.1.0" unpack="true" />
+  <includes id="org.metaborg.spoofax.eclipse.feature" version="0" />
+</feature>

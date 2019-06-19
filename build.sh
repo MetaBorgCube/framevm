@@ -3,6 +3,9 @@ projects=(
     "framevm-core"
     "framevm"
     "framevm.test"
+    "framevm.eclipse"
+    "framevm.eclipse.feature"
+    "framevm.eclipse.site"
 )
 
 
