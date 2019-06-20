@@ -8,7 +8,7 @@ import org.spoofax.interpreter.terms.ITermFactory;
 import org.metaborg.lang.framevm_core.FVMStrategy;
 import org.metaborg.lang.framevm_core.dot.DotMachineStateFactory;
 import org.metaborg.lang.framevm_core.util.MachineState;
-import mb.nabl2.stratego.StrategoBlob;
+import mb.nabl2.terms.stratego.StrategoBlob;
 
 public class vm_debug_0_1 extends FVMStrategy {
 	public static vm_debug_0_1 instance = new vm_debug_0_1();

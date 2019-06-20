@@ -8,7 +8,7 @@ import org.spoofax.terms.StrategoString;
 import org.spoofax.terms.StrategoTuple;
 import org.metaborg.lang.framevm_core.FVMStrategy;
 import org.metaborg.lang.framevm_core.util.MachineState;
-import mb.nabl2.stratego.StrategoBlob;
+import mb.nabl2.terms.stratego.StrategoBlob;
 
 public class vm_store_block_0_1 extends FVMStrategy {
 	public static vm_store_block_0_1 instance = new vm_store_block_0_1();

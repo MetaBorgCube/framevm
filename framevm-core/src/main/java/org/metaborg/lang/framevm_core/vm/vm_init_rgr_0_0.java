@@ -10,7 +10,7 @@ import org.metaborg.lang.framevm_core.util.ControlFrame;
 import org.metaborg.lang.framevm_core.util.MachineState;
 import org.metaborg.lang.framevm_core.util.MachineThread;
 import org.metaborg.lang.framevm_core.util.VMMode;
-import mb.nabl2.stratego.StrategoBlob;
+import mb.nabl2.terms.stratego.StrategoBlob;
 
 
 public class vm_init_rgr_0_0 extends Strategy {

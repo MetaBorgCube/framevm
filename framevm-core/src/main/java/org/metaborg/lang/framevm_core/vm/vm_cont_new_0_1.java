@@ -12,7 +12,7 @@ import org.metaborg.lang.framevm_core.util.Block;
 import org.metaborg.lang.framevm_core.util.ControlFrame;
 import org.metaborg.lang.framevm_core.util.Frame;
 import org.metaborg.lang.framevm_core.util.MachineState;
-import mb.nabl2.stratego.StrategoBlob;
+import mb.nabl2.terms.stratego.StrategoBlob;
 
 
 public class vm_cont_new_0_1 extends FVMStrategy {

@@ -8,7 +8,7 @@ import org.spoofax.terms.StrategoList;
 
 import org.metaborg.lang.framevm_core.FVMStrategy;
 import org.metaborg.lang.framevm_core.util.MachineState;
-import mb.nabl2.stratego.StrategoBlob;
+import mb.nabl2.terms.stratego.StrategoBlob;
 
 
 public class vm_print_chars_0_1 extends FVMStrategy {

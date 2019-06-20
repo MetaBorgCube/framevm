@@ -7,7 +7,7 @@ import org.strategoxt.lang.Context;
 import org.strategoxt.lang.Strategy;
 
 import org.metaborg.lang.framevm_core.util.MachineState;
-import mb.nabl2.stratego.StrategoBlob;
+import mb.nabl2.terms.stratego.StrategoBlob;
 
 /**
  * Superclass of most external strategies.

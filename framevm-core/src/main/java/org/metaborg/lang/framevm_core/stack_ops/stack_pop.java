@@ -9,7 +9,7 @@ import org.spoofax.terms.StrategoAppl;
 import org.metaborg.lang.framevm_core.FVMStrategy;
 import org.metaborg.lang.framevm_core.util.MachineState;
 import org.metaborg.lang.framevm_core.util.StackControlFrame;
-import mb.nabl2.stratego.StrategoBlob;
+import mb.nabl2.terms.stratego.StrategoBlob;
 
 public abstract class stack_pop extends FVMStrategy {
 	@Override

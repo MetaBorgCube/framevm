@@ -12,7 +12,7 @@ import org.metaborg.lang.framevm_core.util.Block;
 import org.metaborg.lang.framevm_core.util.ControlFrame;
 import org.metaborg.lang.framevm_core.util.Frame;
 import org.metaborg.lang.framevm_core.util.Slot;
-import mb.nabl2.stratego.StrategoBlob;
+import mb.nabl2.terms.stratego.StrategoBlob;
 
 /**
  * Factory with helpers for creating DOT files.

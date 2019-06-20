@@ -4,10 +4,12 @@ package org.metaborg.lang.framevm_core.continuation;
 import org.spoofax.interpreter.library.IOAgent;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermFactory;
+
+import mb.nabl2.terms.stratego.StrategoBlob;
+
 import org.metaborg.lang.framevm_core.FVMStrategy;
 import org.metaborg.lang.framevm_core.util.ControlFrame;
 import org.metaborg.lang.framevm_core.util.MachineState;
-import mb.nabl2.stratego.StrategoBlob;
 
 public class cont_call_0_1 extends FVMStrategy {
 	public static cont_call_0_1 instance = new cont_call_0_1();

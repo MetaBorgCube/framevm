@@ -6,7 +6,7 @@ import org.strategoxt.lang.Strategy;
 
 import org.metaborg.lang.framevm_core.util.MachineState;
 import org.metaborg.lang.framevm_core.util.MachineThread;
-import mb.nabl2.stratego.StrategoBlob;
+import mb.nabl2.terms.stratego.StrategoBlob;
 
 
 public class vm_execute_1_1 extends Strategy {

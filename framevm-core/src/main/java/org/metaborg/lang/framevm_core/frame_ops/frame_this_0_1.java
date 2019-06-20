@@ -7,7 +7,7 @@ import org.spoofax.interpreter.terms.ITermFactory;
 
 import org.metaborg.lang.framevm_core.FVMStrategy;
 import org.metaborg.lang.framevm_core.util.MachineState;
-import mb.nabl2.stratego.StrategoBlob;
+import mb.nabl2.terms.stratego.StrategoBlob;
 
 public class frame_this_0_1 extends FVMStrategy {
 	public static frame_this_0_1 instance = new frame_this_0_1();

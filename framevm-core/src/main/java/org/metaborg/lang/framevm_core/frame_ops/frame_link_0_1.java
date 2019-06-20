@@ -11,7 +11,7 @@ import org.spoofax.terms.StrategoTuple;
 import org.metaborg.lang.framevm_core.FVMStrategy;
 import org.metaborg.lang.framevm_core.util.Frame;
 import org.metaborg.lang.framevm_core.util.MachineState;
-import mb.nabl2.stratego.StrategoBlob;
+import mb.nabl2.terms.stratego.StrategoBlob;
 
 public class frame_link_0_1 extends FVMStrategy {
 	public static frame_link_0_1 instance = new frame_link_0_1();
