@@ -65,18 +65,16 @@ rules
     rgr-eval-exp(|env): RGR_New() -> (env2, FrameRef(frame))
       where
         (env2, frame) := <frame-new(|env)> 0
-        
+      
+    rgr-eval-exp(|env): RGR_New(RGR_IntVal(exp)) -> (env2, FrameRef(frame))
+      where
+        (env2, frame) := <frame-new(|env)> <string-to-int> exp
+         
     rgr-eval-exp(|env): RGR_New(exp) -> (env3, FrameRef(frame))
       where
-        <not(is-string)> exp;
         (env2, IntV(size)) := <rgr-eval-exp(|env)> exp;
         (env3, frame) := <frame-new(|env2)> size
-        
-    rgr-eval-exp(|env): RGR_New(exp) -> (env2, FrameRef(frame))
-      where
-        <is-string> exp;
-        (env2, frame) := <frame-new(|env)> <string-to-int> exp
-        
+     
     rgr-eval-exp(|env): RGR_NewRec(exps) -> (env4, FrameRef(frame))
       where
         (env2, frame) := <frame-new(|env)> <length> exps;

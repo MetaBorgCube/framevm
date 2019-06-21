@@ -93,7 +93,7 @@ rules // Instructions
   
   instr[[RGR_Try(e1, lbl1, e2, lbl2, lbl3) ^(s)]] := rgrExp[[e1 ^(s)]], rgrExp[[e2 ^(s)]], lbl[[lbl1 ^(s)]], lbl[[lbl2 ^(s)]], lbl[[lbl3 ^(s)]].
   instr[[RGR_Try(e1, e2, lbl) ^(s)]]              := rgrExp[[e1 ^(s)]], rgrExp[[e2 ^(s)]], lbl[[lbl ^(s)]].
-  instr[[RGR_Throw(exps) ^(s)]]                   := Map1(rgrExp)[[exps ^(s)]].
+  instr[[RGR_Throw(exps) ^(s)]]                   := rgrExp[[exps ^(s)]].
   
   
   rgrExp[[RGR_ScopeExit(_) ^(s)]].
@@ -114,4 +114,12 @@ rules // Instructions
 //    ClosExp.RGR_ClosNew      = <newc(<Exp>, <CopyPolicy>, <Label>, <IntOrExp>)>
 
   rgrExp[[RGR_ClosToCont(exp) ^(s)]]     := rgrExp[[exp ^(s)]].
+  
+  rgrExp[[FVM_Self() ^(s)]].
+  rgrExp[[FVM_Path(_) ^(s)]].
+  rgrExp[[RGR_IntVal(_) ^(s)]].
+  rgrExp[[FVM_Cont(_) ^(s)]].
+  rgrExp[[FVM_ContIdx(_) ^(s)]].
+  rgrExp[[FVM_Link(_) ^(s)]].
+  rgrExp[[FVM_LinkIdx(_) ^(s)]].
   

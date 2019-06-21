@@ -8,14 +8,12 @@ imports
     fvm-common
 
 rules
-    rgr-eval-exp(|env): RGR_ClosNew(exp, lbl, size) -> (env2, ClosV(frame, None(), lbl, <string-to-int> size))
+    rgr-eval-exp(|env): RGR_ClosNew(exp, lbl, RGR_IntVal(size)) -> (env2, ClosV(frame, None(), lbl, <string-to-int> size))
       where
-        <is-string> size;
         (env2, FrameRef(frame)) := <rgr-eval-exp(|env)> exp
         
     rgr-eval-exp(|env): RGR_ClosNew(exp1, lbl, exp2) -> (env3, ClosV(frame, None(), lbl, size))
       where
-        <not(is-string)> exp2;
         (env2, IntV(size)) := <rgr-eval-exp(|env)> exp2;
         (env3, FrameRef(frame)) := <rgr-eval-exp(|env2)> exp1
         

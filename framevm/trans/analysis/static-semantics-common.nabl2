@@ -44,7 +44,7 @@ rules
     Block{name} ===> block,
     block ---> s,
     Map1(instr)[[body ^(block)]],
-    delta == 0 | warning $[Stack delta is non-zero: [size]] @name.
+    delta == 0 | note $[Stack delta is non-zero: [delta]] @name.
   
   block[[FVM_Block(FVM_Label(name), None(), FVM_Seq(body), size) ^(s)]] :=
     new block, 
@@ -54,7 +54,7 @@ rules
     Block{name} ===> block,
     block ---> s,
     Map1(instr)[[body ^(block)]],
-    size == 0 | warning $[Stack delta is non-zero: [size]] @name.
+    size == 0 | note $[Stack delta is non-zero: [size]] @name.
   
   
 rules // Imports
