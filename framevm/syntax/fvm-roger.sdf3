@@ -10,14 +10,14 @@ sorts RBlock context-free syntax
     <size:CFRSize?>
     <ret:OnReturnInstr?>
     <instr:Instr*> 
-    <jump:ControlTerminal>
+    <jump:ControlStmt>
 
 >			{ layout (indent lbl size && align-list instr && align size ret && align instr jump && align ret instr) }
 	
 	OnReturnInstr.RGR_OnReturn = <<{RGRVar ","}+> \<- <OnReturnExp>>
 
 //	Instr.RGR_PureAssign = <<RGRVar> \<- <Exp> @inline>
-	Instr.RGR_Terminal = ExpTerminal
+	Instr.RGR_Stmt = Stmt
 	Instr.RGR_Assign = <<RGRVar> \<- <Exp>>
 	
 	RGRVar = LOCAL
@@ -55,15 +55,15 @@ sorts Exp context-free syntax
 	FrameExp.RGR_NewRec = <new{<{Exp ","}+>}>
 	FrameExp.RGR_FSize  = <size(<Exp>)>
 	
-	ExpTerminal.RGR_Link  = <link(<Exp>, <PathOrExp>, <LinkRef>)>
+	Stmt.RGR_Link       = <link(<Exp>, <PathOrExp>, <LinkRef>)>
  
-	ExpTerminal.RGR_Set   = <set(<PathOrExp>, <Exp>)>
-	ExpTerminal.RGR_Set   = <set(<Exp>, <NEPathOrExp>, <Exp>)>
+	Stmt.RGR_Set          = <set(<PathOrExp>, <Exp>)>
+	Stmt.RGR_Set          = <set(<Exp>, <NEPathOrExp>, <Exp>)>
 	FrameExp.RGR_Get      = <get(<PathOrExp>)>
 	FrameExp.RGR_Get      = <get(<Exp>, <PathOrExp>)>		
 	
-	ExpTerminal.RGR_Empty = <empty(<NEPathOrExp>)>
-	ExpTerminal.RGR_Empty = <empty(<Exp>, <NEPathOrExp>)>
+	Stmt.RGR_Empty        = <empty(<NEPathOrExp>)>
+	Stmt.RGR_Empty        = <empty(<Exp>, <NEPathOrExp>)>
 	FrameExp.RGR_IsEmpty  = <empty?(<NEPathOrExp>)>
 	FrameExp.RGR_IsEmpty  = <empty?(<Exp>, <NEPathOrExp>)>
 	
@@ -72,41 +72,41 @@ sorts Exp context-free syntax
 	OnReturnExp.RGR_ContRGet = <rget()>
 	ContExp.RGR_ContThis     = <cgetcurrent()>
 	ContExp.RGR_ContNew      = <cnew(<Exp>, <Label>, <IntOrExp>)>
-	ExpTerminal.RGR_ContTransfer = <transfer(<{Exp ","}+>, <ContOrExp>)>
+	Stmt.RGR_ContTransfer    = <transfer(<{Exp ","}+>, <ContOrExp>)>
 	
-	ExpTerminal.RGR_ContSet  = <cset(<ContOrExp>, <Exp>)>
-	ExpTerminal.RGR_ContSet  = <cset(<Exp>, <ContOrExp>, <Exp>)>
+	Stmt.RGR_ContSet         = <cset(<ContOrExp>, <Exp>)>
+	Stmt.RGR_ContSet         = <cset(<Exp>, <ContOrExp>, <Exp>)>
 	ContExp.RGR_ContGet      = <cget(<ContOrExp>)>
 	ContExp.RGR_ContGet      = <cget(<Exp>, <ContOrExp>)>
     ContExp.RGR_ContUnpack   = <cunpack(<Exp>)>
 	
 	
-	ControlTerminal.RGR_Return     = <return(<{Exp ","}*>)>
-	ControlTerminal.RGR_Yield      = <yield(<{Exp ","}+>, <Label>)>
-	ControlTerminal.RGR_JumpZ      = <jumpz(<Exp>, <Label>, <Label>)>
-	ControlTerminal.RGR_Jump       = <jump(<Label>)>
-	ControlTerminal.RGR_Call       = <call(<Exp>, <Label>, <Label>)>
-	ControlTerminal.RGR_Call       = <call(<Exp>, <Label>)>
-	ControlTerminal.RGR_TailCall   = <tailcall(<Exp>, <Label>)>
-	ControlTerminal.RGR_TailCall   = <tailcall(<Exp>)>
-	ControlTerminal.RGR_ContCall   = <ccall(<Exp>, <Label>)>
-	ControlTerminal.RGR_ContReturn = <cret(<Exp>)>
+	ControlStmt.RGR_Return     = <return(<{Exp ","}*>)>
+	ControlStmt.RGR_Yield      = <yield(<{Exp ","}+>, <Label>)>
+	ControlStmt.RGR_JumpZ      = <jumpz(<Exp>, <Label>, <Label>)>
+	ControlStmt.RGR_Jump       = <jump(<Label>)>
+	ControlStmt.RGR_Call       = <call(<Exp>, <Label>, <Label>)>
+	ControlStmt.RGR_Call       = <call(<Exp>, <Label>)>
+	ControlStmt.RGR_TailCall   = <tailcall(<Exp>, <Label>)>
+	ControlStmt.RGR_TailCall   = <tailcall(<Exp>)>
+	ControlStmt.RGR_ContCall   = <ccall(<Exp>, <Label>)>
+	ControlStmt.RGR_ContReturn = <cret(<Exp>)>
 	
-	ControlTerminal.RGR_Try        = <try(<Exp>, <Label>, <Exp>, <Label>, <Label>)>
-	ControlTerminal.RGR_Try        = <try(<Exp>, <Exp>, <Label>)>
-	ControlTerminal.RGR_Throw      = <throw(<Exp>)>
+	ControlStmt.RGR_Try        = <try(<Exp>, <Label>, <Exp>, <Label>, <Label>)>
+	ControlStmt.RGR_Try        = <try(<Exp>, <Exp>, <Label>)>
+	ControlStmt.RGR_Throw      = <throw(<Exp>)>
 	
-	ExpTerminal.RGR_ScopeExit       = <exitscope(<PathOrEmpty>)>
-	ExpTerminal.RGR_ScopeNew        = <newscope(<Exp>, <LinkRef>)>
-	ControlTerminal.RGR_ScopeExit   = <exitscope(<PathOrEmpty>, <Label>)>
-	ControlTerminal.RGR_ScopeNew    = <newscope(<Exp>, <LinkRef>, <Label>)>
-	ExpTerminal.RGR_ScopeSetCurrent = <mkcurrent(<Exp>)>
-	Exp.RGR_ScopeGetCurrent         = <getcurrent()>
+	Stmt.RGR_ScopeExit        = <exitscope(<PathOrEmpty>)>
+	Stmt.RGR_ScopeNew         = <newscope(<Exp>, <LinkRef>)>
+	ControlStmt.RGR_ScopeExit = <exitscope(<PathOrEmpty>, <Label>)>
+	ControlStmt.RGR_ScopeNew  = <newscope(<Exp>, <LinkRef>, <Label>)>
+	Stmt.RGR_ScopeSetCurrent  = <mkcurrent(<Exp>)>
+	Exp.RGR_ScopeGetCurrent   = <getcurrent()>
 	
-	ExpTerminal.RGR_Print           = <print(<Exp>)>
-	ExpTerminal.RGR_PrintChar       = <printc(<Exp>)>
-	ExpTerminal.RGR_Debug           = <debug()>		
-	ExpTerminal.RGR_DebugKill       = <debug!()>
+	Stmt.RGR_Print           = <print(<Exp>)>
+	Stmt.RGR_PrintChar       = <printc(<Exp>)>
+	Stmt.RGR_Debug           = <debug()>		
+	Stmt.RGR_DebugKill       = <debug!()>
 	
 	Exp.RGR_StringLoad       = <sload(<STRING>)>
 	Exp.RGR_CharLoad         = <cload(<CHAR>)>	

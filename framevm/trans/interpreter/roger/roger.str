@@ -10,7 +10,7 @@ imports
     fvm-common
 
 rules
-    rgr-eval: (RGR_Terminal(instr), env) -> <rgr-eval-instr> (instr, env)
+    rgr-eval: (RGR_Stmt(instr), env) -> <rgr-eval-instr> (instr, env)
     
     rgr-eval: (RGR_Assign(var, exp), env1) -> env3
       where

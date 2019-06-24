@@ -20,7 +20,7 @@ rules
       
 rules
   instr[[RGR_OnReturn(vars, exp) ^(s)]] := rgrExp[[exp ^(s)]].
-  instr[[RGR_Terminal(exp) ^(s)]]       := rgrExp[[exp ^(s)]].
+  instr[[RGR_Stmt(exp) ^(s)]]       := rgrExp[[exp ^(s)]].
   instr[[RGR_Assign(var, exp) ^(s)]]    := rgrExp[[exp ^(s)]].
   
 rules // Exp
@@ -78,7 +78,7 @@ rules // Exp
   rgrExp[[RGR_ContGet(e1, e2) ^(s)]]      := rgrExp[[e1 ^(s)]], rgrExp[[e2 ^(s)]].
   rgrExp[[RGR_ContUnpack(exp) ^(s)]]      := rgrExp[[exp ^(s)]].
   
-rules // Instructions
+rules // Control Instructions
   instr[[RGR_Return(exps) ^(s)]]           := Map1(rgrExp)[[exps ^(s)]].
   instr[[RGR_Yield(exps, lbl) ^(s)]]       := Map1(rgrExp)[[exps ^(s)]], lbl[[lbl ^(s)]].
   instr[[RGR_JumpZ(exp, lbl1, lbl2) ^(s)]] := rgrExp[[exp ^(s)]], lbl[[lbl1 ^(s)]], lbl[[lbl2 ^(s)]].
