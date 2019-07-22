@@ -8,6 +8,8 @@ signature
   sorts S
   constructors    
     Bind : STRING * INT -> S
+    RGR_AutoVar : STRING -> S
+    FVM_AutoSize: S
     FVM_BoundLabel : STRING * FVM_Label * INT -> S
     FVM_Export : STRING * STRING * STRING -> S
     FVM_Seq : [Instr] -> S

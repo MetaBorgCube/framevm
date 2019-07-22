@@ -40,6 +40,7 @@ rules
     
     unfix-init-rgr: None() -> None()
     unfix-init-rgr: Some(n) -> Some(RGR_Local(<try(int-to-string)> n))
+    unfix-init-rgr: FVM_AutoSize() -> FVM_AutoSize()
     
     
     resugar-seq: STC_Program(fn, i, s, b, a, blocks) -> STC_Program(fn, i, s, b, a, <map(resugar-seq-stc)> blocks)
