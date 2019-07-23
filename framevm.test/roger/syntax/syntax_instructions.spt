@@ -14,10 +14,9 @@ test assign none      [[ <- iload(0)]]        parse fails
 test just exp         [[iload(0)]]            parse fails
 
 
-test rget single      [[r0 <- rget()]]       parse succeeds
-test rget single 2    [[r0 <- rget(1)]]      parse succeeds
+test rget no args     [[r0 <- rget()]]       parse fails
+test rget single      [[r0 <- rget(cgetcurrent())]] parse succeeds
 test rget single 2    [[r0 <- rget(0)]]      parse fails
-test rget multiple    [[r0, r1 <- rget(2)]]  parse succeeds
 
 
 test link self          [[link(new(), [], P)]]             parse succeeds

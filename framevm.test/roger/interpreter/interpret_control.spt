@@ -7,13 +7,13 @@ MAIN:
 	local := 99
 	[[...]]
 MAIN_END1:
-	r0 <- rget()
+	r0 <- rget(cgetcurrent())
 	print(iload(1))
 	print(r0)
 	return(iload(0))
 MAIN_END2:
 	local := 1
-	r0 <- rget()
+	r0 <- rget(cgetcurrent())
 	print(iload(2))
 	print(r0)
 	return(iload(0))
@@ -30,7 +30,7 @@ FUNC:
 	r1 <- get([1])
 	return(addi(r0, r1))
 MAIN_END:
-	r0 <- rget()
+	r0 <- rget(cgetcurrent())
 	print(r0)
 	return(iload(0))
 ]] transform "Run -> Run" to "IntV(4)"
@@ -47,7 +47,7 @@ FUNC:
 	r1 <- get([1])
 	return(addi(r0, r1))
 MAIN_END:
-	r0 <- rget()
+	r0 <- rget(cgetcurrent())
 	print(r0)
 	return(iload(0))
 ]] transform "Run -> Run" to "IntV(4)"
@@ -82,7 +82,7 @@ FUNC:
 	r1 <- get([1])
 	return(addi(r0, r1))
 MAIN_END:
-	r0 <- rget()
+	r0 <- rget(cgetcurrent())
 	print(r0)
 	return(iload(0))
 ]] transform "Run -> Run" to "IntV(4)"
@@ -102,7 +102,7 @@ FUNC:
 	r1 <- get([1])
 	return(addi(r0, r1))
 MAIN_END:
-	r0 <- rget()
+	r0 <- rget(cgetcurrent())
 	print(r0)
 	return(iload(0))
 ]] transform "Run -> Run" to "IntV(4)"
@@ -167,7 +167,7 @@ TRY:
 	throw(iload(2))
 CATCH:
 	local := 1
-	r0 <- rget()
+	r0 <- rget(cgetcurrent())
 	print(r0)
 	cret(cget(n))
 END:
@@ -192,7 +192,7 @@ END:
 	print(iload(3))
 	return(iload(0))
 MAIN_END:
-	r0 <- rget()
+	r0 <- rget(cgetcurrent())
 	print(r0)
 	return(iload(0))
 ]] transform "Run -> Run" to "IntV(1)
@@ -222,7 +222,7 @@ TRY:
 	throw(iload(2))
 CATCH:
 	local := 1
-	r0 <- rget()
+	r0 <- rget(cgetcurrent())
 	print(r0)
 	cret(cget(n))
 END:
@@ -247,7 +247,7 @@ END:
 	print(iload(3))
 	return(iload(0))
 MAIN_END:
-	r0 <- rget()
+	r0 <- rget(cgetcurrent())
 	print(r0)
 	return(iload(0))
 ]] transform "Run -> Run" to "IntV(1)

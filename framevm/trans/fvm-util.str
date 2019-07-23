@@ -2,8 +2,9 @@ module fvm-util
 
 imports
     nabl2/api
-  
+    
     signatures/fvm-stacy-sig
+    signatures/fvm-roger-sig
     signatures/framevm-sig
     signatures/fvm-common-sig
     fvm-common
@@ -97,39 +98,38 @@ rules
       with
         init_block_name := <getfirst( (\FVM_InitBlock(name) -> name \) )> header;
         
-        blocks_map := <map((\b@RGR_Block(FVM_Label(lbl), _, _, _, _) -> (lbl, b)\))> blocks;
+        blocks_map := <map((\b@RGR_Block(FVM_Label(lbl), _, _, _) -> (lbl, b)\))> blocks;
         (blocks_map', _, _) := <rgr-assign-registers-recurse> (init_block_name, (blocks_map, [], []));
         blocks' := <map((\(_, block) -> block\))> blocks_map' 
         
 
-    rgr-assign-registers-recurse: (block, (map, discovered, binds)) -> (map5, discovered4, binds4)
+    rgr-assign-registers-recurse: (block, (map, discovered, binds)) -> (map5, discovered4, binds3)
       where
         <not(elem)> (block, discovered)
       with
         discovered2 := [block | discovered];						// Mark as discoverd
-        RGR_Block(lbl, s, r, body, jump) := <lookup'> (block, map); // Get the actual block
-        ([r'], binds1) := <rgr-assign-registers-instr> ([r], binds);
-        (body', binds2) := <rgr-assign-registers-instr> (body, binds1);
-        ([jump'], binds3) := <rgr-assign-registers-instr> ([jump], binds2);
-        block' := RGR_Block(lbl, s, r', body',jump');
+        RGR_Block(lbl, s, body, jump) := <lookup'> (block, map); // Get the actual block
+        (body', binds1) := <rgr-assign-registers-instr> (body, binds);
+        ([jump'], binds2) := <rgr-assign-registers-instr> ([jump], binds1);
+        block' := RGR_Block(lbl, s, body',jump');
         
         // Update the map with the updated block
         map2 := <list-some(rgr-map-update(|block, block'))> map;
         
         // Collect all possible next blocks and recurse
         (jump_lbl, cf_lbl) := <collect-all(rgr-is-jump-lbl <+ rgr-is-cf-lbl); rgr-split-jump-cf-lbls> block';
-        (map3, discovered3, binds4) := <foldl(rgr-assign-registers-recurse)> (jump_lbl, (map2, discovered2, binds3));
+        (map3, discovered3, binds3) := <foldl(rgr-assign-registers-recurse)> (jump_lbl, (map2, discovered2, binds2));
         (map4, discovered4, _) := <foldl(rgr-assign-registers-recurse)> (cf_lbl, (map3, discovered3, []));
-        map5 := <dnx-apply-autosize(|<length> binds4)> (block, map4)
+        map5 := <dnx-apply-autosize(|<length> binds3)> (block, map4)
         
     rgr-assign-registers-recurse: (_, acc@(_, _, _)) -> acc // Block already discovered
     
     
     dnx-apply-autosize(|size): (block_name, map) -> map'
       where
-        RGR_Block(lbl, FVM_AutoSize(), r, body, jump) := <lookup'> (block_name, map)
+        RGR_Block(lbl, FVM_AutoSize(), body, jump) := <lookup'> (block_name, map)
       with
-        block' := RGR_Block(lbl, Some(RGR_Local(<int-to-string> size)), r, body, jump);
+        block' := RGR_Block(lbl, Some(RGR_Local(<int-to-string> size)), body, jump);
         map' := <list-some(rgr-map-update(|block_name, block'))> map
         
     dnx-apply-autosize(|_): (_, map) -> map

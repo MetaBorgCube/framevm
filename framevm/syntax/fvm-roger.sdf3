@@ -8,14 +8,11 @@ sorts RBlock context-free syntax
 	RBlock.RGR_Block = <
 <lbl:Label>: 
     <size:CFRSize?>
-    <ret:OnReturnInstr?>
     <instr:Instr*> 
     <jump:ControlStmt>
 
->			{ layout (indent lbl size && align-list instr && align size ret && align instr jump && align ret instr) }
+>			{ layout (indent lbl size && align-list instr && align instr jump && align size instr) }
 	
-	OnReturnInstr.RGR_OnReturn = <<{RGRVar ","}+> \<- <OnReturnExp>>
-
 //	Instr.RGR_PureAssign = <<RGRVar> \<- <Exp> @inline>
 	Instr.RGR_Stmt = Stmt
 	Instr.RGR_Assign = <<RGRVar> \<- <Exp>>
@@ -67,9 +64,10 @@ sorts Exp context-free syntax
 	FrameExp.RGR_IsEmpty  = <empty?(<NEPathOrExp>)>
 	FrameExp.RGR_IsEmpty  = <empty?(<Exp>, <NEPathOrExp>)>
 	
+	Exp = OnReturnExp
+	OnReturnExp.RGR_ContRGet = <rget(<Exp>)>
+	
 	Exp = ContExp
-	OnReturnExp.RGR_ContRGet = <rget(<INTLZ>)>
-	OnReturnExp.RGR_ContRGet = <rget()>
 	ContExp.RGR_ContThis     = <cgetcurrent()>
 	ContExp.RGR_ContNew      = <cnew(<Exp>, <Label>, <IntOrExp>)>
 	Stmt.RGR_ContTransfer    = <transfer(<{Exp ","}+>, <ContOrExp>)>

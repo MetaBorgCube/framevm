@@ -64,7 +64,7 @@ test ccall [[
 	cset(r0, c, cgetcurrent())
 	ccall(r0, MAIN2)
 MAIN2:
-	r0 <- rget()
+	r0 <- rget(cgetcurrent())
 	print(r0)
 	return(iload(0))
 ]] transform "Run -> Run" to "IntV(1)
@@ -74,7 +74,7 @@ test rget single [[
 	cset(r0, c, cgetcurrent())
 	ccall(r0, MAIN2)
 MAIN2:
-	r0 <- rget(1)
+	r0 <- rget(cgetcurrent())
 	print(r0)
 	return(iload(0))
 ]] transform "Run -> Run" to "IntV(1)
@@ -85,7 +85,8 @@ test rget multiple [[
 	cset(r0, c, cgetcurrent())
 	ccall(r0, MAIN2)
 MAIN2:
-	r0, r1 <- rget(2)
+	r0 <- rget(cgetcurrent())
+	r1 <- rget(cgetcurrent())
 	print(r0)
 	print(r1)
 	return(iload(0))
@@ -101,7 +102,8 @@ test rget multiple 2 [[
 	cset(r0, c, cgetcurrent())
 	ccall(r0, MAIN2)
 MAIN2:
-	r0, r1 <- rget(2)
+	r0 <- rget(cgetcurrent())
+	r1 <- rget(cgetcurrent())
 	print(r0)
 	print(r1)
 	return(iload(0))

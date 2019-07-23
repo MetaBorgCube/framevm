@@ -53,7 +53,7 @@ __COMPARE_IDX_S_NE:
 	call(new{r1, r0}, EQUALS, __COMPARED_IDX)
 	
 __COMPARED_IDX:
-	r0 <- rget()
+	r0 <- rget(getcurrent())
 	jumpz(r0, __RETURN_FALSE, __EQUAL_IDX)
 
 __EQUAL_IDX:

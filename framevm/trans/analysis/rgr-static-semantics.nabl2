@@ -19,7 +19,6 @@ rules
     Map2(rgrImport)[[imports ^(mod, prog)]].
       
 rules
-  instr[[RGR_OnReturn(vars, exp) ^(s)]] := rgrExp[[exp ^(s)]].
   instr[[RGR_Stmt(exp) ^(s)]]       := rgrExp[[exp ^(s)]].
   instr[[RGR_Assign(var, exp) ^(s)]]    := rgrExp[[exp ^(s)]].
   
@@ -66,8 +65,7 @@ rules // Exp
   rgrExp[[RGR_IsEmpty(exp) ^(s)]]      := rgrExp[[exp ^(s)]].
   rgrExp[[RGR_IsEmpty(e1, e2) ^(s)]]   := rgrExp[[e1 ^(s)]], rgrExp[[e2 ^(s)]].
   
-  rgrExp[[RGR_ContRGet(_) ^(s)]].
-  rgrExp[[RGR_ContRGet() ^(s)]].
+  rgrExp[[RGR_ContRGet(e1) ^(s)]] := rgrExp[[e1 ^(s)]].
   rgrExp[[RGR_ContThis() ^(s)]].
   rgrExp[[RGR_ContNew(e1, lbl, e2) ^(s)]]   := rgrExp[[e1 ^(s)]], rgrExp[[e2 ^(s)]], lbl[[lbl ^(s)]].
   rgrExp[[RGR_ContTransfer(e1, e2) ^(s)]] := Map1(rgrExp)[[e1 ^(s)]], rgrExp[[e2 ^(s)]].

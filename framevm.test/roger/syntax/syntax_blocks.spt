@@ -115,7 +115,7 @@ MAIN:
 
 test rget [[
 MAIN:
-	r0 <- rget()
+	r0 <- rget(cgetcurrent())
 	r0 <- iload(1)	
 	return(r0)
 ]] parse succeeds
@@ -129,15 +129,15 @@ MAIN:
 
 test rget multiple [[
 MAIN:
-	r0, r1 <- rget(2)
+	r0, r1 <- rget(cgetcurrent())
 	r0 <- iload(1)	
 	return(r0)
-]] parse succeeds
+]] parse fails
 
 test rget and locals [[
 MAIN:
 	local := 12
-	r0 <- rget()
+	r0 <- rget(cgetcurrent())
 	r0 <- iload(1)	
 	return(r0)
 ]] parse succeeds

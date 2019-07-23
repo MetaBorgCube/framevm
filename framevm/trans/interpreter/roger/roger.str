@@ -6,6 +6,7 @@ imports
     
     interpreter/roger/control
     interpreter/roger/exp/-
+    interpreter/roger/instr
     
     fvm-common
 
@@ -16,15 +17,6 @@ rules
       where
         (env2, val) := <rgr-eval-exp(|env1)> exp;
         env3 := <rgr-set(|env2)> (var, val)
-        
-    rgr-eval: (RGR_OnReturn(vars, exp), env1) -> env2
-      where
-        (env2, vals) := <rgr-eval-instr> (exp, env1);
-        <equal> (<length> vals, <length> vars);
-        zipped := <zip> (<reverse> vars, vals);
-        env3 := <foldl(return-fold)> (zipped, env2)
-        
-    return-fold: ((slot, var), env1) -> <rgr-set(|env1)> (slot, var)
     
     rgr-eval-exp-fold(|env): [] -> (env, [])
     rgr-eval-exp-fold(|env): [h | t] -> (env3, [val | vals])

@@ -15,7 +15,7 @@ CONCAT_STRINGS:
 	call(new{get([0]), get([P, 0]), iload(1)}, __COPY_STRING, __CONCAT_SECOND)
 
 __CONCAT_SECOND:
-	r0 <- rget()
+	r0 <- rget(cgetcurrent())
 	set([P, 0, 0], subi(get([P, 0, 0]), iload(1)))
 	call(new{get([0]), get([P, 1]), r0}, __COPY_STRING, __CONCAT_END)
 	
