@@ -3,6 +3,11 @@
 
 For an overview of available instructions, see the `docs` folder.
 
+## Project setup
+Before importing the project in eclips, you have to run the Maven install script. You can either do this for all projects in a single go by executing the `build.sh`-script, or by executing `mvn install` in each package individually. You have to do this for at least `framevm-core` and `framevm` (in this order), in order to have a working project setup.
+
+After this you can import the project in Eclipse using `File -> Import -> Maven -> Existing Maven projects`. After importing you might have to manually trigger a Spoofax build using `Project -> Build all`.
+
 ## Importing Stacy/Roger
 Include the following in your projects `pom.xml`:
 ```XML
