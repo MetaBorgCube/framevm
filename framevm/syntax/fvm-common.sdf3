@@ -150,7 +150,7 @@ context-free syntax
   PathOrEmpty = EmptyPath
   PathOrEmpty = Path
   
-  EmptyPath.FVM_Self  = <[]>
+  EmptyPath.FVM_Self  = "[""]"
   Path.FVM_Path  = <[<{PathRef ","}+>]>
   
   PathRef = SlotRef
