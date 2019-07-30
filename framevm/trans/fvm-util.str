@@ -27,7 +27,9 @@ rules
       where
         <is-list> body
       with
-        (blocks, []) := <foldr(!([], []), from-flat-fold)> body
+        labels := <collect-all(?(FVM_AutoLabel(name))); map( (\ FVM_AutoLabel(name) -> FVM_Label(<upper-case; newname> name) \) )> body;
+        body' := <topdown(try( (\ FVM_AutoLabel(lbl_name) -> <lookup'> (lbl_name, labels) \)))> body;
+        (blocks, []) := <foldr(!([], []), from-flat-fold)> body'
         
     stc-from-flat: body -> <stc-from-flat> (FVM_Header([]), body) where <is-list> body
    
@@ -44,14 +46,15 @@ rules
       where
         <is-list> body
       with
-        (blocks, []) := <foldr(!([], []), from-flat-fold)> body
+        labels := <collect-all(?(FVM_AutoLabel(_))); map( (\ FVM_AutoLabel(name) -> (name, FVM_Label(<upper-case; newname> name)) \) )> body;
+        body' := <topdown(try( (\ FVM_AutoLabel(lbl_name) -> <lookup'> (lbl_name, labels) \)))> body;
+        (blocks, []) := <foldr(!([], []), from-flat-fold)> body'
         
     rgr-from-flat: body -> <rgr-from-flat> (FVM_Header([]), body) where <is-list> body
  
     
     // If the current instruction is a label, close the block (we are going bottom to top)
     // Else just store the instruction and continue
-    // TODO: infer limits
     from-flat-fold: (FVM_Label(lbl), (blocks, instrs)) -> 
     				([FVM_Block(FVM_Label(lbl), None(), FVM_Seq(instrs), 0) | blocks], [])
     				
