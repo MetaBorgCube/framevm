@@ -139,6 +139,14 @@ rules
     
     
     rgr-assign-registers-instr: ([], binds) -> ([], binds)
+    rgr-assign-registers-instr: ([RGR_Assign(var@RGR_AutoVar(name), val) | t], binds) -> ([instr' | t'], binds2)
+      where
+        rgr_var := <lookup'> (var, binds) // If already bound
+      with
+        val':= <rgr-assign-registers-exp(|binds)> val;
+        instr' := RGR_Assign(rgr_var, val');
+        (t', binds2) := <rgr-assign-registers-instr> (t, binds)
+        
     rgr-assign-registers-instr: ([RGR_Assign(var@RGR_AutoVar(name), val) | t], binds) -> ([instr' | t'], binds3)
       with
         var_name := $[r[<length; int-to-string> binds]];
