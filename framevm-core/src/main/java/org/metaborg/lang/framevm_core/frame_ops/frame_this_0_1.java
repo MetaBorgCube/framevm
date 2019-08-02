@@ -1,7 +1,6 @@
 package org.metaborg.lang.framevm_core.frame_ops;
 
 
-import org.spoofax.interpreter.library.IOAgent;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermFactory;
 
@@ -15,7 +14,7 @@ public class frame_this_0_1 extends FVMStrategy {
 	@Override
 	// env -> frame
 	// Get the frame id of the currently executing frame
-	protected IStrategoTerm invoke(IOAgent io, ITermFactory factory, MachineState env, IStrategoTerm arg) {
+	protected IStrategoTerm invoke(ITermFactory factory, MachineState env, IStrategoTerm arg) {
 		return new StrategoBlob(env.currentThread.getControlFrame().getCurrentFrame());
 	}
 }

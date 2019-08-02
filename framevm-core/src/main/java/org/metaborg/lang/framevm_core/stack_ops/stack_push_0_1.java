@@ -1,7 +1,6 @@
 package org.metaborg.lang.framevm_core.stack_ops;
 
 
-import org.spoofax.interpreter.library.IOAgent;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermFactory;
 import org.metaborg.lang.framevm_core.FVMStrategy;
@@ -15,16 +14,16 @@ public class stack_push_0_1 extends FVMStrategy {
 	@Override
 	// env| val -> env'
 	// Push the given value to the stack
-	protected IStrategoTerm invoke(IOAgent io, ITermFactory factory, MachineState env, IStrategoTerm arg) {
+	protected IStrategoTerm invoke(ITermFactory factory, MachineState env, IStrategoTerm arg) {
 		StackControlFrame cf = env.currentThread.getStackControlFrame();
 		if(cf == null) {
-			io.printError("Cannot push to a register control frame");
+			LOGGER.error("Cannot push to a register control frame");
 			return null;
 		}
 		try {
 			cf.push(arg);
 		} catch (IllegalStateException ex) {
-			io.printError(ex.getMessage());
+			LOGGER.error(ex.getMessage());
 			return null;
 		}
 		return new StrategoBlob(env);

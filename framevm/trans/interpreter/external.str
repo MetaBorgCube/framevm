@@ -4,6 +4,8 @@ imports
     signatures/fvm-common-sig
 
 rules 
+    external fvm-log(|lvl, msg)       // Log a message to the console
+
     external vm-init-stc(|)           // (links, conts, (slots, stack)) -> env
     external vm-init-rgr(|)           // (links, conts, (slots, locals)) -> env
     external vm-store-block(|env)     // env| ((lib, lbl), [instr]) -> env' 

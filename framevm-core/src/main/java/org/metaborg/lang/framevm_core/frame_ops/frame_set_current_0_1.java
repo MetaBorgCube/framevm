@@ -1,7 +1,6 @@
 package org.metaborg.lang.framevm_core.frame_ops;
 
 
-import org.spoofax.interpreter.library.IOAgent;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermFactory;
 import org.spoofax.terms.StrategoTuple;
@@ -17,7 +16,7 @@ public class frame_set_current_0_1 extends FVMStrategy {
 
 	@Override
 	// env| (cont, frame) -> env'
-	protected IStrategoTerm invoke(IOAgent io, ITermFactory factory, MachineState env, IStrategoTerm arg) {
+	protected IStrategoTerm invoke(ITermFactory factory, MachineState env, IStrategoTerm arg) {
 		StrategoTuple tuple = (StrategoTuple) arg;
 
 		ControlFrame controlFrame = (ControlFrame) ((StrategoBlob) tuple.get(0)).value();

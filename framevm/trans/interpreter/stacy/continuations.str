@@ -100,8 +100,7 @@ rules
     stc-eval: (STC_ContRGet(), env) -> env
       where <geq> (<stack-size(|env)>, 1)
       
-    stc-eval: (STC_ContRGet(), env) -> <fail>
-      where <debug> "Stack does not contain enough elements"
+    stc-eval: (STC_ContRGet(), env) -> <fvm-log(|"ERROR", "Stack does not contain enough elements"); fail>
     
     // STC_ContRGetN/1
     // Get n returned values
@@ -109,8 +108,7 @@ rules
     stc-eval: (STC_ContRGetN(n), env) -> env
       where <geq> (<stack-size(|env)>, <string-to-int> n)
       
-    stc-eval: (STC_ContRGetN(_), env) -> <fail>
-      where <debug> "Stack does not contain enough elements"
+    stc-eval: (STC_ContRGetN(_), env) -> <fvm-log(|"ERROR", "Stack does not contain enough elements"); fail>
     
     // STC_ContTransfer/2
     // Transfer the top n elements from the stack to the stack of the given continuation

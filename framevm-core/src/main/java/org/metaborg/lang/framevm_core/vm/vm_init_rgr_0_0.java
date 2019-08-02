@@ -5,7 +5,7 @@ import org.spoofax.terms.StrategoInt;
 import org.spoofax.terms.StrategoTuple;
 import org.strategoxt.lang.Context;
 import org.strategoxt.lang.Strategy;
-
+import org.metaborg.lang.framevm_core.FVMStrategy;
 import org.metaborg.lang.framevm_core.util.ControlFrame;
 import org.metaborg.lang.framevm_core.util.MachineState;
 import org.metaborg.lang.framevm_core.util.MachineThread;
@@ -31,8 +31,8 @@ public class vm_init_rgr_0_0 extends Strategy {
 		env.addThread(new MachineThread(controlFrame, env));
 		
 
-		context.getIOAgent().printError("FrameVM initialized " + controlFrame.getCurrentFrame().getId() + " (" + slot_size + ")");
-		context.getIOAgent().printError("Link registers = " + link_size);
+		FVMStrategy.LOGGER.info("Initialized " + controlFrame.getCurrentFrame().getId() + " (" + slot_size + ")");
+		FVMStrategy.LOGGER.info("Link registers = " + link_size);
 		return new StrategoBlob(env);
 	}
 }

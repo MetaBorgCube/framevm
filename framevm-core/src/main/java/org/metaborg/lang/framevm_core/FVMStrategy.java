@@ -1,12 +1,13 @@
 package org.metaborg.lang.framevm_core;
 
-import org.spoofax.interpreter.library.IOAgent;
+import org.metaborg.lang.framevm_core.util.MachineState;
+import org.metaborg.util.log.ILogger;
+import org.metaborg.util.log.LoggerUtils;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermFactory;
 import org.strategoxt.lang.Context;
 import org.strategoxt.lang.Strategy;
 
-import org.metaborg.lang.framevm_core.util.MachineState;
 import mb.nabl2.terms.stratego.StrategoBlob;
 
 /**
@@ -14,6 +15,8 @@ import mb.nabl2.terms.stratego.StrategoBlob;
  * Takes care of the environment passing
  */
 public abstract class FVMStrategy extends Strategy {
+	public static final ILogger LOGGER = LoggerUtils.logger("FrameVM");
+	
 	@Override
 	 // env| args -> env'
 	 public IStrategoTerm invoke(Context context, IStrategoTerm current, IStrategoTerm env) {
@@ -23,13 +26,13 @@ public abstract class FVMStrategy extends Strategy {
 		// making that a pop in a failed branch in Stratego still propagates the pop
 		// We might want to make this use a deep copy instead
 		try {
-			return this.invoke(context.getIOAgent(), context.getFactory(), environment, current);
+			return this.invoke(context.getFactory(), environment, current);
 		} catch (Exception ex) {
-			context.getIOAgent().printError("Uncaught " + ex.getClass().getName() + " '" + ex.getMessage() + "'");
+			LOGGER.error("Uncaught " + ex.getClass().getName() + " '" + ex.getMessage() + "'");
 			
 			StackTraceElement[] trace = ex.getStackTrace();
 			for (int i = 0; i < 7; i++) {
-				context.getIOAgent().printError(trace[i].toString());
+				LOGGER.error(trace[i].toString());
 			}
 			//TODO: Call exception continuation of current frame
 		}
@@ -39,8 +42,6 @@ public abstract class FVMStrategy extends Strategy {
 	/**
 	 * Execute the strategy
 	 * 
-	 * @param io
-	 * 		The {@link IOAgent} to use
 	 * @param factory
 	 * 		The {@link ITermFactory} to use
 	 * @param environment
@@ -50,6 +51,6 @@ public abstract class FVMStrategy extends Strategy {
 	 * @return
 	 * 		The values returned by this strategy
 	 */
-	protected abstract IStrategoTerm invoke(IOAgent io, ITermFactory factory, MachineState environment, IStrategoTerm arg);
+	protected abstract IStrategoTerm invoke(ITermFactory factory, MachineState environment, IStrategoTerm arg);
 	
 }

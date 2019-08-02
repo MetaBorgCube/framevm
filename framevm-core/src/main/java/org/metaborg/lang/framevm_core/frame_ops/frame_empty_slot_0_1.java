@@ -1,7 +1,6 @@
 package org.metaborg.lang.framevm_core.frame_ops;
 
 
-import org.spoofax.interpreter.library.IOAgent;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermFactory;
 import org.spoofax.terms.StrategoInt;
@@ -17,7 +16,7 @@ public class frame_empty_slot_0_1 extends FVMStrategy {
 	@Override
 	// env| (frame, slot) -> env'
 	// Empty the given slot of the given frame
-	protected IStrategoTerm invoke(IOAgent io, ITermFactory factory, MachineState env, IStrategoTerm arg) {
+	protected IStrategoTerm invoke(ITermFactory factory, MachineState env, IStrategoTerm arg) {
 		StrategoTuple tuple = (StrategoTuple) arg;
 		
 		Frame frame = (Frame) ((StrategoBlob) tuple.get(0)).value();
@@ -25,7 +24,7 @@ public class frame_empty_slot_0_1 extends FVMStrategy {
 		try {
 			frame.empty(slotIdx);
 		} catch (ArrayIndexOutOfBoundsException e) {
-			io.printError(frame.getId() + ": " + e.getMessage());
+			LOGGER.error(frame.getId() + ": " + e.getMessage());
 			return null;
 		}
 		return new StrategoBlob(env);

@@ -1,17 +1,10 @@
 package org.metaborg.lang.framevm_core.continuation;
 
 
-import org.spoofax.interpreter.library.IOAgent;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermFactory;
-import org.spoofax.terms.StrategoString;
-import org.spoofax.terms.StrategoTuple;
-
 import org.metaborg.lang.framevm_core.FVMStrategy;
-import org.metaborg.lang.framevm_core.util.ControlFrame;
-import org.metaborg.lang.framevm_core.util.CopyPolicy;
 import org.metaborg.lang.framevm_core.util.MachineState;
-import mb.nabl2.terms.stratego.StrategoBlob;
 
 public class cont_copy_0_1 extends FVMStrategy {
 	public static cont_copy_0_1 instance = new cont_copy_0_1();
@@ -19,8 +12,8 @@ public class cont_copy_0_1 extends FVMStrategy {
 	@Override
 	// env| (cont, policy, policy) -> (env', cont)
 	// Copy the given frame and return the id of the copied frame
-	protected IStrategoTerm invoke(IOAgent io, ITermFactory factory, MachineState env, IStrategoTerm arg) {
-		io.printError("Not supported");
+	protected IStrategoTerm invoke(ITermFactory factory, MachineState env, IStrategoTerm arg) {
+		LOGGER.error("Not supported");
 		return null;
 //		StrategoTuple tuple = (StrategoTuple) arg;
 //		ControlFrame oldFrame = (ControlFrame) ((StrategoBlob) tuple.get(0)).value();

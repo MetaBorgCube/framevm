@@ -53,7 +53,8 @@ public class FrameVM {
 		return framevmExtend(null);
 	}
 	public static Strategy[] framevmExtend(Strategy[] original) {
-		Strategy[] newStrategies = new Strategy[] {        		
+		Strategy[] newStrategies = new Strategy[] {  
+				fvm_log_0_2.instance,
 				vm_init_stc_0_0.instance,        		
 				vm_init_rgr_0_0.instance,
 				vm_start_0_1.instance,

@@ -1,7 +1,6 @@
 package org.metaborg.lang.framevm_core.continuation;
 
 
-import org.spoofax.interpreter.library.IOAgent;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermFactory;
 
@@ -15,7 +14,7 @@ public class cont_receive_0_1 extends FVMStrategy {
 
 	@Override
 	// env| cont -> (env', val)
-	protected IStrategoTerm invoke(IOAgent io, ITermFactory factory, MachineState env, IStrategoTerm arg) {
+	protected IStrategoTerm invoke(ITermFactory factory, MachineState env, IStrategoTerm arg) {
 		ControlFrame cf = (ControlFrame) ((StrategoBlob) arg).value();
 		
 		IStrategoTerm term = cf.popReturn();

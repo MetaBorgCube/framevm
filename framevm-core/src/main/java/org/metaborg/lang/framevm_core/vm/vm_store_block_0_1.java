@@ -1,6 +1,5 @@
 package org.metaborg.lang.framevm_core.vm;
 
-import org.spoofax.interpreter.library.IOAgent;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermFactory;
 import org.spoofax.terms.StrategoList;
@@ -16,7 +15,7 @@ public class vm_store_block_0_1 extends FVMStrategy {
 	@Override
 	// env| ((lib, lbl), [instr]) -> env' 
 	// Store a list of instructions as a block with given label
-	protected IStrategoTerm invoke(IOAgent io, ITermFactory factory, MachineState env, IStrategoTerm arg) {
+	protected IStrategoTerm invoke(ITermFactory factory, MachineState env, IStrategoTerm arg) {
 		StrategoTuple tuple = (StrategoTuple) arg;
 		
 		StrategoTuple blockTuple = (StrategoTuple) tuple.get(0);
@@ -31,7 +30,7 @@ public class vm_store_block_0_1 extends FVMStrategy {
 			data[idx++] = instr;
 		}
 		env.putBlock(libName, blockName, data);
-		io.printError("Added block " + blockName + " with " + instrs.size() + " instructions for " + libName);
+		LOGGER.info("Added block " + blockName + " with " + instrs.size() + " instructions for " + libName);
 		return new StrategoBlob(env);
 	}
 }

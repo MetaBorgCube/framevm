@@ -1,7 +1,6 @@
 package org.metaborg.lang.framevm_core.vm;
 
 
-import org.spoofax.interpreter.library.IOAgent;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermFactory;
 
@@ -16,7 +15,7 @@ public class vm_debug_0_1 extends FVMStrategy {
 	@Override
 	// env| -> env'
 	// Return a string representation of the environment
-	protected IStrategoTerm invoke(IOAgent io, ITermFactory factory, MachineState env, IStrategoTerm arg) {
+	protected IStrategoTerm invoke(ITermFactory factory, MachineState env, IStrategoTerm arg) {
 		String debug = DotMachineStateFactory.build(env);
 		env.setDebug(debug);
 		return new StrategoBlob(env);

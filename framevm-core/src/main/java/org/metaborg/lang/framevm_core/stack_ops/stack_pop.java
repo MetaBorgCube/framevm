@@ -1,7 +1,6 @@
 package org.metaborg.lang.framevm_core.stack_ops;
 
 
-import org.spoofax.interpreter.library.IOAgent;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermFactory;
 import org.spoofax.terms.StrategoAppl;
@@ -15,16 +14,16 @@ public abstract class stack_pop extends FVMStrategy {
 	@Override
 	// env| -> (env', val)
 	// Pop a value from the stack
-	protected IStrategoTerm invoke(IOAgent io, ITermFactory factory, MachineState env, IStrategoTerm arg) {
+	protected IStrategoTerm invoke(ITermFactory factory, MachineState env, IStrategoTerm arg) {
 		StackControlFrame opStack = env.currentThread.getStackControlFrame();
 		if (opStack == null) {
-			io.printError("Cannot pop from a register control frame");
+			LOGGER.error("Cannot pop from a register control frame");
 			return null;
 		}
 		
 		if (!opStack.hasNext()) {
-			io.printError("SEGFAULT");
-			io.printError("Cannot pop from empty stack");
+			LOGGER.error("SEGFAULT");
+			LOGGER.error("Cannot pop from empty stack");
 			return null;
 		}
 		IStrategoTerm term = opStack.pop();
@@ -39,11 +38,11 @@ public abstract class stack_pop extends FVMStrategy {
 			if(accepted(name)) {
 				return factory.makeTuple(new StrategoBlob(env), term);			
 			} else {
-				io.printError(term + " is not a valid " + accepted());
+				LOGGER.error(term + " is not a valid " + accepted());
 				return null;
 			}
 		} catch (ClassCastException ex) {
-			io.printError(term + " is not a valid " + accepted());
+			LOGGER.error(term + " is not a valid " + accepted());
 			return null;			
 		}
 	}

@@ -1,7 +1,6 @@
 package org.metaborg.lang.framevm_core.continuation;
 
 
-import org.spoofax.interpreter.library.IOAgent;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermFactory;
 import org.spoofax.terms.StrategoInt;
@@ -19,7 +18,7 @@ public class cont_set_0_1 extends FVMStrategy {
 	@Override
 	// env| (cont, (contId, contIdx), cont) -> env'
 	// Set the value in the given slot of the given frame
-	protected IStrategoTerm invoke(IOAgent io, ITermFactory factory, MachineState env, IStrategoTerm arg) {
+	protected IStrategoTerm invoke(ITermFactory factory, MachineState env, IStrategoTerm arg) {
 		StrategoTuple tuple = (StrategoTuple) arg;
 		
 		ControlFrame controlFrame = (ControlFrame) ((StrategoBlob) tuple.get(0)).value();
@@ -29,7 +28,7 @@ public class cont_set_0_1 extends FVMStrategy {
 		ControlFrame continuationFrame = (ControlFrame) ((StrategoBlob) tuple.get(2)).value();
 					
 		if ("r".equals(contId)) {
-			io.printError("Slot r can never be a continuation slot");
+			LOGGER.error("Slot r can never be a continuation slot");
 			return null;
 		} else {
 			

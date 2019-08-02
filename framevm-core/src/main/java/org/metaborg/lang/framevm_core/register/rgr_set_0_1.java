@@ -1,7 +1,6 @@
 package org.metaborg.lang.framevm_core.register;
 
 
-import org.spoofax.interpreter.library.IOAgent;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermFactory;
 import org.spoofax.terms.StrategoString;
@@ -18,10 +17,10 @@ public class rgr_set_0_1 extends FVMStrategy {
 	@Override
 	// env| (slot, val) -> env'
 	// Push the given value to the stack
-	protected IStrategoTerm invoke(IOAgent io, ITermFactory factory, MachineState env, IStrategoTerm arg) {
+	protected IStrategoTerm invoke(ITermFactory factory, MachineState env, IStrategoTerm arg) {
 		RegisterControlFrame cf = env.currentThread.getRegisterControlFrame();
 		if(cf == null) {
-			io.printError("Cannot store in a stack control frame");
+			LOGGER.error("Cannot store in a stack control frame");
 			return null;
 		}
 		
@@ -33,10 +32,10 @@ public class rgr_set_0_1 extends FVMStrategy {
 			cf.set(slot, val);
 			return new StrategoBlob(env);
 		} catch (ArrayIndexOutOfBoundsException ex) {
-			io.printError("Slot " + slot + " does not exist");
+			LOGGER.error("Slot " + slot + " does not exist");
 			return null;
 		} catch (IllegalStateException ex) {
-			io.printError(ex.getMessage());
+			LOGGER.error(ex.getMessage());
 			return null;
 		}
 	}

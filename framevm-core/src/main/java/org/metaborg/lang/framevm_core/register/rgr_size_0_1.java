@@ -1,7 +1,6 @@
 package org.metaborg.lang.framevm_core.register;
 
 
-import org.spoofax.interpreter.library.IOAgent;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermFactory;
 import org.metaborg.lang.framevm_core.FVMStrategy;
@@ -13,10 +12,10 @@ public class rgr_size_0_1 extends FVMStrategy {
 
 	@Override
 	// env| -> int
-	protected IStrategoTerm invoke(IOAgent io, ITermFactory factory, MachineState env, IStrategoTerm arg) {
+	protected IStrategoTerm invoke(ITermFactory factory, MachineState env, IStrategoTerm arg) {
 		RegisterControlFrame cf = env.currentThread.getRegisterControlFrame();
 		if (cf == null) {
-			io.printError("Cannot get stack size for a register frame");
+			LOGGER.error("Cannot get stack size for a register frame");
 			return null;
 		}
 

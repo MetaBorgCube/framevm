@@ -1,7 +1,6 @@
 package org.metaborg.lang.framevm_core.frame_ops;
 
 
-import org.spoofax.interpreter.library.IOAgent;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermFactory;
 import org.spoofax.terms.StrategoInt;
@@ -19,7 +18,7 @@ public class frame_get_link_0_1 extends FVMStrategy {
 	@Override
 	// env| (frame, (linkid, idx)) -> frame
 	// Get the target of the given link in the given frame
-	protected IStrategoTerm invoke(IOAgent io, ITermFactory factory, MachineState env, IStrategoTerm arg) {
+	protected IStrategoTerm invoke(ITermFactory factory, MachineState env, IStrategoTerm arg) {
 		StrategoTuple tuple = (StrategoTuple) arg;
 		Frame frame = (Frame) ((StrategoBlob) tuple.get(0)).value();
 		StrategoTuple linkTuple = (StrategoTuple) tuple.get(1);
@@ -29,7 +28,7 @@ public class frame_get_link_0_1 extends FVMStrategy {
 
 		Link link = frame.getLink(linkIdx);
 		if (link == null) {
-			io.printError("A link with index " + linkIdx + " does not exist");
+			LOGGER.error("A link with index " + linkIdx + " does not exist");
 			return null;
 		}
 		if (!link.linkId.equals(linkId) && link.linkId.startsWith("_l")) {

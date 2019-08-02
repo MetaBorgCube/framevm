@@ -3,7 +3,6 @@ package org.metaborg.lang.framevm_core.vm;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.spoofax.interpreter.library.IOAgent;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermFactory;
 
@@ -20,7 +19,7 @@ public class vm_stop_0_1 extends FVMStrategy {
 	@Override
 	// env -> string
 	// Return the output that was written to 'console'
-	protected IStrategoTerm invoke(IOAgent io, ITermFactory factory, MachineState env, IStrategoTerm arg) {
+	protected IStrategoTerm invoke(ITermFactory factory, MachineState env, IStrategoTerm arg) {
 		Frame currentFrame = env.currentThread.getControlFrame().getCurrentFrame();
 		if (currentFrame.getId().equals("_exit") || currentFrame.getId().equals("_catch")) {
 			
@@ -34,22 +33,22 @@ public class vm_stop_0_1 extends FVMStrategy {
 					if (match.matches()) {
 						int exitcode = Integer.valueOf(match.group(1));
 						if (exitcode == 0) {
-							io.printError("Execution terminated sucessfully");
+							LOGGER.info("Execution terminated sucessfully");
 						} else {
-							io.printError("Execution terminated with errors: " + exitcode);
+							LOGGER.error("Execution terminated with errors: " + exitcode);
 						}
 					} else {
 						return null;	// Exitcode is not an intV 
 					}
 				} else if (currentFrame.getId().equals("_catch")) {
-					io.printError("Uncought exception: " + exitObj);
+					LOGGER.error("Uncought exception: " + exitObj);
 				}
 			} else {
-				io.printError("Execution terminated in terminal state without exitcode");
+				LOGGER.error("Execution terminated in terminal state without exitcode");
 				return factory.makeString("FAIL");
 			}
 			if (env.debug.length() > 0) {
-				io.printError("Printing debug info, all output is discarded");
+				LOGGER.info("Printing debug info, all output is discarded");
 				return factory.makeString(env.debug.trim());
 			} else {
 				String out = env.stdout.toString();
@@ -62,10 +61,10 @@ public class vm_stop_0_1 extends FVMStrategy {
 			ControlFrame frame = env.currentThread.getControlFrame();
 			String instr = frame.getBlock().getInstr(Math.max(0, frame.getInstr_count() - 1)).toString();
 			if (instr.contains("_DebugKill")) {
-				io.printError("Printing debug info, all output is discarded");
+				LOGGER.info("Printing debug info, all output is discarded");
 				return factory.makeString(env.debug.trim());
 			} else {
-				io.printError("Execution terminated in non-terminal state");
+				LOGGER.error("Execution terminated in non-terminal state");
 				return factory.makeString("FAIL");
 			}
 		}

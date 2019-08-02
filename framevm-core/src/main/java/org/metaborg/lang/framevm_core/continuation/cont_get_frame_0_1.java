@@ -1,7 +1,6 @@
 package org.metaborg.lang.framevm_core.continuation;
 
 
-import org.spoofax.interpreter.library.IOAgent;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermFactory;
 import org.metaborg.lang.framevm_core.FVMStrategy;
@@ -15,7 +14,7 @@ public class cont_get_frame_0_1 extends FVMStrategy {
 	@Override
 	// env| cont -> frame
 	// Get the data frame of the given continuation
-	protected IStrategoTerm invoke(IOAgent io, ITermFactory factory, MachineState env, IStrategoTerm arg) {
+	protected IStrategoTerm invoke(ITermFactory factory, MachineState env, IStrategoTerm arg) {
 		ControlFrame controlFrame = (ControlFrame) ((StrategoBlob) arg).value();
 		return new StrategoBlob(controlFrame.getCurrentFrame());
 	}

@@ -1,6 +1,5 @@
 package org.metaborg.lang.framevm_core.vm;
 
-import org.spoofax.interpreter.library.IOAgent;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermFactory;
 import org.spoofax.terms.StrategoInt;
@@ -24,7 +23,7 @@ public class vm_start_0_1 extends FVMStrategy {
 	@Override
 	// env| (lib, block, size) -> env'
 	// Start the vm by setting the initial frame as executable and running the MAIN block
-	protected IStrategoTerm invoke(IOAgent io, ITermFactory factory, MachineState env, IStrategoTerm arg) {
+	protected IStrategoTerm invoke(ITermFactory factory, MachineState env, IStrategoTerm arg) {
 		StrategoTuple tuple = (StrategoTuple) arg;
 		String libName = ((StrategoString) tuple.get(0)).stringValue();
 		String blockName = ((StrategoString) tuple.get(1)).stringValue();
@@ -33,7 +32,7 @@ public class vm_start_0_1 extends FVMStrategy {
 		Block block = env.getBlock(libName, blockName);
 		
 		if (block == null) {
-			io.printError("No main block found!");
+			LOGGER.error("No main block found!");
 			return null;
 		}
 		
@@ -41,9 +40,9 @@ public class vm_start_0_1 extends FVMStrategy {
 		try {
 			controlFrame.setSize(size);
 		} catch (IllegalStateException ex) {
-			io.printError(ex.getMessage());
+			LOGGER.error(ex.getMessage());
 		} catch (NegativeArraySizeException ex) {
-			io.printError("No local size set for initial block " + blockName);
+			LOGGER.error("No local size set for initial block " + blockName);
 		}
 		controlFrame.jump(block);
 		env.currentThread.initThread();
@@ -69,7 +68,7 @@ public class vm_start_0_1 extends FVMStrategy {
 		controlFrame.setContinuation(1, new Continuation("x", x));
 		
 		
-		io.printError("FrameVM started: " + block.getName());
+		LOGGER.info("Started execution at " + block.getName());
 		return new StrategoBlob(env);
 	}
 }

@@ -31,7 +31,7 @@ public class vm_init_stc_0_0 extends Strategy {
 		env.addThread(new MachineThread(controlFrame, env));
 		
 
-		context.getIOAgent().printError("FrameVM initialized " + controlFrame.getCurrentFrame().getId() + " (" + slot_size + ")");
+		context.getIOAgent().printError("Initialized " + controlFrame.getCurrentFrame().getId() + " (" + slot_size + ")");
 		context.getIOAgent().printError("Link registers = " + link_size);
 		return new StrategoBlob(env);
 	}

@@ -3,7 +3,6 @@ package org.metaborg.lang.framevm_core.continuation;
 
 import java.util.Arrays;
 
-import org.spoofax.interpreter.library.IOAgent;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermFactory;
 import org.spoofax.terms.StrategoInt;
@@ -22,7 +21,7 @@ public class cont_get_0_1 extends FVMStrategy {
 	@Override
 	// env| (cont, (slot, idx)) -> cont
 	// Get the content of the given continuation register in the given frame
-	protected IStrategoTerm invoke(IOAgent io, ITermFactory factory, MachineState env, IStrategoTerm arg) {
+	protected IStrategoTerm invoke(ITermFactory factory, MachineState env, IStrategoTerm arg) {
 		StrategoTuple tuple = (StrategoTuple) arg;
 		
 		ControlFrame controlFrame = (ControlFrame) ((StrategoBlob) tuple.get(0)).value();
@@ -32,8 +31,8 @@ public class cont_get_0_1 extends FVMStrategy {
 
 		Continuation cont = controlFrame.getContinuation(contIdx);
 		if (cont == null) {
-			io.printError(Arrays.toString(controlFrame.getContinuations()));
-			io.printError("Continuation does not exist: " + contId);
+			LOGGER.error(Arrays.toString(controlFrame.getContinuations()));
+			LOGGER.error("Continuation does not exist: " + contId);
 			return null;
 		} else if (!cont.id.equals(contId) && cont.id.startsWith("_c")) {
 			cont.id = contId;	// Update to better name

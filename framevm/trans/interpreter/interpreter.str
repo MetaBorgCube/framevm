@@ -18,7 +18,7 @@ signature
 rules
     eval-program-debug = eval-program(debug-eval)
     debug-eval: t@(e, _) -> t
-      where <strip-annos; debug(!"execute: ")> e
+      with fvm-log(|"INFO", $[Execute: [<strip-annos; write-to-string> e]])
       
     eval-program = eval-program(id)
     
@@ -60,7 +60,7 @@ rules
         
     import-blocks(|mode): (FVM_Export(_, _, _), env) -> env
     
-    import-blocks(|mode): (i, env) -> <fail> with <debug> "Failed to process import, the reference is probably not resolvable:"; <debug> <strip-annos> i
+    import-blocks(|mode): (i, env) -> <fvm-log(|"ERROR", "Failed to process import, the reference is probably not resolvable:"); fail>
     
     try-load-import(|mode): i@(FVM_ImportAs(lib, _, _), env1) -> env2
       where
@@ -83,7 +83,7 @@ rules
         (dec-occ, path) := <nabl2-get-resolved-name(|a)> ref-occ;
         blocks          := <nabl2-get-property(|a, "blocks")>  dec-occ;
         imports         := <nabl2-get-property(|a, "imports")> dec-occ
-    get-lib-blocks: libname -> <fail> where <debug> $[Failed to load [libname]]
+    get-lib-blocks: libname -> <fvm-log(|"ERROR", $[Failed to load [libname]]); fail>
     
     resolve-jump-labels(|lib): (imports, blocks) -> (imports, <resolve-jump-labels(|lib)> blocks)
     resolve-jump-labels(|lib): [] -> []
@@ -98,7 +98,7 @@ rules
         (dec-occ, _) := <nabl2-get-resolved-name(|a)> ref-occ;
         Some(size)   := <get-size(|a)> dec-occ
         
-    get-block-size: FVM_InitBlock(name) -> <debug; fail> $[Block [name] not found]
+    get-block-size: FVM_InitBlock(name) -> <fvm-log(|"ERROR", $[Block [name] not found]); fail>
     
     resolve-jump-labels-(|lib): l@FVM_Label(lbl) -> FVM_BoundLabel(lib, lbl, size)
       where
@@ -125,6 +125,4 @@ rules
 
     // Instruction not implemented or execution failed
     // Catches current instructions and reports them
-    eval: (instr, env) -> <fail>
-      where
-        <debug> ("Execution failed at instruction", <strip-annos> instr)
+    eval: (instr, env) -> <fvm-log(|"ERROR", $[Execution failed at instruction [<strip-annos; write-to-string> instr]]); fail>

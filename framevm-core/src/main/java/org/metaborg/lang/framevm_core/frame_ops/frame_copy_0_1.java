@@ -1,7 +1,6 @@
 package org.metaborg.lang.framevm_core.frame_ops;
 
 
-import org.spoofax.interpreter.library.IOAgent;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermFactory;
 import org.spoofax.terms.StrategoString;
@@ -19,7 +18,7 @@ public class frame_copy_0_1 extends FVMStrategy {
 	@Override
 	// env| (frame, policy) -> (env', frame)
 	// Copy the given frame and return the id of the copied frame
-	protected IStrategoTerm invoke(IOAgent io, ITermFactory factory, MachineState env, IStrategoTerm arg) {
+	protected IStrategoTerm invoke(ITermFactory factory, MachineState env, IStrategoTerm arg) {
 		StrategoTuple tuple = (StrategoTuple) arg;
 		Frame oldFrame = (Frame) ((StrategoBlob) tuple.get(0)).value();
 		CopyPolicy policy = CopyPolicy.valueOf(((StrategoString) tuple.get(1)).stringValue().toUpperCase());

@@ -1,7 +1,6 @@
 package org.metaborg.lang.framevm_core.register;
 
 
-import org.spoofax.interpreter.library.IOAgent;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermFactory;
 import org.spoofax.terms.StrategoAppl;
@@ -14,10 +13,10 @@ import org.metaborg.lang.framevm_core.util.RegisterControlFrame;
 public abstract class rgr_get extends FVMStrategy {
 	@Override
 	// env| slot -> val
-	protected IStrategoTerm invoke(IOAgent io, ITermFactory factory, MachineState env, IStrategoTerm arg) {
+	protected IStrategoTerm invoke(ITermFactory factory, MachineState env, IStrategoTerm arg) {
 		RegisterControlFrame cf = env.currentThread.getRegisterControlFrame();
 		if (cf == null) {
-			io.printError("Cannot get from a stack control frame");
+			LOGGER.error("Cannot get from a stack control frame");
 			return null;
 		}
 		String slot = ((StrategoString) arg).stringValue();
@@ -34,15 +33,15 @@ public abstract class rgr_get extends FVMStrategy {
 			if(accepted(name)) {
 				return term;			
 			} else {
-				io.printError(term + " is not a valid " + accepted());
+				LOGGER.error(term + " is not a valid " + accepted());
 				return null;
 			}
 		} catch (ArrayIndexOutOfBoundsException ex) {
-			io.printError("SEGFAULT");
-			io.printError("Slot " + slot + " does not exist");
+			LOGGER.error("SEGFAULT");
+			LOGGER.error("Slot " + slot + " does not exist");
 			return null;
 		} catch (IllegalStateException ex) {
-			io.printError(ex.getMessage());
+			LOGGER.error(ex.getMessage());
 			return null;
 		}
 	}
