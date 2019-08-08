@@ -32,6 +32,6 @@ rules
     eval-framevm       = eval-program
     eval-framevm-debug = eval-program-debug
     
-    eval-framevm-file:       e -> <fail> where <debug(!"[FrameVM] ")> "Running a file directly is not supported"
-    eval-framevm-file-debug: e -> <fail> where <debug(!"[FrameVM] ")> "Running a file directly is not supported"
+    eval-framevm-file:       e -> <debug(!"[FrameVM] ")> "Running a file directly is not supported"
+    eval-framevm-file-debug: e -> <debug(!"[FrameVM] ")> "Running a file directly is not supported"
     
