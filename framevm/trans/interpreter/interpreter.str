@@ -43,7 +43,7 @@ rules
     
     eval-program-(s, mode-eval | mode): _ -> "FAIL"
     
-    
+rules   
     store-block: (FVM_Block(FVM_Label(lbl), _, FVM_Seq(body), _), (lib, env)) -> (lib, <vm-store-block(|env)> ((lib, lbl), body))
     
     import-blocks(|mode): (FVM_Import(lib, _), env1) -> env3
