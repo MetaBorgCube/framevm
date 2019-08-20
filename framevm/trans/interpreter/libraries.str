@@ -1,0 +1,62 @@
+module libraries
+
+imports 
+  signatures/fvm-common-sig
+  signatures/fvm-roger-sig
+  
+  fvm-common
+    
+  libspoofax/resource/path
+  nabl2/api
+  
+rules
+  fvm-on-save:
+    (_, _, ast, path, project-path) -> (full_name, (exports, body) )
+    with
+      (name, type, exports, body)   := <extract-imports> ast
+    ; filename := $[src-gen/framevm/[name].[type]c]
+    ; full_name := $[[project-path]/[filename]]
+//    ; <debug(!"a ")> <current-language-source-directories>
+//    ; <debug(!"b ")> <language-components>
+
+  
+  extract-imports: RGR_Program(name, imps, _, _, _, body) -> (name, "rgr", exports, <strip-annos> body)
+    with
+      exports := <filter(?FVM_Export(_,_, _)); map(resolve-export); strip-annos> imps;
+      local_exports := <filter(?(_, a); !a; is-string)> exports
+      // TODO: filter all the unneeded blocks here based on `local_exports`
+      // TODO: replace all ExternalLabel(_) instances with the BoundLabel(lib, lbl)
+      
+  resolve-export: FVM_Export(lib, Local(source), as) -> (as, source)
+  resolve-export: FVM_Export(_, External(source), as) -> (as, (lib, lbl))
+    with
+      a            := <nabl2-get-ast-analysis> source;
+      ref-occ      := <nabl2-mk-occurrence(|"ModuleFunc")> source;
+      (dec-occ, path) := <nabl2-get-resolved-name(|a)> ref-occ;
+      lib          := <nabl2-get-property(|a, "lib")>   dec-occ;
+      lbl          := <nabl2-get-property(|a, "label")> dec-occ
+
+rules
+  import-blocks(|mode): (FVM_Import(lib, _), env1) -> env1
+//    where 
+//      (imports, blocks) := <resolve-jump-labels(|lib)> <get-lib-blocks(|mode)> lib;
+//      (_, env2) := <foldl(store-block)> (blocks, (lib, env1));
+//      env3 := <foldl(try-load-import(|mode))> (imports, env2)
+        
+  import-blocks(|mode): (FVM_ImportAs(lib, _, _), env1) -> env1
+//    where 
+//      (imports, blocks) := <resolve-jump-labels(|lib)> <get-lib-blocks(|mode)> lib;
+//      (_, env2) := <foldl(store-block)> (blocks, (lib, env1));
+//      env3 := <foldl(try-load-import(|mode))> (imports, env2)
+        
+  import-blocks(|mode): (FVM_Export(_, _, _), env) -> env
+ 
+ 
+rules
+  resolve-jump-labels-all(|imps, fname) = map(resolve-jump-labels-block(|imps, fname))
+ 
+  resolve-jump-labels-block(|imps, fname): FVM_Block(lbl, s, FVM_Seq(body), d) -> FVM_Block(lbl, s, FVM_Seq(body'), d) 
+  	where
+  	  body' := <topdown(try(resolve-jump-labels(|imps, fname)))> body 
+  
+  resolve-jump-labels(|imps, fname): FVM_Label(name) -> FVM_BoundLabel(fname, name)
