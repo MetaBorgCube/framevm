@@ -19,5 +19,6 @@ rules
         
     rgr-eval-exp(|env): RGR_ClosToCont(exp) -> (env2, Continuation(cont))
       where
-        (env2, ClosV(frame, _, FVM_BoundLabel(lib, lbl, Some(s2)), s1)) := <rgr-eval-exp(|env)> exp;
+        (env2, ClosV(frame, _, FVM_BoundLabel(lib, lbl), s1)) := <rgr-eval-exp(|env)> exp;
+        s2 := <vm-get-block-size(|env2)> (lib, lbl);
         (env3, cont) := <vm-cont-new(|env2)> (frame, (lib, lbl), (s1, s2))

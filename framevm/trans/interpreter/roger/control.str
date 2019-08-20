@@ -25,7 +25,7 @@ rules
         env3 := <cont-transfer(|env2)> (continuation, [val]);
         env4 := <cont-call(|env3)> continuation
         
-    rgr-eval: (RGR_Yield(exp, FVM_BoundLabel(lib, block, _)), env) -> env4
+    rgr-eval: (RGR_Yield(exp, FVM_BoundLabel(lib, block)), env) -> env4
       where
         this := <cont-this(|env)>;
         (env2, val) := <rgr-eval-exp(|env)> exp;
@@ -33,18 +33,19 @@ rules
         env3 := <cont-transfer(|env2)> (continuation, [val, Continuation(this)]);
         env4 := <cont-call(|env3)> continuation
         
-    rgr-eval: (RGR_JumpZ(exp, FVM_BoundLabel(thenlib, thenlbl, _), FVM_BoundLabel(elselib, elselbl, _)), env1) -> env3
+    rgr-eval: (RGR_JumpZ(exp, FVM_BoundLabel(thenlib, thenlbl), FVM_BoundLabel(elselib, elselbl)), env1) -> env3
       where
         (env2, IntV(val)) := <rgr-eval-exp(|env1)> exp;
         trgt := <jump-eval> (val, (thenlib, thenlbl), (elselib, elselbl));
         env3 := <vm-jump(|env2)> trgt
         
-    rgr-eval: (RGR_Jump(FVM_BoundLabel(lib, lbl, _)), env) -> env2
+    rgr-eval: (RGR_Jump(FVM_BoundLabel(lib, lbl)), env) -> env2
       where
         env2 := <vm-jump(|env)> (lib, lbl)
         
-    rgr-eval: (RGR_Call(exp, FVM_BoundLabel(flib, flbl, Some(fsize)), FVM_BoundLabel(rlib, rlbl, _)), env) -> env7
+    rgr-eval: (RGR_Call(exp, FVM_BoundLabel(flib, flbl), FVM_BoundLabel(rlib, rlbl)), env) -> env7
       where
+        fsize := <vm-get-block-size(|env)> (flib, flbl);
         (env2, FrameRef(frame)) := <rgr-eval-exp(|env)> exp;
         (env3, func) := <vm-cont-new(|env2)> (frame, (flib, flbl), (2, fsize));
         cont_this := <cont-this(|env3)>;
@@ -55,7 +56,7 @@ rules
         env6 := <vm-jump(|env5)> (rlib, rlbl);
         env7 := <cont-call(|env6)> func
         
-    rgr-eval: (RGR_Call(exp, FVM_BoundLabel(lib, lbl, _)), env) -> env6
+    rgr-eval: (RGR_Call(exp, FVM_BoundLabel(lib, lbl)), env) -> env6
       where
         (env2, Continuation(func)) := <rgr-eval-exp(|env)> exp;
         cont_this := <cont-this(|env2)>;
@@ -66,8 +67,9 @@ rules
         env5 := <vm-jump(|env4)> (lib, lbl);
         env6 := <cont-call(|env5)> func
          
-    rgr-eval: (RGR_TailCall(exp, FVM_BoundLabel(flib, flbl, Some(fsize))), env) -> env6
+    rgr-eval: (RGR_TailCall(exp, FVM_BoundLabel(flib, flbl)), env) -> env6
       where
+        fsize := <vm-get-block-size(|env)> (flib, flbl);
         (env2, FrameRef(frame)) := <rgr-eval-exp(|env)> exp;
         (env3, func) := <vm-cont-new(|env2)> (frame, (flib, flbl), (2, fsize));
         cont_this := <cont-this(|env3)>;
@@ -87,7 +89,7 @@ rules
         env4 := <ex-set-cx(|env3)> (func, ex);
         env5 := <cont-call(|env4)> func
         
-     rgr-eval: (RGR_ContCall(exp, FVM_BoundLabel(lib, lbl, _)), env1) -> env4 
+     rgr-eval: (RGR_ContCall(exp, FVM_BoundLabel(lib, lbl)), env1) -> env4 
       where
         (env2, Continuation(cf)) := <rgr-eval-exp(|env1)> exp;
         env3 := <vm-jump(|env2)> (lib, lbl);
@@ -98,10 +100,12 @@ rules
         (env2, Continuation(cf)) := <rgr-eval-exp(|env1)> exp;
         env3 := <cont-call(|env2)> cf
         
-    rgr-eval: (RGR_Try(exptry, FVM_BoundLabel(lib_try, lbl_try, Some(s1)), 
-                       expcatch, FVM_BoundLabel(lib_catch, lbl_catch, Some(s2)), 
-                       FVM_BoundLabel(lib_cont, lbl_cont, _)), env1) -> env13
+    rgr-eval: (RGR_Try(exptry, FVM_BoundLabel(lib_try, lbl_try), 
+                       expcatch, FVM_BoundLabel(lib_catch, lbl_catch), 
+                       FVM_BoundLabel(lib_cont, lbl_cont)), env1) -> env13
       where
+        s1 := <vm-get-block-size(|env1)> (lib_try, lbl_try);
+        s2 := <vm-get-block-size(|env1)> (lib_catch, lbl_catch);
         this := <cont-this(|env1)>;
         cont := <cont-get-cc(|env1)> this;
         ex   := <ex-get-cx(|env1)> this;
@@ -123,7 +127,7 @@ rules
         env12 := <vm-jump(|env11)>  (lib_cont, lbl_cont);
         env13 := <cont-call(|env12)> try
         
-     rgr-eval: (RGR_Try(exptry, expcatch, FVM_BoundLabel(lib_cont, lbl_cont, _)), env1) -> env11
+     rgr-eval: (RGR_Try(exptry, expcatch, FVM_BoundLabel(lib_cont, lbl_cont)), env1) -> env11
       where
         this := <cont-this(|env1)>;
         cont := <cont-get-cc(|env1)> this;
@@ -144,7 +148,7 @@ rules
         env11 := <cont-call(|env10)> try 
         
 
-	rgr-eval: (RGR_ScopeNew(exp, FVM_Link(Bind(lbl, idx)), FVM_BoundLabel(lib, block, _)), env) -> env5
+	rgr-eval: (RGR_ScopeNew(exp, FVM_Link(Bind(lbl, idx)), FVM_BoundLabel(lib, block)), env) -> env5
 	  where
 	    frame_this := <frame-this(|env)>;
         (env2, FrameRef(frame_to)) := <rgr-eval-exp(|env)> exp;
@@ -152,7 +156,7 @@ rules
         env4 := <frame-set-current(|env3)> (<cont-this(|env3)>, frame_to);
         env5 := <vm-jump(|env4)> (lib, block)
 
-	rgr-eval: (RGR_ScopeExit(FVM_Path(path), FVM_BoundLabel(lib, block, _)), env) -> env3
+	rgr-eval: (RGR_ScopeExit(FVM_Path(path), FVM_BoundLabel(lib, block)), env) -> env3
 	  where
 	    FrameRef(frame) := <rgr-get-path(|env)> (FrameRef(<frame-this(|env)>), path);
 	    env2 := <frame-set-current(|env)>  (<cont-this(|env)>, frame);

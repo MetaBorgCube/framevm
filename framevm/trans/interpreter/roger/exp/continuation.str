@@ -12,13 +12,15 @@ rules
     rgr-eval-exp(|env): RGR_ContThis() -> (env, Continuation(<cont-this(|env)>))
     
     
-    rgr-eval-exp(|env): RGR_ContNew(exp, FVM_BoundLabel(lib, lbl, Some(locals_size)), RGR_IntVal(cont_size)) -> (env3, Continuation(cont))
+    rgr-eval-exp(|env): RGR_ContNew(exp, FVM_BoundLabel(lib, lbl), RGR_IntVal(cont_size)) -> (env3, Continuation(cont))
       where
+        locals_size := <vm-get-block-size(|env)> (lib, lbl);
         (env2, FrameRef(frame)) :=  <rgr-eval-exp(|env)> exp;
         (env3, cont) := <vm-cont-new(|env2)> (frame, (lib, lbl), (<string-to-int> cont_size, locals_size))
         
-    rgr-eval-exp(|env): RGR_ContNew(exp1, FVM_BoundLabel(lib, lbl, Some(locals_size)), exp2) -> (env4, Continuation(cont))
+    rgr-eval-exp(|env): RGR_ContNew(exp1, FVM_BoundLabel(lib, lbl), exp2) -> (env4, Continuation(cont))
       where
+        locals_size := <vm-get-block-size(|env)> (lib, lbl);
         (env2, FrameRef(frame)) := <rgr-eval-exp(|env)> exp1;
         (env3, IntV(cont_size)) := <rgr-eval-exp(|env2)> exp2;
         (env4, cont) := <vm-cont-new(|env3)> (frame, (lib, lbl), (cont_size, locals_size))

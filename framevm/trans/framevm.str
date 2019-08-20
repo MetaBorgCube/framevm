@@ -10,6 +10,7 @@ imports
   reduce/reduce
   transform/transform
   interpreter/interpreter
+  interpreter/libraries
 
 rules // Syntax  
   debug-show-desugared-aterm:
@@ -63,11 +64,11 @@ rules //run
     (_, _, ast, path, project-path) -> (filename, result)
     with
       filename := <guarantee-extension(|"value")> path
-    ; result   := <eval-program> ast
+    ; result   := <eval-framevm(|<base-filename> filename)> ast
     
   run-program-debug:
     (_, _, ast, path, project-path) -> (filename, result)
     with
       filename := <guarantee-extension(|"value")> path
-    ; result   := <eval-program-debug> ast
+    ; result   := <eval-framevm-debug(|<base-filename> filename)> ast
  

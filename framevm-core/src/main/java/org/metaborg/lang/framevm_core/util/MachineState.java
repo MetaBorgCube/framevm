@@ -125,11 +125,11 @@ public class MachineState {
 		return new StackControlFrame(contSize, stackSize, block, id);
 	}
 
-	public void putBlock(String libName, String blockName, IStrategoTerm[] instrs) {
+	public void putBlock(String libName, String blockName, IStrategoTerm[] instrs, int size) {
 		if (!blocks.containsKey(libName)) {
 			blocks.put(libName, new HashMap<>());
 		}
-		blocks.get(libName).put(blockName, new Block(blockName, instrs));
+		blocks.get(libName).put(blockName, new Block(blockName, instrs, size));
 	}
 
 	public ControlFrame newRegisterControlFrame(int contSize, int locals, Block block) {

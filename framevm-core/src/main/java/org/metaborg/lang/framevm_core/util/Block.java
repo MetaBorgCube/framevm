@@ -8,6 +8,7 @@ import org.spoofax.interpreter.terms.IStrategoTerm;
 public class Block {
 	private String name;
 	private IStrategoTerm[] body;
+	private int size;
 	
 	/**
 	 * Constructor of a block with given id and instructions.
@@ -17,9 +18,10 @@ public class Block {
 	 * @param body
 	 * 		The instructions contained in this block
 	 */
-	public Block(String name, IStrategoTerm[] body) {
+	public Block(String name, IStrategoTerm[] body, int size) {
 		this.name = name;
 		this.body = body;
+		this.size = size;
 	}
 
 	/**
@@ -45,5 +47,9 @@ public class Block {
 
 	public int size() {
 		return body.length;
+	}
+
+	public int getSize() {
+		return size;
 	}
 }

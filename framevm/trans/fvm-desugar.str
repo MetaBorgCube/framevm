@@ -57,3 +57,18 @@ rules
    	is-init: FVM_InitSize(s) -> <string-to-int> s
    	is-init-block: b@FVM_InitBlock(name) -> b
    	
+rules
+  prepare-run(|fname) = prefix-filename(|fname); fix-empty-paths; desugar
+  
+  prefix-filename: AnalyzeMulti(p, files) -> AnalyzeMulti(p, <map(prefix-filename)> files)
+  
+  prefix-filename: c@(fname, Cached(_)) -> c
+  prefix-filename: (fname, Added(ast)) -> (fname, Added(<prefix-filename(|fname)> ast))
+  prefix-filename: (fname, Changed(ast, r)) -> (fname, Changed(<prefix-filename(|fname)> ast, r))
+  
+  prefix-filename(|fname): ast -> (module-name, ast)
+    with
+      module-name := <string-replace(|"/", "."); string-replace(|"\\", ".")> fname
+  
+  fix-empty-paths = topdown(try(replace-empty))
+  replace-empty: FVM_Path([]) -> FVM_Self()

@@ -26,6 +26,7 @@ rules
     // STC_ClosToCont/0
     stc-eval: (STC_ClosToCont(), env1) -> env4
       where
-        (env2, ClosV(frame, _, FVM_BoundLabel(lib, lbl, Some(s2)), s1)) := <stack-pop-closure(|env1)>;
+        (env2, ClosV(frame, _, FVM_BoundLabel(lib, lbl), s1)) := <stack-pop-closure(|env1)>;
+        s2 := <vm-get-block-size(|env2)> (lib, lbl);
         (env3, cont) := <vm-cont-new(|env2)>(frame, (lib, lbl), (s1, s2));
         env4 := <stack-push(|env3)> Continuation(cont)

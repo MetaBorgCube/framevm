@@ -1,7 +1,10 @@
 module fvm-common
 
 imports
+    nabl2/api
+    
     fvm-pp
+    fvm-desugar
     interpreter/interpreter
 
 signature
@@ -11,7 +14,7 @@ signature
     RGR_AutoVar : STRING -> S
     FVM_AutoLabel : STRING -> S
     FVM_AutoSize: S
-    FVM_BoundLabel : STRING * FVM_Label * INT -> S
+    FVM_BoundLabel : STRING * FVM_Label -> S
     FVM_Export : STRING * STRING * STRING -> S
     FVM_Seq : [Instr] -> S
     FVM_Block : FVM_Label * INT * FVM_Seq * INT -> S
@@ -29,8 +32,8 @@ signature
 rules
     pp-framevm         = pp-debug-framevm
     
-    eval-framevm       = eval-program
-    eval-framevm-debug = eval-program-debug
+    eval-framevm(|fname)       = prepare-run(|fname); eval-program
+    eval-framevm-debug(|fname) = prepare-run(|fname); eval-program-debug
     
     eval-framevm-file:       e -> <debug(!"[FrameVM] ")> "Running a file directly is not supported"
     eval-framevm-file-debug: e -> <debug(!"[FrameVM] ")> "Running a file directly is not supported"

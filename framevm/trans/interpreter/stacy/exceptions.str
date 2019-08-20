@@ -11,8 +11,10 @@ rules
     // STC_Try/3
     // Takes two frames from the stack and sets them up to be a try-catch block
     // Moves execution to the try-block with the catch block as exception handler
-    stc-eval: (STC_Try(FVM_BoundLabel(lib_try, lbl_try, Some(s1)), FVM_BoundLabel(lib_catch, lbl_catch, Some(s2)), FVM_BoundLabel(lib_cont, lbl_cont, _)), env1) -> env13
+    stc-eval: (STC_Try(FVM_BoundLabel(lib_try, lbl_try), FVM_BoundLabel(lib_catch, lbl_catch), FVM_BoundLabel(lib_cont, lbl_cont)), env1) -> env13
       where
+        s1 := <vm-get-block-size(|env1)> (lib_try, lbl_try);
+        s2 := <vm-get-block-size(|env1)> (lib_catch, lbl_catch);
         this := <cont-this(|env1)>;
         cont := <cont-get-cc(|env1)> this;
         ex   := <ex-get-cx(|env1)> this;
@@ -37,7 +39,7 @@ rules
     // STC_Try/1
     // Takes two continuation from the stack and sets them up to be a try-catch block
     // Moves execution to the try-block with the catch block as exception handler
-    stc-eval: (STC_Try(FVM_BoundLabel(lib_cont, lbl_cont, _)), env1) -> env11
+    stc-eval: (STC_Try(FVM_BoundLabel(lib_cont, lbl_cont)), env1) -> env11
       where
         this := <cont-this(|env1)>;
         cont := <cont-get-cc(|env1)> this;
