@@ -1,0 +1,259 @@
+( [("equals", "EQUALS")]
+, [ FVM_Block(
+      FVM_Label("EQUALS")
+    , Some(2)
+    , FVM_Seq(
+        [ RGR_JumpZ(
+            RGR_REq(
+              RGR_Get(FVM_Path([FVM_Slot("0")]))
+            , RGR_Get(FVM_Path([FVM_Slot("1")]))
+            )
+          , FVM_BoundLabel("stdlib.equals", "__EQUALS_CONTENT")
+          , FVM_BoundLabel("stdlib.equals", "__RETURN_TRUE")
+          )
+        ]
+      )
+    , 0
+    )
+  , FVM_Block(
+      FVM_Label("__EQUALS_CONTENT")
+    , None()
+    , FVM_Seq(
+        [ RGR_JumpZ(
+            RGR_IsFrame(RGR_Get(FVM_Path([FVM_Slot("0")])))
+          , FVM_BoundLabel("stdlib.equals", "__VAR1_IS_INT")
+          , FVM_BoundLabel("stdlib.equals", "__VAR1_IS_FRAME")
+          )
+        ]
+      )
+    , 0
+    )
+  , FVM_Block(
+      FVM_Label("__VAR1_IS_INT")
+    , None()
+    , FVM_Seq(
+        [ RGR_JumpZ(
+            RGR_IsFrame(RGR_Get(FVM_Path([FVM_Slot("1")])))
+          , FVM_BoundLabel("stdlib.equals", "__COMPARE_INTS")
+          , FVM_BoundLabel("stdlib.equals", "__RETURN_FALSE")
+          )
+        ]
+      )
+    , 0
+    )
+  , FVM_Block(
+      FVM_Label("__VAR1_IS_FRAME")
+    , None()
+    , FVM_Seq(
+        [ RGR_JumpZ(
+            RGR_IsFrame(RGR_Get(FVM_Path([FVM_Slot("1")])))
+          , FVM_BoundLabel("stdlib.equals", "__RETURN_FALSE")
+          , FVM_BoundLabel("stdlib.equals", "__VAR2_IS_FRAME")
+          )
+        ]
+      )
+    , 0
+    )
+  , FVM_Block(
+      FVM_Label("__VAR2_IS_FRAME")
+    , None()
+    , FVM_Seq(
+        [ RGR_Assign("r0", RGR_FSize(RGR_Get(FVM_Path([FVM_Slot("0")]))))
+        , RGR_Assign(
+            "r0"
+          , RGR_IEq(
+              RGR_Ref("r0")
+            , RGR_FSize(RGR_Get(FVM_Path([FVM_Slot("1")])))
+            )
+          )
+        , RGR_JumpZ(
+            RGR_Ref("r0")
+          , FVM_BoundLabel("stdlib.equals", "__RETURN_FALSE")
+          , FVM_BoundLabel("stdlib.equals", "__EQUAL_LENGTH")
+          )
+        ]
+      )
+    , 0
+    )
+  , FVM_Block(
+      FVM_Label("__EQUAL_LENGTH")
+    , None()
+    , FVM_Seq(
+        [ RGR_Stmt(
+            RGR_ScopeNew(RGR_New(RGR_IntVal("1")), FVM_Link(Bind("P", 0)))
+          )
+        , RGR_Stmt(RGR_Set(FVM_Path([FVM_Slot("0")]), RGR_ILoad("0")))
+        , RGR_Jump(FVM_BoundLabel("stdlib.equals", "__COMPARE_FRAMES"))
+        ]
+      )
+    , 0
+    )
+  , FVM_Block(
+      FVM_Label("__COMPARE_INTS")
+    , None()
+    , FVM_Seq(
+        [ RGR_Return(
+            [ RGR_IEq(
+                RGR_Get(FVM_Path([FVM_Slot("0")]))
+              , RGR_Get(FVM_Path([FVM_Slot("1")]))
+              )
+            ]
+          )
+        ]
+      )
+    , 0
+    )
+  , FVM_Block(
+      FVM_Label("__COMPARE_FRAMES")
+    , None()
+    , FVM_Seq(
+        [ RGR_Assign(
+            "r0"
+          , RGR_FSize(
+              RGR_Get(
+                FVM_Path([FVM_Link(Bind("P", 0)), FVM_Slot("0")])
+              )
+            )
+          )
+        , RGR_Assign(
+            "r0"
+          , RGR_IEq(RGR_Ref("r0"), RGR_Get(FVM_Path([FVM_Slot("0")])))
+          )
+        , RGR_JumpZ(
+            RGR_Ref("r0")
+          , FVM_BoundLabel("stdlib.equals", "__COMPARE_IDX")
+          , FVM_BoundLabel("stdlib.equals", "__RETURN_TRUE")
+          )
+        ]
+      )
+    , 0
+    )
+  , FVM_Block(
+      FVM_Label("__COMPARE_IDX")
+    , None()
+    , FVM_Seq(
+        [ RGR_Assign("r0", RGR_Get(FVM_Path([FVM_Slot("0")])))
+        , RGR_JumpZ(
+            RGR_IsEmpty(
+              RGR_Get(
+                FVM_Path([FVM_Link(Bind("P", 0)), FVM_Slot("0")])
+              )
+            , RGR_Ref("r0")
+            )
+          , FVM_BoundLabel("stdlib.equals", "__COMPARE_IDX_F_NE")
+          , FVM_BoundLabel("stdlib.equals", "__COMPARE_IDX_F_E")
+          )
+        ]
+      )
+    , 0
+    )
+  , FVM_Block(
+      FVM_Label("__COMPARE_IDX_F_NE")
+    , None()
+    , FVM_Seq(
+        [ RGR_JumpZ(
+            RGR_IsEmpty(
+              RGR_Get(
+                FVM_Path([FVM_Link(Bind("P", 0)), FVM_Slot("1")])
+              )
+            , RGR_Ref("r0")
+            )
+          , FVM_BoundLabel("stdlib.equals", "__COMPARE_IDX_S_NE")
+          , FVM_BoundLabel("stdlib.equals", "__RETURN_FALSE")
+          )
+        ]
+      )
+    , 0
+    )
+  , FVM_Block(
+      FVM_Label("__COMPARE_IDX_F_E")
+    , None()
+    , FVM_Seq(
+        [ RGR_JumpZ(
+            RGR_IsEmpty(
+              RGR_Get(
+                FVM_Path([FVM_Link(Bind("P", 0)), FVM_Slot("1")])
+              )
+            , RGR_Ref("r0")
+            )
+          , FVM_BoundLabel("stdlib.equals", "__RETURN_FALSE")
+          , FVM_BoundLabel("stdlib.equals", "__EQUAL_IDX")
+          )
+        ]
+      )
+    , 0
+    )
+  , FVM_Block(
+      FVM_Label("__COMPARE_IDX_S_NE")
+    , None()
+    , FVM_Seq(
+        [ RGR_Assign(
+            "r1"
+          , RGR_Get(
+              RGR_Get(
+                FVM_Path([FVM_Link(Bind("P", 0)), FVM_Slot("0")])
+              )
+            , RGR_Ref("r0")
+            )
+          )
+        , RGR_Assign(
+            "r0"
+          , RGR_Get(
+              RGR_Get(
+                FVM_Path([FVM_Link(Bind("P", 0)), FVM_Slot("1")])
+              )
+            , RGR_Ref("r0")
+            )
+          )
+        , RGR_Call(
+            RGR_NewRec([RGR_Ref("r1"), RGR_Ref("r0")])
+          , FVM_BoundLabel("stdlib.equals", "EQUALS")
+          , FVM_BoundLabel("stdlib.equals", "__COMPARED_IDX")
+          )
+        ]
+      )
+    , 0
+    )
+  , FVM_Block(
+      FVM_Label("__COMPARED_IDX")
+    , None()
+    , FVM_Seq(
+        [ RGR_Assign("r0", RGR_ContRGet(RGR_ScopeGetCurrent()))
+        , RGR_JumpZ(
+            RGR_Ref("r0")
+          , FVM_BoundLabel("stdlib.equals", "__RETURN_FALSE")
+          , FVM_BoundLabel("stdlib.equals", "__EQUAL_IDX")
+          )
+        ]
+      )
+    , 0
+    )
+  , FVM_Block(
+      FVM_Label("__EQUAL_IDX")
+    , None()
+    , FVM_Seq(
+        [ RGR_Stmt(
+            RGR_Set(
+              FVM_Path([FVM_Slot("0")])
+            , RGR_IAdd(RGR_ILoad("1"), RGR_Get(FVM_Path([FVM_Slot("0")])))
+            )
+          )
+        , RGR_Jump(FVM_BoundLabel("stdlib.equals", "__COMPARE_FRAMES"))
+        ]
+      )
+    , 0
+    )
+  , FVM_Block(
+      FVM_Label("__RETURN_FALSE")
+    , None()
+    , FVM_Seq([RGR_Return([RGR_ILoad("0")])])
+    , 0
+    )
+  , FVM_Block(
+      FVM_Label("__RETURN_TRUE")
+    , None()
+    , FVM_Seq([RGR_Return([RGR_ILoad("1")])])
+    , 0
+    )
+  ]
+)

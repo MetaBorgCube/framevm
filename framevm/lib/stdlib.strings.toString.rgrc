@@ -1,0 +1,30 @@
+( [("to_string", "TO_STRING")]
+, [ FVM_Block(
+      FVM_Label("TO_STRING")
+    , Some(0)
+    , FVM_Seq(
+        [ RGR_JumpZ(
+            RGR_IsFrame(RGR_Get(FVM_Path([FVM_Slot("0")])))
+          , FVM_BoundLabel("stdlib.strings.toString", "__IS_INT")
+          , FVM_BoundLabel("stdlib.strings.toString", "__IS_STRING")
+          )
+        ]
+      )
+    , 0
+    )
+  , FVM_Block(
+      FVM_Label("__IS_INT")
+    , None()
+    , FVM_Seq([RGR_TailCall(RGR_ScopeGetCurrent(), FVM_BoundLabel("stdlib.strings.fromInt", "INT_TO_STRING"))])
+    , 0
+    )
+  , FVM_Block(
+      FVM_Label("__IS_STRING")
+    , None()
+    , FVM_Seq(
+        [RGR_Return([RGR_Get(FVM_Path([FVM_Slot("0")]))])]
+      )
+    , 0
+    )
+  ]
+)

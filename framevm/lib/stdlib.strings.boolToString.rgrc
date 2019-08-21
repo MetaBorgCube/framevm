@@ -1,0 +1,28 @@
+( [("bool_to_string", "TO_STRING")]
+, [ FVM_Block(
+      FVM_Label("TO_STRING")
+    , Some(0)
+    , FVM_Seq(
+        [ RGR_JumpZ(
+            RGR_Get(FVM_Path([FVM_Slot("0")]))
+          , FVM_BoundLabel("stdlib.strings.boolToString", "__FALSE")
+          , FVM_BoundLabel("stdlib.strings.boolToString", "__TRUE")
+          )
+        ]
+      )
+    , 0
+    )
+  , FVM_Block(
+      FVM_Label("__FALSE")
+    , None()
+    , FVM_Seq([RGR_Return([RGR_StringLoad("false")])])
+    , 0
+    )
+  , FVM_Block(
+      FVM_Label("__TRUE")
+    , None()
+    , FVM_Seq([RGR_Return([RGR_StringLoad("true")])])
+    , 0
+    )
+  ]
+)

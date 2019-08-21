@@ -1,0 +1,150 @@
+( [("int_to_string", "INT_TO_STRING")]
+, [ FVM_Block(
+      FVM_Label("INT_TO_STRING")
+    , Some(6)
+    , FVM_Seq(
+        [ STC_New("3")
+        , STC_Dup()
+        , STC_Get(FVM_Path([FVM_Slot("0")]))
+        , STC_SetR(FVM_Path([FVM_Slot("0")]))
+        , STC_ScopeNew(FVM_Link(Bind("P", 0)))
+        , STC_New("1")
+        , STC_Dup()
+        , STC_Get(FVM_Path([FVM_Slot("0")]))
+        , STC_SetR(FVM_Path([FVM_Slot("0")]))
+        , STC_Call(FVM_BoundLabel("stdlib.strings.fromInt", "__CALC_LENGTH"), FVM_BoundLabel("stdlib.strings.fromInt", "__INT_TO_STRING"))
+        ]
+      )
+    , 0
+    )
+  , FVM_Block(
+      FVM_Label("__INT_TO_STRING")
+    , None()
+    , FVM_Seq(
+        [ STC_ContRGet()
+        , STC_Set(FVM_Path([FVM_Slot("1")]))
+        , STC_Get(FVM_Path([FVM_Slot("0")]))
+        , STC_IPush("0")
+        , STC_ILt()
+        , STC_JumpZ(FVM_BoundLabel("stdlib.strings.fromInt", "__POS_INT_TO_STRING"), FVM_BoundLabel("stdlib.strings.fromInt", "__NEG_INT_TO_STRING"))
+        ]
+      )
+    , 0
+    )
+  , FVM_Block(
+      FVM_Label("__CALC_LENGTH")
+    , Some(3)
+    , FVM_Seq([STC_IPush("0"), STC_Jump(FVM_BoundLabel("stdlib.strings.fromInt", "__CALC_LENGTH_COMP"))])
+    , 1
+    )
+  , FVM_Block(
+      FVM_Label("__CALC_LENGTH_COMP")
+    , None()
+    , FVM_Seq(
+        [ STC_IPush("1")
+        , STC_IAdd()
+        , STC_Get(FVM_Path([FVM_Slot("0")]))
+        , STC_IPush("10")
+        , STC_IDiv()
+        , STC_Dup()
+        , STC_Set(FVM_Path([FVM_Slot("0")]))
+        , STC_JumpZ(FVM_BoundLabel("stdlib.strings.fromInt", "__CALC_LENGTH_END"), FVM_BoundLabel("stdlib.strings.fromInt", "__CALC_LENGTH_COMP"))
+        ]
+      )
+    , 0
+    )
+  , FVM_Block(FVM_Label("__CALC_LENGTH_END"), None(), FVM_Seq([STC_Return()]), -1)
+  , FVM_Block(
+      FVM_Label("__NEG_INT_TO_STRING")
+    , None()
+    , FVM_Seq(
+        [ STC_Get(
+            FVM_Path([FVM_Link(Bind("P", 0)), FVM_Slot("0")])
+          )
+        , STC_INeg()
+        , STC_Set(FVM_Path([FVM_Slot("0")]))
+        , STC_Get(FVM_Path([FVM_Slot("1")]))
+        , STC_IPush("2")
+        , STC_IAdd()
+        , STC_NewR()
+        , STC_Dup()
+        , STC_FSize()
+        , STC_Set(FVM_Path([FVM_Slot("2")]))
+        , STC_Dup()
+        , STC_Set(FVM_Path([FVM_Slot("1")]))
+        , STC_Dup()
+        , STC_Dup()
+        , STC_FSize()
+        , STC_IPush("1")
+        , STC_ISub()
+        , STC_SetR(FVM_Path([FVM_Slot("0")]))
+        , STC_Dup()
+        , STC_CharPush("-")
+        , STC_SetR(FVM_Path([FVM_Slot("1")]))
+        , STC_Jump(FVM_BoundLabel("stdlib.strings.fromInt", "__INT_TO_DIGITS"))
+        ]
+      )
+    , 1
+    )
+  , FVM_Block(
+      FVM_Label("__POS_INT_TO_STRING")
+    , None()
+    , FVM_Seq(
+        [ STC_Get(
+            FVM_Path([FVM_Link(Bind("P", 0)), FVM_Slot("0")])
+          )
+        , STC_Set(FVM_Path([FVM_Slot("0")]))
+        , STC_Get(FVM_Path([FVM_Slot("1")]))
+        , STC_IPush("1")
+        , STC_IAdd()
+        , STC_NewR()
+        , STC_Dup()
+        , STC_FSize()
+        , STC_Set(FVM_Path([FVM_Slot("2")]))
+        , STC_Dup()
+        , STC_Set(FVM_Path([FVM_Slot("1")]))
+        , STC_Dup()
+        , STC_FSize()
+        , STC_IPush("1")
+        , STC_ISub()
+        , STC_SetR(FVM_Path([FVM_Slot("0")]))
+        , STC_Jump(FVM_BoundLabel("stdlib.strings.fromInt", "__INT_TO_DIGITS"))
+        ]
+      )
+    , 0
+    )
+  , FVM_Block(
+      FVM_Label("__INT_TO_DIGITS")
+    , None()
+    , FVM_Seq(
+        [ STC_Get(FVM_Path([FVM_Slot("2")]))
+        , STC_IPush("1")
+        , STC_ISub()
+        , STC_Dup()
+        , STC_Set(FVM_Path([FVM_Slot("2")]))
+        , STC_Get(FVM_Path([FVM_Slot("1")]))
+        , STC_Swap()
+        , STC_IPush("48")
+        , STC_Get(FVM_Path([FVM_Slot("0")]))
+        , STC_IPush("10")
+        , STC_IMod()
+        , STC_IAdd()
+        , STC_SetR()
+        , STC_Get(FVM_Path([FVM_Slot("0")]))
+        , STC_IPush("10")
+        , STC_IDiv()
+        , STC_Set(FVM_Path([FVM_Slot("0")]))
+        , STC_Get(FVM_Path([FVM_Slot("0")]))
+        , STC_JumpZ(FVM_BoundLabel("stdlib.strings.fromInt", "__END"), FVM_BoundLabel("stdlib.strings.fromInt", "__INT_TO_DIGITS"))
+        ]
+      )
+    , 0
+    )
+  , FVM_Block(
+      FVM_Label("__END")
+    , None()
+    , FVM_Seq([STC_Get(FVM_Path([FVM_Slot("1")])), STC_Return()])
+    , 0
+    )
+  ]
+)

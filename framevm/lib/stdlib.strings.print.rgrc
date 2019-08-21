@@ -1,0 +1,51 @@
+( [("print_string", "PRINT_STRING")]
+, [ FVM_Block(
+      FVM_Label("PRINT_STRING")
+    , Some(3)
+    , FVM_Seq(
+        [ RGR_Assign(
+            "r0"
+          , RGR_Get(FVM_Path([FVM_Slot("0"), FVM_Slot("0")]))
+          )
+        , RGR_Assign("r1", RGR_ILoad("0"))
+        , RGR_Jump(FVM_BoundLabel("stdlib.strings.print", "__PRINT_LOOP"))
+        ]
+      )
+    , 0
+    )
+  , FVM_Block(
+      FVM_Label("__PRINT_LOOP")
+    , None()
+    , FVM_Seq(
+        [ RGR_JumpZ(
+            RGR_IEq(RGR_Ref("r0"), RGR_Ref("r1"))
+          , FVM_BoundLabel("stdlib.strings.print", "__PRINT_CHAR")
+          , FVM_BoundLabel("stdlib.strings.print", "__PRINT_END")
+          )
+        ]
+      )
+    , 0
+    )
+  , FVM_Block(
+      FVM_Label("__PRINT_END")
+    , None()
+    , FVM_Seq([RGR_ContReturn(RGR_ContGet(FVM_Cont(Bind("c", 0))))])
+    , 0
+    )
+  , FVM_Block(
+      FVM_Label("__PRINT_CHAR")
+    , None()
+    , FVM_Seq(
+        [ RGR_Assign("r1", RGR_IAdd(RGR_ILoad("1"), RGR_Ref("r1")))
+        , RGR_Stmt(
+            RGR_PrintChar(
+              RGR_Get(RGR_Get(FVM_Path([FVM_Slot("0")])), RGR_Ref("r1"))
+            )
+          )
+        , RGR_Jump(FVM_BoundLabel("stdlib.strings.print", "__PRINT_LOOP"))
+        ]
+      )
+    , 0
+    )
+  ]
+)

@@ -1,0 +1,8 @@
+( [ ("print_string", ("stdlib.strings.print", "PRINT_STRING"))
+  , ("concat", ("stdlib.strings.concat", "CONCAT_STRINGS"))
+  , ("from_int", ("stdlib.strings.fromInt", "INT_TO_STRING"))
+  , ("to_string", ("stdlib.strings.toString", "TO_STRING"))
+  , ("from_bool", ("stdlib.strings.boolToString", "TO_STRING"))
+  ]
+, []
+)

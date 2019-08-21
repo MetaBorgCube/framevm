@@ -1,0 +1,193 @@
+( [("int_to_string", "INT_TO_STRING")]
+, [ FVM_Block(
+      FVM_Label("INT_TO_STRING")
+    , Some(1)
+    , FVM_Seq(
+        [ RGR_Assign("r0", RGR_New(RGR_IntVal("3")))
+        , RGR_Stmt(
+            RGR_Set(
+              RGR_Ref("r0")
+            , FVM_Path([FVM_Slot("0")])
+            , RGR_Get(FVM_Path([FVM_Slot("0")]))
+            )
+          )
+        , RGR_Stmt(RGR_ScopeNew(RGR_Ref("r0"), FVM_Link(Bind("P", 0))))
+        , RGR_Call(
+            RGR_NewRec([RGR_Get(FVM_Path([FVM_Slot("0")]))])
+          , FVM_BoundLabel("stdlib.strings.fromInt", "__CALC_LENGTH")
+          , FVM_BoundLabel("stdlib.strings.fromInt", "__INT_TO_STRING")
+          )
+        ]
+      )
+    , 0
+    )
+  , FVM_Block(
+      FVM_Label("__INT_TO_STRING")
+    , None()
+    , FVM_Seq(
+        [ RGR_Assign("r0", RGR_ContRGet(RGR_ContThis()))
+        , RGR_Stmt(RGR_Set(FVM_Path([FVM_Slot("1")]), RGR_Ref("r0")))
+        , RGR_JumpZ(
+            RGR_ILt(RGR_Get(FVM_Path([FVM_Slot("0")])), RGR_ILoad("0"))
+          , FVM_BoundLabel("stdlib.strings.fromInt", "__POS_INT_TO_STRING")
+          , FVM_BoundLabel("stdlib.strings.fromInt", "__NEG_INT_TO_STRING")
+          )
+        ]
+      )
+    , 0
+    )
+  , FVM_Block(
+      FVM_Label("__CALC_LENGTH")
+    , Some(2)
+    , FVM_Seq(
+        [RGR_Assign("r0", RGR_ILoad("0")), RGR_Jump(FVM_BoundLabel("stdlib.strings.fromInt", "__CALC_LENGTH_COMP"))]
+      )
+    , 0
+    )
+  , FVM_Block(
+      FVM_Label("__CALC_LENGTH_COMP")
+    , None()
+    , FVM_Seq(
+        [ RGR_Assign("r0", RGR_IAdd(RGR_Ref("r0"), RGR_ILoad("1")))
+        , RGR_Stmt(
+            RGR_Set(
+              FVM_Path([FVM_Slot("0")])
+            , RGR_IDiv(RGR_Get(FVM_Path([FVM_Slot("0")])), RGR_ILoad("10"))
+            )
+          )
+        , RGR_JumpZ(
+            RGR_Get(FVM_Path([FVM_Slot("0")]))
+          , FVM_BoundLabel("stdlib.strings.fromInt", "__CALC_LENGTH_END")
+          , FVM_BoundLabel("stdlib.strings.fromInt", "__CALC_LENGTH_COMP")
+          )
+        ]
+      )
+    , 0
+    )
+  , FVM_Block(
+      FVM_Label("__CALC_LENGTH_END")
+    , None()
+    , FVM_Seq([RGR_Return([RGR_Ref("r0")])])
+    , 0
+    )
+  , FVM_Block(
+      FVM_Label("__NEG_INT_TO_STRING")
+    , None()
+    , FVM_Seq(
+        [ RGR_Stmt(
+            RGR_Set(
+              FVM_Path([FVM_Slot("0")])
+            , RGR_INeg(
+                RGR_Get(
+                  FVM_Path([FVM_Link(Bind("P", 0)), FVM_Slot("0")])
+                )
+              )
+            )
+          )
+        , RGR_Assign(
+            "r0"
+          , RGR_New(
+              RGR_IAdd(RGR_Get(FVM_Path([FVM_Slot("1")])), RGR_ILoad("2"))
+            )
+          )
+        , RGR_Stmt(
+            RGR_Set(FVM_Path([FVM_Slot("2")]), RGR_FSize(RGR_Ref("r0")))
+          )
+        , RGR_Stmt(RGR_Set(FVM_Path([FVM_Slot("1")]), RGR_Ref("r0")))
+        , RGR_Stmt(
+            RGR_Set(
+              RGR_Ref("r0")
+            , FVM_Path([FVM_Slot("0")])
+            , RGR_ISub(RGR_FSize(RGR_Ref("r0")), RGR_ILoad("1"))
+            )
+          )
+        , RGR_Stmt(
+            RGR_Set(
+              RGR_Ref("r0")
+            , FVM_Path([FVM_Slot("1")])
+            , RGR_CharLoad("-")
+            )
+          )
+        , RGR_Jump(FVM_BoundLabel("stdlib.strings.fromInt", "__INT_TO_DIGITS"))
+        ]
+      )
+    , 0
+    )
+  , FVM_Block(
+      FVM_Label("__POS_INT_TO_STRING")
+    , None()
+    , FVM_Seq(
+        [ RGR_Stmt(
+            RGR_Set(
+              FVM_Path([FVM_Slot("0")])
+            , RGR_Get(
+                FVM_Path([FVM_Link(Bind("P", 0)), FVM_Slot("0")])
+              )
+            )
+          )
+        , RGR_Assign(
+            "r0"
+          , RGR_New(
+              RGR_IAdd(RGR_Get(FVM_Path([FVM_Slot("1")])), RGR_ILoad("1"))
+            )
+          )
+        , RGR_Stmt(
+            RGR_Set(FVM_Path([FVM_Slot("2")]), RGR_FSize(RGR_Ref("r0")))
+          )
+        , RGR_Stmt(RGR_Set(FVM_Path([FVM_Slot("1")]), RGR_Ref("r0")))
+        , RGR_Stmt(
+            RGR_Set(
+              RGR_Ref("r0")
+            , FVM_Path([FVM_Slot("0")])
+            , RGR_ISub(RGR_FSize(RGR_Ref("r0")), RGR_ILoad("1"))
+            )
+          )
+        , RGR_Jump(FVM_BoundLabel("stdlib.strings.fromInt", "__INT_TO_DIGITS"))
+        ]
+      )
+    , 0
+    )
+  , FVM_Block(
+      FVM_Label("__INT_TO_DIGITS")
+    , None()
+    , FVM_Seq(
+        [ RGR_Assign(
+            "r0"
+          , RGR_ISub(RGR_Get(FVM_Path([FVM_Slot("2")])), RGR_ILoad("1"))
+          )
+        , RGR_Stmt(RGR_Set(FVM_Path([FVM_Slot("2")]), RGR_Ref("r0")))
+        , RGR_Stmt(
+            RGR_Set(
+              RGR_Get(FVM_Path([FVM_Slot("1")]))
+            , RGR_Ref("r0")
+            , RGR_IAdd(
+                RGR_ILoad("48")
+              , RGR_IMod(RGR_Get(FVM_Path([FVM_Slot("0")])), RGR_ILoad("10"))
+              )
+            )
+          )
+        , RGR_Stmt(
+            RGR_Set(
+              FVM_Path([FVM_Slot("0")])
+            , RGR_IDiv(RGR_Get(FVM_Path([FVM_Slot("0")])), RGR_ILoad("10"))
+            )
+          )
+        , RGR_JumpZ(
+            RGR_Get(FVM_Path([FVM_Slot("0")]))
+          , FVM_BoundLabel("stdlib.strings.fromInt", "__END")
+          , FVM_BoundLabel("stdlib.strings.fromInt", "__INT_TO_DIGITS")
+          )
+        ]
+      )
+    , 0
+    )
+  , FVM_Block(
+      FVM_Label("__END")
+    , None()
+    , FVM_Seq(
+        [RGR_Return([RGR_Get(FVM_Path([FVM_Slot("1")]))])]
+      )
+    , 0
+    )
+  ]
+)

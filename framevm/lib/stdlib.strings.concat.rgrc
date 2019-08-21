@@ -1,0 +1,205 @@
+( [("concat_strings", "CONCAT_STRINGS")]
+, [ FVM_Block(
+      FVM_Label("CONCAT_STRINGS")
+    , Some(2)
+    , FVM_Seq(
+        [ RGR_Assign(
+            "r0"
+          , RGR_Get(FVM_Path([FVM_Slot("0"), FVM_Slot("0")]))
+          )
+        , RGR_Assign(
+            "r1"
+          , RGR_Get(FVM_Path([FVM_Slot("1"), FVM_Slot("0")]))
+          )
+        , RGR_Assign("r1", RGR_IAdd(RGR_Ref("r0"), RGR_Ref("r1")))
+        , RGR_Stmt(
+            RGR_ScopeNew(RGR_New(RGR_IntVal("1")), FVM_Link(Bind("P", 0)))
+          )
+        , RGR_Stmt(
+            RGR_Set(
+              FVM_Path([FVM_Slot("0")])
+            , RGR_New(RGR_IAdd(RGR_Ref("r1"), RGR_ILoad("1")))
+            )
+          )
+        , RGR_Stmt(
+            RGR_Set(
+              FVM_Path([FVM_Slot("0"), FVM_Slot("0")])
+            , RGR_Ref("r1")
+            )
+          )
+        , RGR_Call(
+            RGR_NewRec(
+              [ RGR_Get(FVM_Path([FVM_Slot("0")]))
+              , RGR_Get(
+                  FVM_Path([FVM_Link(Bind("P", 0)), FVM_Slot("0")])
+                )
+              , RGR_ILoad("1")
+              ]
+            )
+          , FVM_BoundLabel("stdlib.strings.concat", "__COPY_STRING")
+          , FVM_BoundLabel("stdlib.strings.concat", "__CONCAT_SECOND")
+          )
+        ]
+      )
+    , 0
+    )
+  , FVM_Block(
+      FVM_Label("__CONCAT_SECOND")
+    , None()
+    , FVM_Seq(
+        [ RGR_Assign("r0", RGR_ContRGet(RGR_ContThis()))
+        , RGR_Stmt(
+            RGR_Set(
+              FVM_Path(
+                [FVM_Link(Bind("P", 0)), FVM_Slot("0"), FVM_Slot("0")]
+              )
+            , RGR_ISub(
+                RGR_Get(
+                  FVM_Path(
+                    [FVM_Link(Bind("P", 0)), FVM_Slot("0"), FVM_Slot("0")]
+                  )
+                )
+              , RGR_ILoad("1")
+              )
+            )
+          )
+        , RGR_Call(
+            RGR_NewRec(
+              [ RGR_Get(FVM_Path([FVM_Slot("0")]))
+              , RGR_Get(
+                  FVM_Path([FVM_Link(Bind("P", 0)), FVM_Slot("1")])
+                )
+              , RGR_Ref("r0")
+              ]
+            )
+          , FVM_BoundLabel("stdlib.strings.concat", "__COPY_STRING")
+          , FVM_BoundLabel("stdlib.strings.concat", "__CONCAT_END")
+          )
+        ]
+      )
+    , 0
+    )
+  , FVM_Block(
+      FVM_Label("__CONCAT_END")
+    , None()
+    , FVM_Seq(
+        [ RGR_Stmt(
+            RGR_Set(
+              FVM_Path(
+                [FVM_Link(Bind("P", 0)), FVM_Slot("1"), FVM_Slot("0")]
+              )
+            , RGR_ISub(
+                RGR_Get(FVM_Path([FVM_Slot("0"), FVM_Slot("0")]))
+              , RGR_Get(
+                  FVM_Path(
+                    [FVM_Link(Bind("P", 0)), FVM_Slot("0"), FVM_Slot("0")]
+                  )
+                )
+              )
+            )
+          )
+        , RGR_Return([RGR_Get(FVM_Path([FVM_Slot("0")]))])
+        ]
+      )
+    , 0
+    )
+  , FVM_Block(
+      FVM_Label("__COPY_STRING")
+    , Some(1)
+    , FVM_Seq(
+        [ RGR_Assign("r0", RGR_New(RGR_IntVal("2")))
+        , RGR_Stmt(
+            RGR_Set(
+              FVM_Path([FVM_Slot("1"), FVM_Slot("0")])
+            , RGR_IAdd(
+                RGR_Get(FVM_Path([FVM_Slot("1"), FVM_Slot("0")]))
+              , RGR_Get(FVM_Path([FVM_Slot("2")]))
+              )
+            )
+          )
+        , RGR_Stmt(RGR_ScopeNew(RGR_Ref("r0"), FVM_Link(Bind("P", 0))))
+        , RGR_Stmt(RGR_Set(FVM_Path([FVM_Slot("0")]), RGR_ILoad("1")))
+        , RGR_Stmt(
+            RGR_Set(
+              FVM_Path([FVM_Slot("1")])
+            , RGR_Get(
+                FVM_Path([FVM_Link(Bind("P", 0)), FVM_Slot("2")])
+              )
+            )
+          )
+        , RGR_JumpZ(
+            RGR_ISub(
+              RGR_FSize(
+                RGR_Get(
+                  FVM_Path([FVM_Link(Bind("P", 0)), FVM_Slot("1")])
+                )
+              )
+            , RGR_ILoad("1")
+            )
+          , FVM_BoundLabel("stdlib.strings.concat", "__COPY_END")
+          , FVM_BoundLabel("stdlib.strings.concat", "__COPY_WHILE")
+          )
+        ]
+      )
+    , 0
+    )
+  , FVM_Block(
+      FVM_Label("__COPY_WHILE")
+    , None()
+    , FVM_Seq(
+        [ RGR_Assign(
+            "r0"
+          , RGR_Get(
+              RGR_Get(
+                FVM_Path([FVM_Link(Bind("P", 0)), FVM_Slot("1")])
+              )
+            , RGR_Get(FVM_Path([FVM_Slot("0")]))
+            )
+          )
+        , RGR_Stmt(
+            RGR_Set(
+              RGR_Get(
+                FVM_Path([FVM_Link(Bind("P", 0)), FVM_Slot("0")])
+              )
+            , RGR_Get(FVM_Path([FVM_Slot("1")]))
+            , RGR_Ref("r0")
+            )
+          )
+        , RGR_Stmt(
+            RGR_Set(
+              FVM_Path([FVM_Slot("0")])
+            , RGR_IAdd(RGR_Get(FVM_Path([FVM_Slot("0")])), RGR_ILoad("1"))
+            )
+          )
+        , RGR_Stmt(
+            RGR_Set(
+              FVM_Path([FVM_Slot("1")])
+            , RGR_IAdd(RGR_Get(FVM_Path([FVM_Slot("1")])), RGR_ILoad("1"))
+            )
+          )
+        , RGR_JumpZ(
+            RGR_IEq(
+              RGR_Get(
+                FVM_Path(
+                  [FVM_Link(Bind("P", 0)), FVM_Slot("1"), FVM_Slot("0")]
+                )
+              )
+            , RGR_Get(FVM_Path([FVM_Slot("1")]))
+            )
+          , FVM_BoundLabel("stdlib.strings.concat", "__COPY_WHILE")
+          , FVM_BoundLabel("stdlib.strings.concat", "__COPY_END")
+          )
+        ]
+      )
+    , 0
+    )
+  , FVM_Block(
+      FVM_Label("__COPY_END")
+    , None()
+    , FVM_Seq(
+        [RGR_Return([RGR_Get(FVM_Path([FVM_Slot("1")]))])]
+      )
+    , 0
+    )
+  ]
+)
