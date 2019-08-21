@@ -16,4 +16,3 @@ __PRINT_CHAR:
 	r1 <- addi(iload(1), r1) // Increment the index
 	printc(get(get([0]), r1))
 	jump(__PRINT_LOOP)		// Goto next character
-	

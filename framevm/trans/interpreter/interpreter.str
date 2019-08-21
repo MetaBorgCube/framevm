@@ -29,8 +29,8 @@ rules
       where 
         <gti> (<string-length> fn, 1);
         
-        env2 := <foldl(import-blocks(|mode))> (i, env1);
-        blocks' := <resolve-jump-labels-all(|[], fn)> blocks;
+        (env2, label_bindings) := <foldl(import-blocks(|mode))> (i, (env1, <new-hashtable>));
+        blocks' := <resolve-jump-labels-all(|label_bindings, fn)> blocks;
         (_, env3) := <foldl(store-block)> (blocks', (fn, env2));
         (_, env4) := <store-block> (FVM_Block(FVM_Label("_exit"),  None(), FVM_Seq([]), 0), (fn, env3));
         (_, env5) := <store-block> (FVM_Block(FVM_Label("_catch"), None(), FVM_Seq([]), 0), (fn, env4));
@@ -42,9 +42,6 @@ rules
     eval-program-(s, mode-eval | mode): _ -> "FAIL"
     
 rules
-    store-block: (FVM_Block(FVM_Label(lbl), Some(size), FVM_Seq(body), _), (lib, env)) -> (lib, <vm-store-block(|env)> ((lib, lbl, size), body))
-    store-block: (FVM_Block(FVM_Label(lbl), None(), FVM_Seq(body), _), (lib, env)) -> (lib, <vm-store-block(|env)> ((lib, lbl, -1), body))
-    
     // Ask next instruction and evaluate it
     // Repeat until no instructions are left
     fvm-execute(s, e|env) = vm-execute(s; e <+ eval | env)
