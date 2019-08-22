@@ -29,7 +29,7 @@ public class vm_get_block_size_0_1 extends FVMStrategy {
 		if (size > 0) {
 			return factory.makeInt(size);
 		} else {
-			return null;
+			return factory.makeInt(0);
 		}
 	}
 }
