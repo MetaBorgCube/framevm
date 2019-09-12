@@ -25,6 +25,6 @@ MAIN:
 	call(r1, ADD, CONT2)
 	
 CONT2:
-	r1 <- rget(cgetcurrent())
+	r1 <- rget(curCF())
 	print(r0)
 	return(iload(0))			// exit with exitcode 0
