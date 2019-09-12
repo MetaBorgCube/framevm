@@ -4,7 +4,7 @@ language framevm
 
 fixture [[MAIN:
 	local := 99
-	r0 <- cnew(new(), LBL1, 2)
+	r0 <- newCF(new(), LBL1, iload(2))
 	[[...]]
 	
 LBL1:
@@ -18,26 +18,24 @@ MAIN_END:
 ]]
 
 test return [[
-	transfer(iload(0), c)
-	cret(cget(c))
+	callC(getC($c), iload(0))
 ]] transform "Run -> Run" to ""
 
-test unpack [[
-	print(cunpack(r0))
-	transfer(iload(0), c)
-	cret(cget(c))
+test CF unpack [[
+	print(unpackCF(r0))
+	callC(getC($c), iload(0))
 ]] transform "Run -> Run" to "Frame(frame_1)"
 
-test ccall 1 [[
-	cset(r0, c, cgetcurrent())
-	ccall(r0, MAIN_END)
+test call CF 1 [[
+	setC(r0, $c, curC(MAIN_END))
+	callCF(r0, LBL1)
 ]] transform "Run -> Run" to "IntV(1)
 IntV(12)"
 
 test tailcall [[
-	r1 <- cnew(new(), LBL2, 2)
-	cset(r1, c, cget(c))
-	ccall(r1, MAIN2)
+	r1 <- newCF(new(), LBL2, iload(2))
+	setC(r1, $c, getC($c))
+	callCF(r1, LBL2)
 MAIN2:
 	print(iload(42))
 	return(iload(0))
@@ -48,9 +46,9 @@ LBL2:
 ]] transform "Run -> Run" to "IntV(2)"
 
 test tailcall 2 [[
-	r1 <- cnew(new(), LBL2, 2)
-	cset(r1, c, cget(cgetcurrent(), c))
-	ccall(r1, MAIN2)
+	r1 <- newCF(new(), LBL2, iload(2))
+	setC(r1, $c, getC(curCF(), $c))
+	callCF(r1, LBL2)
 MAIN2:
 	print(iload(42))
 	return(iload(0))
@@ -60,58 +58,39 @@ LBL2:
 	return(iload(0))
 ]] transform "Run -> Run" to "IntV(2)"
 
-test ccall [[
-	cset(r0, c, cgetcurrent())
-	ccall(r0, MAIN2)
+test call CF [[
+	setC(r0, $c, curC(MAIN2))
+	callCF(r0, LBL1)
 MAIN2:
-	r0 <- rget(cgetcurrent())
+	r0 <- rget(curCF())
 	print(r0)
 	return(iload(0))
 ]] transform "Run -> Run" to "IntV(1)
 IntV(0)"
 
 test rget single [[
-	cset(r0, c, cgetcurrent())
-	ccall(r0, MAIN2)
+	setC(r0, $c, curC(MAIN2))
+	callCF(r0, LBL1)
 MAIN2:
-	r0 <- rget(cgetcurrent())
+	r0 <- rget(curCF())
 	print(r0)
 	return(iload(0))
 ]] transform "Run -> Run" to "IntV(1)
 IntV(0)"
 
 test rget multiple [[
-	r0 <- cnew(new(), LBL, 2)
-	cset(r0, c, cgetcurrent())
-	ccall(r0, MAIN2)
+	r0 <- newC(new(), LBL, 2)
+	setC(unpackC(r0), $c, curC(MAIN2))
+	callC(r0)
 MAIN2:
-	r0 <- rget(cgetcurrent())
-	r1 <- rget(cgetcurrent())
+	r0 <- rget(curCF())
+	r1 <- rget(curCF())
 	print(r0)
 	print(r1)
 	return(iload(0))
 LBL:
 	local := 0
-	transfer(iload(1), iload(2), cget(c))
-	cret(cget(c))
-]] transform "Run -> Run" to "IntV(2)
-IntV(1)"
-
-test rget multiple 2 [[
-	r0 <- cnew(new(), LBL, 2)
-	cset(r0, c, cgetcurrent())
-	ccall(r0, MAIN2)
-MAIN2:
-	r0 <- rget(cgetcurrent())
-	r1 <- rget(cgetcurrent())
-	print(r0)
-	print(r1)
-	return(iload(0))
-LBL:
-	local := 0
-	transfer(iload(1), cget(c))
-	transfer(iload(2), cget(c))
-	cret(cget(c))
+	callC(getC($c), iload(1), iload(2))
 ]] transform "Run -> Run" to "IntV(2)
 IntV(1)"
 
@@ -119,13 +98,12 @@ test variable cont slots [[
 	r2 <- iload(3)
 	r3 <- new(1)
 	set(r3, [0], r2)
-	r1 <- cnew(r3, MAIN2, addi(r2, iload(1)))
-	cset(r1, r2, cget(c))
-	cret(r1)
+	r1 <- newC(r3, MAIN2, addi(r2, iload(1)))
+	setC(unpackC(r1), r2, getC($c))
+	callC(r1)
 MAIN2:
 	local := 1
 	r0 <- get([0])
 	print(r0)
-	transfer(iload(0), cget(r0))
-	cret(cget(r0))
+	callC(getC(r0), iload(0))
 ]] transform "Run -> Run" to "IntV(3)"

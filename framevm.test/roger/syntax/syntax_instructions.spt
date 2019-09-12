@@ -15,7 +15,7 @@ test just exp         [[iload(0)]]            parse fails
 
 
 test rget no args     [[r0 <- rget()]]       parse fails
-test rget single      [[r0 <- rget(cgetcurrent())]] parse succeeds
+test rget single      [[r0 <- rget(curCF())]] parse succeeds
 test rget single 2    [[r0 <- rget(0)]]      parse fails
 
 
@@ -49,18 +49,18 @@ test transfer           [[transfer(new(), c)]]                    parse succeeds
 test transfer int       [[transfer(new(), 0)]]                    parse fails
 test transfer int2      [[transfer(0, c)]]                        parse fails
 test transfer none      [[transfer(new())]]                       parse fails
-test transfer exp       [[transfer(new(), cnew(new(), LBL, 2))]]  parse succeeds
+test transfer exp       [[transfer(new(), newCF(new(), LBL, iload(2)))]]  parse succeeds
 test transfer multiple  [[transfer(new(), iload(1), c)]]          parse succeeds
 
 
-test cset           [[cset(c, iload(0))]]        parse succeeds
-test cset exp       [[cset(cget(c), iload(0))]]  parse succeeds
-test cset invalid   [[cset(C, 0)]]               parse fails
+test cset           [[setC(c, iload(0))]]        parse succeeds
+test cset exp       [[setC(getC(c), iload(0))]]  parse succeeds
+test cset invalid   [[setC(C, 0)]]               parse fails
 
-test csetr          [[cset(cget(c), c, iload(0))]]        parse succeeds
-test csetr exp      [[cset(cget(c), cget(c), iload(0))]]  parse succeeds
-test csetr invalid  [[cset(cget(c), C, 0)]]               parse fails
-test csetr invalid  [[cset(c, x, 0)]]                     parse fails
+test csetr          [[setC(getC(c), c, iload(0))]]        parse succeeds
+test csetr exp      [[setC(getC(c), getC(c), iload(0))]]  parse succeeds
+test csetr invalid  [[setC(getC(c), C, 0)]]               parse fails
+test csetr invalid  [[setC(c, x, 0)]]                     parse fails
 
 
 test exitscope self          [[exitscope([])]]                     parse succeeds

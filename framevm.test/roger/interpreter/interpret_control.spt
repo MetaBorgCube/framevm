@@ -7,13 +7,13 @@ MAIN:
 	local := 99
 	[[...]]
 MAIN_END1:
-	r0 <- rget(cgetcurrent())
+	r0 <- rget(curCF())
 	print(iload(1))
 	print(r0)
 	return(iload(0))
 MAIN_END2:
 	local := 1
-	r0 <- rget(cgetcurrent())
+	r0 <- rget(curCF())
 	print(iload(2))
 	print(r0)
 	return(iload(0))
@@ -30,7 +30,7 @@ FUNC:
 	r1 <- get([1])
 	return(addi(r0, r1))
 MAIN_END:
-	r0 <- rget(cgetcurrent())
+	r0 <- rget(curCF())
 	print(r0)
 	return(iload(0))
 ]] transform "Run -> Run" to "IntV(4)"
@@ -39,7 +39,7 @@ test call frame 2 [[
 	r0 <- new(2)
 	set(r0, [0], iload(1))
 	set(r0, [1], iload(3))
-	r0 <- cnew(r0, FUNC, 2)
+	r0 <- newC(r0, FUNC, 2)
 	call(r0, MAIN_END)
 FUNC:
 	local := 2
@@ -47,7 +47,7 @@ FUNC:
 	r1 <- get([1])
 	return(addi(r0, r1))
 MAIN_END:
-	r0 <- rget(cgetcurrent())
+	r0 <- rget(curCF())
 	print(r0)
 	return(iload(0))
 ]] transform "Run -> Run" to "IntV(4)"
@@ -56,9 +56,9 @@ test call frame throw [[
 	r0 <- new(2)
 	set(r0, [0], iload(1))
 	set(r0, [1], iload(3))
-	r1 <- cnew(new(), MAIN_END2, 2)
-	cset(x, r1)
-	cset(r1, c, cget(c))
+	r1 <- newC(new(), MAIN_END2, 2)
+	setC($x, r1)
+	setC(unpackC(r1), $c, getC($c))
 	call(r0, FUNC, MAIN_END1)
 FUNC:
 	local := 0
@@ -82,7 +82,7 @@ FUNC:
 	r1 <- get([1])
 	return(addi(r0, r1))
 MAIN_END:
-	r0 <- rget(cgetcurrent())
+	r0 <- rget(curCF())
 	print(r0)
 	return(iload(0))
 ]] transform "Run -> Run" to "IntV(4)"
@@ -94,7 +94,7 @@ MAIN2:
 	r0 <- new(2)
 	set(r0, [0], iload(1))
 	set(r0, [1], iload(3))
-	r0 <- cnew(r0, FUNC, 2)
+	r0 <- newC(r0, FUNC, 2)
 	tailcall(r0)
 FUNC:
 	local := 2
@@ -102,7 +102,7 @@ FUNC:
 	r1 <- get([1])
 	return(addi(r0, r1))
 MAIN_END:
-	r0 <- rget(cgetcurrent())
+	r0 <- rget(curCF())
 	print(r0)
 	return(iload(0))
 ]] transform "Run -> Run" to "IntV(4)"
@@ -149,11 +149,11 @@ test try fallthrough [[
 TRY:
 	local := 0
 	print(iload(1))
-	cret(cget(n))
+	callC(getC($n))
 CATCH:
 	local := 0
 	print(iload(2))
-	cret(cget(n))
+	callC(getC($n))
 END:
 	print(iload(3))
 	return(iload(0))
@@ -167,9 +167,9 @@ TRY:
 	throw(iload(2))
 CATCH:
 	local := 1
-	r0 <- rget(cgetcurrent())
+	r0 <- rget(curCF())
 	print(r0)
-	cret(cget(n))
+	callC(getC($n))
 END:
 	print(iload(3))
 	return(iload(0))
@@ -187,12 +187,12 @@ TRY:
 CATCH:
 	local := 0
 	print(iload(2))
-	cret(cget(n))
+	callC(getC($n))
 END:
 	print(iload(3))
 	return(iload(0))
 MAIN_END:
-	r0 <- rget(cgetcurrent())
+	r0 <- rget(curCF())
 	print(r0)
 	return(iload(0))
 ]] transform "Run -> Run" to "IntV(1)
@@ -200,15 +200,15 @@ IntV(4)"
 
 
 test try fallthrough 2 [[
-	try(cnew(new(), TRY, 3), cnew(new(), CATCH, 3), END)
+	try(newC(new(), TRY, 3), newC(new(), CATCH, 3), END)
 TRY:
 	local := 0
 	print(iload(1))
-	cret(cget(n))
+	callC(getC($n))
 CATCH:
 	local := 0
 	print(iload(2))
-	cret(cget(n))
+	callC(getC($n))
 END:
 	print(iload(3))
 	return(iload(0))
@@ -216,15 +216,15 @@ END:
 IntV(3)"
 
 test try catch 2 [[
-	try(cnew(new(), TRY, 3), cnew(new(), CATCH, 3), END)
+	try(newC(new(), TRY, 3), newC(new(), CATCH, 3), END)
 TRY:
 	local := 0
 	throw(iload(2))
 CATCH:
 	local := 1
-	r0 <- rget(cgetcurrent())
+	r0 <- rget(curCF())
 	print(r0)
-	cret(cget(n))
+	callC(getC($n))
 END:
 	print(iload(3))
 	return(iload(0))
@@ -234,7 +234,7 @@ IntV(3)"
 test try return 2 [[
 	call(new(), FUNC, MAIN_END)
 FUNC:
-	try(cnew(new(), TRY, 3), cnew(new(), CATCH, 3), END)
+	try(newC(new(), TRY, 3), newC(new(), CATCH, 3), END)
 TRY:
 	local := 0
 	print(iload(1))
@@ -242,12 +242,12 @@ TRY:
 CATCH:
 	local := 0
 	print(iload(2))
-	cret(cget(n))
+	callC(getC($n))
 END:
 	print(iload(3))
 	return(iload(0))
 MAIN_END:
-	r0 <- rget(cgetcurrent())
+	r0 <- rget(curCF())
 	print(r0)
 	return(iload(0))
 ]] transform "Run -> Run" to "IntV(1)
