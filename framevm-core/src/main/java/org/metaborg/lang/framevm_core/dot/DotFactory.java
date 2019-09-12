@@ -287,7 +287,7 @@ public abstract class DotFactory {
 		matcher = CLOSURE_PATTERN.matcher(value);
 		if (matcher.matches()) {	// If it is a closure
 			Frame frame = (Frame) ((StrategoBlob) term.getSubterm(0)).value();
-			String block = ((StrategoString) term.getSubterm(1).getSubterm(0)).stringValue();
+			String block = "aaas";//((StrategoString) term.getSubterm(1).getSubterm(0)).stringValue();
 			String frameRef = frame(frame.getId());
 			DotFrameFactory.build(frame, nodes, links);
 			links.add(referenceLink(slotRef, frameRef + ":id"));

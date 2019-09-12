@@ -26,7 +26,7 @@ public class vm_jump_0_1 extends FVMStrategy {
 			LOGGER.error("Block " + blockName + " not found in library " + libName + "!");
 			return null;
 		}
-		env.currentThread.getControlFrame().jump(block);
+		env.currentThread.jump(block);
 		return new StrategoBlob(env);
 	}
 }

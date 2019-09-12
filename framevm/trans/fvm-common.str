@@ -24,8 +24,10 @@ signature
 signature
   sorts V
   constructors   
-    Continuation : ControlFrame -> V 
+    Continuation : Continuation -> V 
+    ControlFrame : ControlFrame -> V 
     FrameRef : String -> V
+    BlockRef : String * STRING -> V
     ClosV : FrameRef * CopyPolicy * FVM_Label * INT -> V
     IntV : Int -> V
     

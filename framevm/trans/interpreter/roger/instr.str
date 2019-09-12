@@ -28,7 +28,7 @@ rules
     rgr-eval-instr: (RGR_Debug(),     env1) ->        <vm-debug(|env1)>
     rgr-eval-instr: (RGR_DebugKill(), env1) -> <fail> <vm-debug(|env1)>
 
-    rgr-eval-instr: (RGR_Set(FVM_Self(), val), env1)   -> <frame-set-current(|env2)> (<cont-this(|env2)>, frame)
+    rgr-eval-instr: (RGR_Set(FVM_Self(), val), env1)   -> <frame-set-current(|env2)> (<cf-this(|env2)>, frame)
       where
         (env2, FrameRef(frame)) := <rgr-eval-exp(|env1)> val
         
@@ -113,42 +113,41 @@ rules
         
         
     
-    rgr-eval-instr: (RGR_ContTransfer(exps, c), env1) -> env3
+    rgr-eval-instr: (RGR_CFTransfer(exps, c), env1) -> env3
       where
-        cont := <cont-get(|env1)> (<cont-this(|env1)>, <cont-resolve> c);
+        cont := <cont-get(|env1)> (<cf-this(|env1)>, <cont-resolve> c);
         (env2, vals) := <rgr-eval-exp-fold(|env1)> exps;
-        env3 := <cont-transfer(|env2)> (cont, vals)
+        env3 := <cf-transfer(|env2)> (cont, vals)
         
-    rgr-eval-instr: (RGR_ContTransfer(exps, exp), env1) -> env4
+    rgr-eval-instr: (RGR_CFTransfer(exps, exp), env1) -> env4
       where
-        (env2, Continuation(cont)) := <rgr-eval-exp(|env1)> exp;
+        (env2, ControlFrame(cont)) := <rgr-eval-exp(|env1)> exp;
         (env3, vals) := <rgr-eval-exp-fold(|env2)> exps;
-        env4 := <cont-transfer(|env3)> (cont, vals)
+        env4 := <cf-transfer(|env3)> (cont, vals)
         
     
     rgr-eval-instr: (RGR_ContSet(exp1, exp2), env1) -> env4 
       where
         (env2, IntV(slot)) := <rgr-eval-exp(|env1)> exp1;
         (env3, Continuation(value)) := <rgr-eval-exp(|env2)> exp2;
-        env4 := <cont-set(|env3)> (<cont-this(|env3)>, slot, value)
+        env4 := <cont-set(|env3)> (<cf-this(|env3)>, slot, value)
         
     rgr-eval-instr: (RGR_ContSet(c, exp), env1) -> env3 
       where
         (env2, Continuation(value)) := <rgr-eval-exp(|env1)> exp;
-        (cont, slot) := (<cont-this(|env2)>, <cont-resolve> c);
-        env3 := <cont-set(|env2)> (cont, slot, value)
+        env3 := <cont-set(|env2)> (<cf-this(|env2)>, <cont-resolve> c, value)
         
     
     rgr-eval-instr: (RGR_ContSet(exp1, exp2, exp3), env1) -> env5 
       where
-        (env2, Continuation(cf)) := <rgr-eval-exp(|env1)> exp1;
+        (env2, ControlFrame(cf)) := <rgr-eval-exp(|env1)> exp1;
         (env3, IntV(idx)) := <rgr-eval-exp(|env2)> exp2;
         (env4, Continuation(value)) := <rgr-eval-exp(|env3)> exp3;
         env5 := <cont-set(|env4)> (cf, ($[_c[idx]], idx), value)
         
     rgr-eval-instr: (RGR_ContSet(exp1, c, exp2), env1) -> env4 
       where
-        (env2, Continuation(cf)) := <rgr-eval-exp(|env1)> exp1;
+        (env2, ControlFrame(cf)) := <rgr-eval-exp(|env1)> exp1;
         (env3, Continuation(value)) := <rgr-eval-exp(|env2)> exp2;
         (cont, slot) := (cf, <cont-resolve> c);
         env4 := <cont-set(|env3)> (cont, slot, value)
@@ -158,16 +157,16 @@ rules
 	    frame_this := <frame-this(|env)>;
         (env2, FrameRef(frame_to)) := <rgr-eval-exp(|env)> exp;
         env3 := <frame-link(|env2)> (frame_to, frame_this, (lbl, idx));
-        env4 := <frame-set-current(|env3)> (<cont-this(|env3)>, frame_to)
+        env4 := <frame-set-current(|env3)> (<cf-this(|env3)>, frame_to)
 
 	rgr-eval-instr: (RGR_ScopeExit(FVM_Path(path)), env) -> env2
 	  where
 	    FrameRef(frame) := <rgr-get-path(|env)> (FrameRef(<frame-this(|env)>), path);
-	    env2 := <frame-set-current(|env)> (<cont-this(|env)>, frame)
+	    env2 := <frame-set-current(|env)> (<cf-this(|env)>, frame)
 	    
 	    
 
 	rgr-eval-instr: (RGR_ScopeSetCurrent(exp), env) -> env3
 	  where
         (env2, FrameRef(frame)) := <rgr-eval-exp(|env)> exp;
-        env3 := <frame-set-current(|env2)> (<cont-this(|env2)>, frame)
+        env3 := <frame-set-current(|env2)> (<cf-this(|env2)>, frame)

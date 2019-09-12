@@ -120,9 +120,9 @@ public class MachineState {
 		return res;
 	}
 
-	public ControlFrame newStackControlFrame(int contSize, int stackSize, Block block) {
+	public ControlFrame newStackControlFrame(int contSize, int stackSize) {
 		String id = "controlFrame_" + controlCount++;
-		return new StackControlFrame(contSize, stackSize, block, id);
+		return new StackControlFrame(contSize, stackSize, id);
 	}
 
 	public void putBlock(String libName, String blockName, IStrategoTerm[] instrs, int size) {
@@ -132,8 +132,8 @@ public class MachineState {
 		blocks.get(libName).put(blockName, new Block(blockName, instrs, size));
 	}
 
-	public ControlFrame newRegisterControlFrame(int contSize, int locals, Block block) {
+	public ControlFrame newRegisterControlFrame(int contSize, int locals) {
 		String id = "controlFrame_" + controlCount++;
-		return new RegisterControlFrame(contSize, locals, block, id);
+		return new RegisterControlFrame(contSize, locals, id);
 	}
 }

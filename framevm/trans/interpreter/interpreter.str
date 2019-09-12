@@ -3,7 +3,7 @@ module interpreter
 imports 
     signatures/fvm-stacy-sig
     signatures/fvm-common-sig
-    interpreter/stacy/-
+//    interpreter/stacy/-
     interpreter/roger/-
     interpreter/external
     interpreter/libraries
@@ -22,7 +22,7 @@ rules
       
     eval-program = eval-program(id)
     
-    eval-program(s): STC_Program(fn, i, size, block, links, blocks) -> <eval-program-(s, stc-eval | "STC")> (Program(fn, i, size, block, links, blocks), <vm-init-stc> (<length> links, 2, size))
+//    eval-program(s): STC_Program(fn, i, size, block, links, blocks) -> <eval-program-(s, stc-eval | "STC")> (Program(fn, i, size, block, links, blocks), <vm-init-stc> (<length> links, 2, size))
     eval-program(s): RGR_Program(fn, i, size, block, links, blocks) -> <eval-program-(s, rgr-eval | "RGR")> (Program(fn, i, size, block, links, blocks), <vm-init-rgr> (<length> links, 2, size))
     
     eval-program-(s, mode-eval | mode): (Program(fn, i, s, FVM_InitBlock(init_block_name), links, blocks), env1) -> out

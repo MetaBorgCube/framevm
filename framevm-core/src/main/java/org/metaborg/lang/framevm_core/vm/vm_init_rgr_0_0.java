@@ -26,7 +26,7 @@ public class vm_init_rgr_0_0 extends Strategy {
 		int slot_size = ((StrategoInt) tuple.get(2)).intValue();
 		
 		MachineState env = new MachineState(link_size, VMMode.REGISTER);
-		ControlFrame controlFrame = env.newRegisterControlFrame(cont_size, -1, null);
+		ControlFrame controlFrame = env.newRegisterControlFrame(cont_size, -1);
 		controlFrame.setCurrentFrame(env.newFrame(slot_size));
 		env.addThread(new MachineThread(controlFrame, env));
 		

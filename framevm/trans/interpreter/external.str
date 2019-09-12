@@ -48,16 +48,19 @@ rules
     external vm-print(|env)           // env| val -> (env', string)
     external vm-print-chars(|env)     // env| [int] -> (env', string)
     external vm-jump(|env)            // env| (lib, lbl) -> env'
-    external vm-cont-new(|env)        // env| (frame, (lib, lbl), size) -> (env', cont)
+    external vm-cont-new(|env)        // env| (cf, (lib, lbl)) -> (env', cont)
+    external vm-cf-new(|env)          // env| (frame, size) -> (env', cf)
 
     external cont-call(|env)          // env| cont -> env'
     external cont-set(|env)           // env| (cont, (contId, contIdx), cont) -> env'
     external cont-get(|env)           // env| (cont, (cont_id, idx)) -> cont
-    external cont-this(|env)          // env| -> cont
-    external cont-transfer(|env)      // env| (cont, [val])-> env'
-    external cont-receive(|env)       // env| cont-> (env', val)
-    external cont-copy(|env)          // env| (cont, policy) -> (env', cont)
-    external cont-get-frame(|env)     // env| cont -> frame
+    external cont-get-cf(|env)        // env| cont -> cf
+    external cf-call(|env)            // env| cf -> env'
+    external cf-this(|env)            // env| -> cont
+    external cf-transfer(|env)        // env| (cont, [val])-> env'
+    external cf-receive(|env)         // env| cont-> (env', val)
+    external cf-copy(|env)            // env| (cont, policy) -> (env', cont)
+    external cf-get-frame(|env)       // env| cont -> frame
 rules
     ex-set-cx(|env):   (cont, ex)   -> <cont-set(|env)> (cont, ("x", 1), ex)
     cont-set-cc(|env): (cont, ret)  -> <cont-set(|env)> (cont, ("c", 0), ret)

@@ -11,8 +11,8 @@ import org.metaborg.lang.framevm_core.util.ControlFrame;
 import org.metaborg.lang.framevm_core.util.MachineState;
 import mb.nabl2.terms.stratego.StrategoBlob;
 
-public class cont_transfer_0_1 extends FVMStrategy {
-	public static cont_transfer_0_1 instance = new cont_transfer_0_1();
+public class cf_transfer_0_1 extends FVMStrategy {
+	public static cf_transfer_0_1 instance = new cf_transfer_0_1();
 
 	@Override
 	// env| (cont, [val]) -> env'

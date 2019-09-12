@@ -7,8 +7,6 @@ import org.spoofax.interpreter.terms.IStrategoTerm;
  * This opstack holds the stack, instruction counter and return addresses.
  */
 public abstract class ControlFrame {
-	private Block block;
-	private int instr_count;
 	private Continuation[] continuations;
 	private Frame currentFrame;
 	private String id;
@@ -16,28 +14,22 @@ public abstract class ControlFrame {
 	/**
 	 * Create an operand stack.
 	 */
-	public ControlFrame(int contSize, Block block, String id) {
-		this.block = block;
+	public ControlFrame(int contSize, String id) {
 		this.continuations = new Continuation[contSize];
 		
-		this.instr_count = 0;
 		this.currentFrame = null;
 		this.id = id;
 	}
 	
-	public ControlFrame(int contSize, Frame frame, Block block, String id) {
-		this.block = block;
+	public ControlFrame(int contSize, Frame frame, String id) {
 		this.continuations = new Continuation[contSize];
 		
-		this.instr_count = 0;
 		this.currentFrame = frame;
 		this.id = id;
 	}
 
 	public ControlFrame(String id, ControlFrame old, CopyPolicy framePolicy, MachineState env) {
 		this.id = id;
-		this.block = old.block;
-		this.instr_count = old.instr_count;
 		
 		this.currentFrame = env.newFrameFrom(old.getCurrentFrame(), framePolicy);
 		
@@ -46,36 +38,6 @@ public abstract class ControlFrame {
 		for (int i = 0; i < continuations.length; i++) {
 			this.continuations[i] = oldContinuation[i];
 		}
-	}
-
-	/**
-	 * @return
-	 * 		The next instruction
-	 */
-	public IStrategoTerm nextInstruction() {
-		return block.getInstr(instr_count++);
-	}
-	
-	/**
-	 * @return
-	 * 		True if there is a next instruction, false otherwise
-	 */
-	public boolean hasNextInstruction() {
-		return block != null && null != block.getInstr(instr_count);
-	}
-	
-	/**
-	 * Jump execution to the given block.
-	 * 
-	 * @param block
-	 * 		The block to jump to
-	 */
-	public void jump(Block block) {
-		this.jump(block, 0);
-	}
-	public void jump(Block block, int count) {
-		this.block = block;
-		this.instr_count = count;
 	}
 	
 	/**
@@ -89,14 +51,6 @@ public abstract class ControlFrame {
 	public Continuation getContinuation(int idx) {
 		if (idx >= this.continuations.length) return null;
 		return this.continuations[idx];
-	}
-	
-	public Block getBlock() {
-		return block;
-	}
-
-	public int getInstr_count() {
-		return instr_count;
 	}
 
 	public void setContinuation(int idx, Continuation continuation) {
@@ -124,8 +78,11 @@ public abstract class ControlFrame {
 	public abstract boolean hasReturn();
 
 	public abstract void setSize(int size);
+	public abstract ControlFrameMemory getMemory();
+	public abstract void restoreMemory(ControlFrameMemory mem);
 	
 	public String toString() {
 		return "Continuation(" + this.getId() + ")";
 	}
+
 }

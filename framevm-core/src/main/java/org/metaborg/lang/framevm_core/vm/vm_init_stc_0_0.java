@@ -26,7 +26,7 @@ public class vm_init_stc_0_0 extends Strategy {
 		int slot_size = ((StrategoInt) tuple.get(2)).intValue();
 		
 		MachineState env = new MachineState(link_size, VMMode.STACK);
-		ControlFrame controlFrame = env.newStackControlFrame(cont_size, -1, null);
+		ControlFrame controlFrame = env.newStackControlFrame(cont_size, -1);
 		controlFrame.setCurrentFrame(env.newFrame(slot_size));
 		env.addThread(new MachineThread(controlFrame, env));
 		

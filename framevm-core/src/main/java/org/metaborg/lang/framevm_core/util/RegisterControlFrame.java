@@ -12,8 +12,8 @@ public class RegisterControlFrame extends ControlFrame {
 	
 	private static final Pattern LOCAL = Pattern.compile("\\w([0-9]+)");
 	
-	public RegisterControlFrame(int contSize, int locals, Block block, String id) {
-		super(contSize, block, id);
+	public RegisterControlFrame(int contSize, int locals, String id) {
+		super(contSize, id);
 		this.returnStack = new Stack<>();
 		if (locals >= 0) {
 			this.locals = new IStrategoTerm[locals];
@@ -66,5 +66,18 @@ public class RegisterControlFrame extends ControlFrame {
 		if (this.locals != null) throw new IllegalStateException("Local size already set!");
 		
 		this.locals = new IStrategoTerm[size];
+	}
+
+	@Override @SuppressWarnings("unchecked")
+	public ControlFrameMemory getMemory() {
+		return new RegisterControlFrameMemory((Stack<IStrategoTerm>) this.returnStack.clone(), (IStrategoTerm[]) this.locals.clone());
+	}
+
+	@Override
+	public void restoreMemory(ControlFrameMemory mem) {
+		if (mem == null) return; // Nothing to do for the empty restore
+		if (! (mem instanceof RegisterControlFrameMemory)) throw new IllegalStateException("Cannot restore stack control frame memory in a register control frame");
+		this.locals = ((RegisterControlFrameMemory) mem).getLocals();
+		this.returnStack = mem.getStack();
 	}
 }

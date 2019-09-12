@@ -6,8 +6,8 @@ import org.spoofax.interpreter.terms.ITermFactory;
 import org.metaborg.lang.framevm_core.FVMStrategy;
 import org.metaborg.lang.framevm_core.util.MachineState;
 
-public class cont_copy_0_1 extends FVMStrategy {
-	public static cont_copy_0_1 instance = new cont_copy_0_1();
+public class cf_copy_0_1 extends FVMStrategy {
+	public static cf_copy_0_1 instance = new cf_copy_0_1();
 
 	@Override
 	// env| (cont, policy, policy) -> (env', cont)

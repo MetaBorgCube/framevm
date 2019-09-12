@@ -15,8 +15,8 @@ public class StackControlFrame extends ControlFrame {
 	/**
 	 * Create an operand stack.
 	 */
-	public StackControlFrame(int contSize, int maxStack, Block block, String id) {
-		super(contSize, block, id);
+	public StackControlFrame(int contSize, int maxStack, String id) {
+		super(contSize, id);
 		this.stack = new Stack<>();
 		this.maxStack = maxStack;
 	}
@@ -79,5 +79,17 @@ public class StackControlFrame extends ControlFrame {
 		if (this.maxStack != -1) throw new IllegalStateException("Max stack size already set!");
 		
 		this.maxStack = size;
+	}
+
+	@Override @SuppressWarnings("unchecked")
+	public ControlFrameMemory getMemory() {
+		if (stack.isEmpty()) return null;
+		return new ControlFrameMemory((Stack<IStrategoTerm>) stack.clone());
+	}
+
+	@Override
+	public void restoreMemory(ControlFrameMemory mem) {
+		if (mem == null) return; // Nothing to do for the empty restore
+		this.stack = mem.getStack();
 	}
 }

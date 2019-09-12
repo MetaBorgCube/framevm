@@ -20,6 +20,6 @@ rules
       where
        (env2, val) := <rgr-eval-exp(|env)> exp
     
-    rgr-eval-exp(|env): RGR_IsClos(exp)  -> (env2, <is-clos> val)
+    rgr-eval-exp(|env): RGR_IsCF(exp)  -> (env2, <is-cf> val)
       where
        (env2, val) := <rgr-eval-exp(|env)> exp

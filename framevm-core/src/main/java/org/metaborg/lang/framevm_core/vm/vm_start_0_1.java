@@ -44,28 +44,28 @@ public class vm_start_0_1 extends FVMStrategy {
 		} catch (NegativeArraySizeException ex) {
 			LOGGER.error("No local size set for initial block " + blockName);
 		}
-		controlFrame.jump(block);
+		env.currentThread.jump(block);
 		env.currentThread.initThread();
 		
 		ControlFrame c;
 		ControlFrame x;
 		switch (env.mode) {
 			case REGISTER:
-				c = new RegisterControlFrame(0, 0, null, "_exit");
-				x = new RegisterControlFrame(0, 0, null, "_catch");
+				c = new RegisterControlFrame(0, 0, "_exit");
+				x = new RegisterControlFrame(0, 0, "_catch");
 				break;
 				
 			case STACK:
 			default:
-				c = new StackControlFrame(0, 1, null, "_exit");
-				x = new StackControlFrame(0, 1, null, "_catch");
+				c = new StackControlFrame(0, 1, "_exit");
+				x = new StackControlFrame(0, 1, "_catch");
 		}
 		
 		c.setCurrentFrame(new Frame("_exit", 0, 0));
 		x.setCurrentFrame(new Frame("_catch", 0, 0));
 		
-		controlFrame.setContinuation(0, new Continuation("c", c));
-		controlFrame.setContinuation(1, new Continuation("x", x));
+		controlFrame.setContinuation(0, new Continuation(c, null));
+		controlFrame.setContinuation(1, new Continuation(x, null));
 		
 		
 		LOGGER.info("Started execution at " + block.getName());

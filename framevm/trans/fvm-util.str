@@ -114,7 +114,7 @@ rules
         <not(elem)> (block, discovered)
       with
         discovered2 := [block | discovered];						// Mark as discoverd
-        RGR_Block(lbl, s, body, jump) := <lookup'> (block, map); // Get the actual block
+        RGR_Block(lbl, s, body, jump) := <debug; lookup'> (block, map); // Get the actual block
         (body', binds1) := <rgr-assign-registers-instr> (body, binds);
         ([jump'], binds2) := <rgr-assign-registers-instr> ([jump], binds1);
         block' := RGR_Block(lbl, s, body',jump');

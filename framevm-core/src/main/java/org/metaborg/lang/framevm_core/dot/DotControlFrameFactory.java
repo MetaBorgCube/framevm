@@ -19,11 +19,11 @@ public class DotControlFrameFactory extends DotFactory {
 		}
 		
 		// Add links to the executing instruction and the stack
-		if (frame.getBlock() != null) {
-			int count = frame.getInstr_count();
-			String target = block(frame.getBlock()) + ":" + (Math.max(0, count - 1));
-			links.add(blockLink(name, target));
-		}
+//		if (frame.getBlock() != null) {
+//			int count = frame.getInstr_count();
+//			String target = block(frame.getBlock()) + ":" + (Math.max(0, count - 1));
+//			links.add(blockLink(name, target));
+//		}
 		links.add(memLink(name, DotFactory.memory(frame)));
 		
 		if (frame.getCurrentFrame() != null) {
@@ -37,27 +37,27 @@ public class DotControlFrameFactory extends DotFactory {
 		String contIds = "";
 		Continuation[] continuations = frame.getContinuations();
 		for (int i = 0; i < continuations.length; i++) {
-			Continuation cont = continuations[i];
-			if (cont == null) {
-				contSlots += " | c" + i;
-				contIds += " | null";
-			} else {
-				String target_id = cont.value().getId();
-				contSlots += " | " + cont.id;
-				
-				contIds += " | <cont_" + cont.id + ">";
-				if ("_exit".equals(target_id)) {
-					links.add(continuationLink(name, "finish", cont.id));
-				} else if ("_catch".equals(target_id)) {
-					links.add(continuationLink(name, "exception", cont.id));
-				} else {
-					ControlFrame target = cont.value();
-					if (!nodes.containsKey(controlFrame(target))) {
-						DotControlFrameFactory.build(target, nodes, links);
-					}
-					links.add(continuationLink(name, controlFrame(target) + ":id", cont.id));
-				}
-			}
+//			Continuation cont = continuations[i];
+//			if (cont == null) {
+//				contSlots += " | c" + i;
+//				contIds += " | null";
+//			} else {
+//				String target_id = cont.value().getId();
+//				contSlots += " | " + cont.id;
+//				
+//				contIds += " | <cont_" + cont.id + ">";
+//				if ("_exit".equals(target_id)) {
+//					links.add(continuationLink(name, "finish", cont.id));
+//				} else if ("_catch".equals(target_id)) {
+//					links.add(continuationLink(name, "exception", cont.id));
+//				} else {
+//					ControlFrame target = cont.value();
+//					if (!nodes.containsKey(controlFrame(target))) {
+//						DotControlFrameFactory.build(target, nodes, links);
+//					}
+//					links.add(continuationLink(name, controlFrame(target) + ":id", cont.id));
+//				}
+//			}
 		}
 		if (contSlots.length() == 0) {
 			contSlots = " |";

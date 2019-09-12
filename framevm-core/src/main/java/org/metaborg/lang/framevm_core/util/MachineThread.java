@@ -8,34 +8,30 @@ import mb.nabl2.terms.stratego.StrategoBlob;
 
 public class MachineThread {
 	private ControlFrame controlFrame;
-	private boolean running;
 	private MachineState env;
+
+	private Block block;
+	private int instr_count;
 	
 	public MachineThread(ControlFrame frame, MachineState env) {
-		running = false;
 		controlFrame = frame;
 		this.env = env;
 	}
 	
-	public void initThread() {
-		running = controlFrame.hasNextInstruction();
-	}
+	public void initThread() {	}
 	
-	public void stopThread() {
-		
-	}
+	public void stopThread() {	}
 	
 	public IStrategoTerm evalNext(Context context, Strategy eval, StrategoBlob env) {
-		if (!controlFrame.hasNextInstruction()) throw new IllegalStateException("Executing finished thread");
+		if (!hasNextInstruction()) throw new IllegalStateException("Executing finished thread");
 		
-		IStrategoTerm instruction = controlFrame.nextInstruction();
+		IStrategoTerm instruction = nextInstruction();
 		IStrategoTerm result = eval.invoke(context, context.getFactory().makeTuple(instruction, env));
-		running = controlFrame.hasNextInstruction();
 		return result;
 	}
 	
 	public boolean isRunning() {
-		return running;
+		return hasNextInstruction();
 	}
 
 	public ControlFrame getControlFrame() {
@@ -50,8 +46,14 @@ public class MachineThread {
 		}
 	}
 
-	public void setControlFrame(ControlFrame controlFrame) {
-		this.controlFrame = controlFrame;
+	public void callContinuation(Continuation continuation) {
+		this.controlFrame = continuation.getControlFrame();
+		this.controlFrame.restoreMemory(continuation.getMemory());
+		this.jump(continuation.getBlock());
+	}
+
+	public void callControlFrame(ControlFrame cf) {
+		this.controlFrame = cf;
 	}
 
 	/**
@@ -68,4 +70,43 @@ public class MachineThread {
 			return null;
 		}
 	}
+	
+	/**
+	 * @return
+	 * 		The next instruction
+	 */
+	public IStrategoTerm nextInstruction() {
+		return block.getInstr(instr_count++);
+	}
+	
+	/**
+	 * @return
+	 * 		True if there is a next instruction, false otherwise
+	 */
+	public boolean hasNextInstruction() {
+		return block != null && null != block.getInstr(instr_count);
+	}
+	
+	/**
+	 * Jump execution to the given block.
+	 * 
+	 * @param block
+	 * 		The block to jump to
+	 */
+	public void jump(Block block) {
+		this.jump(block, 0);
+	}
+	public void jump(Block block, int count) {
+		this.block = block;
+		this.instr_count = count;
+	}
+
+	public Block getBlock() {
+		return block;
+	}
+
+	public int getInstr_count() {
+		return instr_count;
+	}
+	
 }

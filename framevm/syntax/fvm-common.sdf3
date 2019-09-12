@@ -7,6 +7,7 @@ lexical syntax
   ID             = [a-zA-Z] [a-zA-Z0-9\_\.]*
   LIB            = [a-z] [a-zA-Z0-9\_\.]*
   LIBFUNC        = [a-z] [a-zA-Z0-9\_]*
+  LIBFUNC        = "r" [0-9]+ {reject}
   LABEL          = [A-Z\_] [A-Z0-9\_]* 
   CONTSLOT       = [a-z\_] [a-z\_]* 
   INT            = "-"? [0-9]+ 
@@ -160,7 +161,7 @@ context-free syntax
   LinkRef.FVM_Link    = LABEL
   LinkRef.FVM_LinkIdx = <_l<INTLEZ>>
     
-  ContRef.FVM_Cont    = CONTSLOT
+  ContRef.FVM_Cont    = <$<CONTSLOT>>
   ContRef.FVM_ContIdx = <_c<INTLEZ>>
   
   CopyPolicy.FVM_DeepCopy    = <deep>
