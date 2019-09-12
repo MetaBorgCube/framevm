@@ -1,0 +1,34 @@
+#init 2
+
+// Capture the current continuation and store it
+MAIN:
+	local := 1
+
+	r0 <- curC(PRINT)
+	set([0], r0)
+	set([1], iload(0))
+	jump(PRINT)
+
+// Print the value in [1], if == 42 we are done. Otherwise continue
+PRINT:
+    print(get([1]))
+    set([1], addi(iload(1), get([1])))
+    jumpz(eqi(get([1]), iload(42)), NEXT, END)
+
+// Call a function
+NEXT:
+    r0 <- new()
+    link(r0, [], P)
+    call(r0, NEXT_FUNC, NEXT_END)
+    
+// Call the captured continuation inside the function
+NEXT_FUNC:
+    callC(get([P, 0]))
+
+// If the call returns, we throw an error
+NEXT_END:
+    throw(iload(-12))
+
+// We are done
+END:
+    return(iload(0))
