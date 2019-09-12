@@ -8,7 +8,7 @@ INT_TO_STRING:
 	call(new{get([0])}, __CALC_LENGTH, __INT_TO_STRING)
 
 __INT_TO_STRING:
-	r0 <- rget(cgetcurrent())
+	r0 <- rget(curCF())
 	set([1], r0)
 	jumpz(lti(get([0]), iload(0)),__POS_INT_TO_STRING, __NEG_INT_TO_STRING)
 

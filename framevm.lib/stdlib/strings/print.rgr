@@ -10,7 +10,7 @@ __PRINT_LOOP:
 	jumpz(eqi(r0, r1), __PRINT_CHAR, __PRINT_END)
 	
 __PRINT_END:
-	cret(cget(c))				// Return
+	retC(getC(c))				// Void return
 	
 __PRINT_CHAR:
 	r1 <- addi(iload(1), r1) // Increment the index
