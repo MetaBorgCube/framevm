@@ -175,36 +175,24 @@ rules
     rgr-split-jump-cf-lbls: list -> (<flatten-list><filter(rgr-is-jump-lbl-f)> list, <flatten-list><filter(rgr-is-cf-lbl-f)> list)
     
     
-    rgr-is-cf-lbl= ?(RGR_ContNew(_, _, _)) <+ 
-                   ?(RGR_Call(_, _, _))    <+ 
-                   ?(RGR_TailCall(_, _))   <+ 
-                   ?(RGR_ClosNew(_, _, _)) <+ 
-                   ?(RGR_Try(_, _, _, _, _))
+    rgr-is-cf-lbl= ?RGR_LblRef(_)
                    
-    rgr-is-jump-lbl= ?(RGR_Yield(_,_)) <+ 
-                     ?(RGR_JumpZ(_,_,_)) <+ 
-                     ?(RGR_Jump(_)) <+ 
-                     ?(RGR_Call(_, _, _)) <+ 
-                     ?(RGR_Call(_, _)) <+ 
-                     ?(RGR_ContCall(_, _)) <+ 
-                     ?(RGR_Try(_, _, _, _, _)) <+ 
-                     ?(RGR_Try(_, _, _)) <+ 
-                     ?(RGR_ScopeExit(_, _)) <+ 
-                     ?(RGR_ScopeNew(_,_,_))
+    rgr-is-jump-lbl= ?RGR_JumpZ(_,_,_) <+ 
+                     ?RGR_Jump(_) <+ 
+                     ?RGR_Call(_, _, _) <+ 
+                     ?RGR_Call(_, _) <+ 
+                     ?RGR_Try(_, _, _, _, _) <+ 
+                     ?RGR_Try(_, _, _) <+ 
+                     ?RGR_ScopeExit(_, _) <+ 
+                     ?RGR_ScopeNew(_,_,_)
     
     
-    rgr-is-cf-lbl-f: RGR_ContNew(_, FVM_Label(lbl), _) -> lbl
-    rgr-is-cf-lbl-f: RGR_Call(_, FVM_Label(lbl), _) -> lbl
-    rgr-is-cf-lbl-f: RGR_TailCall(_, FVM_Label(lbl)) -> lbl
-    rgr-is-cf-lbl-f: RGR_ClosNew(_, FVM_Label(lbl), _) -> lbl
-    rgr-is-cf-lbl-f: RGR_Try(_, FVM_Label(lbl1), _, FVM_Label(lbl2), _) -> [lbl1, lbl2]
+    rgr-is-cf-lbl-f: RGR_LblRef(FVM_Label(lbl)) -> lbl
     
-    rgr-is-jump-lbl-f: RGR_Yield(_,FVM_Label(lbl)) -> lbl
     rgr-is-jump-lbl-f: RGR_JumpZ(_,FVM_Label(lbl1),FVM_Label(lbl2)) -> [lbl1, lbl2]
     rgr-is-jump-lbl-f: RGR_Jump(FVM_Label(lbl)) -> lbl
     rgr-is-jump-lbl-f: RGR_Call(_, _, FVM_Label(lbl)) -> lbl
     rgr-is-jump-lbl-f: RGR_Call(_, FVM_Label(lbl)) -> lbl
-    rgr-is-jump-lbl-f: RGR_ContCall(_, FVM_Label(lbl)) -> lbl
     rgr-is-jump-lbl-f: RGR_Try(_, _, _, _, FVM_Label(lbl)) -> lbl
     rgr-is-jump-lbl-f: RGR_Try(_, _, FVM_Label(lbl)) -> lbl
     rgr-is-jump-lbl-f: RGR_ScopeExit(_, FVM_Label(lbl)) -> lbl
