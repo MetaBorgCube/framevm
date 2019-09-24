@@ -3,11 +3,10 @@ module analysis/static-semantics
 imports
 
   signatures/-
-  analysis/stc-static-semantics
   analysis/rgr-static-semantics
   
 signature
-    namespaces Var RGR_Module STC_Module ModuleFunc
+    namespaces Var RGR_Module ModuleFunc
 
 name resolution
   labels

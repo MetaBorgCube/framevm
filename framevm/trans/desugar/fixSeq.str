@@ -2,59 +2,29 @@ module fixSeq
 
 imports
     signatures/framevm-sig
-    signatures/fvm-stacy-sig
     signatures/fvm-roger-sig
     signatures/fvm-common-sig
     
     fvm-common
     
-    analysis/stc-stack
-    
 rules
 
-    fix-seq: STC_Program(fn, i, s, b, a, blocks) -> STC_Program(fn, i, s, b, a, <map(fix-seq)> blocks)
     fix-seq: RGR_Program(fn, i, s, b, a, blocks) -> RGR_Program(fn, i, s, b, a, <map(fix-seq)> blocks)
     
-    fix-seq: STC_Block(lbl, s, None(), body, jump)     -> FVM_Block(lbl, <fix-init> s, FVM_Seq(seq), <stack-calc-stc> seq)
-      with
-        seq := <concat> [body, [jump]]
-        
-    fix-seq: STC_Block(lbl, s, Some(rget), body, jump) -> FVM_Block(lbl, <fix-init> s, FVM_Seq(seq), <stack-calc-stc> seq)
-      with
-        seq := <concat> [[rget], body, [jump]]
-        
     fix-seq: RGR_Block(lbl, s, body, jump)     -> FVM_Block(lbl, <fix-init> s, FVM_Seq(seq), 0)
       with
         seq := <concat> [body, [jump]]
     
     fix-init: None() -> None()
     fix-init: Some(RGR_Local(n)) -> Some(<string-to-int> n)
-    fix-init: Some(STC_Stack(n)) -> Some(<string-to-int> n)
-    
-    unfix-init-stc: None() -> None()
-    unfix-init-stc: Some(n) -> Some(STC_Stack(<try(int-to-string)> n))
     
     unfix-init-rgr: None() -> None()
     unfix-init-rgr: Some(n) -> Some(RGR_Local(<try(int-to-string)> n))
     unfix-init-rgr: FVM_AutoSize() -> FVM_AutoSize()
     
     
-    resugar-seq: STC_Program(fn, i, s, b, a, blocks) -> STC_Program(fn, i, s, b, a, <map(resugar-seq-stc)> blocks)
     resugar-seq: RGR_Program(fn, i, s, b, a, blocks) -> RGR_Program(fn, i, s, b, a, <map(resugar-seq-rgr)> blocks)
     
-    resugar-seq-stc: FVM_Block(lbl, size, FVM_Seq([h|tail]), s) -> STC_Block(lbl, <unfix-init-stc> size, Some(h), body, jump)
-      where
-        <is-ret> h
-      with
-        (body, jump) := <split-init-last> tail
-        
-    resugar-seq-stc: FVM_Block(lbl, size, FVM_Seq(instrs), s) -> STC_Block(lbl, <unfix-init-stc> size, None(), body, jump)
-      with
-        (body, jump) := <split-init-last> instrs
-        
     resugar-seq-rgr: FVM_Block(lbl, size, FVM_Seq(instrs), s) -> RGR_Block(lbl, <unfix-init-rgr> size, body, jump)
       with
         (body, jump) := <split-init-last> instrs
-      
-    is-ret: r@STC_ContRGetN(_) -> r
-    is-ret: r@STC_ContRGet() -> r

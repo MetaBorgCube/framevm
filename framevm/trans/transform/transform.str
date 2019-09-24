@@ -3,10 +3,7 @@ module transform
 imports
     signatures/framevm-sig
     
-    transform/toRISC
     fvm-common
    
 rules
-    fvm-transform: STC_Program(fn, i, size, block, links, blocks) -> STC_Program(fn, i, size, block, links, <map(to-RISC-block)> blocks)
-    
     fvm-transform = debug; fail

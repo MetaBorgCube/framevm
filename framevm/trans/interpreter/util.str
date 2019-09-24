@@ -46,9 +46,6 @@ rules
     is-intV: IntV(_) -> IntV(1)
     is-intV: _       -> IntV(0)
     
-    is-clos: ClosV(_, _, _, _) -> IntV(1)
-    is-clos: _                 -> IntV(0)
-    
     is-cont: Continuation(_) -> IntV(1)
     is-cont: _               -> IntV(0)
     
@@ -63,7 +60,6 @@ rules    // Util
     val-to-string: IntV(v) -> IntV(v)
     val-to-string: FrameRef(frame) -> frame
     val-to-string: Continuation(cont) -> cont
-    val-to-string: ClosV(frame, _, FVM_BoundLabel(lib, lbl), _) -> (frame, lbl)
     
 rules
     apply-until-no-change(s): e -> <apply-until-equal(s)> (e, [])

@@ -9,7 +9,7 @@ imports
 
 rules
     rgr-eval-exp(|env): RGR_Ref(ref) -> (env, <rgr-get-any(|env)> ref)
-    rgr-eval-exp(|env): RGR_LblRef(FVM_BoundLabel(lib, lbl)) -> (env, BlockRef(lib, lbl))
+    rgr-eval-exp(|env): FVM_BoundLabel(lib, lbl) -> (env, BlockRef(lib, lbl))
     
     rgr-eval-exp(|env): RGR_REq(exp1, exp2) -> (env, v)
       where

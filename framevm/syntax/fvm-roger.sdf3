@@ -22,7 +22,7 @@ sorts RBlock context-free syntax
 	
 sorts Exp context-free syntax
     Exp.RGR_Ref    = <<RGRVar>>
-    Exp.RGR_LblRef = Label
+    Exp = Label
     Exp.RGR_REq    = <eqr(<Exp>, <Exp>)>
 	
 	Exp = IntOpExp

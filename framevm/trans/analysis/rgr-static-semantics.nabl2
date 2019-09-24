@@ -80,7 +80,7 @@ rules // Exp
   rgrExp[[RGR_ContUnpack(exp) ^(s)]]      := rgrExp[[exp ^(s)]].
   rgrExp[[RGR_CFUnpack(exp) ^(s)]]        := rgrExp[[exp ^(s)]].
   
-  rgrExp[[RGR_LblRef(lbl) ^(s)]]          := lbl[[lbl ^(s)]].
+  rgrExp[[lbl@FVM_Label(_) ^(s)]]          := lbl[[lbl ^(s)]].
   
 rules // Control Instructions
   instr[[RGR_Return(exps) ^(s)]]           := Map1(rgrExp)[[exps ^(s)]].

@@ -2,7 +2,6 @@ module fvm-desugar
 
 imports
     signatures/framevm-sig
-    signatures/fvm-stacy-sig
     signatures/fvm-roger-sig
     signatures/fvm-common-sig
     
@@ -21,27 +20,16 @@ rules
 	
    	desugar-empty: (fname, Empty(h, p)) -> (fname, STC_Program(h, p, [])) where <string-ends-with(|".stc")> fname
    	desugar-empty: (fname, Empty(h, p)) -> (fname, RGR_Program(h, p, [])) where <string-ends-with(|".rgr")> fname
-   	desugar-empty: (fname, prog@STC_Program(_, _, _)) -> (fname, prog)
    	desugar-empty: (fname, prog@RGR_Program(_, _, _)) -> (fname, prog)
    	  
-   	split-header: prog@STC_Program(_, _, _) -> <split-header> ("", prog)
    	split-header: prog@RGR_Program(_, _, _) -> <split-header> ("", prog)
-   	split-header: (fname, STC_Program(FVM_Header(headeritems), _, blocks)) -> STC_Program(fname, imports, initsize, initblock, aliasses, blocks)
-   	  with
-   	  	imports := <map(try(apply-export(|fname)))> <filter(is-import)> headeritems;
-   	  	aliasses := <filter(is-alias)> headeritems;
-   	  	initsize := <getfirst(is-init) <+ !0> headeritems;
-   	  	initblock := <getfirst(is-init-block) <+ !FVM_InitBlock("MAIN")> headeritems
-   	 
-   	 split-header: (fname, RGR_Program(FVM_Header(headeritems), _, blocks)) -> RGR_Program(fname, imports, initsize, initblock, aliasses, blocks)
+   	split-header: (fname, RGR_Program(FVM_Header(headeritems), _, blocks)) -> RGR_Program(fname, imports, initsize, initblock, aliasses, blocks)
    	  with
    	  	imports := <map(try(apply-export(|fname)))> <filter(is-import)> headeritems;
    	  	aliasses := <filter(is-alias)> headeritems;
    	  	initsize := <getfirst(is-init) <+ !0> headeritems;
    	  	initblock := <getfirst(is-init-block) <+ !FVM_InitBlock("MAIN")> headeritems
    	  	
-   	unify-header: STC_Program(fname, imports, n, block, aliasses, blocks) 
-   		-> STC_Program(FVM_Header(<concat> [imports, [FVM_InitSize(<int-to-string> n), block], aliasses]), None(), blocks)
    	unify-header: RGR_Program(fname, imports, n, block, aliasses, blocks) 
    		-> RGR_Program(FVM_Header(<concat> [imports, [FVM_InitSize(<int-to-string> n), block], aliasses]), None(), blocks)
    	

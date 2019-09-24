@@ -15,25 +15,6 @@ rules
     // Convert a flat list of instructions to a VM program
     // Blocks are separated by labels instead of actual blocks
     // Sugar is re-added to make it printable        
-    stc-from-flat: (h@FVM_Header(items), [f|body]) -> <stc-from-flat> (h, [(FVM_Label("MAIN"), 99), f | body])
-      where
-        <not(?(FVM_Label(_)) + ?( (_, _) ))> f
-    
-    stc-from-flat: (h@FVM_Header(items), [f|body]) -> <stc-from-flat> (h, [(FVM_Label("MAIN"), f) | body])
-      where
-        <is-int> f
-        
-    stc-from-flat: (h@FVM_Header(items), body) -> <resugar> <split-header> STC_Program(h, None(), blocks)
-      where
-        <is-list> body
-      with
-        labels := <collect-all(?(FVM_AutoLabel(name))); map( (\ FVM_AutoLabel(name) -> FVM_Label(<upper-case; newname> name) \) )> body;
-        body' := <topdown(try( (\ FVM_AutoLabel(lbl_name) -> <lookup'> (lbl_name, labels) \)))> body;
-        (blocks, []) := <foldr(!([], []), from-flat-fold)> body'
-        
-    stc-from-flat: body -> <stc-from-flat> (FVM_Header([]), body) where <is-list> body
-   
-   
     rgr-from-flat: (h@FVM_Header(items), [f|body]) -> <rgr-from-flat> (h, [(FVM_Label("MAIN"), 99), f | body])
       where
         <not(?(FVM_Label(_)) + ?( (_, _) ))> f
@@ -114,7 +95,7 @@ rules
         <not(elem)> (block, discovered)
       with
         discovered2 := [block | discovered];						// Mark as discoverd
-        RGR_Block(lbl, s, body, jump) := <debug; lookup'> (block, map); // Get the actual block
+        RGR_Block(lbl, s, body, jump) := <lookup'> (block, map); // Get the actual block
         (body', binds1) := <rgr-assign-registers-instr> (body, binds);
         ([jump'], binds2) := <rgr-assign-registers-instr> ([jump], binds1);
         block' := RGR_Block(lbl, s, body',jump');
@@ -123,7 +104,7 @@ rules
         map2 := <list-some(rgr-map-update(|block, block'))> map;
         
         // Collect all possible next blocks and recurse
-        (jump_lbl, cf_lbl) := <collect-all(rgr-is-jump-lbl <+ rgr-is-cf-lbl); rgr-split-jump-cf-lbls> block';
+        (jump_lbl, cf_lbl) := <collect-all(rgr-is-jump-lbl <+ rgr-is-cf-lbl); rgr-split-jump-cf-lbls> [jump' | body'];
         (map3, discovered3, binds3) := <foldl(rgr-assign-registers-recurse)> (jump_lbl, (map2, discovered2, binds2));
         (map4, discovered4, _) := <foldl(rgr-assign-registers-recurse)> (cf_lbl, (map3, discovered3, []));
         map5 := <dnx-apply-autosize(|<length> binds3)> (block, map4)
@@ -166,17 +147,19 @@ rules
     
     rgr-assign-registers-exp(|binds): exp -> <topdown(try(rgr-assign-registers-exp-resolve(|binds)))> 
     rgr-assign-registers-exp-resolve(|binds): var@RGR_AutoVar(_) -> RGR_Ref(name) 
-    			with 
-    			  name := <lookup'> (var, binds)
+	  with 
+	    name := <lookup'> (var, binds)
   
     
     rgr-map-update(|block, new_val): (block, _) -> (block, new_val)
       
-    rgr-split-jump-cf-lbls: list -> (<flatten-list><filter(rgr-is-jump-lbl-f)> list, <flatten-list><filter(rgr-is-cf-lbl-f)> list)
+    rgr-split-jump-cf-lbls: list -> (jump_lbls, <flatten-list><filter( (\ FVM_Label(lbl) -> lbl where <not(elem)> (lbl, jump_lbls) \) )> list)
+      with
+        jump_lbls := <flatten-list><filter(rgr-is-jump-lbl-f)> list
     
     
-    rgr-is-cf-lbl= ?RGR_LblRef(_)
-                   
+    rgr-is-cf-lbl= ?FVM_Label(_)
+    
     rgr-is-jump-lbl= ?RGR_JumpZ(_,_,_) <+ 
                      ?RGR_Jump(_) <+ 
                      ?RGR_Call(_, _, _) <+ 
@@ -184,10 +167,10 @@ rules
                      ?RGR_Try(_, _, _, _, _) <+ 
                      ?RGR_Try(_, _, _) <+ 
                      ?RGR_ScopeExit(_, _) <+ 
-                     ?RGR_ScopeNew(_,_,_)
+                     ?RGR_ScopeNew(_,_,_) <+ 
+                     ?RGR_ContCur(_)
     
     
-    rgr-is-cf-lbl-f: RGR_LblRef(FVM_Label(lbl)) -> lbl
     
     rgr-is-jump-lbl-f: RGR_JumpZ(_,FVM_Label(lbl1),FVM_Label(lbl2)) -> [lbl1, lbl2]
     rgr-is-jump-lbl-f: RGR_Jump(FVM_Label(lbl)) -> lbl
@@ -197,6 +180,7 @@ rules
     rgr-is-jump-lbl-f: RGR_Try(_, _, FVM_Label(lbl)) -> lbl
     rgr-is-jump-lbl-f: RGR_ScopeExit(_, FVM_Label(lbl)) -> lbl
     rgr-is-jump-lbl-f: RGR_ScopeNew(_,_,FVM_Label(lbl)) -> lbl
+    rgr-is-jump-lbl-f: RGR_ContCur(FVM_Label(lbl)) -> lbl
     
     
     

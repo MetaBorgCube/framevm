@@ -19,10 +19,10 @@ PRINT:
 NEXT:
     r0 <- new()
     link(r0, [], P)
-    call(r0, NEXT_FUNC, NEXT_END)
+    call(r0, FUNC, NEXT_END)
     
 // Call the captured continuation inside the function
-NEXT_FUNC:
+FUNC:
     callC(get([P, 0]))
 
 // If the call returns, we throw an error

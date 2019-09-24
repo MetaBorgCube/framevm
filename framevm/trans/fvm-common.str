@@ -18,7 +18,6 @@ signature
     FVM_Export : STRING * STRING * STRING -> S
     FVM_Seq : [Instr] -> S
     FVM_Block : FVM_Label * INT * FVM_Seq * INT -> S
-    STC_Program: STRING * [Import] * INT * STRING * [Alias] * [STC_Block] -> S
     RGR_Program: STRING * [Import] * INT * STRING * [Alias] * [STC_Block] -> S
 
 signature
@@ -28,7 +27,6 @@ signature
     ControlFrame : ControlFrame -> V 
     FrameRef : String -> V
     BlockRef : String * STRING -> V
-    ClosV : FrameRef * CopyPolicy * FVM_Label * INT -> V
     IntV : Int -> V
     
 rules

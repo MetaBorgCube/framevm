@@ -28,11 +28,6 @@ rules
     with 
       (exports, body') := <extract--imports> (name, imps, body)
   
-  // Extract all imports and resolve all existing jump labels for STC  
-  extract-imports: STC_Program(name, imps, _, _, _, body) -> (name, "stc", exports, body')
-    with 
-      (exports, body') := <extract--imports> (name, imps, body)
-  
   extract--imports: (name, imps,body) -> <strip-annos> (exports, body')
     with
       exports := <filter(?FVM_Export(_,_, _)); map(resolve-export)> imps;

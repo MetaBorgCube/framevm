@@ -9,7 +9,7 @@ imports
 
 language
 
-  extensions : stc, rgr
+  extensions : rgr
 
   provider : target/metaborg/stratego.ctree
   provider : target/metaborg/stratego-javastrat.jar

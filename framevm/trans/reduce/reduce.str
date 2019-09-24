@@ -2,7 +2,6 @@ module reduce
 
 imports
     signatures/framevm-sig
-    signatures/fvm-stacy-sig
     signatures/fvm-roger-sig
     signatures/fvm-common-sig
    

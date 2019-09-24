@@ -65,46 +65,7 @@ rules // Imports
   	ModuleFunc{func_name} <- s,
   	ModuleFunc{func_name}.label := lbl,
   	ModuleFunc{func_name}.lib   := lib.
-  
-rules // STC imports 
-  stcImport[[FVM_Import(lib_name, funcs) ^(s, prog)]] :=
-  	STC_Module{lib_name} -> s,
-  	STC_Module{lib_name} |-> d | error $[Module not found: [lib_name]] @lib_name,
-  	d ?===> ds,
-  	Map2(libfunc)[[funcs ^(ds, prog)]].
-  	
-  stcImport[[FVM_ImportAs(lib_name, func_name, func_as) ^(s, prog)]] :=
-  	STC_Module{lib_name} -> s,
-  	STC_Module{lib_name} |-> d | error $[Module not found: [lib_name]] @lib_name,
-  	d ?===> ds,
-  	new ns, ns ---> ds,
-  	ModuleFunc{func_name} -> ns,
-  	ModuleFunc{func_name} |-> d2 | error $[Function not found: [func_name]] @func_name,
-  	d2.label := lbl,
-  	d2.lib := lib,
-  	
-  	ModuleFunc{func_as} <- prog,
-  	ModuleFunc{func_as}.label := lbl,
-  	ModuleFunc{func_as}.lib   := lib.
-  
-  stcImport[[FVM_Export(lib, Local(name), func_as) ^(mod, prog)]] :=
-  	Block{name} -> prog,
-    Block{name} |-> d | error $[Unknown jump label [name]] @name,
-  	ModuleFunc{func_as} <- mod,
-  	ModuleFunc{func_as}.label := name,
-  	ModuleFunc{func_as}.lib   := lib.
-  
-  stcImport[[FVM_Export(_, External(name), func_as) ^(mod, prog)]] :=
-  	ModuleFunc{name} -> prog,
-  	ModuleFunc{name} |-> d | error $[Function not found: [name]] @name,
-  	d.label := lbl,
-  	d.lib   := lib,
-  	
-  	ModuleFunc{func_as} <- mod,
-  	ModuleFunc{func_as}.label := lbl,
-  	ModuleFunc{func_as}.lib   := lib.
-  	
-   
+ 
 rules // RGR imports 
   rgrImport[[FVM_Import(lib_name, funcs) ^(s, prog)]] :=
   	RGR_Module{lib_name} -> s,

@@ -34,7 +34,6 @@ test jump invalid lbl  [[jump(0LBL)]]      parse fails
 
 
 test call                 [[call(iload(0), LBL1, LBL2)]]            parse succeeds
-test call no frame        [[call(LBL1, LBL2)]]                      parse fails
 test call no exp          [[call(0, LBL1, LBL2)]]                   parse fails
 test call multiple frame  [[call(iload(0), iload(0), LBL1, LBL2)]]  parse fails
 test call invalid lbl 1   [[call(iload(0), 0LBL1, LBL2)]]           parse fails
@@ -43,12 +42,10 @@ test call invalid lbl 2   [[call(iload(0), LBL1, 0LBL2)]]           parse fails
 test call                 [[call(iload(0), LBL)]]            parse succeeds
 test call no frame        [[call(LBL)]]                      parse fails
 test call no exp          [[call(0, LBL)]]                   parse fails
-test call multiple frame  [[call(iload(0), iload(0), LBL)]]  parse fails
 test call invalid lbl 1   [[call(iload(0), 0LBL)]]           parse fails
 
 
 test tailcall                 [[tailcall(iload(0), LBL)]]            parse succeeds
-test tailcall no frame        [[tailcall(LBL)]]                      parse fails
 test tailcall no exp          [[tailcall(0, LBL)]]                   parse fails
 test tailcall multiple frame  [[tailcall(iload(0), iload(0), LBL)]]  parse fails
 test tailcall invalid lbl 1   [[tailcall(iload(0), 0LBL)]]           parse fails
@@ -56,21 +53,13 @@ test tailcall invalid lbl 1   [[tailcall(iload(0), 0LBL)]]           parse fails
 test tailcall                 [[tailcall(iload(0))]]            parse succeeds
 test tailcall no frame        [[tailcall()]]                    parse fails
 test tailcall no exp          [[tailcall(0)]]                   parse fails
-test tailcall multiple frame  [[tailcall(iload(0), iload(0))]]  parse fails
 
 
-test ccall                [[ccall(r0, LBL)]]      parse succeeds
-test ccall no lbl         [[ccall(r0)]]           parse fails
-test ccall no exp         [[ccall(0, LBL)]]       parse fails
-test ccall multiple cont  [[ccall(r0, r1, LBL)]]  parse fails
-test ccall invalid lbl    [[ccall(r0, 0LBL)]]     parse fails
-
-
-test cret                [[cret(r0)]]      parse succeeds
-test cret lbl            [[cret(LBL)]]     parse fails
-test cret no frame       [[cret()]]        parse fails
-test cret no exp         [[cret(0)]]       parse fails
-test cret multiple cont  [[cret(r0, r1)]]  parse fails
+test ccall                [[callC(r0, LBL)]]      parse succeeds
+test ccall no lbl         [[callC(r0)]]           parse succeeds
+test ccall no exp         [[callC(0, LBL)]]       parse fails
+test ccall multiple cont  [[callC(r0, r1, LBL)]]  parse succeeds
+test ccall invalid lbl    [[callC(r0, 0LBL)]]     parse fails
 
 
 test try                     [[try(iload(0), LBL1, iload(0), LBL2, LBL3)]]  parse succeeds
