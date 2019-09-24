@@ -2,7 +2,6 @@ module register
 
 imports
     signatures/framevm-sig
-    signatures/fvm-stacy-sig
     signatures/fvm-common-sig
     fvm-common
 

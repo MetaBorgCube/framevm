@@ -1,9 +1,9 @@
 ---
-id: org.metaborg.lang:framevm.example:1.0.0
+id: org.metaborg.lang:framevm.example:1.2.0
 name: framevm
 dependencies:
   compile:
-  - org.metaborg.lang:framevm:1.1.0
+  - org.metaborg.lang:framevm:1.2.0
 debug:
   typesmart: false
 runtime:

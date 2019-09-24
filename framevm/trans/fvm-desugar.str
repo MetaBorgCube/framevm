@@ -18,7 +18,6 @@ rules
 	
 	cut-ext: (fname, ast) -> (<remove-extension> fname, ast)
 	
-   	desugar-empty: (fname, Empty(h, p)) -> (fname, STC_Program(h, p, [])) where <string-ends-with(|".stc")> fname
    	desugar-empty: (fname, Empty(h, p)) -> (fname, RGR_Program(h, p, [])) where <string-ends-with(|".rgr")> fname
    	desugar-empty: (fname, prog@RGR_Program(_, _, _)) -> (fname, prog)
    	  

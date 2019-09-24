@@ -3,7 +3,6 @@ module fvm-util
 imports
     nabl2/api
     
-    signatures/fvm-stacy-sig
     signatures/fvm-roger-sig
     signatures/framevm-sig
     signatures/fvm-common-sig
