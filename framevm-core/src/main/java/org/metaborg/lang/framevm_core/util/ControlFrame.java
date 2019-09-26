@@ -79,7 +79,7 @@ public abstract class ControlFrame {
 
 	public abstract void setSize(int size);
 	public abstract ControlFrameMemory getMemory();
-	public abstract void restoreMemory(ControlFrameMemory mem);
+	public abstract void restoreMemory(ControlFrameMemory mem, Frame frame);
 	
 	public String toString() {
 		return "Continuation(" + this.getId() + ")";

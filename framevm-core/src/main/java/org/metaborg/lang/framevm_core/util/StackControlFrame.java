@@ -88,8 +88,9 @@ public class StackControlFrame extends ControlFrame {
 	}
 
 	@Override
-	public void restoreMemory(ControlFrameMemory mem) {
+	public void restoreMemory(ControlFrameMemory mem, Frame frame) {
 		if (mem == null) return; // Nothing to do for the empty restore
 		this.stack = mem.getStack();
+		this.setCurrentFrame(frame);
 	}
 }

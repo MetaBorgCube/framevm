@@ -74,10 +74,11 @@ public class RegisterControlFrame extends ControlFrame {
 	}
 
 	@Override
-	public void restoreMemory(ControlFrameMemory mem) {
+	public void restoreMemory(ControlFrameMemory mem, Frame frame) {
 		if (mem == null) return; // Nothing to do for the empty restore
 		if (! (mem instanceof RegisterControlFrameMemory)) throw new IllegalStateException("Cannot restore stack control frame memory in a register control frame");
 		this.locals = ((RegisterControlFrameMemory) mem).getLocals();
 		this.returnStack = mem.getStack();
+		this.setCurrentFrame(frame);
 	}
 }

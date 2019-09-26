@@ -9,6 +9,7 @@ import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.terms.StrategoString;
 
 import org.metaborg.lang.framevm_core.util.Block;
+import org.metaborg.lang.framevm_core.util.Continuation;
 import org.metaborg.lang.framevm_core.util.ControlFrame;
 import org.metaborg.lang.framevm_core.util.Frame;
 import org.metaborg.lang.framevm_core.util.Slot;
@@ -22,6 +23,8 @@ public abstract class DotFactory {
 	private static final Pattern FRAME_PATTERN = Pattern.compile("FrameRef\\((.+)\\)");
 	private static final Pattern CLOSURE_PATTERN = Pattern.compile("ClosV\\((.+,.+)\\)");
 	private static final Pattern CONTINUATION_PATTERN = Pattern.compile("Continuation\\((.+)\\)");
+	private static final Pattern CF_PATTERN = Pattern.compile("ControlFrame\\((.+)\\)");
+	
 	private static final String[] COLORS = {"green", "purple", "hotpink", 
 											"dodgerblue4", "chocolate4", 
 											"chocolate", "darkslategray", 
@@ -87,6 +90,18 @@ public abstract class DotFactory {
 	 */
 	public static String controlFrame(ControlFrame frame) {
 		return "controlFrame_"+ frame.getId();
+	}
+
+	/**
+	 * Generate the id used in the DOT file for the controlframe of the given frame.
+	 * 
+	 * @param frame
+	 * 		The controlframe
+	 * @return
+	 * 		The generated id
+	 */
+	public static String continuation(Continuation cont) {
+		return "continuation_"+ cont.getControlFrame().getId();
 	}
 	
 	/**
@@ -294,7 +309,7 @@ public abstract class DotFactory {
 			return "Closure(" + frame.getId() + ", " + block + ")";
 		}
 		
-		matcher = CONTINUATION_PATTERN.matcher(value);
+		matcher = CF_PATTERN.matcher(value);
 		if (matcher.matches()) {	// If it is a continuation
 			ControlFrame frame = (ControlFrame) ((StrategoBlob) term.getSubterm(0)).value();
 			String frameRef = controlFrame(frame);
@@ -302,6 +317,16 @@ public abstract class DotFactory {
 				DotControlFrameFactory.build(frame, nodes, links);
 			}
 			return "Continuation(" + frame.getId() + ")";
+		}
+		
+		matcher = CONTINUATION_PATTERN.matcher(value);
+		if (matcher.matches()) {	// If it is a continuation
+			Continuation cont = (Continuation) ((StrategoBlob) term.getSubterm(0)).value();
+			String contRef = continuation(cont);
+//			if (addContinuationRef(links, slotRef, contRef)) {
+//				DotControlFrameFactory.build(cont, nodes, links);
+//			}
+			return "Continuation(" + cont.getControlFrame().getId() + ")";
 		}
 		return value;
 	}

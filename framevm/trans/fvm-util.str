@@ -103,7 +103,7 @@ rules
         map2 := <list-some(rgr-map-update(|block, block'))> map;
         
         // Collect all possible next blocks and recurse
-        (jump_lbl, cf_lbl) := <collect-all(rgr-is-jump-lbl <+ rgr-is-cf-lbl); rgr-split-jump-cf-lbls> [jump' | body'];
+        (jump_lbl, cf_lbl) := <collect-all(rgr-is-jump-lbl <+ rgr-is-cf-lbl <+ rgr-is-ann-lbl); rgr-split-jump-cf-lbls> [jump' | body'];
         (map3, discovered3, binds3) := <foldl(rgr-assign-registers-recurse)> (jump_lbl, (map2, discovered2, binds2));
         (map4, discovered4, _) := <foldl(rgr-assign-registers-recurse)> (cf_lbl, (map3, discovered3, []));
         map5 := <dnx-apply-autosize(|<length> binds3)> (block, map4)
@@ -152,12 +152,16 @@ rules
     
     rgr-map-update(|block, new_val): (block, _) -> (block, new_val)
       
-    rgr-split-jump-cf-lbls: list -> (jump_lbls, <flatten-list><filter( (\ FVM_Label(lbl) -> lbl where <not(elem)> (lbl, jump_lbls) \) )> list)
+    rgr-split-jump-cf-lbls: list -> (jump_lbls', cf_lbls)
       with
-        jump_lbls := <flatten-list><filter(rgr-is-jump-lbl-f)> list
+        jump_lbls := <flatten-list><filter(rgr-is-jump-lbl-f)> list;
+        jump_lbls' := <conc> (jump_lbls, <flatten-list><filter(rgr-is-ann-lbl-f)> list);
+        cf_lbls := <flatten-list><filter( (\ FVM_Label(lbl) -> lbl where <not(elem)> (lbl, jump_lbls') \) )> list
     
     
     rgr-is-cf-lbl= ?FVM_Label(_)
+
+	rgr-is-ann-lbl= ?FVM_AnnLabel(_)
     
     rgr-is-jump-lbl= ?RGR_JumpZ(_,_,_) <+ 
                      ?RGR_Jump(_) <+ 
@@ -171,6 +175,9 @@ rules
     
     
     
+
+	rgr-is-ann-lbl-f: FVM_AnnLabel(FVM_Label(lbl)) -> lbl
+	
     rgr-is-jump-lbl-f: RGR_JumpZ(_,FVM_Label(lbl1),FVM_Label(lbl2)) -> [lbl1, lbl2]
     rgr-is-jump-lbl-f: RGR_Jump(FVM_Label(lbl)) -> lbl
     rgr-is-jump-lbl-f: RGR_Call(_, _, FVM_Label(lbl)) -> lbl

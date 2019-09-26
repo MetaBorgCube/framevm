@@ -48,7 +48,7 @@ public class MachineThread {
 
 	public void callContinuation(Continuation continuation) {
 		this.controlFrame = continuation.getControlFrame();
-		this.controlFrame.restoreMemory(continuation.getMemory());
+		this.controlFrame.restoreMemory(continuation.getMemory(), continuation.getFrame());
 		this.jump(continuation.getBlock());
 	}
 

@@ -13,6 +13,7 @@ signature
     Bind : STRING * INT -> S
     RGR_AutoVar : STRING -> S
     FVM_AutoLabel : STRING -> S
+    FVM_AnnLabel : Label -> S
     FVM_AutoSize: S
     FVM_BoundLabel : STRING * FVM_Label -> S
     FVM_Export : STRING * STRING * STRING -> S
