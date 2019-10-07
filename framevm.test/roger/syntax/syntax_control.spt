@@ -29,7 +29,7 @@ test jumpz invalid lbl 2  [[jumpz(iload(0), LBL1, 0LBL2)]]           parse fails
 
 
 test jump              [[jump(LBL)]]       parse succeeds
-test jump no lbl       [[jump(iload(0))]]  parse fails
+test jump no lbl       [[jump(iload(0))]]  parse succeeds
 test jump invalid lbl  [[jump(0LBL)]]      parse fails
 
 
