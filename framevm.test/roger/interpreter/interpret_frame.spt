@@ -55,7 +55,7 @@ test simple get/set [[
 
 test get before set [[
 	print(get([0]))
-]] transform "Run -> Run" to "FAIL"
+]] transform "Run -> Run" to "NULL"
 
 test simple get/set 2 [[
 	set([1], iload(12))
@@ -93,7 +93,7 @@ test getr/setr on int[[
 test get before set [[
 	r1 <- new(2)
 	print(get(r1, [0]))
-]] transform "Run -> Run" to "FAIL"
+]] transform "Run -> Run" to "NULL"
 
 test simple get/set 2 [[
 	r1 <- new(2)
