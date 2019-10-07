@@ -25,8 +25,9 @@ public class frame_get_slot_0_1 extends FVMStrategy {
 		try {
 			Slot slot = frame.getSlot(slotIdx);
 			if (slot.value == null) {
-				LOGGER.error("Slot " + slotIdx + " is still empty!");
-				return null;
+				IStrategoTerm nul = factory.makeAppl(factory.makeConstructor("NullV", 0));
+				slot.value = nul;
+				return nul;
 			} else {
 				return slot.value;
 			}

@@ -9,6 +9,7 @@ imports
 
 rules
     rgr-eval-exp(|env): RGR_ILoad(i) -> (env, IntV(<string-to-int> i))
+    rgr-eval-exp(|env): RGR_NLoad() -> (env, NullV())
     
     rgr-eval-exp(|env): RGR_INeg(exp) -> (env2, IntV(<subti> (0, i)))
       where

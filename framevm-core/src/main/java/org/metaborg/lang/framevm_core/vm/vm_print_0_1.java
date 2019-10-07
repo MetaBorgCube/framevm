@@ -25,6 +25,8 @@ public class vm_print_0_1 extends FVMStrategy {
 			String frame = ((StrategoBlob) tuple.get(0)).value().toString();
 			String lbl = ((StrategoString) tuple.get(1)).stringValue();
 			out = "Closure(" + frame + ", " + lbl + ")";
+		} else if (arg instanceof StrategoString) {
+			out = ((StrategoString) arg).stringValue();
 		} else {
 			out = arg.toString();
 		}

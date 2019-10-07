@@ -28,6 +28,7 @@ rules // Exp
   rgrExp[[RGR_Ref(_) ^(s)]].
   rgrExp[[RGR_REq(_, _) ^(s)]].
   rgrExp[[RGR_ILoad(_) ^(s)]].
+  rgrExp[[RGR_NLoad() ^(s)]].
   rgrExp[[RGR_INeg(exp) ^(s)]]    := rgrExp[[exp ^(s)]].
   rgrExp[[RGR_IAdd(e1, e2) ^(s)]] := rgrExp[[e1 ^(s)]], rgrExp[[e2 ^(s)]].
   rgrExp[[RGR_IMul(e1, e2) ^(s)]] := rgrExp[[e1 ^(s)]], rgrExp[[e2 ^(s)]].

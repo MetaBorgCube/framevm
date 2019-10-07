@@ -47,13 +47,17 @@ rules
     is-frame: _           -> IntV(0)
     
     is-cf: ControlFrame(_) -> IntV(1)
-    is-cf: _           -> IntV(0)
+    is-cf: _               -> IntV(0)
+    
+    is-nullV: NullV() -> IntV(1)
+    is-nullV: _       -> IntV(0)
 
 rules    // Util
     // Convert a value to a displayable string 
     val-to-string: IntV(v) -> IntV(v)
     val-to-string: FrameRef(frame) -> frame
     val-to-string: Continuation(cont) -> cont
+    val-to-string: NullV() -> "NULL"
     
 rules
     apply-until-no-change(s): e -> <apply-until-equal(s)> (e, [])

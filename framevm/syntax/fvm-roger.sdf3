@@ -46,6 +46,7 @@ sorts Exp context-free syntax
 	TypeExp.RGR_IsCont  = <cont?(<Exp>)>
 	TypeExp.RGR_IsFrame = <frame?(<Exp>)>
 	TypeExp.RGR_IsCF    = <CF?(<Exp>)>
+	TypeExp.RGR_IsNull  = <NULL?(<Exp>)>
 	
 	Exp = FrameExp
 	FrameExp.RGR_New    = <new(<IntOrExp>)>

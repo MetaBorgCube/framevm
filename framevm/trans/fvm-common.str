@@ -27,6 +27,7 @@ signature
     FrameRef : String -> V
     BlockRef : String * STRING -> V
     IntV : Int -> V
+    NullV : V
     
 rules
     pp-framevm         = pp-debug-framevm
