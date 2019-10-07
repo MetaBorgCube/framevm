@@ -40,10 +40,11 @@ rules
         env3 := <frame-set-slot(|env2)> (frame, <string-to-int> idx, val)
         
 
-    rgr-eval-instr: (RGR_Set(exp, val), env1) -> env3
+    rgr-eval-instr: (RGR_Set(exp1, exp2), env1) -> env4
       where
-        (env2, IntV(slotId)) := <rgr-eval-exp(|env1)> exp;
-        env3 := <frame-set-slot(|env2)> (<frame-this(|env2)>, slotId, <rgr-eval-exp(|env2)> val)
+        (env2, IntV(slotId)) := <rgr-eval-exp(|env1)> exp1;
+        (env3, val) := <rgr-eval-exp(|env2)> exp2;
+        env4 := <frame-set-slot(|env3)> (<frame-this(|env3)>, slotId, val)
         
         
         
