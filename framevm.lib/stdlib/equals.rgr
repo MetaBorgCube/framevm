@@ -7,7 +7,6 @@ export EQUALS as equals
 // Translated from original Stacy version made by @Geweldig
 
 EQUALS:
-	local := 2
 	jumpz(eqr(get([0]), get([1])), __EQUALS_CONTENT, __RETURN_TRUE)	// Return true when the same reference
 	
 __EQUALS_CONTENT:
@@ -53,7 +52,7 @@ __COMPARE_IDX_S_NE:
 	call(new{r1, r0}, EQUALS, __COMPARED_IDX)
 	
 __COMPARED_IDX:
-	r0 <- rget(getcurrent())
+	r0 <- rget()
 	jumpz(r0, __RETURN_FALSE, __EQUAL_IDX)
 
 __EQUAL_IDX:

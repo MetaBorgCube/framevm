@@ -1,0 +1,6 @@
+#registers 1
+
+MAIN:
+	r0 <- iload(42)
+	print(r0)
+	return(iload(0))

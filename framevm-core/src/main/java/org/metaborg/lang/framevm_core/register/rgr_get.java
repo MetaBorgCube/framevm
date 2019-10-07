@@ -8,20 +8,20 @@ import org.spoofax.terms.StrategoString;
 
 import org.metaborg.lang.framevm_core.FVMStrategy;
 import org.metaborg.lang.framevm_core.util.MachineState;
-import org.metaborg.lang.framevm_core.util.RegisterControlFrame;
+import org.metaborg.lang.framevm_core.util.MachineThread;
 
 public abstract class rgr_get extends FVMStrategy {
 	@Override
 	// env| slot -> val
 	protected IStrategoTerm invoke(ITermFactory factory, MachineState env, IStrategoTerm arg) {
-		RegisterControlFrame cf = env.currentThread.getRegisterControlFrame();
-		if (cf == null) {
+		MachineThread thread = env.currentThread;
+		if (thread == null) {
 			LOGGER.error("Cannot get from a stack control frame");
 			return null;
 		}
 		String slot = ((StrategoString) arg).stringValue();
 		try {
-			IStrategoTerm term = cf.get(slot);
+			IStrategoTerm term = thread.get(slot);
 			String name;
 			
 			if (term instanceof StrategoAppl) {

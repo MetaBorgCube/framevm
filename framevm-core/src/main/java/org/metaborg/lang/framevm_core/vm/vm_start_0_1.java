@@ -2,7 +2,6 @@ package org.metaborg.lang.framevm_core.vm;
 
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermFactory;
-import org.spoofax.terms.StrategoInt;
 import org.spoofax.terms.StrategoString;
 import org.spoofax.terms.StrategoTuple;
 
@@ -12,8 +11,6 @@ import org.metaborg.lang.framevm_core.util.Continuation;
 import org.metaborg.lang.framevm_core.util.ControlFrame;
 import org.metaborg.lang.framevm_core.util.Frame;
 import org.metaborg.lang.framevm_core.util.MachineState;
-import org.metaborg.lang.framevm_core.util.RegisterControlFrame;
-import org.metaborg.lang.framevm_core.util.StackControlFrame;
 import mb.nabl2.terms.stratego.StrategoBlob;
 
 
@@ -27,7 +24,6 @@ public class vm_start_0_1 extends FVMStrategy {
 		StrategoTuple tuple = (StrategoTuple) arg;
 		String libName = ((StrategoString) tuple.get(0)).stringValue();
 		String blockName = ((StrategoString) tuple.get(1)).stringValue();
-		int size = ((StrategoInt) tuple.get(2)).intValue();
 		
 		Block block = env.getBlock(libName, blockName);
 		
@@ -37,35 +33,17 @@ public class vm_start_0_1 extends FVMStrategy {
 		}
 		
 		ControlFrame controlFrame = env.currentThread.getControlFrame();
-		try {
-			controlFrame.setSize(size);
-		} catch (IllegalStateException ex) {
-			LOGGER.error(ex.getMessage());
-		} catch (NegativeArraySizeException ex) {
-			LOGGER.error("No local size set for initial block " + blockName);
-		}
 		env.currentThread.jump(block);
 		env.currentThread.initThread();
 		
-		ControlFrame c;
-		ControlFrame x;
-		switch (env.mode) {
-			case REGISTER:
-				c = new RegisterControlFrame(0, 0, "_exit");
-				x = new RegisterControlFrame(0, 0, "_catch");
-				break;
+		ControlFrame c = new ControlFrame(0, "_exit");
+		ControlFrame x = new ControlFrame(0, "_catch");
 				
-			case STACK:
-			default:
-				c = new StackControlFrame(0, 1, "_exit");
-				x = new StackControlFrame(0, 1, "_catch");
-		}
-		
 		c.setCurrentFrame(new Frame("_exit", 0, 0));
 		x.setCurrentFrame(new Frame("_catch", 0, 0));
 		
-		controlFrame.setContinuation(0, new Continuation(c, null));
-		controlFrame.setContinuation(1, new Continuation(x, null));
+		controlFrame.setContinuation(0, new Continuation(c, null, null));
+		controlFrame.setContinuation(1, new Continuation(x, null, null));
 		
 		
 		LOGGER.info("Started execution at " + block.getName());

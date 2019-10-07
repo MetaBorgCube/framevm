@@ -20,14 +20,16 @@ public class vm_stop_0_1 extends FVMStrategy {
 	// env -> string
 	// Return the output that was written to 'console'
 	protected IStrategoTerm invoke(ITermFactory factory, MachineState env, IStrategoTerm arg) {
-		ControlFrame controlFrame = env.currentThread.getControlFrame();
-		if (controlFrame.getId().equals("_exit") || controlFrame.getId().equals("_catch")) {
+		MachineThread thread = env.currentThread;
+		ControlFrame cf = thread.getControlFrame();
+		
+		if (cf.getId().equals("_exit") || cf.getId().equals("_catch")) {
 	
-			IStrategoTerm returnVal = controlFrame.popReturn();
+			IStrategoTerm returnVal = thread.popReturn();
 			
 			if (returnVal != null) {
 				String exitObj = returnVal.toString();
-				if (controlFrame.getId().equals("_exit")) {
+				if (cf.getId().equals("_exit")) {
 					Matcher match = PATTERN.matcher(exitObj);
 					if (match.matches()) {
 						int exitcode = Integer.valueOf(match.group(1));
@@ -39,7 +41,7 @@ public class vm_stop_0_1 extends FVMStrategy {
 					} else {
 						return null;	// Exitcode is not an intV 
 					}
-				} else if (controlFrame.getId().equals("_catch")) {
+				} else if (cf.getId().equals("_catch")) {
 					LOGGER.error("Uncought exception: " + exitObj);
 				}
 			} else {
@@ -57,7 +59,6 @@ public class vm_stop_0_1 extends FVMStrategy {
 				return factory.makeString(out);
 			}
 		} else {
-			MachineThread thread = env.currentThread;
 			if (thread.getBlock() == null) {
 				LOGGER.error("You somehow got a nullpointer in your program counter");
 				return factory.makeString("FAIL");

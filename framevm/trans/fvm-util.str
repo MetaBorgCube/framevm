@@ -22,7 +22,7 @@ rules
       where
         <is-int> f
         
-    rgr-from-flat: (h@FVM_Header(items), body) -> <resugar> <split-header> RGR_Program(h, None(), blocks)
+    rgr-from-flat: (h@FVM_Header(items), body) -> <split-header; resugar> RGR_Program(h, None(), blocks)
       where
         <is-list> body
       with
@@ -36,14 +36,7 @@ rules
     // If the current instruction is a label, close the block (we are going bottom to top)
     // Else just store the instruction and continue
     from-flat-fold: (FVM_Label(lbl), (blocks, instrs)) -> 
-    				([FVM_Block(FVM_Label(lbl), None(), FVM_Seq(instrs), 0) | blocks], [])
-    				
-    from-flat-fold: ((FVM_Label(lbl), FVM_AutoSize()), (blocks, instrs)) ->
-    				([FVM_Block(FVM_Label(lbl), FVM_AutoSize(), FVM_Seq(instrs), 0) | blocks], [])
-    	
-    from-flat-fold: ((FVM_Label(lbl), size), (blocks, instrs)) ->
-    				([FVM_Block(FVM_Label(lbl), Some(<int-to-string> size), FVM_Seq(instrs), 0) | blocks], []) where <is-int> size
-    
+    				([FVM_Block(FVM_Label(lbl), FVM_Seq(instrs)) | blocks], [])
     from-flat-fold: (instr, (blocks, instrs)) -> (blocks, [instr | instrs])
     
     
@@ -77,49 +70,15 @@ rules
     
 
 rules
-    rgr-assign-registers: RGR_Program(h@FVM_Header(header), p, blocks) -> RGR_Program(h, p, reachable_blocks)
+    rgr-assign-registers: RGR_Program(FVM_Header(header), p, blocks) -> RGR_Program(FVM_Header([FVM_RegisterSize(<length; int-to-string> binds) | header]), p, blocks')
       with
         init_block_name := <getfirst( (\FVM_InitBlock(name) -> name \) )> header;
+        (binds, blocks') := <foldl(assign-block-registers)> (blocks, ([], []))
         
-        blocks_map := <map((\b@RGR_Block(FVM_Label(lbl), _, _, _) -> (lbl, b)\))> blocks;
-        (blocks_map', _, _) := <rgr-assign-registers-recurse> (init_block_name, (blocks_map, [], []));
-        all_blocks := <map((\(_, block) -> block\))> blocks_map';
-        reachable_blocks := <filter(not(contains-autovars))> all_blocks;
-        <debug(!"[FrameVM] ")> $[Removed [<subt> (<length> all_blocks, <length> reachable_blocks)] unreachable blocks]
-        
-    contains-autovars: body -> <collect-one(?(RGR_AutoVar(_)) <+ ?(FVM_AutoSize()))> body
-    
-    rgr-assign-registers-recurse: (block, (map, discovered, binds)) -> (map5, discovered4, binds3)
-      where
-        <not(elem)> (block, discovered)
+    assign-block-registers: (RGR_Block(lbl, body, jump), (binds, blocks)) -> (binds2, [RGR_Block(lbl, body', jump') | blocks])
       with
-        discovered2 := [block | discovered];						// Mark as discoverd
-        RGR_Block(lbl, s, body, jump) := <lookup'> (block, map); // Get the actual block
         (body', binds1) := <rgr-assign-registers-instr> (body, binds);
-        ([jump'], binds2) := <rgr-assign-registers-instr> ([jump], binds1);
-        block' := RGR_Block(lbl, s, body',jump');
-        
-        // Update the map with the updated block
-        map2 := <list-some(rgr-map-update(|block, block'))> map;
-        
-        // Collect all possible next blocks and recurse
-        (jump_lbl, cf_lbl) := <collect-all(rgr-is-jump-lbl <+ rgr-is-cf-lbl <+ rgr-is-ann-lbl); rgr-split-jump-cf-lbls> [jump' | body'];
-        (map3, discovered3, binds3) := <foldl(rgr-assign-registers-recurse)> (jump_lbl, (map2, discovered2, binds2));
-        (map4, discovered4, _) := <foldl(rgr-assign-registers-recurse)> (cf_lbl, (map3, discovered3, []));
-        map5 := <dnx-apply-autosize(|<length> binds3)> (block, map4)
-        
-    rgr-assign-registers-recurse: (_, acc@(_, _, _)) -> acc // Block already discovered
-    
-    
-    dnx-apply-autosize(|size): (block_name, map) -> map'
-      where
-        RGR_Block(lbl, FVM_AutoSize(), body, jump) := <lookup'> (block_name, map)
-      with
-        block' := RGR_Block(lbl, Some(RGR_Local(<int-to-string> size)), body, jump);
-        map' := <list-some(rgr-map-update(|block_name, block'))> map
-        
-    dnx-apply-autosize(|_): (_, map) -> map
-    
+        ([jump'], binds2) := <rgr-assign-registers-instr> ([jump], binds1)
     
     rgr-assign-registers-instr: ([], binds) -> ([], binds)
     rgr-assign-registers-instr: ([RGR_Assign(var@RGR_AutoVar(name), val) | t], binds) -> ([instr' | t'], binds2)
@@ -148,45 +107,3 @@ rules
     rgr-assign-registers-exp-resolve(|binds): var@RGR_AutoVar(_) -> RGR_Ref(name) 
 	  with 
 	    name := <lookup'> (var, binds)
-  
-    
-    rgr-map-update(|block, new_val): (block, _) -> (block, new_val)
-      
-    rgr-split-jump-cf-lbls: list -> (jump_lbls', cf_lbls)
-      with
-        jump_lbls := <flatten-list><filter(rgr-is-jump-lbl-f)> list;
-        jump_lbls' := <conc> (jump_lbls, <flatten-list><filter(rgr-is-ann-lbl-f)> list);
-        cf_lbls := <flatten-list><filter( (\ FVM_Label(lbl) -> lbl where <not(elem)> (lbl, jump_lbls') \) )> list
-    
-    
-    rgr-is-cf-lbl= ?FVM_Label(_)
-
-	rgr-is-ann-lbl= ?FVM_AnnLabel(_)
-    
-    rgr-is-jump-lbl= ?RGR_JumpZ(_,_,_) <+ 
-                     ?RGR_Jump(_) <+ 
-                     ?RGR_Call(_, _, _) <+ 
-                     ?RGR_Call(_, _) <+ 
-                     ?RGR_Try(_, _, _, _, _) <+ 
-                     ?RGR_Try(_, _, _) <+ 
-                     ?RGR_ScopeExit(_, _) <+ 
-                     ?RGR_ScopeNew(_,_,_) <+ 
-                     ?RGR_ContCur(_)
-    
-    
-    
-
-	rgr-is-ann-lbl-f: FVM_AnnLabel(FVM_Label(lbl)) -> lbl
-	
-    rgr-is-jump-lbl-f: RGR_JumpZ(_,FVM_Label(lbl1),FVM_Label(lbl2)) -> [lbl1, lbl2]
-    rgr-is-jump-lbl-f: RGR_Jump(FVM_Label(lbl)) -> lbl
-    rgr-is-jump-lbl-f: RGR_Call(_, _, FVM_Label(lbl)) -> lbl
-    rgr-is-jump-lbl-f: RGR_Call(_, FVM_Label(lbl)) -> lbl
-    rgr-is-jump-lbl-f: RGR_Try(_, _, _, _, FVM_Label(lbl)) -> lbl
-    rgr-is-jump-lbl-f: RGR_Try(_, _, FVM_Label(lbl)) -> lbl
-    rgr-is-jump-lbl-f: RGR_ScopeExit(_, FVM_Label(lbl)) -> lbl
-    rgr-is-jump-lbl-f: RGR_ScopeNew(_,_,FVM_Label(lbl)) -> lbl
-    rgr-is-jump-lbl-f: RGR_ContCur(FVM_Label(lbl)) -> lbl
-    
-    
-    

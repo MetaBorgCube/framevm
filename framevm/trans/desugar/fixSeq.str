@@ -9,22 +9,14 @@ imports
     
 rules
 
-    fix-seq: RGR_Program(fn, i, s, b, a, blocks) -> RGR_Program(fn, i, s, b, a, <map(fix-seq)> blocks)
+    fix-seq: RGR_Program(fn, i, s, b, a, blocks, r) -> RGR_Program(fn, i, s, b, a, <map(fix-seq)> blocks, r)
     
-    fix-seq: RGR_Block(lbl, s, body, jump)     -> FVM_Block(lbl, <fix-init> s, FVM_Seq(seq), 0)
+    fix-seq: RGR_Block(lbl, body, jump) -> FVM_Block(lbl, FVM_Seq(seq))
       with
         seq := <concat> [body, [jump]]
     
-    fix-init: None() -> None()
-    fix-init: Some(RGR_Local(n)) -> Some(<string-to-int> n)
+    resugar-seq: RGR_Program(fn, i, s, b, a, blocks, r) -> RGR_Program(fn, i, s, b, a, <map(resugar-seq-rgr)> blocks, r)
     
-    unfix-init-rgr: None() -> None()
-    unfix-init-rgr: Some(n) -> Some(RGR_Local(<try(int-to-string)> n))
-    unfix-init-rgr: FVM_AutoSize() -> FVM_AutoSize()
-    
-    
-    resugar-seq: RGR_Program(fn, i, s, b, a, blocks) -> RGR_Program(fn, i, s, b, a, <map(resugar-seq-rgr)> blocks)
-    
-    resugar-seq-rgr: FVM_Block(lbl, size, FVM_Seq(instrs), s) -> RGR_Block(lbl, <unfix-init-rgr> size, body, jump)
+    resugar-seq-rgr: FVM_Block(lbl, FVM_Seq(instrs)) -> RGR_Block(lbl, body, jump)
       with
         (body, jump) := <split-init-last> instrs

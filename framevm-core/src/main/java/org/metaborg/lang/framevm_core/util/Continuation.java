@@ -4,21 +4,14 @@ public class Continuation {
 
 	private ControlFrame controlFrame;
 	private Block block;
-	private ControlFrameMemory memory;
+	private Memory memory;
 	private Frame frame;
 	
-	public Continuation(ControlFrame frame, Block block, ControlFrameMemory memory) {
+	public Continuation(ControlFrame frame, Block block, Memory memory) {
 		this.controlFrame = frame;
 		this.block = block;
 		this.memory = memory;
 		this.frame = controlFrame.getCurrentFrame();
-	}
-	
-	public Continuation(ControlFrame frame, Block block) {
-		this.controlFrame = frame;
-		this.block = block;
-		this.memory = this.controlFrame.getMemory();
-		this.frame = frame.getCurrentFrame();
 	}
 	
 	public ControlFrame getControlFrame() {
@@ -40,7 +33,7 @@ public class Continuation {
 		this.frame = cont.getFrame();
 	}
 
-	public ControlFrameMemory getMemory() {
+	public Memory getMemory() {
 		return memory;
 	}
 

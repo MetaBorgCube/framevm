@@ -2,17 +2,15 @@ module rgr_interpreter_closure
 
 language framevm
 
-fixture [[MAIN:
-	local := 99
+fixture [[#registers 99
+MAIN:
 	[[...]]    
 	
 LBL1:
-	local := 0
 	print(iload(1))
 	return(iload(0))
 	
 LBL2:
-	local := 0
 	print(iload(2))
 	return(iload(0))
 	

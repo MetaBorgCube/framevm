@@ -3,8 +3,9 @@ module rgr_interpreter_scopes
 language framevm
 
 fixture [[#init 2
+#registers 99
+
 MAIN:
-	local := 99
 	set([0], iload(12))
 	[[...]]
 	return(iload(0))

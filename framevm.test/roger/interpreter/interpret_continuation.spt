@@ -2,13 +2,12 @@ module rgr_interpreter_continuations
 
 language framevm
 
-fixture [[MAIN:
-	local := 99
+fixture [[#registers 4
+MAIN:
 	r0 <- newCF(new(), LBL1, iload(2))
 	[[...]]
 	
 LBL1:
-	local := 0
 	print(iload(1))
 	return(iload(0))
 	
@@ -40,7 +39,6 @@ MAIN2:
 	print(iload(42))
 	return(iload(0))
 LBL2:
-	local := 0
 	print(iload(2))
 	return(iload(0))
 ]] transform "Run -> Run" to "IntV(2)"
@@ -53,7 +51,6 @@ MAIN2:
 	print(iload(42))
 	return(iload(0))
 LBL2:
-	local := 0
 	print(iload(2))
 	return(iload(0))
 ]] transform "Run -> Run" to "IntV(2)"
@@ -62,7 +59,7 @@ test call CF [[
 	setC(r0, $c, curC(MAIN2))
 	callCF(r0, LBL1)
 MAIN2:
-	r0 <- rget(curCF())
+	r0 <- rget()
 	print(r0)
 	return(iload(0))
 ]] transform "Run -> Run" to "IntV(1)
@@ -72,7 +69,7 @@ test rget single [[
 	setC(r0, $c, curC(MAIN2))
 	callCF(r0, LBL1)
 MAIN2:
-	r0 <- rget(curCF())
+	r0 <- rget()
 	print(r0)
 	return(iload(0))
 ]] transform "Run -> Run" to "IntV(1)
@@ -83,13 +80,12 @@ test rget multiple [[
 	setC(unpackC(r0), $c, curC(MAIN2))
 	callC(r0)
 MAIN2:
-	r0 <- rget(curCF())
-	r1 <- rget(curCF())
+	r0 <- rget()
+	r1 <- rget()
 	print(r0)
 	print(r1)
 	return(iload(0))
 LBL:
-	local := 0
 	callC(getC($c), iload(1), iload(2))
 ]] transform "Run -> Run" to "IntV(2)
 IntV(1)"
@@ -102,7 +98,6 @@ test variable cont slots [[
 	setC(unpackC(r1), r2, getC($c))
 	callC(r1)
 MAIN2:
-	local := 1
 	r0 <- get([0])
 	print(r0)
 	callC(getC(r0), iload(0))

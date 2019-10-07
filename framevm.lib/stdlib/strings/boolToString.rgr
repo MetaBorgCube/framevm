@@ -1,7 +1,7 @@
 export TO_STRING as bool_to_string
+#registers 0
 
 TO_STRING:
-  local := 0
   jumpz(get([0]), __FALSE, __TRUE)
   
 __FALSE:

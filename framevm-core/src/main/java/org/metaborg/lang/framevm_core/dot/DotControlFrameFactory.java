@@ -5,8 +5,6 @@ import java.util.List;
 import org.metaborg.lang.framevm_core.util.Continuation;
 import org.metaborg.lang.framevm_core.util.ControlFrame;
 import org.metaborg.lang.framevm_core.util.Frame;
-import org.metaborg.lang.framevm_core.util.RegisterControlFrame;
-import org.metaborg.lang.framevm_core.util.StackControlFrame;
 
 public class DotControlFrameFactory extends DotFactory {
 	
@@ -66,18 +64,18 @@ public class DotControlFrameFactory extends DotFactory {
 			contIds = " |";
 		}
 		
-		String memType;
-		if (frame instanceof StackControlFrame) {
-			memType = DotStackControlFrameFactory.getMemType();
-			DotStackControlFrameFactory.buildmemory((StackControlFrame) frame, nodes, links);
-		} else {
-			memType = DotRegisterControlFrameFactory.getMemType();
-//			memType = "";
-			DotRegisterControlFrameFactory.buildmemory((RegisterControlFrame) frame, nodes, links);
-		}
+//		String memType;
+//		if (frame instanceof StackControlFrame) {
+//			memType = DotStackControlFrameFactory.getMemType();
+//			DotStackControlFrameFactory.buildmemory((StackControlFrame) frame, nodes, links);
+//		} else {
+//			memType = DotRegisterControlFrameFactory.getMemType();
+////			memType = "";
+//			DotRegisterControlFrameFactory.buildmemory((RegisterControlFrame) frame, nodes, links);
+//		}
 		
 		// Generate main node
-		String dotString = node(name, "{<id>" + frame.getId() + " | {{PC | Frame | " + memType + contSlots + "}| { <pc> | <frame> | <mem>" + contIds + "}}}");
+		String dotString = node(name, "{<id>" + frame.getId() + " | {{PC | Frame | Register " + contSlots + "}| { <pc> | <frame> | <mem>" + contIds + "}}}");
 		nodes.put(name, dotString);
 		
 		

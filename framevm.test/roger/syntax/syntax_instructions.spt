@@ -14,8 +14,8 @@ test assign none      [[ <- iload(0)]]        parse fails
 test just exp         [[iload(0)]]            parse fails
 
 
-test rget no args     [[r0 <- rget()]]       parse fails
-test rget single      [[r0 <- rget(curCF())]] parse succeeds
+test rget no args     [[r0 <- rget()]]       parse succeeds
+test rget single      [[r0 <- rget(curCF())]] parse fails
 test rget single 2    [[r0 <- rget(0)]]      parse fails
 
 
@@ -48,7 +48,7 @@ test setr exp           [[set(new(), iload(0), iload(0))]]       parse succeeds
 test transfer           [[transfer(new(), c)]]                    parse succeeds
 test transfer int       [[transfer(new(), 0)]]                    parse fails
 test transfer int2      [[transfer(0, c)]]                        parse fails
-test transfer none      [[transfer(new())]]                       parse fails
+test transfer none      [[transfer(new())]]                       parse succeeds
 test transfer exp       [[transfer(new(), newCF(new(), LBL, iload(2)))]]  parse succeeds
 test transfer multiple  [[transfer(new(), iload(1), c)]]          parse succeeds
 

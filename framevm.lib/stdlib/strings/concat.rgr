@@ -1,9 +1,9 @@
 export CONCAT_STRINGS as concat_strings
+#registers 2
 
 // Expects a dataframe with two strings, string at index [1] will be appended to string at index [0]
 
 CONCAT_STRINGS:
-	local := 2
 	r0 <- get([0, 0])			// Get length of first string.
 	r1 <- get([1, 0])    		// Get length of second string.
 	
@@ -15,7 +15,7 @@ CONCAT_STRINGS:
 	call(new{get([0]), get([P, 0]), iload(1)}, __COPY_STRING, __CONCAT_SECOND)
 
 __CONCAT_SECOND:
-	r0 <- rget(curCF())
+	r0 <- rget()
 	set([P, 0, 0], subi(get([P, 0, 0]), iload(1)))
 	call(new{get([0]), get([P, 1]), r0}, __COPY_STRING, __CONCAT_END)
 	
@@ -24,7 +24,6 @@ __CONCAT_END:
 	return(get([0]))
 	
 __COPY_STRING:
-	local := 1
 	r0 <- new(2)
 	set([1, 0], addi(get([1, 0]), get([2])))
 	newscope(r0, P)

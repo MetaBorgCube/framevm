@@ -4,8 +4,9 @@ language framevm
 
 fixture [[#init 2
 #link Q -> 1
+#registers 99
+
 MAIN:
-	local := 99
 	[[...]]
 	return(iload(0))
 ]]

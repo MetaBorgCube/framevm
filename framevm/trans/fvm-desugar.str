@@ -22,15 +22,16 @@ rules
    	desugar-empty: (fname, prog@RGR_Program(_, _, _)) -> (fname, prog)
    	  
    	split-header: prog@RGR_Program(_, _, _) -> <split-header> ("", prog)
-   	split-header: (fname, RGR_Program(FVM_Header(headeritems), _, blocks)) -> RGR_Program(fname, imports, initsize, initblock, aliasses, blocks)
+   	split-header: (fname, RGR_Program(FVM_Header(headeritems), _, blocks)) -> RGR_Program(fname, imports, initsize, initblock, aliasses, blocks, registers)
    	  with
    	  	imports := <map(try(apply-export(|fname)))> <filter(is-import)> headeritems;
    	  	aliasses := <filter(is-alias)> headeritems;
    	  	initsize := <getfirst(is-init) <+ !0> headeritems;
-   	  	initblock := <getfirst(is-init-block) <+ !FVM_InitBlock("MAIN")> headeritems
+   	  	initblock := <getfirst(is-init-block) <+ !FVM_InitBlock("MAIN")> headeritems;
+   	  	registers := <getfirst(is-reg-size) <+ !0> headeritems
    	  	
-   	unify-header: RGR_Program(fname, imports, n, block, aliasses, blocks) 
-   		-> RGR_Program(FVM_Header(<concat> [imports, [FVM_InitSize(<int-to-string> n), block], aliasses]), None(), blocks)
+   	unify-header: RGR_Program(fname, imports, n, block, aliasses, blocks, register) 
+   		-> RGR_Program(FVM_Header(<concat> [imports, [FVM_InitSize(<int-to-string> n), block, FVM_RegisterSize(<int-to-string> register)], aliasses]), None(), blocks)
    	
    	is-import: i@FVM_Import(_, _) -> i
    	is-import: i@FVM_ImportAs(_, _, _) -> i
@@ -43,6 +44,7 @@ rules
    	
    	is-init: FVM_InitSize(s) -> <string-to-int> s
    	is-init-block: b@FVM_InitBlock(name) -> b
+   	is-reg-size: FVM_RegisterSize(s) -> <string-to-int> s
    	
 rules
   prepare-run(|fname) = prefix-filename(|fname); fix-empty-paths; desugar

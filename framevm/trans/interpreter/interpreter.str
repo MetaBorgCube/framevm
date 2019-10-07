@@ -20,7 +20,7 @@ rules
       
     eval-program = eval-program(id)
     
-    eval-program(s): RGR_Program(fn, i, size, block, links, blocks) -> <eval-program-(s, rgr-eval | "RGR")> (Program(fn, i, size, block, links, blocks), <vm-init-rgr> (<length> links, 2, size))
+    eval-program(s): RGR_Program(fn, i, size, block, links, blocks, registers) -> <eval-program-(s, rgr-eval | "RGR")> (Program(fn, i, size, block, links, blocks), <vm-init> (<length> links, 2, size, registers))
     
     eval-program-(s, mode-eval | mode): (Program(fn, i, s, FVM_InitBlock(init_block_name), links, blocks), env1) -> out
       where 
@@ -29,10 +29,9 @@ rules
         (env2, label_bindings) := <foldl(import-blocks(|mode))> (i, (env1, <new-hashtable>));
         blocks' := <resolve-jump-labels-all(|label_bindings, fn)> blocks;
         (_, env3) := <foldl(store-block)> (blocks', (fn, env2));
-        (_, env4) := <store-block> (FVM_Block(FVM_Label("_exit"),  None(), FVM_Seq([]), 0), (fn, env3));
-        (_, env5) := <store-block> (FVM_Block(FVM_Label("_catch"), None(), FVM_Seq([]), 0), (fn, env4));
-        size := <vm-get-block-size(|env5)> (fn, init_block_name);
-        env6 := <vm-start(|env5)> (fn, init_block_name, size);
+        (_, env4) := <store-block> (FVM_Block(FVM_Label("_exit"), FVM_Seq([])), (fn, env3));
+        (_, env5) := <store-block> (FVM_Block(FVM_Label("_catch"), FVM_Seq([])), (fn, env4));
+        env6 := <vm-start(|env5)> (fn, init_block_name);
         env7 := <fvm-execute(s, mode-eval|env6)>;
         out  := <vm-stop(|env7)>
     

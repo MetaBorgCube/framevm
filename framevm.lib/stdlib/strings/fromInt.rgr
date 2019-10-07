@@ -1,19 +1,17 @@
 export INT_TO_STRING as int_to_string
 
 INT_TO_STRING:
-	local := 1
 	r0 <- new(3)
 	set(r0, [0], get([0]))
 	newscope(r0, P)
 	call(new{get([0])}, __CALC_LENGTH, __INT_TO_STRING)
 
 __INT_TO_STRING:
-	r0 <- rget(curCF())
+	r0 <- rget()
 	set([1], r0)
 	jumpz(lti(get([0]), iload(0)),__POS_INT_TO_STRING, __NEG_INT_TO_STRING)
 
 __CALC_LENGTH:
-	local := 2
 	r0 <- iload(0)
 	jump(__CALC_LENGTH_COMP)
 	

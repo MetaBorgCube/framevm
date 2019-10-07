@@ -13,13 +13,11 @@ signature
     Bind : STRING * INT -> S
     RGR_AutoVar : STRING -> S
     FVM_AutoLabel : STRING -> S
-    FVM_AnnLabel : Label -> S
-    FVM_AutoSize: S
     FVM_BoundLabel : STRING * FVM_Label -> S
     FVM_Export : STRING * STRING * STRING -> S
     FVM_Seq : [Instr] -> S
-    FVM_Block : FVM_Label * INT * FVM_Seq * INT -> S
-    RGR_Program: STRING * [Import] * INT * STRING * [Alias] * [STC_Block] -> S
+    FVM_Block : FVM_Label * FVM_Seq -> S
+    RGR_Program: STRING * [Import] * INT * STRING * [Alias] * [STC_Block] * INT -> S
 
 signature
   sorts V

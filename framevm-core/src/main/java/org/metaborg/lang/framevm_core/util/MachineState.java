@@ -22,7 +22,6 @@ public class MachineState {
 	private int linkSize;
 	public MachineThread currentThread;
 	private int controlCount;
-	public VMMode mode;
 	
 	/**
 	 * Constructor for a new environment.
@@ -31,11 +30,10 @@ public class MachineState {
 	 * @param mode
 	 * 		The mode of the VM
 	 */
-	public MachineState(int link_size, VMMode mode) {
+	public MachineState(int link_size) {
 		this.blocks = new HashMap<>();
 		this.stdout = new StringBuilder();
 		this.debug = "";
-		this.mode = mode;
 		
 		this.linkSize = link_size;
 
@@ -120,20 +118,15 @@ public class MachineState {
 		return res;
 	}
 
-	public ControlFrame newStackControlFrame(int contSize, int stackSize) {
-		String id = "controlFrame_" + controlCount++;
-		return new StackControlFrame(contSize, stackSize, id);
-	}
-
-	public void putBlock(String libName, String blockName, IStrategoTerm[] instrs, int size) {
+	public void putBlock(String libName, String blockName, IStrategoTerm[] instrs) {
 		if (!blocks.containsKey(libName)) {
 			blocks.put(libName, new HashMap<>());
 		}
-		blocks.get(libName).put(blockName, new Block(blockName, instrs, size));
+		blocks.get(libName).put(blockName, new Block(blockName, instrs));
 	}
 
-	public ControlFrame newRegisterControlFrame(int contSize, int locals) {
+	public ControlFrame newControlFrame(int contSize) {
 		String id = "controlFrame_" + controlCount++;
-		return new RegisterControlFrame(contSize, locals, id);
+		return new ControlFrame(contSize, id);
 	}
 }

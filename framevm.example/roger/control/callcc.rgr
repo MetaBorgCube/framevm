@@ -1,8 +1,8 @@
 #init 2
+#registers 1
 
 // Capture the current continuation and store it
 MAIN:
-	local := 1
 
 	r0 <- curC(PRINT)
 	set([0], r0)

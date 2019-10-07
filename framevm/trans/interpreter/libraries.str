@@ -24,7 +24,7 @@ rules
     ; fvm-log(|"INFO", $[Stored [<length> exports] exports in [filename]])
   
   // Extract all imports and resolve all existing jump labels for RGR
-  extract-imports: RGR_Program(name, imps, _, _, _, body) -> (name, "rgr", exports, body')
+  extract-imports: RGR_Program(name, imps, _, _, _, body, _) -> (name, "rgr", exports, body')
     with 
       (exports, body') := <extract--imports> (name, imps, body)
   
@@ -39,7 +39,7 @@ rules
 
 rules
   // Resolve all labels in a block to bound labels
-  resolve-label-block(|lib): FVM_Block(lbl, s, FVM_Seq(body), d) -> FVM_Block(lbl, s, FVM_Seq(body'), d) 
+  resolve-label-block(|lib): FVM_Block(lbl, FVM_Seq(body)) -> FVM_Block(lbl, FVM_Seq(body')) 
   	with
   	  body' := <topdown(try(resolve-label(|lib)))> body
   
@@ -110,15 +110,14 @@ rules
       (_, env') := <foldl(store-block)> (blocks, (lib, env))
   
   // Store a block on the VM
-  store-block: (FVM_Block(FVM_Label(lbl), Some(size), FVM_Seq(body), _), (lib, env)) -> (lib, <vm-store-block(|env)> ((lib, lbl, size), body))
-  store-block: (FVM_Block(FVM_Label(lbl), None(), FVM_Seq(body), _), (lib, env)) -> (lib, <vm-store-block(|env)> ((lib, lbl, -1), body))
+  store-block: (FVM_Block(FVM_Label(lbl), FVM_Seq(body)), (lib, env)) -> (lib, <vm-store-block(|env)> ((lib, lbl), body))
 
 rules
   // Resolve all labels in a list of blocks to boundlabels
   resolve-jump-labels-all(|bindings, fname) = map(resolve-jump-labels-block(|bindings, fname))
  
   // Resolve all labels in a block to bound labels
-  resolve-jump-labels-block(|b, fname): FVM_Block(lbl, s, FVM_Seq(body), d) -> FVM_Block(lbl, s, FVM_Seq(body'), d) 
+  resolve-jump-labels-block(|b, fname): FVM_Block(lbl, FVM_Seq(body)) -> FVM_Block(lbl, FVM_Seq(body')) 
   	with
   	  body' := <topdown(try(resolve-jump-labels(|b, fname)))> body
   

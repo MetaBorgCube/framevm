@@ -2,8 +2,8 @@ module rgr_interpreter_type
 
 language framevm
 
-fixture [[MAIN:
-	local := 99
+fixture [[#registers 99
+MAIN:
 	[[...]]
 	print(r0)
 	return(iload(0))

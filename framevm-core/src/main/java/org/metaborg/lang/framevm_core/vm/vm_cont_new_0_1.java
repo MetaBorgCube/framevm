@@ -33,7 +33,7 @@ public class vm_cont_new_0_1 extends FVMStrategy {
 			return null;
 		}
 		
-		Continuation cont = new Continuation(cf, block);
+		Continuation cont = new Continuation(cf, block, env.currentThread.getMemory());
 		return factory.makeTuple(new StrategoBlob(env), new StrategoBlob(cont));
 	}
 }

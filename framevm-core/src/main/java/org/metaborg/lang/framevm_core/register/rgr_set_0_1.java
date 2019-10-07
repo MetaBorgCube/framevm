@@ -8,7 +8,7 @@ import org.spoofax.terms.StrategoTuple;
 
 import org.metaborg.lang.framevm_core.FVMStrategy;
 import org.metaborg.lang.framevm_core.util.MachineState;
-import org.metaborg.lang.framevm_core.util.RegisterControlFrame;
+import org.metaborg.lang.framevm_core.util.MachineThread;
 import mb.nabl2.terms.stratego.StrategoBlob;
 
 public class rgr_set_0_1 extends FVMStrategy {
@@ -18,8 +18,8 @@ public class rgr_set_0_1 extends FVMStrategy {
 	// env| (slot, val) -> env'
 	// Push the given value to the stack
 	protected IStrategoTerm invoke(ITermFactory factory, MachineState env, IStrategoTerm arg) {
-		RegisterControlFrame cf = env.currentThread.getRegisterControlFrame();
-		if(cf == null) {
+		MachineThread thread = env.currentThread;
+		if(thread == null) {
 			LOGGER.error("Cannot store in a stack control frame");
 			return null;
 		}
@@ -29,7 +29,7 @@ public class rgr_set_0_1 extends FVMStrategy {
 		IStrategoTerm val = tuple.get(1);
 		
 		try {
-			cf.set(slot, val);
+			thread.set(slot, val);
 			return new StrategoBlob(env);
 		} catch (ArrayIndexOutOfBoundsException ex) {
 			LOGGER.error("Slot " + slot + " does not exist");

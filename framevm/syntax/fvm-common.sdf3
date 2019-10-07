@@ -185,9 +185,7 @@ context-free syntax
   Alias.FVM_LinkAlias = <#link <LinkRef> -\> <INTLEZ>>
   Alias.FVM_ContAlias = <#cont <ContRef> -\> <INTLEZ>>
   InitialBlock.FVM_InitBlock = <#start <LABEL>>
-  
-  CFRSize.RGR_Local = <local := <INTLEZ>>
-  CFSSize.STC_Stack = <stack := <INTLEZ>>
+  InitialBlock.FVM_RegisterSize = <#registers <INTLEZ>>
 /* 
 
 Values 

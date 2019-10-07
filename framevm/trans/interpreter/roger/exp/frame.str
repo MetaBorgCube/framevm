@@ -36,32 +36,6 @@ rules
         val := <frame-get-slot(|env3)> (frame, slotId)
         
     
-    rgr-eval-exp(|env): RGR_IsEmpty(FVM_Path(path)) -> (env, IntV(v)) 
-      where
-        (init, FVM_Slot(slot)) := <split-init-last> path;
-        FrameRef(frame) := <rgr-get-path(|env)> (FrameRef(<frame-this(|env)>), init);
-        v := <frame-is-empty-slot(|env)> (frame, <string-to-int> slot)
-    
-    rgr-eval-exp(|env): RGR_IsEmpty(exp) -> (env2, IntV(val))
-      where
-        (env2, IntV(slotId)) := <rgr-eval-exp(|env)> exp;
-        val := <frame-is-empty-slot(|env2)> (<frame-this(|env2)>, slotId)
-
-    
-    rgr-eval-exp(|env): RGR_IsEmpty(exp, FVM_Path(path)) -> (env2, IntV(v))
-      where
-        (env2, FrameRef(frame)) := <rgr-eval-exp(|env)> exp;
-        (init, FVM_Slot(slot)) := <split-init-last> path;
-        FrameRef(frame') := <rgr-get-path(|env)> (FrameRef(frame), init);
-        v := <frame-is-empty-slot(|env)> (frame', <string-to-int> slot)
-    
-    rgr-eval-exp(|env): RGR_IsEmpty(exp1, exp2) -> (env3, IntV(val))
-      where
-        (env2, FrameRef(frame)) := <rgr-eval-exp(|env)> exp1;
-        (env3, IntV(slotId)) := <rgr-eval-exp(|env2)> exp2;
-        val := <frame-is-empty-slot(|env3)> (frame, slotId)
-        
-    
     rgr-eval-exp(|env): RGR_New() -> (env2, FrameRef(frame))
       where
         (env2, frame) := <frame-new(|env)> 0

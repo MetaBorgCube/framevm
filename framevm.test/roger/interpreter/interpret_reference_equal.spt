@@ -2,8 +2,8 @@ module rgr_interpreter_reference_equal
 
 language framevm
 
-fixture [[MAIN:
-	local := 99	
+fixture [[#registers 2
+MAIN:	
 	[[...]]
 	print(eqr(r0, r1))
 	return(iload(0))

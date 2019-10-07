@@ -1,4 +1,5 @@
 #init 1
+#registers 2
 {
 	var count := 0
 	for i = 0 -> 3:
@@ -13,7 +14,6 @@
 }
 
 MAIN:
-	local := 2
 	r0 <- iload(0)
 	set([0], r0)
 	

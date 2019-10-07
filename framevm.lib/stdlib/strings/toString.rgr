@@ -2,7 +2,6 @@ from stdlib.strings.fromInt import int_to_string
 export TO_STRING as to_string
 
 TO_STRING:
-  local := 0
   jumpz(frame?(get([0])), __IS_INT, __IS_STRING)
   
 __IS_INT:

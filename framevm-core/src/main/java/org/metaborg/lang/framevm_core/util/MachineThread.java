@@ -1,5 +1,9 @@
 package org.metaborg.lang.framevm_core.util;
 
+import java.util.Stack;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.strategoxt.lang.Context;
 import org.strategoxt.lang.Strategy;
@@ -13,9 +17,17 @@ public class MachineThread {
 	private Block block;
 	private int instr_count;
 	
-	public MachineThread(ControlFrame frame, MachineState env) {
-		controlFrame = frame;
+	private IStrategoTerm[] registers;
+	private Stack<IStrategoTerm> returnStack;
+	
+	
+	private static final Pattern LOCAL = Pattern.compile("\\w([0-9]+)");
+	
+	public MachineThread(ControlFrame frame, MachineState env, int register_size) {
+		this.controlFrame = frame;
 		this.env = env;
+		this.returnStack = new Stack<>();
+		this.registers = new IStrategoTerm[register_size];
 	}
 	
 	public void initThread() {	}
@@ -38,18 +50,11 @@ public class MachineThread {
 		return controlFrame;
 	}
 
-	public StackControlFrame getStackControlFrame() {
-		if (env.mode != VMMode.STACK || controlFrame instanceof StackControlFrame) {
-			return (StackControlFrame) controlFrame;
-		} else {
-			return null;
-		}
-	}
-
 	public void callContinuation(Continuation continuation) {
 		this.controlFrame = continuation.getControlFrame();
-		this.controlFrame.restoreMemory(continuation.getMemory(), continuation.getFrame());
+		this.controlFrame.setCurrentFrame(continuation.getFrame());
 		this.jump(continuation.getBlock());
+		this.restoreMemory(continuation.getMemory());
 	}
 
 	public void callControlFrame(ControlFrame cf) {
@@ -61,14 +66,6 @@ public class MachineThread {
 	 */
 	public MachineState getEnv() {
 		return env;
-	}
-
-	public RegisterControlFrame getRegisterControlFrame() {
-		if (env.mode != VMMode.REGISTER || controlFrame instanceof RegisterControlFrame) {
-			return (RegisterControlFrame) controlFrame;
-		} else {
-			return null;
-		}
 	}
 	
 	/**
@@ -109,4 +106,53 @@ public class MachineThread {
 		return instr_count;
 	}
 	
+
+
+	private int slotId(String slot) {
+		Matcher matcher = LOCAL.matcher(slot);
+		matcher.matches();
+		matcher.group();
+		return Integer.valueOf(matcher.group(1));
+	}
+	
+	public void set(String slot, IStrategoTerm term) {
+		if (registers == null) throw new IllegalStateException("Locals not set");
+		registers[slotId(slot)] = term;
+	}
+	
+	public IStrategoTerm get(String slot) {
+		if (registers == null) throw new IllegalStateException("Locals not set");
+		return registers[slotId(slot)];
+	}
+	
+	public boolean hasReturn() {
+		return !returnStack.isEmpty();
+	}
+	
+	public Stack<IStrategoTerm> getReturns() {
+		return returnStack;
+	}
+
+	public IStrategoTerm[] getRegisters() {
+		return registers;
+	}
+
+	public void pushReturn(IStrategoTerm result) {
+		returnStack.push(result);
+	}
+
+	public IStrategoTerm popReturn() {
+		return returnStack.pop();
+	}
+	
+	@SuppressWarnings("unchecked")
+	public Memory getMemory() {
+		return new Memory((Stack<IStrategoTerm>) this.returnStack.clone(), (IStrategoTerm[]) registers.clone());
+	}
+
+	public void restoreMemory(Memory mem) {
+		if (mem == null) return; // Nothing to do for the empty restore
+		this.registers = mem.getRegisters();
+		this.returnStack = mem.getStack();
+	}
 }

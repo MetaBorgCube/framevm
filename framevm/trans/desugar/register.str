@@ -6,7 +6,7 @@ imports
     fvm-common
 
 rules
-    apply-aliasses: RGR_Program(fn, i, s, b, aliasses, blocks) -> RGR_Program(fn, i, s, b, link_addresses, bound_blocks)
+    apply-aliasses: RGR_Program(fn, i, s, b, aliasses, blocks, r) -> RGR_Program(fn, i, s, b, link_addresses, bound_blocks, r)
       where
         all_aliasses   := <insert-standards> aliasses;
         link_addresses := <foldl(extract-links)> (all_aliasses, []);
@@ -57,7 +57,7 @@ rules
     apply-alias(|alias): FVM_Cont(name) -> FVM_Cont(Bind(name, <string-to-int> idx)) where FVM_ContAlias(FVM_Cont(name), idx) := alias
     
     
-    resugar-aliasses: RGR_Program(fn, i, s, b, links, bound_blocks) -> RGR_Program(fn, i, s, b, aliasses, blocks)
+    resugar-aliasses: RGR_Program(fn, i, s, b, links, bound_blocks, r) -> RGR_Program(fn, i, s, b, aliasses, blocks, r)
       where
         blocks := <topdown(try(resugar-alias))> bound_blocks;
         (new_aliasses, _) := <foldl(resugar-alias)>(<collect-all(is-alias)> bound_blocks, ([], []));

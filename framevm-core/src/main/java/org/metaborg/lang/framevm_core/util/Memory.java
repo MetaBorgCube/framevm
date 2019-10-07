@@ -4,14 +4,20 @@ import java.util.Stack;
 
 import org.spoofax.interpreter.terms.IStrategoTerm;
 
-public class ControlFrameMemory { 
+public class Memory { 
 	private Stack<IStrategoTerm> stack;
+	private IStrategoTerm[] registers;
 	
-	public ControlFrameMemory(Stack<IStrategoTerm> stack) {
+	public Memory(Stack<IStrategoTerm> stack, IStrategoTerm[] locals) {
 		this.stack = stack;
+		this.registers = locals;
 	}
 	
 	public Stack<IStrategoTerm> getStack() {
 		return stack;
+	}
+	
+	public IStrategoTerm[] getRegisters() {
+		return this.registers;
 	}
 }

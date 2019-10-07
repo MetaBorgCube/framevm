@@ -60,37 +60,7 @@ rules
         (env2, FrameRef(frame)) := <rgr-eval-exp(|env1)> exp1;
         (env3, IntV(slotId)) := <rgr-eval-exp(|env2)> exp2;
         (env4, val) := <rgr-eval-exp(|env3)> exp3;
-        env5 := <frame-set-slot(|env4)> (frame, slotId, val)
-        
-       
-    rgr-eval-instr: (RGR_Empty(FVM_Path(path)), env1) -> env2
-      where
-        (init, FVM_Slot(idx)) := <split-init-last> path;
-        FrameRef(frame) := <rgr-get-path(|env1)> (FrameRef(<frame-this(|env1)>), init);
-        env2 := <frame-empty-slot(|env1)> (frame, <string-to-int> idx)
-        
-
-    rgr-eval-instr: (RGR_Empty(exp), env1) -> env3
-      where
-        (env2, IntV(slotId)) := <rgr-eval-exp(|env1)> exp;
-        env3 := <frame-empty-slot(|env2)> (<frame-this(|env2)>, slotId)
-        
-        
-        
-    rgr-eval-instr: (RGR_Empty(exp, FVM_Path(path)), env1) -> env3
-      where
-        (init, FVM_Slot(idx)) := <split-init-last> path;
-        (env2, FrameRef(frame)) := <rgr-eval-exp(|env1)> exp;
-        FrameRef(frame') := <rgr-get-path(|env2)> (FrameRef(frame), init);
-        (env2, val) := <rgr-eval-exp(|env2)> exp;
-        env3 := <frame-empty-slot(|env2)> (frame', <string-to-int> idx, val)
-        
-    rgr-eval-instr: (RGR_Empty(exp1, exp2), env1) -> env4
-      where
-        (env2, FrameRef(frame)) := <rgr-eval-exp(|env1)> exp1;
-        (env3, IntV(slotId)) := <rgr-eval-exp(|env2)> exp2;
-        env4 := <frame-empty-slot(|env3)> (frame, slotId)
-        
+        env5 := <frame-set-slot(|env4)> (frame, slotId, val)   
       
         
     rgr-eval-instr: (RGR_Link(ff, FVM_Path(path), FVM_Link(Bind(lbl, idx))), env1) -> env3
@@ -113,17 +83,10 @@ rules
         
         
     
-    rgr-eval-instr: (RGR_CFTransfer(exps, c), env1) -> env3
+    rgr-eval-instr: (RGR_CFTransfer(exps), env1) -> env3
       where
-        cont := <cont-get(|env1)> (<cf-this(|env1)>, <cont-resolve> c);
         (env2, vals) := <rgr-eval-exp-fold(|env1)> exps;
-        env3 := <cf-transfer(|env2)> (cont, vals)
-        
-    rgr-eval-instr: (RGR_CFTransfer(exps, exp), env1) -> env4
-      where
-        (env2, ControlFrame(cont)) := <rgr-eval-exp(|env1)> exp;
-        (env3, vals) := <rgr-eval-exp-fold(|env2)> exps;
-        env4 := <cf-transfer(|env3)> (cont, vals)
+        env3 := <vm-transfer(|env2)> vals
         
     
     rgr-eval-instr: (RGR_ContSet(exp1, exp2), env1) -> env4 

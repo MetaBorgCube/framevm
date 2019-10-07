@@ -7,11 +7,10 @@ sorts RBlock context-free syntax
 
 	RBlock.RGR_Block = <
 <lbl:Label>: 
-    <size:CFRSize?>
     <instr:Instr*> 
     <jump:ControlStmt>
 
->			{ layout (indent lbl size && align-list instr && align instr jump && align size instr) }
+>			{ layout (indent lbl instr && align-list instr && align instr jump ) }
 	
 //	Instr.RGR_PureAssign = <<RGRVar> \<- <Exp> @inline>
 	Instr.RGR_Stmt = Stmt
@@ -27,6 +26,7 @@ sorts Exp context-free syntax
 	
 	Exp = IntOpExp
 	IntOpExp.RGR_ILoad  = <iload(<INT>)>
+	IntOpExp.RGR_NLoad  = <nload()>
 	IntOpExp.RGR_INeg   = <negi(<Exp>)>
 	IntOpExp.RGR_IAdd   = <addi(<Exp>, <Exp>)>
 	IntOpExp.RGR_IMul   = <muli(<Exp>, <Exp>)>
@@ -58,22 +58,17 @@ sorts Exp context-free syntax
 	Stmt.RGR_Set          = <set(<PathOrExp>, <Exp>)>
 	Stmt.RGR_Set          = <set(<Exp>, <NEPathOrExp>, <Exp>)>
 	FrameExp.RGR_Get      = <get(<PathOrExp>)>
-	FrameExp.RGR_Get      = <get(<Exp>, <PathOrExp>)>		
-	
-	Stmt.RGR_Empty        = <empty(<NEPathOrExp>)>
-	Stmt.RGR_Empty        = <empty(<Exp>, <NEPathOrExp>)>
-	FrameExp.RGR_IsEmpty  = <empty?(<NEPathOrExp>)>
-	FrameExp.RGR_IsEmpty  = <empty?(<Exp>, <NEPathOrExp>)>
+	FrameExp.RGR_Get      = <get(<Exp>, <PathOrExp>)>
 	
 	Exp = OnReturnExp
-	OnReturnExp.RGR_CFRGet = <rget(<Exp>)>
+	OnReturnExp.RGR_CFRGet = <rget()>
 	
 	Exp = ContExp
 	ContExp.RGR_CFThis       = <curCF()>
 	ContExp.RGR_ContNew      = <newC(<Exp>, <Exp>, <IntOrExp>)>
 	ContExp.RGR_CFNew        = <newCF(<Exp>, <Exp>, <Exp>)>
 	ContExp.RGR_ContCur      = <curC(<Label>)>
-	Stmt.RGR_CFTransfer      = <transfer(<{Exp ","}+>, <ContOrExp>)>
+	Stmt.RGR_CFTransfer      = <transfer(<{Exp ","}+>)>
 	
 	Stmt.RGR_ContSet         = <setC(<ContOrExp>, <Exp>)>
 	Stmt.RGR_ContSet         = <setC(<Exp>, <ContOrExp>, <Exp>)>
@@ -85,10 +80,10 @@ sorts Exp context-free syntax
 	
 	ControlStmt.RGR_Return     = <return(<{Exp ","}*>)>
 	ControlStmt.RGR_Yield      = <yield(<{Exp ","}+>, <Exp>)>
-	ControlStmt.RGR_JumpZ      = <jumpz(<Exp>, <Label>, <Label>)>
-	ControlStmt.RGR_Jump       = <jump(<Label>)>
-	ControlStmt.RGR_Call       = <call(<Exp>, <Exp>, <Label>)>
-	ControlStmt.RGR_Call       = <call(<Exp>, <Label>)>
+	ControlStmt.RGR_JumpZ      = <jumpz(<Exp>, <Exp>, <Exp>)>
+	ControlStmt.RGR_Jump       = <jump(<Exp>)>
+	ControlStmt.RGR_Call       = <call(<Exp>, <Exp>, <Exp>)>
+	ControlStmt.RGR_Call       = <call(<Exp>, <Exp>)>
 	ControlStmt.RGR_TailCall   = <tailcall(<Exp>, <Exp>)>
 	ControlStmt.RGR_TailCall   = <tailcall(<Exp>)>
 	
@@ -97,14 +92,14 @@ sorts Exp context-free syntax
 	ControlStmt.RGR_CFCall       = <callCF(<Exp>, <Exp>)>
 	ControlStmt.RGR_CFReturn     = <returnCF(<Exp>)>
 	
-	ControlStmt.RGR_Try        = <try(<Exp>, <Exp>, <Exp>, <Exp>, <Label>)>
-	ControlStmt.RGR_Try        = <try(<Exp>, <Exp>, <Label>)>
+	ControlStmt.RGR_Try        = <try(<Exp>, <Exp>, <Exp>, <Exp>, <Exp>)>
+	ControlStmt.RGR_Try        = <try(<Exp>, <Exp>, <Exp>)>
 	ControlStmt.RGR_Throw      = <throw(<Exp>)>
 	
 	Stmt.RGR_ScopeExit        = <exitscope(<PathOrEmpty>)>
 	Stmt.RGR_ScopeNew         = <newscope(<Exp>, <LinkRef>)>
-	ControlStmt.RGR_ScopeExit = <exitscope(<PathOrEmpty>, <Label>)>
-	ControlStmt.RGR_ScopeNew  = <newscope(<Exp>, <LinkRef>, <Label>)>
+	ControlStmt.RGR_ScopeExit = <exitscope(<PathOrEmpty>, <Exp>)>
+	ControlStmt.RGR_ScopeNew  = <newscope(<Exp>, <LinkRef>, <Exp>)>
 	Stmt.RGR_ScopeSetCurrent  = <mkcurrent(<Exp>)>
 	Exp.RGR_ScopeGetCurrent   = <getcurrent()>
 	

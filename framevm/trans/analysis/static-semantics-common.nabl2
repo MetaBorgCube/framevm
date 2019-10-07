@@ -36,24 +36,13 @@ rules
   
   
   
-  block[[FVM_Block(FVM_Label(name), Some(stack), FVM_Seq(body), delta) ^(s)]] :=
+  block[[FVM_Block(FVM_Label(name), FVM_Seq(body)) ^(s)]] :=
     new block, 
     Block{name} <- s,
     distinct/name D(s)/Block | error $[Redefinition of label] @name,
     Block{name} ===> block,
     block ---> s,
-    Map1(instr)[[body ^(block)]],
-    delta == 0 | note $[Stack delta is non-zero: [delta]] @name.
-  
-  block[[FVM_Block(FVM_Label(name), None(), FVM_Seq(body), size) ^(s)]] :=
-    new block, 
-    Block{name} <- s,
-    distinct/name D(s)/Block | error $[Redefinition of label] @name,
-    Block{name} ===> block,
-    block ---> s,
-    Map1(instr)[[body ^(block)]],
-    size == 0 | note $[Stack delta is non-zero: [size]] @name.
-  
+    Map1(instr)[[body ^(block)]].
   
 rules // Imports
   libfunc[[func_name ^(ds, s)]] :=

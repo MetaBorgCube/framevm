@@ -6,7 +6,7 @@ imports
   analysis/static-semantics-common
   
 rules
-  prog[[RGR_Program(fname, imports, size, b, a, blocks) ^(s)]] :=
+  prog[[RGR_Program(fname, imports, size, b, a, blocks, _) ^(s)]] :=
     new prog,
     Map1(block)[[blocks ^(prog)]],
     
@@ -60,18 +60,13 @@ rules // Exp
   rgrExp[[RGR_Get(exp) ^(s)]]        := rgrExp[[exp ^(s)]].
   rgrExp[[RGR_Get(e1, e2) ^(s)]]     := rgrExp[[e1 ^(s)]], rgrExp[[e2 ^(s)]].
   
-  rgrExp[[RGR_Empty(e1) ^(s)]]     := rgrExp[[e1 ^(s)]].
-  rgrExp[[RGR_Empty(e1, e2) ^(s)]] := rgrExp[[e1 ^(s)]], rgrExp[[e2 ^(s)]].
-  rgrExp[[RGR_IsEmpty(exp) ^(s)]]      := rgrExp[[exp ^(s)]].
-  rgrExp[[RGR_IsEmpty(e1, e2) ^(s)]]   := rgrExp[[e1 ^(s)]], rgrExp[[e2 ^(s)]].
-  
-  rgrExp[[RGR_CFRGet(e1) ^(s)]] := rgrExp[[e1 ^(s)]].
+  rgrExp[[RGR_CFRGet() ^(s)]].
   rgrExp[[RGR_CFThis() ^(s)]].
   rgrExp[[RGR_CFNew(e1, e2, e3) ^(s)]]   := rgrExp[[e1 ^(s)]], rgrExp[[e2 ^(s)]], rgrExp[[e3 ^(s)]].
   rgrExp[[RGR_ContNew(e1, lbl, RGR_IntVal(_)) ^(s)]]   := rgrExp[[e1 ^(s)]], rgrExp[[lbl ^(s)]].
   rgrExp[[RGR_ContNew(e1, lbl, e2) ^(s)]]   := rgrExp[[e1 ^(s)]], rgrExp[[e2 ^(s)]], rgrExp[[lbl ^(s)]].
-  rgrExp[[RGR_CFTransfer(e1, e2) ^(s)]] := Map1(rgrExp)[[e1 ^(s)]], rgrExp[[e2 ^(s)]].
-  rgrExp[[RGR_ContCur(lbl) ^(s)]]   := lbl[[lbl ^(s)]].
+  rgrExp[[RGR_CFTransfer(e1) ^(s)]] := Map1(rgrExp)[[e1 ^(s)]].
+  rgrExp[[RGR_ContCur(e1) ^(s)]]   := rgrExp[[e1 ^(s)]].
    
   rgrExp[[RGR_ContSet(e1, e2) ^(s)]]      := rgrExp[[e1 ^(s)]], rgrExp[[e2 ^(s)]].
   rgrExp[[RGR_ContSet(e1, e2, e3) ^(s)]]  := rgrExp[[e1 ^(s)]], rgrExp[[e2 ^(s)]], rgrExp[[e3 ^(s)]].
@@ -81,16 +76,17 @@ rules // Exp
   rgrExp[[RGR_CFUnpack(exp) ^(s)]]        := rgrExp[[exp ^(s)]].
   
   rgrExp[[lbl@FVM_Label(_) ^(s)]]          := lbl[[lbl ^(s)]].
+  rgrExp[[lbl@FVM_ExternalLabel(_) ^(s)]]  := lbl[[lbl ^(s)]].
   
 rules // Control Instructions
   instr[[RGR_Return(exps) ^(s)]]           := Map1(rgrExp)[[exps ^(s)]].
-  instr[[RGR_Yield(exps, lbl) ^(s)]]       := Map1(rgrExp)[[exps ^(s)]], lbl[[lbl ^(s)]].
-  instr[[RGR_JumpZ(exp, lbl1, lbl2) ^(s)]] := rgrExp[[exp ^(s)]], lbl[[lbl1 ^(s)]], lbl[[lbl2 ^(s)]].
-  instr[[RGR_Jump(lbl) ^(s)]]              := lbl[[lbl ^(s)]].
+  instr[[RGR_Yield(exps, lbl) ^(s)]]       := Map1(rgrExp)[[exps ^(s)]], rgrExp[[lbl ^(s)]].
+  instr[[RGR_JumpZ(exp, lbl1, lbl2) ^(s)]] := rgrExp[[exp ^(s)]], rgrExp[[lbl1 ^(s)]], rgrExp[[lbl1 ^(s)]].
+  instr[[RGR_Jump(lbl) ^(s)]]              := rgrExp[[lbl ^(s)]].
   
-  instr[[RGR_Call(exp, lbl1, lbl2) ^(s)]]  := rgrExp[[exp ^(s)]], rgrExp[[lbl1 ^(s)]], lbl[[lbl2 ^(s)]].
-  instr[[RGR_Call(exp, lbl) ^(s)]]         := rgrExp[[exp ^(s)]], lbl[[lbl ^(s)]].
-  instr[[RGR_TailCall(exp, lbl) ^(s)]]     := rgrExp[[exp ^(s)]], lbl[[lbl ^(s)]].
+  instr[[RGR_Call(exp, lbl1, lbl2) ^(s)]]  := rgrExp[[exp ^(s)]], rgrExp[[lbl1 ^(s)]], rgrExp[[lbl2 ^(s)]].
+  instr[[RGR_Call(exp, lbl) ^(s)]]         := rgrExp[[exp ^(s)]], rgrExp[[lbl ^(s)]].
+  instr[[RGR_TailCall(exp, lbl) ^(s)]]     := rgrExp[[exp ^(s)]], rgrExp[[lbl ^(s)]].
   instr[[RGR_TailCall(exp) ^(s)]]          := rgrExp[[exp ^(s)]].
   
   instr[[RGR_ContCall(exp) ^(s)]]        := rgrExp[[exp ^(s)]].
@@ -98,15 +94,15 @@ rules // Control Instructions
   instr[[RGR_CFCall(exp, lbl) ^(s)]]     := rgrExp[[exp ^(s)]], rgrExp[[lbl ^(s)]].
   instr[[RGR_CFReturn(exp) ^(s)]]        := rgrExp[[exp ^(s)]].
   
-  instr[[RGR_Try(e1, lbl1, e2, lbl2, lbl3) ^(s)]] := rgrExp[[e1 ^(s)]], rgrExp[[e2 ^(s)]], lbl[[lbl1 ^(s)]], lbl[[lbl2 ^(s)]], lbl[[lbl3 ^(s)]].
-  instr[[RGR_Try(e1, e2, lbl) ^(s)]]              := rgrExp[[e1 ^(s)]], rgrExp[[e2 ^(s)]], lbl[[lbl ^(s)]].
+  instr[[RGR_Try(e1, lbl1, e2, lbl2, lbl3) ^(s)]] := rgrExp[[e1 ^(s)]], rgrExp[[e2 ^(s)]], rgrExp[[lbl1 ^(s)]], rgrExp[[lbl2 ^(s)]], rgrExp[[lbl3 ^(s)]].
+  instr[[RGR_Try(e1, e2, lbl) ^(s)]]              := rgrExp[[e1 ^(s)]], rgrExp[[e2 ^(s)]], rgrExp[[lbl ^(s)]].
   instr[[RGR_Throw(exps) ^(s)]]                   := rgrExp[[exps ^(s)]].
   
   
   rgrExp[[RGR_ScopeExit(_) ^(s)]].
   rgrExp[[RGR_ScopeNew(exp, _) ^(s)]]     := rgrExp[[exp ^(s)]].
-  instr[[RGR_ScopeExit(_, lbl) ^(s)]]     := lbl[[lbl ^(s)]].
-  instr[[RGR_ScopeNew(exp, _, lbl) ^(s)]] := rgrExp[[exp ^(s)]], lbl[[lbl ^(s)]].
+  instr[[RGR_ScopeExit(_, lbl) ^(s)]]     := rgrExp[[lbl ^(s)]].
+  instr[[RGR_ScopeNew(exp, _, lbl) ^(s)]] := rgrExp[[exp ^(s)]], rgrExp[[lbl ^(s)]].
   rgrExp[[RGR_ScopeSetCurrent(exp) ^(s)]] := rgrExp[[exp ^(s)]].
   rgrExp[[RGR_ScopeGetCurrent() ^(s)]].
   

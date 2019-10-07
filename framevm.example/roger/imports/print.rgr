@@ -1,12 +1,12 @@
 from stdlib.strings import print_string, from_bool, from_int, concat
+#registers 4
 
 MAIN:
-	local := 1
 	r0 <- new{sload("abcdefg\n"), sload("hijklmnop\n")}
 	call(r0, concat, MAIN1)
 
 MAIN1:
-	r0 <- rget(curCF())
+	r0 <- rget()
 	call(new{r0}, print_string, MAIN2)
 	
 MAIN2:
@@ -15,7 +15,7 @@ MAIN2:
 	call(r0, from_int, MAIN3)
 	
 MAIN3:
-	r0 <- rget(curCF())
+	r0 <- rget()
 	r0 <- new{r0}
 	call(r0, print_string, MAIN_END)
 	

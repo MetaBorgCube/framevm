@@ -1,4 +1,6 @@
 #init 2
+#registers 2
+
 {  
 	add (int:i, int:j):int = { 
   		return i + j
@@ -9,13 +11,11 @@
 }
 
 ADD:
-	local := 2
 	r0 <- get([0])
 	r1 <- addi(r0, get([1]))
 	return(r1)
 
 MAIN:
-	local := 2
 	r0 <- iload(42)
 	set([0], iload(10)) 
 	r1 <- new(iload(2))
@@ -25,6 +25,6 @@ MAIN:
 	call(r1, ADD, CONT2)
 	
 CONT2:
-	r1 <- rget(curCF())
+	r1 <- rget()
 	print(r0)
 	return(iload(0))			// exit with exitcode 0

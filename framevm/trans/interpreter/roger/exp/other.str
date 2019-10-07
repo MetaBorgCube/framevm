@@ -34,7 +34,6 @@ rules
       where
         env2 := <frame-set-slot(|env1)> (frame, idx, IntV(char))
         
-    rgr-eval-exp(|env1): RGR_CFRGet(exp) -> (env3, val)
+    rgr-eval-exp(|env1): RGR_CFRGet() -> (env3, val)
       where
-        (env2, ControlFrame(cf)) := <rgr-eval-exp(|env1)> exp;
-        (env3, val) := <cf-receive(|env2)> cf
+        (env3, val) := <vm-receive(|env1)>

@@ -3,17 +3,17 @@ module rgr_interpreter_control
 language framevm
 
 fixture [[#init 2
+#registers 2
+
 MAIN:
-	local := 99
 	[[...]]
 MAIN_END1:
-	r0 <- rget(curCF())
+	r0 <- rget()
 	print(iload(1))
 	print(r0)
 	return(iload(0))
 MAIN_END2:
-	local := 1
-	r0 <- rget(curCF())
+	r0 <- rget()
 	print(iload(2))
 	print(r0)
 	return(iload(0))
@@ -25,12 +25,11 @@ test call frame 1 [[
 	set(r0, [1], iload(3))
 	call(r0, FUNC, MAIN_END)
 FUNC:
-	local := 2
 	r0 <- get([0])
 	r1 <- get([1])
 	return(addi(r0, r1))
 MAIN_END:
-	r0 <- rget(curCF())
+	r0 <- rget()
 	print(r0)
 	return(iload(0))
 ]] transform "Run -> Run" to "IntV(4)"
@@ -42,12 +41,11 @@ test call frame 2 [[
 	r0 <- newC(r0, FUNC, 2)
 	call(r0, MAIN_END)
 FUNC:
-	local := 2
 	r0 <- get([0])
 	r1 <- get([1])
 	return(addi(r0, r1))
 MAIN_END:
-	r0 <- rget(curCF())
+	r0 <- rget()
 	print(r0)
 	return(iload(0))
 ]] transform "Run -> Run" to "IntV(4)"
@@ -61,7 +59,6 @@ test call frame throw [[
 	setC(unpackC(r1), $c, getC($c))
 	call(r0, FUNC, MAIN_END1)
 FUNC:
-	local := 0
 	throw(get([0]))
 ]] transform "Run -> Run" to "IntV(2)
 IntV(1)"
@@ -71,18 +68,16 @@ IntV(1)"
 test tailcall frame 1 [[
 	call(new(), MAIN2, MAIN_END)
 MAIN2:
-	local := 1
 	r0 <- new(2)
 	set(r0, [0], iload(1))
 	set(r0, [1], iload(3))
 	tailcall(r0, FUNC)
 FUNC:
-	local := 2
 	r0 <- get([0])
 	r1 <- get([1])
 	return(addi(r0, r1))
 MAIN_END:
-	r0 <- rget(curCF())
+	r0 <- rget()
 	print(r0)
 	return(iload(0))
 ]] transform "Run -> Run" to "IntV(4)"
@@ -90,19 +85,17 @@ MAIN_END:
 test call frame 2 [[
 	call(new(), MAIN2, MAIN_END)
 MAIN2:
-	local := 1
 	r0 <- new(2)
 	set(r0, [0], iload(1))
 	set(r0, [1], iload(3))
 	r0 <- newC(r0, FUNC, 2)
 	tailcall(r0)
 FUNC:
-	local := 2
 	r0 <- get([0])
 	r1 <- get([1])
 	return(addi(r0, r1))
 MAIN_END:
-	r0 <- rget(curCF())
+	r0 <- rget()
 	print(r0)
 	return(iload(0))
 ]] transform "Run -> Run" to "IntV(4)"
@@ -147,11 +140,9 @@ MAIN3:
 test try fallthrough [[
 	try(new(), TRY, new(), CATCH, END)
 TRY:
-	local := 0
 	print(iload(1))
 	callC(getC($n))
 CATCH:
-	local := 0
 	print(iload(2))
 	callC(getC($n))
 END:
@@ -163,11 +154,9 @@ IntV(3)"
 test try catch [[
 	try(new(), TRY, new(), CATCH, END)
 TRY:
-	local := 0
 	throw(iload(2))
 CATCH:
-	local := 1
-	r0 <- rget(curCF())
+	r0 <- rget()
 	print(r0)
 	callC(getC($n))
 END:
@@ -181,18 +170,16 @@ test try return [[
 FUNC:
 	try(new(), TRY, new(), CATCH, END)
 TRY:
-	local := 0
 	print(iload(1))
 	return(iload(4))
 CATCH:
-	local := 0
 	print(iload(2))
 	callC(getC($n))
 END:
 	print(iload(3))
 	return(iload(0))
 MAIN_END:
-	r0 <- rget(curCF())
+	r0 <- rget()
 	print(r0)
 	return(iload(0))
 ]] transform "Run -> Run" to "IntV(1)
@@ -202,11 +189,9 @@ IntV(4)"
 test try fallthrough 2 [[
 	try(newC(new(), TRY, 3), newC(new(), CATCH, 3), END)
 TRY:
-	local := 0
 	print(iload(1))
 	callC(getC($n))
 CATCH:
-	local := 0
 	print(iload(2))
 	callC(getC($n))
 END:
@@ -218,11 +203,9 @@ IntV(3)"
 test try catch 2 [[
 	try(newC(new(), TRY, 3), newC(new(), CATCH, 3), END)
 TRY:
-	local := 0
 	throw(iload(2))
 CATCH:
-	local := 1
-	r0 <- rget(curCF())
+	r0 <- rget()
 	print(r0)
 	callC(getC($n))
 END:
@@ -236,18 +219,16 @@ test try return 2 [[
 FUNC:
 	try(newC(new(), TRY, 3), newC(new(), CATCH, 3), END)
 TRY:
-	local := 0
 	print(iload(1))
 	return(iload(4))
 CATCH:
-	local := 0
 	print(iload(2))
 	callC(getC($n))
 END:
 	print(iload(3))
 	return(iload(0))
 MAIN_END:
-	r0 <- rget(curCF())
+	r0 <- rget()
 	print(r0)
 	return(iload(0))
 ]] transform "Run -> Run" to "IntV(1)

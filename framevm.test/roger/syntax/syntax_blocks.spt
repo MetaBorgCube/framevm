@@ -115,7 +115,7 @@ MAIN:
 
 test rget [[
 MAIN:
-	r0 <- rget(curCF())
+	r0 <- rget()
 	r0 <- iload(1)	
 	return(r0)
 ]] parse succeeds
@@ -125,19 +125,18 @@ MAIN:
 	r0 <- iload(1)	
 	r0 <- rget()
 	return(r0)
-]] parse fails
+]] parse succeeds
 
 test rget multiple [[
 MAIN:
-	r0, r1 <- rget(cgetcurrent())
+	r0, r1 <- rget()
 	r0 <- iload(1)	
 	return(r0)
 ]] parse fails
 
 test rget and locals [[
 MAIN:
-	local := 12
-	r0 <- rget(curCF())
+	r0 <- rget()
 	r0 <- iload(1)	
 	return(r0)
 ]] parse succeeds
@@ -146,20 +145,6 @@ test rget and locals [[
 MAIN:
 	r0 <- rget()
 	local := 12
-	r0 <- iload(1)	
-	return(r0)
-]] parse fails
-
-test set locals 1 [[
-MAIN:
-	local := 12
-	r0 <- iload(1)	
-	return(r0)
-]] parse succeeds
-
-test set locals 2 [[
-MAIN:
-	stack := 12
 	r0 <- iload(1)	
 	return(r0)
 ]] parse fails
