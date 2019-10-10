@@ -73,7 +73,8 @@ rules
     rgr-assign-registers: RGR_Program(FVM_Header(header), p, blocks) -> RGR_Program(FVM_Header([FVM_RegisterSize(<length; int-to-string> binds) | header]), p, blocks')
       with
         init_block_name := <getfirst( (\FVM_InitBlock(name) -> name \) )> header;
-        (binds, blocks') := <foldl(assign-block-registers)> (blocks, ([], []))
+        (binds, assign_bound_blocks) := <foldl(assign-block-registers)> (blocks, ([], []));
+        blocks' := <rgr-assign-registers-exp(|binds)> assign_bound_blocks
         
     assign-block-registers: (RGR_Block(lbl, body, jump), (binds, blocks)) -> (binds2, [RGR_Block(lbl, body', jump') | blocks])
       with
@@ -85,21 +86,18 @@ rules
       where
         rgr_var := <lookup'> (var, binds) // If already bound
       with
-        val':= <rgr-assign-registers-exp(|binds)> val;
-        instr' := RGR_Assign(rgr_var, val');
+        instr' := RGR_Assign(rgr_var, val);
         (t', binds2) := <rgr-assign-registers-instr> (t, binds)
         
     rgr-assign-registers-instr: ([RGR_Assign(var@RGR_AutoVar(name), val) | t], binds) -> ([instr' | t'], binds3)
       with
         var_name := $[r[<length; int-to-string> binds]];
-        val':= <rgr-assign-registers-exp(|binds)> val;
-        instr' := RGR_Assign(var_name, val');
+        instr' := RGR_Assign(var_name, val);
         binds2 := [(var, var_name) | binds];
         (t', binds3) := <rgr-assign-registers-instr> (t, binds2)
         
-    rgr-assign-registers-instr: ([instr | t], binds) -> ([instr' | t'], binds2)
+    rgr-assign-registers-instr: ([instr | t], binds) -> ([instr | t'], binds2)
       with
-        instr':= <rgr-assign-registers-exp(|binds)> instr;
         (t', binds2) := <rgr-assign-registers-instr> (t, binds)
     
     
