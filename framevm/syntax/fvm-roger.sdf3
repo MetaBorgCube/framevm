@@ -66,8 +66,8 @@ sorts Exp context-free syntax
 	
 	Exp = ContExp
 	ContExp.RGR_CFThis       = <curCF()>
-	ContExp.RGR_ContNew      = <newC(<Exp>, <Exp>, <IntOrExp>)>
-	ContExp.RGR_CFNew        = <newCF(<Exp>, <Exp>, <Exp>)>
+	ContExp.RGR_ContNew      = <newC(<Exp>, <Exp>)>
+	ContExp.RGR_CFNew        = <newCF(<Exp>, <Exp>)>
 	ContExp.RGR_ContCur      = <curC(<Label>)>
 	Stmt.RGR_CFTransfer      = <transfer(<{Exp ","}+>)>
 	

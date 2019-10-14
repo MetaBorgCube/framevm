@@ -10,33 +10,22 @@ imports
 
 rules
     rgr-eval-exp(|env): RGR_CFThis() -> (env, ControlFrame(<cf-this(|env)>))
-    rgr-eval-exp(|env): RGR_CFNew(exp1, exp2, exp3) -> (env4, ControlFrame(cf))
+    rgr-eval-exp(|env): RGR_CFNew(exp1, exp2) -> (env3, ControlFrame(cf))
       where
         (env1, FrameRef(frame)) := <rgr-eval-exp(|env)> exp1;
-        (env2, BlockRef(lib, lbl)) := <rgr-eval-exp(|env1)> exp2;
-        (env3, IntV(size)) := <rgr-eval-exp(|env2)> exp3;
-        (env4, cf) := <vm-cf-new(|env3)> (frame, size)
+        (env2, IntV(size)) := <rgr-eval-exp(|env1)> exp2;
+        (env3, cf) := <vm-cf-new(|env2)> (frame, size)
     
     
-    rgr-eval-exp(|env): RGR_ContCur(lbl_exp) -> (env3, Continuation(cont))
+    rgr-eval-exp(|env): RGR_ContCur(lbl_exp) -> (env2, val)
+      where
+        (env2, val) := <rgr-eval-exp(|env)> RGR_ContNew(RGR_CFThis(), lbl_exp)
+        
+    rgr-eval-exp(|env): RGR_ContNew(exp, lbl_exp) -> (env4, Continuation(cont))
       where
         (env2, BlockRef(lib, lbl)) := <rgr-eval-exp(|env)> lbl_exp;
-        (env3, cont) := <vm-cont-new(|env)> (<cf-this(|env2)>, (lib, lbl))
-        
-    rgr-eval-exp(|env): RGR_ContNew(exp, lblexp, RGR_IntVal(cont_size)) -> (env5, Continuation(cont))
-      where
-        (env2, BlockRef(lib, lbl)) := <rgr-eval-exp(|env)> lblexp;
-        (env3, FrameRef(frame)) :=  <rgr-eval-exp(|env2)> exp;
-        (env4, cf) := <vm-cf-new(|env3)> (frame, <string-to-int> cont_size);
-        (env5, cont) := <vm-cont-new(|env4)> (cf, (lib, lbl))
-        
-    rgr-eval-exp(|env): RGR_ContNew(exp1, lblexp, exp2) -> (env5, Continuation(cont))
-      where
-        (env2, BlockRef(lib, lbl)) := <rgr-eval-exp(|env)> lblexp;
-        (env3, FrameRef(frame)) := <rgr-eval-exp(|env2)> exp1;
-        (env4, IntV(cont_size)) := <rgr-eval-exp(|env3)> exp2;
-        (env5, cf) := <vm-cf-new(|env4)> (frame, cont_size);
-        (env6, cont) := <vm-cont-new(|env5)> (cf, (lib, lbl))
+        (env3, ControlFrame(cf)) :=  <rgr-eval-exp(|env2)> exp;
+        (env4, cont) := <vm-cont-new(|env3)> (cf, (lib, lbl))
     
     rgr-eval-exp(|env): RGR_ContGet(c) -> (env, Continuation(<cont-get(|env)> (<cf-this(|env)>, <cont-resolve> c)))
 
