@@ -49,7 +49,7 @@ test transfer           [[transfer(new(), c)]]                    parse succeeds
 test transfer int       [[transfer(new(), 0)]]                    parse fails
 test transfer int2      [[transfer(0, c)]]                        parse fails
 test transfer none      [[transfer(new())]]                       parse succeeds
-test transfer exp       [[transfer(new(), newCF(new(), LBL, iload(2)))]]  parse succeeds
+test transfer exp       [[transfer(new(), newCF(new(), iload(2)))]]  parse succeeds
 test transfer multiple  [[transfer(new(), iload(1), c)]]          parse succeeds
 
 

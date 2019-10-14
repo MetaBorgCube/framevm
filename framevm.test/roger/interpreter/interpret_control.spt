@@ -38,7 +38,7 @@ test call frame 2 [[
 	r0 <- new(2)
 	set(r0, [0], iload(1))
 	set(r0, [1], iload(3))
-	r0 <- newC(r0, FUNC, 2)
+	r0 <- newC(newCF(r0, iload(2)), FUNC)
 	call(r0, MAIN_END)
 FUNC:
 	r0 <- get([0])
@@ -54,7 +54,7 @@ test call frame throw [[
 	r0 <- new(2)
 	set(r0, [0], iload(1))
 	set(r0, [1], iload(3))
-	r1 <- newC(new(), MAIN_END2, 2)
+	r1 <- newC(newCF(new(), iload(2)), MAIN_END2)
 	setC($x, r1)
 	setC(unpackC(r1), $c, getC($c))
 	call(r0, FUNC, MAIN_END1)
@@ -88,7 +88,7 @@ MAIN2:
 	r0 <- new(2)
 	set(r0, [0], iload(1))
 	set(r0, [1], iload(3))
-	r0 <- newC(r0, FUNC, 2)
+	r0 <- newC(newCF(r0, iload(2)), FUNC)
 	tailcall(r0)
 FUNC:
 	r0 <- get([0])
@@ -187,7 +187,7 @@ IntV(4)"
 
 
 test try fallthrough 2 [[
-	try(newC(new(), TRY, 3), newC(new(), CATCH, 3), END)
+	try(newC(newCF(new(), iload(3)), TRY), newC(newCF(new(), iload(3)), CATCH), END)
 TRY:
 	print(iload(1))
 	callC(getC($n))
@@ -201,7 +201,7 @@ END:
 IntV(3)"
 
 test try catch 2 [[
-	try(newC(new(), TRY, 3), newC(new(), CATCH, 3), END)
+	try(newC(newCF(new(), iload(3)), TRY), newC(newCF(new(), iload(3)), CATCH), END)
 TRY:
 	throw(iload(2))
 CATCH:
@@ -217,7 +217,7 @@ IntV(3)"
 test try return 2 [[
 	call(new(), FUNC, MAIN_END)
 FUNC:
-	try(newC(new(), TRY, 3), newC(new(), CATCH, 3), END)
+	try(newC(newCF(new(), iload(3)), TRY), newC(newCF(new(), iload(3)), CATCH), END)
 TRY:
 	print(iload(1))
 	return(iload(4))

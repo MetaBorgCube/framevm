@@ -205,11 +205,10 @@ test getcurrent int      [[curCF(0)]]      parse fails
 test getcurrent non-exp  [[curCF()]]       parse succeeds
 
 
-test cnew exp          [[newC(new(), LBL, iload(0))]]                          parse succeeds
-test cnew non-exp      [[newC(0, LBL, iload(0))]]                              parse fails
-test cnew nested       [[newC(new(iload(0)), LBL, addi(iload(0), iload(2)))]]  parse succeeds
-test cnew non-exp      [[newC(new(), LBL, 0)]]                                 parse succeeds
-test cnew invalid lbl  [[newC(new(), 4LBL, 0)]]                                parse fails
+test cnew exp          [[newC(new(), LBL)]]          parse succeeds
+test cnew non-exp      [[newC(0, LBL)]]              parse fails
+test cnew nested       [[newC(new(iload(0)), LBL)]]  parse succeeds
+test cnew invalid lbl  [[newC(new(), 4LBL)]]         parse fails
 
 
 test cget empty      [[getC()]]                          parse fails

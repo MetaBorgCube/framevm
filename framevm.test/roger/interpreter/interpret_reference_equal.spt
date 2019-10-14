@@ -32,11 +32,11 @@ test non-equal frame [[
 ]] transform "Run -> Run" to "IntV(0)"
 
 test equal continuation [[
-	r0 <- newC(new(), LBL, 2)
+	r0 <- newC(newCF(new(), iload(2)), LBL)
 	r1 <- r0
 ]] transform "Run -> Run" to "IntV(1)"
 
 test non-equal frame [[
-	r0 <- newC(new(), LBL, 2)
-	r1 <- newC(new(), LBL, 2)
+	r0 <- newC(newCF(new(), iload(2)), LBL)
+	r1 <- newC(newCF(new(), iload(2)), LBL)
 ]] transform "Run -> Run" to "IntV(0)"

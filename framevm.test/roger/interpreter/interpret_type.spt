@@ -18,11 +18,11 @@ test frame =? int [[
 ]] transform "Run -> Run" to "IntV(0)"
 
 test cont =? int [[
-	r0 <- int?(newC(new(), MAIN, 1))
+	r0 <- int?(newC(newCF(new(), iload(1)), MAIN))
 ]] transform "Run -> Run" to "IntV(0)"
 
 test cf =? int [[
-	r0 <- int?(newCF(new(), MAIN, iload(1)))
+	r0 <- int?(newCF(new(), iload(1)))
 ]] transform "Run -> Run" to "IntV(0)"
 
 
@@ -36,11 +36,11 @@ test frame =? frame [[
 ]] transform "Run -> Run" to "IntV(1)"
 
 test cont =? frame [[
-	r0 <- frame?(newC(new(), MAIN, 1))
+	r0 <- frame?(newC(newCF(new(), iload(1)), MAIN))
 ]] transform "Run -> Run" to "IntV(0)"
 
 test cf =? frame [[
-	r0 <- frame?(newCF(new(), MAIN, iload(1)))
+	r0 <- frame?(newCF(new(), iload(1)))
 ]] transform "Run -> Run" to "IntV(0)"
 
 
@@ -54,11 +54,11 @@ test frame =? cont [[
 ]] transform "Run -> Run" to "IntV(0)"
 
 test cont =? cont [[
-	r0 <- cont?(newC(new(), MAIN, 1))
+	r0 <- cont?(newC(newCF(new(), iload(1)), MAIN))
 ]] transform "Run -> Run" to "IntV(1)"
 
 test cf =? cont [[
-	r0 <- cont?(newCF(new(), MAIN, iload(1)))
+	r0 <- cont?(newCF(new(), iload(1)))
 ]] transform "Run -> Run" to "IntV(0)"
 
 
@@ -72,9 +72,9 @@ test frame =? cf [[
 ]] transform "Run -> Run" to "IntV(0)"
 
 test cont =? cf [[
-	r0 <- CF?(newC(new(), MAIN, 1))
+	r0 <- CF?(newC(newCF(new(), iload(1)), MAIN))
 ]] transform "Run -> Run" to "IntV(0)"
 
 test cf =? cf [[
-	r0 <- CF?(newCF(new(), MAIN, iload(1)))
+	r0 <- CF?(newCF(new(), iload(1)))
 ]] transform "Run -> Run" to "IntV(1)"
