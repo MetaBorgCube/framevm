@@ -58,6 +58,7 @@ rules    // Util
     val-to-string: FrameRef(frame) -> frame
     val-to-string: Continuation(cont) -> cont
     val-to-string: NullV() -> "NULL"
+    val-to-string: ControlFrame(cf) -> cf
     
 rules
     apply-until-no-change(s): e -> <apply-until-equal(s)> (e, [])
