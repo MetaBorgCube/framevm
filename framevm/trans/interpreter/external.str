@@ -14,6 +14,8 @@ rules
     external vm-execute(eval|env)     // eval|env| -> env'
     
     external vm-debug(|env)           // env| -> env'
+    external vm-tick(|env)           // env| a -> a
+    external vm-tock(|env)           // env| a -> a
     
     external rgr-size(|env)           // env| -> (int, int)
     external rgr-set(|env)            // env| (slot, val) -> env'

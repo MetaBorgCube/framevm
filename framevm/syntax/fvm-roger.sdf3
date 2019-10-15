@@ -107,7 +107,9 @@ sorts Exp context-free syntax
 	Stmt.RGR_Print           = <print(<Exp>)>
 	Stmt.RGR_PrintChar       = <printc(<Exp>)>
 	Stmt.RGR_Debug           = <debug()>		
-	Stmt.RGR_DebugKill       = <debug!()>
+	Stmt.RGR_DebugKill       = <debug!()>	
+	Stmt.RGR_Tick            = <tick()>	
+	Stmt.RGR_Tock            = <tock()>
 	
 	Exp.RGR_StringLoad       = <sload(<STRING>)>
 	Exp.RGR_CharLoad         = <cload(<CHAR>)>

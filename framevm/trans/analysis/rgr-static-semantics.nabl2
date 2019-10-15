@@ -106,10 +106,12 @@ rules // Control Instructions
   rgrExp[[RGR_ScopeSetCurrent(exp) ^(s)]] := rgrExp[[exp ^(s)]].
   rgrExp[[RGR_ScopeGetCurrent() ^(s)]].
   
-  rgrExp[[RGR_Print(exp) ^(s)]]     := rgrExp[[exp ^(s)]].
+  rgrExp[[e@RGR_Print(exp) ^(s)]]     := rgrExp[[exp ^(s)]], false | note $[Debug operation]@e.
   rgrExp[[RGR_PrintChar(exp) ^(s)]] := rgrExp[[exp ^(s)]].
-  rgrExp[[RGR_Debug() ^(s)]].
-  rgrExp[[RGR_DebugKill() ^(s)]].
+  rgrExp[[i@RGR_Debug() ^(s)]] := false | note $[Debug operation]@i.
+  rgrExp[[i@RGR_DebugKill() ^(s)]] := false | note $[Debug operation]@i.
+  rgrExp[[i@RGR_Tick() ^(s)]] := false | note $[Debug operation]@i.
+  rgrExp[[i@RGR_Tock() ^(s)]] := false | note $[Debug operation]@i.
   rgrExp[[RGR_StringLoad(_) ^(s)]].
   rgrExp[[RGR_CharLoad(_) ^(s)]].
   
