@@ -27,8 +27,9 @@ rules
     // Check if the two given references are equal
     eval-req: (IntV(v1), IntV(v2)) -> IntV(1) where <equal> (v1, v2) 
     eval-req: (Continuation(v1), Continuation(v2)) -> IntV(1) where <equal> (v1, v2) 
-//    eval-req: (Closure(v1), Closure(v2)) -> IntV(1) where <equal> (v1, v2) 
-    eval-req: (FrameRef(v1), FrameRef(v2)) -> IntV(1) where <equal> (v1, v2) 
+    eval-req: (ControlFrame(v1), ControlFrame(v2)) -> IntV(1) where <equal> (v1, v2) 
+    eval-req: (FrameRef(v1), FrameRef(v2)) -> IntV(1) where <equal> (v1, v2)  
+    eval-req: (NullV(), NullV()) -> IntV(1)
     eval-req: _ -> IntV(0)
     
     // Check if the to given values are equal
