@@ -25,12 +25,8 @@ public class cont_set_0_1 extends FVMStrategy {
 		int contIdx = ((StrategoInt) contTuple.get(1)).intValue();
 		Continuation continuation = (Continuation) ((StrategoBlob) tuple.get(2)).value();
 		
-		Continuation cont = controlFrame.getContinuation(contIdx);
-		if (cont == null) {
-			controlFrame.setContinuation(contIdx, continuation);
-		} else {
-			cont.update(continuation);
-		}
+		controlFrame.setContinuation(contIdx, continuation);
+
 		return new StrategoBlob(env);
 	}
 }
