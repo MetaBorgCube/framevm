@@ -92,6 +92,12 @@ rules
         (env2, vals) := <rgr-eval-exp-fold(|env1)> exps;
         env3 := <vm-transfer(|env2)> vals
         
+    rgr-eval-instr: (RGR_ContSet(c, exp), env1) -> env3 
+      where
+        c' := <cont-resolve> c
+      where
+        (env2, Continuation(value)) := <rgr-eval-exp(|env1)> exp;
+        env3 := <cont-set(|env2)> (<cf-this(|env2)>, c', value)
     
     rgr-eval-instr: (RGR_ContSet(exp1, exp2), env1) -> env4 
       where
@@ -99,11 +105,14 @@ rules
         (env3, Continuation(value)) := <rgr-eval-exp(|env2)> exp2;
         env4 := <cont-set(|env3)> (<cf-this(|env3)>, slot, value)
         
-    rgr-eval-instr: (RGR_ContSet(c, exp), env1) -> env3 
-      where
-        (env2, Continuation(value)) := <rgr-eval-exp(|env1)> exp;
-        env3 := <cont-set(|env2)> (<cf-this(|env2)>, <cont-resolve> c, value)
         
+    rgr-eval-instr: (RGR_ContSet(exp1, c, exp2), env1) -> env4 
+      where
+        slot := <cont-resolve> c
+      where
+        (env2, ControlFrame(cf)) := <rgr-eval-exp(|env1)> exp1;
+        (env3, Continuation(value)) := <rgr-eval-exp(|env2)> exp2;
+        env4 := <cont-set(|env3)> (cf, slot, value)
     
     rgr-eval-instr: (RGR_ContSet(exp1, exp2, exp3), env1) -> env5 
       where
@@ -111,13 +120,6 @@ rules
         (env3, IntV(idx)) := <rgr-eval-exp(|env2)> exp2;
         (env4, Continuation(value)) := <rgr-eval-exp(|env3)> exp3;
         env5 := <cont-set(|env4)> (cf, ($[_c[idx]], idx), value)
-        
-    rgr-eval-instr: (RGR_ContSet(exp1, c, exp2), env1) -> env4 
-      where
-        (env2, ControlFrame(cf)) := <rgr-eval-exp(|env1)> exp1;
-        (env3, Continuation(value)) := <rgr-eval-exp(|env2)> exp2;
-        (cont, slot) := (cf, <cont-resolve> c);
-        env4 := <cont-set(|env3)> (cont, slot, value)
 
 	rgr-eval-instr: (RGR_ScopeNew(exp, FVM_Link(Bind(lbl, idx))), env) -> env4
 	  where
