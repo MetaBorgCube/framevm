@@ -24,10 +24,8 @@ public class vm_init_0_0 extends Strategy {
 		int cont_size = ((StrategoInt) tuple.get(1)).intValue();
 		int slot_size = ((StrategoInt) tuple.get(2)).intValue();
 		int register_size = ((StrategoInt) tuple.get(3)).intValue();
-		
-		MachineState env = new MachineState(link_size);
-		ControlFrame controlFrame = env.newControlFrame(cont_size);
-		controlFrame.setCurrentFrame(env.newFrame(slot_size));
+		MachineState env = new MachineState(link_size, cont_size);
+		ControlFrame controlFrame = env.newControlFrame(env.newFrame(slot_size));
 		env.addThread(new MachineThread(controlFrame, env, register_size));
 		
 

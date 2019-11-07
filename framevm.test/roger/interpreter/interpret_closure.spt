@@ -20,16 +20,16 @@ MAIN_END:
 ]]
 
 test mk closure 1 [[
-	r0 <- new{new(), LBL1, iload(1)}  // Closure
-	r1 <- newCF(get(r0, [0]), get(r0, [2]))
+	r0 <- new{new(), LBL1}  // Closure
+	r1 <- newCF(get(r0, [0]))
 	setC(r1, $c, curC(MAIN_END))
 	callCF(r1, get(r0, [1]))
 ]] transform "Run -> Run" to "IntV(1)
 IntV(12)"
 
 test mk closure 2 [[
-	r0 <- new{new(), LBL2, iload(1)}  // Closure
-	r1 <- newCF(get(r0, [0]), get(r0, [2]))
+	r0 <- new{new(), LBL2}  // Closure
+	r1 <- newCF(get(r0, [0]))
 	setC(r1, $c, curC(MAIN_END))
 	callCF(r1, get(r0, [1]))
 ]] transform "Run -> Run" to "IntV(2)

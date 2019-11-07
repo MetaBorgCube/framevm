@@ -12,11 +12,12 @@ public class ControlFrame {
 	/**
 	 * Create an operand stack.
 	 */
-	public ControlFrame(int contSize, String id) {
+	public ControlFrame(int contSize, String id, Frame frame) {
 		this.continuations = new Continuation[contSize];
 		
 		this.currentFrame = null;
 		this.id = id;
+		this.currentFrame = frame;
 	}
 	
 	/**
@@ -44,16 +45,16 @@ public class ControlFrame {
 		return currentFrame;
 	}
 
-	public void setCurrentFrame(Frame frame) {
-		this.currentFrame = frame;
-	}
-
 	public String getId() {
 		return this.id;
 	}
 	
 	public String toString() {
 		return "ControlFrame(" + this.getId() + ", " + this.getCurrentFrame().getId() + ")";
+	}
+
+	public void setCurrentFrame(Frame frame) {
+		this.currentFrame = frame;
 	}
 
 }

@@ -10,11 +10,10 @@ imports
 
 rules
     rgr-eval-exp(|env): RGR_CFThis() -> (env, ControlFrame(<cf-this(|env)>))
-    rgr-eval-exp(|env): RGR_CFNew(exp1, exp2) -> (env3, ControlFrame(cf))
+    rgr-eval-exp(|env): RGR_CFNew(exp) -> (env2, ControlFrame(cf))
       where
-        (env1, FrameRef(frame)) := <rgr-eval-exp(|env)> exp1;
-        (env2, IntV(size)) := <rgr-eval-exp(|env1)> exp2;
-        (env3, cf) := <vm-cf-new(|env2)> (frame, size)
+        (env1, FrameRef(frame)) := <rgr-eval-exp(|env)> exp;
+        (env2, cf) := <vm-cf-new(|env1)> frame
     
     
     rgr-eval-exp(|env): RGR_ContCur(lbl_exp) -> (env2, val)

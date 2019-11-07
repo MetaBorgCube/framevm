@@ -20,7 +20,10 @@ rules
       
     eval-program = eval-program(id)
     
-    eval-program(s): RGR_Program(fn, i, size, block, links, blocks, registers) -> <eval-program-(s, rgr-eval | "RGR")> (Program(fn, i, size, block, links, blocks), <vm-init> (<length> links, 2, size, registers))
+    eval-program(s): RGR_Program(fn, i, size, block, (links, conts), blocks, registers) -> <eval-program-(s, rgr-eval | "RGR")> (Program(fn, i, size, block, (links, conts), blocks), <vm-init> (links', conts', size, registers))
+      with
+        links' := <make-set((\ FVM_LinkAlias(_, idx) -> idx \)); length> links;
+        conts' := <make-set((\ FVM_ContAlias(_, idx) -> idx \)); length> conts
     
     eval-program-(s, mode-eval | mode): (Program(fn, i, s, FVM_InitBlock(init_block_name), links, blocks), env1) -> out
       where 
@@ -45,3 +48,6 @@ rules
     // Instruction not implemented or execution failed
     // Catches current instructions and reports them
     eval: (instr, env) -> <fvm-log(|"ERROR", $[Execution failed at instruction [<strip-annos; write-to-string> instr]]); fail>
+
+rules 
+    make-set(s): list -> <map(s); make-set> list

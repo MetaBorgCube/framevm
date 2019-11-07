@@ -6,10 +6,17 @@ imports
     fvm-common
 
 rules
-    apply-aliasses: RGR_Program(fn, i, s, b, aliasses, blocks, r) -> RGR_Program(fn, i, s, b, link_addresses, bound_blocks, r)
+  split-filter2(s1) = split-filter2(s1, id)
+  split-filter2(s1, s2)= 
+  	(?[h | t]; 
+  		!t; split-filter2(s1, s2); ?(a, b); 
+		!h; ((s1; ?x; !([x|a], b)) <+ (s2; ?x; !(a,[x| b])))
+	) <+ (?[]; !([],[]))
+
+rules
+    apply-aliasses: RGR_Program(fn, i, s, b, aliasses, blocks, r) -> RGR_Program(fn, i, s, b, <split-filter2(?FVM_LinkAlias(_, _))> all_aliasses, bound_blocks, r)
       where
         all_aliasses   := <insert-standards> aliasses;
-        link_addresses := <foldl(extract-links)> (all_aliasses, []);
         bound_blocks   := <fix-missing-aliasses> <foldl(apply-aliasses)> (all_aliasses, blocks)
 
 

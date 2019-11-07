@@ -54,7 +54,7 @@ rules
         (env2, BlockRef(flib, flbl)) := <rgr-eval-exp(|env)> flbl_exp;
         (env3, BlockRef(rlib, rlbl)) := <rgr-eval-exp(|env2)> rlbl_exp;
         (env4, FrameRef(frame)) := <rgr-eval-exp(|env3)> exp;
-        (env5, func_cf) := <vm-cf-new(|env4)> (frame, 2);
+        (env5, func_cf) := <vm-cf-new(|env4)> frame;
         (env6, func) := <vm-cont-new(|env5)> (func_cf, (flib, flbl));
         cf_this := <cf-this(|env6)>;
         (env7, cont_this) := <vm-cont-new(|env6)> (cf_this, (rlib, rlbl));
@@ -83,7 +83,7 @@ rules
       where
         (env2, FrameRef(frame)) := <rgr-eval-exp(|env)> exp;
         (env3, BlockRef(flib, flbl)) := <rgr-eval-exp(|env)> lblexp;
-        (env4, func_cf) := <vm-cf-new(|env3)> (frame, 2);
+        (env4, func_cf) := <vm-cf-new(|env3)> frame;
         (env5, func) := <vm-cont-new(|env4)> (func_cf, (flib, flbl));
         cf_this := <cf-this(|env5)>;
         return := <cont-get-cc(|env5)> cf_this;
@@ -109,11 +109,6 @@ rules
         (env3, BlockRef(lib, lbl)) := <rgr-eval-exp(|env2)> lblexp;
         env4 := <vm-jump(|env3)> (lib, lbl);
         env5 := <cf-call(|env4)> cf
-        
-//    rgr-eval: (RGR_CFReturn(exp), env1) -> env3 
-//      where
-//        (env2, ControlFrame(cf)) := <rgr-eval-exp(|env1)> exp;
-//        env3 := <cf-call(|env2)> cf
      
     rgr-eval: (RGR_ContCall(exp), env1) -> env3
       where
@@ -142,9 +137,9 @@ rules
         (env6, FrameRef(frame_try))   := <rgr-eval-exp(|env5)> exptry;
         (env7, FrameRef(frame_catch)) := <rgr-eval-exp(|env6)> expcatch;
           
-        (env8, catch_cf)   := <vm-cf-new(|env7)> (frame_catch, 3);
+        (env8, catch_cf)   := <vm-cf-new(|env7)> frame_catch;
         (env9, catch_cont) := <vm-cont-new(|env8)> (catch_cf, (lib_catch, lbl_catch));
-        (env10, try_cf)     := <vm-cf-new(|env9)> (frame_try, 3);
+        (env10, try_cf)     := <vm-cf-new(|env9)> frame_try;
         (env11, try_cont)   := <vm-cont-new(|env10)> (try_cf, (lib_try, lbl_try), 3);
         
         env12 := <cont-set-cc(|env11)> (try_cf, cont);

@@ -36,11 +36,8 @@ public class vm_start_0_1 extends FVMStrategy {
 		env.currentThread.jump(block);
 		env.currentThread.initThread();
 		
-		ControlFrame c = new ControlFrame(0, "_exit");
-		ControlFrame x = new ControlFrame(0, "_catch");
-				
-		c.setCurrentFrame(new Frame("_exit", 0, 0));
-		x.setCurrentFrame(new Frame("_catch", 0, 0));
+		ControlFrame c = new ControlFrame(0, "_exit", new Frame("_exit", 0, 0));
+		ControlFrame x = new ControlFrame(0, "_catch", new Frame("_catch", 0, 0));
 		
 		controlFrame.setContinuation(0, new Continuation(c, null, null));
 		controlFrame.setContinuation(1, new Continuation(x, null, null));

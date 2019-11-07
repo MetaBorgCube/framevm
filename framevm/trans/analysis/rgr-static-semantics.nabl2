@@ -63,9 +63,8 @@ rules // Exp
   
   rgrExp[[RGR_CFRGet() ^(s)]].
   rgrExp[[RGR_CFThis() ^(s)]].
-  rgrExp[[RGR_CFNew(e1, e2) ^(s)]]    := rgrExp[[e1 ^(s)]], rgrExp[[e2 ^(s)]].
+  rgrExp[[RGR_CFNew(e) ^(s)]]    := rgrExp[[e ^(s)]].
   rgrExp[[RGR_ContNew(e1, lbl) ^(s)]] := rgrExp[[e1 ^(s)]], rgrExp[[e2 ^(s)]].
-  rgrExp[[RGR_CFTransfer(e1) ^(s)]]   := Map1(rgrExp)[[e1 ^(s)]].
   rgrExp[[RGR_ContCur(e1) ^(s)]]      := rgrExp[[e1 ^(s)]].
    
   rgrExp[[RGR_ContSet(e1, e2) ^(s)]]      := rgrExp[[e1 ^(s)]], rgrExp[[e2 ^(s)]].

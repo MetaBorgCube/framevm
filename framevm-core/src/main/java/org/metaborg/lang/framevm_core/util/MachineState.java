@@ -19,9 +19,11 @@ public class MachineState {
 	public String debug;	
 	
 	private int frameCount;		// Used for generating unique frame ids
-	private int linkSize;
-	public MachineThread currentThread;
 	private int controlCount;
+	
+	private int linkSize;
+	private int contSize;
+	public MachineThread currentThread;
 	
 	/**
 	 * Constructor for a new environment.
@@ -30,12 +32,13 @@ public class MachineState {
 	 * @param mode
 	 * 		The mode of the VM
 	 */
-	public MachineState(int link_size) {
+	public MachineState(int link_size, int cont_size) {
 		this.blocks = new HashMap<>();
 		this.stdout = new StringBuilder();
 		this.debug = "";
 		
 		this.linkSize = link_size;
+		this.contSize = cont_size;
 
 		this.frameCount = 0;
 		this.controlCount = 0;
@@ -125,8 +128,18 @@ public class MachineState {
 		blocks.get(libName).put(blockName, new Block(blockName, instrs));
 	}
 
-	public ControlFrame newControlFrame(int contSize) {
+	public ControlFrame newControlFrame(Frame frame) {
 		String id = "controlFrame_" + controlCount++;
-		return new ControlFrame(contSize, id);
+		ControlFrame cf = new ControlFrame(this.contSize, id, frame);
+		
+		if (currentThread != null && currentThread.getControlFrame() != null) {
+			Continuation[] conts = currentThread.getControlFrame().getContinuations();
+			for (int i = 0; i < conts.length; i++) {
+				Continuation cont = conts[i];
+				if (cont == null) continue;
+				cf.setContinuation(i, cont);
+			}
+		}
+		return cf;
 	}
 }

@@ -85,13 +85,6 @@ rules
         (env3, FrameRef(frame_to))   := <rgr-eval-exp(|env2)> ft;
         env4 := <frame-link(|env3)> (frame_from, frame_to, (lbl, idx))
         
-        
-    
-    rgr-eval-instr: (RGR_CFTransfer(exps), env1) -> env3
-      where
-        (env2, vals) := <rgr-eval-exp-fold(|env1)> exps;
-        env3 := <vm-transfer(|env2)> vals
-        
     rgr-eval-instr: (RGR_ContSet(c, exp), env1) -> env3 
       where
         c' := <cont-resolve> c

@@ -4,7 +4,7 @@ language framevm
 
 fixture [[#registers 4
 MAIN:
-	r0 <- newCF(new(), iload(2))
+	r0 <- newCF(new())
 	[[...]]
 	
 LBL1:
@@ -32,7 +32,7 @@ test call CF 1 [[
 IntV(12)"
 
 test tailcall [[
-	r1 <- newCF(new(), iload(2))
+	r1 <- newCF(new())
 	setC(r1, $c, getC($c))
 	callCF(r1, LBL2)
 MAIN2:
@@ -44,7 +44,7 @@ LBL2:
 ]] transform "Run -> Run" to "IntV(2)"
 
 test tailcall 2 [[
-	r1 <- newCF(new(), iload(2))
+	r1 <- newCF(new())
 	setC(r1, $c, getC(curCF(), $c))
 	callCF(r1, LBL2)
 MAIN2:
@@ -76,7 +76,7 @@ MAIN2:
 IntV(0)"
 
 test rget multiple [[
-	r0 <- newCF(new(), iload(2))
+	r0 <- newCF(new())
 	r0 <- newC(r0, LBL)
 	setC(unpackC(r0), $c, curC(MAIN2))
 	callC(r0)
@@ -90,17 +90,3 @@ LBL:
 	callC(getC($c), iload(1), iload(2))
 ]] transform "Run -> Run" to "IntV(2)
 IntV(1)"
-
-test variable cont slots [[
-	r2 <- iload(3)
-	r3 <- new(1)
-	set(r3, [0], r2)
-	r1 <- newCF(r3, addi(r2, iload(1)))
-	r1 <- newC(r1, MAIN2)
-	setC(unpackC(r1), r2, getC($c))
-	callC(r1)
-MAIN2:
-	r0 <- get([0])
-	print(r0)
-	callC(getC(r0), iload(0))
-]] transform "Run -> Run" to "IntV(3)"
