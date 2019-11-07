@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.spoofax.interpreter.terms.IStrategoTerm;
-import org.spoofax.terms.util.NotImplementedException;
 
 /**
  * The environment that is passed around.
@@ -69,23 +68,6 @@ public class MachineState {
 	public Frame newFrame(int size) {
 		String id = "frame_" + frameCount++;
 		return new Frame(id, size, linkSize);
-	}
-
-	/**
-	 * Create a new frame as a copy of the given frame and put it on the heap.
-	 * 
-	 * @param old
-	 * 		The frame to copy
-	 * @return
-	 * 		The id of the new frame
-	 */
-	public Frame newFrameFrom(Frame old, CopyPolicy policy) {
-		if (policy == CopyPolicy.SHALLOW) {
-			String id = old.getId() + "'";
-			return new Frame(id, old);
-		} else {
-			throw new NotImplementedException("Deep copy of data frames not yet supported");
-		}
 	}
 
 	/**

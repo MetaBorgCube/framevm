@@ -26,13 +26,6 @@ public class Continuation {
 		return this.frame;
 	}
 
-	public void update(Continuation cont) {
-		this.controlFrame = cont.getControlFrame();
-		this.block = cont.getBlock();
-		this.memory = cont.getMemory();
-		this.frame = cont.getFrame();
-	}
-
 	public Memory getMemory() {
 		return memory;
 	}
