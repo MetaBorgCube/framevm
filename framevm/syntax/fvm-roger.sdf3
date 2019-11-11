@@ -87,6 +87,9 @@ sorts Exp context-free syntax
 	ControlStmt.RGR_TailCall   = <tailcall(<Exp>, <Exp>)>
 	ControlStmt.RGR_TailCall   = <tailcall(<Exp>)>
 	
+	ControlStmt.RGR_ContCallZWith = <callCz(<Exp>, <Exp>, <Exp>, <{Exp ", "}+>)>
+	ControlStmt.RGR_ContCallZ     = <callCz(<Exp>, <Exp>, <Exp>)>
+	
 	ControlStmt.RGR_ContCallWith = <callC(<Exp>, <{Exp ", "}+>)>
 	ControlStmt.RGR_ContCall     = <callC(<Exp>)>
 	ControlStmt.RGR_CFCall       = <callCF(<Exp>, <Exp>)>

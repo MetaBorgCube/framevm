@@ -18,6 +18,10 @@ rules
     jump-eval: (0, then, _) -> then
     jump-eval: (_, _, else) -> else        // Catch all other than 0
     
+    // Resolve which continuation to call
+    cont-call-z(|env): (0, then, _) -> <cont-call(|env)> then
+    cont-call-z(|env): (_, _, else) -> <cont-call(|env)> else        // Catch all other than 0
+    
     
     // Check if the two given values are equal
     eval-eq: (e1, e2) -> IntV(1)

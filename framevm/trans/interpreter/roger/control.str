@@ -121,6 +121,26 @@ rules
         (env3, vals) := <(rgr-eval-exp-fold(|env2))> exps;
         env4 := <cont-call(|env3)> cont;
         env5 := <vm-transfer(|env4)> vals
+        
+   
+     
+    rgr-eval: (RGR_ContCallZ(cond_exp, exp1, exp2), env1) -> env5
+      where
+        (env2, IntV(cond)) := <rgr-eval-exp(|env1)> cond_exp;
+        (env3, Continuation(cont1)) := <rgr-eval-exp(|env2)> exp1;
+        (env4, Continuation(cont2)) := <rgr-eval-exp(|env3)> exp2;
+        env5 := <cont-call-z(|env4)> (cond, cont1, cont2)
+        
+   rgr-eval: (RGR_ContCallZWith(cond_exp, exp1, exp2, exps), env1) -> env7
+      where
+        (env2, IntV(cond)) := <rgr-eval-exp(|env1)> cond_exp;
+        (env3, Continuation(cont1)) := <rgr-eval-exp(|env2)> exp1;
+        (env4, Continuation(cont2)) := <rgr-eval-exp(|env3)> exp2;
+        (env5, vals) := <(rgr-eval-exp-fold(|env4))> exps;
+        env6 := <cont-call-z(|env5)> (cond, cont1, cont2);
+        env7 := <vm-transfer(|env6)> vals
+        
+        
   
     rgr-eval: (RGR_Try(exptry, trylbl, 
                        expcatch, catchlbl, 

@@ -90,6 +90,10 @@ rules // Control Instructions
   
   instr[[RGR_ContCall(exp) ^(s)]]        := rgrExp[[exp ^(s)]].
   instr[[RGR_ContCallWith(exp, exps) ^(s)]] := rgrExp[[exp ^(s)]], Map1(rgrExp)[[exps ^(s)]].
+  
+  instr[[RGR_ContCallZ(exp1, exp2, exp3) ^(s)]]        := rgrExp[[exp1 ^(s)]], rgrExp[[exp2 ^(s)]], rgrExp[[exp3 ^(s)]].
+  instr[[RGR_ContCallZWith(exp1, exp2, exp3, exps) ^(s)]] := rgrExp[[exp1 ^(s)]], rgrExp[[exp2 ^(s)]], rgrExp[[exp3 ^(s)]], Map1(rgrExp)[[exps ^(s)]].
+  
   instr[[RGR_CFCall(exp, lbl) ^(s)]]     := rgrExp[[exp ^(s)]], rgrExp[[lbl ^(s)]].
   instr[[RGR_CFReturn(exp) ^(s)]]        := rgrExp[[exp ^(s)]].
   
