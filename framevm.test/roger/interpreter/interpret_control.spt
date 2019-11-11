@@ -234,3 +234,63 @@ MAIN_END:
 	return(iload(0))
 ]] transform "Run -> Run" to "IntV(1)
 IntV(4)"
+
+test conditional call then [[
+	r0 <- newC(newCF(new()), MAIN2)
+	r1 <- newC(newCF(new()), MAIN3) 
+	callCz(iload(0), r0, r1)
+MAIN2:
+	print(iload(1))
+	return(iload(0))
+MAIN3:
+	print(iload(2))
+	return(iload(0))
+]] transform "Run -> Run" to "IntV(1)"
+
+test conditional call then with [[
+	r0 <- newC(newCF(new()), MAIN2)
+	r1 <- newC(newCF(new()), MAIN3) 
+	callCz(iload(0), r0, r1, iload(2), iload(3))
+MAIN2:
+	print(iload(4))
+	print(rget())
+	print(rget())
+	return(iload(0))
+MAIN3:
+	print(rget())
+	print(rget())
+	print(iload(1))
+	return(iload(0))
+]] transform "Run -> Run" to "IntV(4)
+IntV(3)
+IntV(2)"
+
+test conditional jump else [[
+	r0 <- newC(newCF(new()), MAIN2)
+	r1 <- newC(newCF(new()), MAIN3) 
+	callCz(iload(1), r0, r1)
+MAIN2:
+	print(iload(1))
+	return(iload(0))
+MAIN3:
+	print(iload(2))
+	return(iload(0))
+]] transform "Run -> Run" to "IntV(2)"
+
+test conditional call else with [[
+	r0 <- newC(newCF(new()), MAIN2)
+	r1 <- newC(newCF(new()), MAIN3) 
+	callCz(iload(1), r0, r1, iload(2), iload(3))
+MAIN2:
+	print(iload(4))
+	print(rget())
+	print(rget())
+	return(iload(0))
+MAIN3:
+	print(rget())
+	print(rget())
+	print(iload(1))
+	return(iload(0))
+]] transform "Run -> Run" to "IntV(3)
+IntV(2)
+IntV(1)"
