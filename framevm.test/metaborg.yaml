@@ -3,7 +3,7 @@ id: org.metaborg.lang:framevm.test:1.0.0
 name: framevm
 dependencies:
   compile:
-  - org.metaborg.lang:framevm:1.1.0
+  - org.metaborg.lang:framevm:1.2.0
   - org.metaborg:org.metaborg.meta.lang.spt:${metaborgVersion}
 build:
   useBuildSystemSpec: true
