@@ -60,7 +60,7 @@
 		<type>spoofax-language</type>
     </dependency>
     <dependency>
-      <groupId>org.metaborg</groupId>
+      <groupId>org.metaborg.lang</groupId>
         <artifactId>framevm-core</artifactId>
 		<version>1.2.0</version>
     </dependency>
@@ -83,7 +83,7 @@
         <configuration>
           <artifactItems>
             <artifactItem>
-              <groupId>org.metaborg</groupId>
+              <groupId>org.metaborg.lang</groupId>
               <artifactId>framevm-core</artifactId>
               <type>jar</type>
               <overWrite>false</overWrite>
