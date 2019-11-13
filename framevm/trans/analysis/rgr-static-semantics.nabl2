@@ -115,6 +115,7 @@ rules // Control Instructions
   rgrExp[[i@RGR_DebugKill() ^(s)]] := false | note $[Debug operation]@i.
   rgrExp[[i@RGR_Tick() ^(s)]] := false | note $[Debug operation]@i.
   rgrExp[[i@RGR_Tock() ^(s)]] := false | note $[Debug operation]@i.
+  rgrExp[[i@RGR_ForceGC() ^(s)]] := false | note $[Debug operation]@i.
   rgrExp[[RGR_StringLoad(_) ^(s)]].
   rgrExp[[RGR_CharLoad(_) ^(s)]].
   

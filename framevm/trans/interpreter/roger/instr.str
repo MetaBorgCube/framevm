@@ -28,8 +28,9 @@ rules
     rgr-eval-instr: (RGR_Debug(),     env1) ->        <vm-debug(|env1)>
     rgr-eval-instr: (RGR_DebugKill(), env1) -> <fail> <vm-debug(|env1)>
     
-    rgr-eval-instr: (RGR_Tick(), env1) -> env1 where vm-tick(|env1)
-    rgr-eval-instr: (RGR_Tock(), env1) -> env1 where vm-tock(|env1)
+    rgr-eval-instr: (RGR_Tick(), env1) -> env1    where vm-tick(|env1)
+    rgr-eval-instr: (RGR_Tock(), env1) -> env1    where vm-tock(|env1)
+    rgr-eval-instr: (RGR_ForceGC(), env1) -> env1 where vm-force-gc(|env1)
 
     rgr-eval-instr: (RGR_Set(FVM_Self(), val), env1)   -> <frame-set-current(|env2)> (<cf-this(|env2)>, frame)
       where

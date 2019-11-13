@@ -31,6 +31,7 @@ import org.metaborg.lang.framevm_core.vm.vm_cf_new_0_1;
 import org.metaborg.lang.framevm_core.vm.vm_cont_new_0_1;
 import org.metaborg.lang.framevm_core.vm.vm_debug_0_1;
 import org.metaborg.lang.framevm_core.vm.vm_execute_1_1;
+import org.metaborg.lang.framevm_core.vm.vm_force_gc_0_1;
 import org.metaborg.lang.framevm_core.vm.vm_has_lib_0_1;
 import org.metaborg.lang.framevm_core.vm.vm_init_0_0;
 import org.metaborg.lang.framevm_core.vm.vm_jump_0_1;
@@ -68,6 +69,7 @@ public class FrameVM {
 				
 				vm_tick_0_1.instance,
 				vm_tock_0_1.instance,
+				vm_force_gc_0_1.instance,
 
 				rgr_set_0_1.instance,
 				rgr_get_any_0_1.instance,
