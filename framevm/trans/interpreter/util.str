@@ -56,6 +56,9 @@ rules
     
     is-nullV: NullV() -> IntV(1)
     is-nullV: _       -> IntV(0)
+    
+    is-code: BlockRef(_, _) -> IntV(1)
+    is-code: _              -> IntV(0)
 
 rules    // Util
     // Convert a value to a displayable string 

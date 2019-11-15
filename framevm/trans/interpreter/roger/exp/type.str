@@ -8,6 +8,10 @@ imports
     fvm-common
 
 rules
+    rgr-eval-exp(|env): RGR_IsCode(exp)  -> (env2, <is-code> val)
+      where
+       (env2, val) := <rgr-eval-exp(|env)> exp
+       
     rgr-eval-exp(|env): RGR_IsInt(exp)   -> (env2, <is-intV> val)
       where
        (env2, val) := <rgr-eval-exp(|env)> exp

@@ -48,6 +48,8 @@ rules // Exp
   rgrExp[[RGR_IsCont(exp) ^(s)]]  := rgrExp[[exp ^(s)]].
   rgrExp[[RGR_IsCF(exp) ^(s)]]    := rgrExp[[exp ^(s)]].
   rgrExp[[RGR_IsFrame(exp) ^(s)]] := rgrExp[[exp ^(s)]].
+  rgrExp[[RGR_IsNull(exp) ^(s)]]  := rgrExp[[exp ^(s)]].
+  rgrExp[[RGR_IsCode(exp) ^(s)]]  := rgrExp[[exp ^(s)]].
   
   rgrExp[[RGR_New(exp) ^(s)]]     := rgrExp[[exp ^(s)]].
   rgrExp[[RGR_NewRec(exps) ^(s)]] := Map1(rgrExp)[[exps ^(s)]].
