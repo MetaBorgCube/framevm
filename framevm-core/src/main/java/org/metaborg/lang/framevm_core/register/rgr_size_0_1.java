@@ -12,6 +12,6 @@ public class rgr_size_0_1 extends FVMStrategy {
 	@Override
 	// env| -> int
 	protected IStrategoTerm invoke(ITermFactory factory, MachineState env, IStrategoTerm arg) {
-		return factory.makeInt(env.currentThread.getRegisters().length);
+		return factory.makeInt(env.currentThread.getControlFrame().getRegistersSize());
 	}
 }

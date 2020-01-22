@@ -1,8 +1,6 @@
 package org.metaborg.lang.framevm_core.util;
 
 import java.util.Stack;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.strategoxt.lang.Context;
@@ -16,18 +14,12 @@ public class MachineThread {
 
 	private Block block;
 	private int instr_count;
-	
-	private IStrategoTerm[] registers;
 	private Stack<IStrategoTerm> returnStack;
-	
-	
-	private static final Pattern LOCAL = Pattern.compile("\\w([0-9]+)");
 	
 	public MachineThread(ControlFrame frame, MachineState env, int register_size) {
 		this.controlFrame = frame;
 		this.env = env;
 		this.returnStack = new Stack<>();
-		this.registers = new IStrategoTerm[register_size];
 	}
 	
 	public void initThread() {	}
@@ -59,6 +51,12 @@ public class MachineThread {
 
 	public void callControlFrame(ControlFrame cf) {
 		this.controlFrame = cf;
+	}
+
+	public void restoreMemory(Memory mem) {
+		if (mem == null) return; // Nothing to do for the empty restore
+		this.returnStack = mem.getStack();
+		this.controlFrame.restoreMemory(mem);
 	}
 
 	/**
@@ -106,35 +104,12 @@ public class MachineThread {
 		return instr_count;
 	}
 	
-
-
-	private int slotId(String slot) {
-		Matcher matcher = LOCAL.matcher(slot);
-		matcher.matches();
-		matcher.group();
-		return Integer.valueOf(matcher.group(1));
-	}
-	
-	public void set(String slot, IStrategoTerm term) {
-		if (registers == null) throw new IllegalStateException("Locals not set");
-		registers[slotId(slot)] = term;
-	}
-	
-	public IStrategoTerm get(String slot) {
-		if (registers == null) throw new IllegalStateException("Locals not set");
-		return registers[slotId(slot)];
-	}
-	
 	public boolean hasReturn() {
 		return !returnStack.isEmpty();
 	}
 	
 	public Stack<IStrategoTerm> getReturns() {
 		return returnStack;
-	}
-
-	public IStrategoTerm[] getRegisters() {
-		return registers;
 	}
 
 	public void pushReturn(IStrategoTerm result) {
@@ -147,12 +122,6 @@ public class MachineThread {
 	
 	@SuppressWarnings("unchecked")
 	public Memory getMemory() {
-		return new Memory((Stack<IStrategoTerm>) this.returnStack.clone(), (IStrategoTerm[]) registers.clone());
-	}
-
-	public void restoreMemory(Memory mem) {
-		if (mem == null) return; // Nothing to do for the empty restore
-		this.registers = mem.getRegisters();
-		this.returnStack = mem.getStack();
+		return new Memory((Stack<IStrategoTerm>) this.returnStack.clone(), controlFrame.getRegisterCopy());
 	}
 }

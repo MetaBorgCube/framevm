@@ -29,7 +29,7 @@ public class rgr_set_0_1 extends FVMStrategy {
 		IStrategoTerm val = tuple.get(1);
 		
 		try {
-			thread.set(slot, val);
+			thread.getControlFrame().setRegister(slot, val);
 			return new StrategoBlob(env);
 		} catch (ArrayIndexOutOfBoundsException ex) {
 			LOGGER.error("Slot " + slot + " does not exist");
